@@ -144,7 +144,8 @@ export const standardLevelDetection = (binary: string): [number | string, number
 };
 
 export const enhancedLevelDetection = (binary: string): [number | string, number] => {
-    const all_candidates = [];
+    type Candidate = [number, number, number, string];
+    const all_candidates: Candidate[] = [];
 
     for (let level = 0; level <= 50; level++) {
         const pattern = level.toString(2).padStart(8, '0');

@@ -46,84 +46,88 @@
 
     let chart: Chart;
 
-    onMount(async () => {
-        const storedBaseYaml = localStorage.getItem('baseYaml');
-        if (storedBaseYaml) {
-            baseYaml = storedBaseYaml;
-            statusMessage = 'Restored last used base YAML.';
-        }
+    onMount(() => {
+        async function setup() {
+            const storedBaseYaml = localStorage.getItem('baseYaml');
+            if (storedBaseYaml) {
+                baseYaml = storedBaseYaml;
+                statusMessage = 'Restored last used base YAML.';
+            }
 
-        const MyWorker = await import('$lib/worker/worker.js?worker');
-        worker = new MyWorker.default();
+            const MyWorker = await import('$lib/worker/worker.js?worker');
+            worker = new MyWorker.default();
 
-        const ctx = document.getElementById('statsChart') as HTMLCanvasElement;
-        chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Part Frequency',
-                    data: [],
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+            const ctx = document.getElementById('statsChart') as HTMLCanvasElement;
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Part Frequency',
+                        data: [],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        worker.onmessage = (e) => {
-            const { type, payload } = e.data;
-            switch (type) {
-                case 'progress':
-                    progress = (payload.processed / payload.total) * 100;
-                    if (payload.stage === 'stats') {
-                        statusMessage = `Generating Statistics... ${Math.round(progress)}%`;
-                    } else {
-                        statusMessage = `Generating... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
-                    }
-                    break;
-                case 'stats_complete':
-                    updateChart(payload.chartData);
-                    break;
-                case 'complete':
-                    if (payload.validationResult) {
-                        validationResult = payload.validationResult;
-                        filteredYaml = payload.validatedYaml || '';
-                        const filteredCount = payload.validatedYaml ? (payload.validatedYaml.match(/serial:/g) || []).length : 0;
-                        statusMessage = `Filtering complete.\nCopy/Download will use the ${filteredCount} filtered serials.`;
-                        outputYaml = truncate(payload.validatedYaml || '');
-                        if (payload.chartData) {
-                            updateChart(payload.chartData);
+            worker.onmessage = (e) => {
+                const { type, payload } = e.data;
+                switch (type) {
+                    case 'progress':
+                        progress = (payload.processed / payload.total) * 100;
+                        if (payload.stage === 'stats') {
+                            statusMessage = `Generating Statistics... ${Math.round(progress)}%`;
+                        } else {
+                            statusMessage = `Generating... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
                         }
-                    } else {
+                        break;
+                    case 'stats_complete':
+                        updateChart(payload.chartData);
+                        break;
+                    case 'complete':
+                        if (payload.validationResult) {
+                            validationResult = payload.validationResult;
+                            filteredYaml = payload.validatedYaml || '';
+                            const filteredCount = payload.validatedYaml ? (payload.validatedYaml.match(/serial:/g) || []).length : 0;
+                            statusMessage = `Filtering complete.\nCopy/Download will use the ${filteredCount} filtered serials.`;
+                            outputYaml = truncate(payload.validatedYaml || '');
+                            if (payload.chartData) {
+                                updateChart(payload.chartData);
+                            }
+                        } else {
+                            isGenerating = false;
+                            outputYaml = payload.truncatedYaml;
+                            fullYaml = payload.yaml;
+                            filteredYaml = '';
+                            validationResult = '';
+                            statusMessage = `✅ Complete! ${payload.uniqueCount.toLocaleString()} unique serials generated.`;
+                        }
+                        break;
+                    case 'error':
                         isGenerating = false;
-                        outputYaml = payload.truncatedYaml;
-                        fullYaml = payload.yaml;
-                        filteredYaml = '';
-                        validationResult = '';
-                        statusMessage = `✅ Complete! ${payload.uniqueCount.toLocaleString()} unique serials generated.`;
-                    }
-                    break;
-                case 'error':
-                    isGenerating = false;
-                    statusMessage = `❌ ERROR: ${payload.message}`;
-                    break;
-            }
-        };
+                        statusMessage = `❌ ERROR: ${payload.message}`;
+                        break;
+                }
+            };
+        }
+
+        setup();
 
         return () => {
             worker.terminate();
         };
     });
 
-    function updateChart(chartData) {
+    function updateChart(chartData: { labels: string[]; data: number[] }) {
         if (!chart) return;
         chart.data.labels = chartData.labels;
         chart.data.datasets[0].data = chartData.data;

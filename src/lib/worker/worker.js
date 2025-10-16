@@ -30,6 +30,7 @@ self.onmessage = async function (e) {
 		let chartData = null;
 		if (payload.generateStats && validationData.validatedSerials && validationData.validatedSerials.length > 0) {
 			self.postMessage({ type: 'progress', payload: { processed: 0, total: 100, stage: 'stats' } });
+			/** @param {number} progress */
 			const onProgress = (progress) => {
 				self.postMessage({ type: 'progress', payload: { processed: progress, total: 100, stage: 'stats' } });
 			};
@@ -73,9 +74,10 @@ uniqueCount: 0,
 
 		const repository = config.repository || '';
 		const selectedRepoTails = repository
-			.split(/[\s\n]+/)
-			.filter((s) => s.startsWith('@U'))
-			.map((s) => splitHeaderTail(s)[1]);
+			.split(/[\s\n]+/
+)
+			.filter(/** @param {string} s */ (s) => s.startsWith('@U'))
+			.map(/** @param {string} s */ (s) => splitHeaderTail(s)[1]);
 		if (selectedRepoTails.length === 0) {
 			console.log('[DEBUG] No repository tails found, using base seed tail as parent.');
 			selectedRepoTails.push(baseTail);
@@ -86,6 +88,7 @@ uniqueCount: 0,
 		const highValueParts = extractHighValueParts(selectedRepoTails, config.minPartSize, config.maxPartSize);
 		const legendaryStackingChance = config.legendaryChance / 100.0;
 
+		/** @param {any[]} array */
 		const shuffleArray = (array) => {
 			for (let i = array.length - 1; i > 0; i--) {
 				const j = Math.floor(Math.random() * (i + 1));
@@ -129,7 +132,7 @@ uniqueCount: 0,
 				let dynamicTargetLength = Math.floor(baseTail.length + config.targetOffset);
 				dynamicTargetLength = Math.max(dynamicTargetLength, protectedStartLength);
 
-				switch (item.tg) {
+				switch (/** @type {string} */ (item.tg)) {
 					                    case 'NEW_V0':
                         mutatedTail = generateAppendMutation(baseTail, dynamicTargetLength, adjustedMutableStart, config.itemType);
                         break;
@@ -178,7 +181,7 @@ uniqueCount: 0,
 
 			if (!seenSerials.has(serial)) {
 				seenSerials.add(serial);
-				const flagValue = TG_FLAGS[item.tg] || 0;
+				const flagValue = /** @type {any} */ (TG_FLAGS)[item.tg] || 0;
 				generatedSerials.push({
 					serial: serial,
 					flag: flagValue !== 0 ? 1 : 0,
@@ -230,6 +233,7 @@ uniqueCount: generatedSerials.length,
 		if (config.generateStats && generatedSerials.length > 0) {
 			console.log('[DEBUG] Calculating and sending statistics.');
 			self.postMessage({ type: 'progress', payload: { processed: 0, total: 100, stage: 'stats' } });
+			/** @param {number} progress */
 			const onProgress = (progress) => {
 				self.postMessage({ type: 'progress', payload: { processed: progress, total: 100, stage: 'stats' } });
 			};
@@ -251,6 +255,6 @@ uniqueCount: generatedSerials.length,
 		}
 	} catch (error) {
 		console.error('Worker Error:', error);
-		self.postMessage({ type: 'error', payload: { message: error.message } });
+		self.postMessage({ type: 'error', payload: { message: /** @type {Error} */ (error).message } });
 	}
 };

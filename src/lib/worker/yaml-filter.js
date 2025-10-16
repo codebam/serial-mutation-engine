@@ -1,5 +1,10 @@
 import { ALPHABET } from './constants.js';
 
+/**
+ * @param {string} yaml
+ * @param {string} seed
+ * @param {number} validationChars
+ */
 export function filterSerials(yaml, seed, validationChars) {
     console.log(`[DEBUG] Starting filtering process with seed "${seed}" and ${validationChars} validation characters.`);
 	if (!yaml)

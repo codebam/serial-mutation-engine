@@ -1,10 +1,14 @@
 // --- GPU & RANDOMNESS STATE ---
+/** @type {GPUDevice | null} */
 let gpuDevice = null;
 
 export const getGpuDevice = () => gpuDevice;
 let randomBuffer = new Float32Array(0);
 let randomIndex = 0;
 
+/**
+ * @param {number} margin
+ */
 export function needsRandomNumberGeneration(margin) {
     return randomIndex >= randomBuffer.length - margin;
 }
@@ -40,6 +44,9 @@ export async function setupWebGPU() {
 		return null;
 	}
 }
+/**
+ * @param {number} count
+ */
 export async function generateRandomNumbersOnGPU(count) {
 	if (!gpuDevice) {
 		console.log(`[DEBUG] Generating ${count} random numbers using CPU (crypto.getRandomValues).`);

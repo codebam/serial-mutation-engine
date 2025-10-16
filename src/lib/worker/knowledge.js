@@ -62,7 +62,7 @@ export const ITEM_TYPE_CHAR_POOLS = {
  */
 export function getCharPoolForItemType(itemType) {
     const upperType = itemType.toUpperCase();
-    return ITEM_TYPE_CHAR_POOLS[upperType] || ITEM_TYPE_CHAR_POOLS.GENERIC;
+    return ITEM_TYPE_CHAR_POOLS[/** @type {keyof typeof ITEM_TYPE_CHAR_POOLS} */ (upperType)] || ITEM_TYPE_CHAR_POOLS.GENERIC;
 }
 
 /**

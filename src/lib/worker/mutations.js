@@ -1,3 +1,4 @@
+const self = /** @type {WorkerGlobalScope} */ (/** @type {unknown} */ (globalThis));
 import { ALPHABET } from './constants.js';
 import { getNextRandom } from './gpu.js';
 import { randomInt, randomChoice } from './utils.js';
@@ -74,6 +75,11 @@ export function generateKnowledgeBasedMutation(baseTail, originalSerial, finalLe
     return finalMutatedTail;
 }
 
+/**
+ * @param {number} minPartSize
+ * @param {number} maxPartSize
+ * @param {string[]} charPool
+ */
 function createRandomRepeatingPart(minPartSize, maxPartSize, charPool) {
     const totalLength = randomInt(minPartSize, maxPartSize);
     // Ensure base length is at least 1 and allows for at least 2 repeats.
@@ -94,6 +100,13 @@ function createRandomRepeatingPart(minPartSize, maxPartSize, charPool) {
 }
 
 // --- NEW (v1) STACKED PART MUTATION (Full Alphabet) ---
+/**
+ * @param {string} baseTail
+ * @param {number} minPartSize
+ * @param {number} maxPartSize
+ * @param {number} finalLength
+ * @param {string} itemType
+ */
 export function generateStackedPartMutationV1(baseTail, minPartSize, maxPartSize, finalLength, itemType) {
     if (self.debugMode) console.log(`[DEBUG] > NEW (v1) Stacked Part Mutation | finalLength: ${finalLength}`);
 
@@ -131,6 +144,13 @@ export function generateStackedPartMutationV1(baseTail, minPartSize, maxPartSize
 }
 
 // --- NEW (v2) STACKED PART MUTATION (Restricted Alphabet) ---
+/**
+ * @param {string} baseTail
+ * @param {number} minPartSize
+ * @param {number} maxPartSize
+ * @param {number} finalLength
+ * @param {string} itemType
+ */
 export function generateStackedPartMutationV2(baseTail, minPartSize, maxPartSize, finalLength, itemType) {
     if (self.debugMode) console.log(`[DEBUG] > NEW (v2) Stacked Part Mutation | finalLength: ${finalLength}`);
 
@@ -169,6 +189,13 @@ export function generateStackedPartMutationV2(baseTail, minPartSize, maxPartSize
 
 
 // --- NEW (v3) EVOLVING MUTATION ---
+/**
+ * @param {string} baseTail
+ * @param {number} minChunkSize
+ * @param {number} maxChunkSize
+ * @param {number} finalLength
+ * @param {string} itemType
+ */
 export function generateEvolvingMutation(baseTail, minChunkSize, maxChunkSize, finalLength, itemType) {
     if (self.debugMode) console.log(`[DEBUG] > NEW (v3) Evolving Mutation | finalLength: ${finalLength}`);
 
@@ -247,6 +274,12 @@ export function generateEvolvingMutation(baseTail, minChunkSize, maxChunkSize, f
 
 
 // NEW: Append-Only
+/**
+ * @param {string} baseTail
+ * @param {number} finalLength
+ * @param {number} protectedStartLength
+ * @param {string} [itemType='GENERIC']
+ */
 export function generateAppendMutation(baseTail, finalLength, protectedStartLength, itemType = 'GENERIC') {
     if (self.debugMode) console.log(`[DEBUG] > Append Mutation | finalLength: ${finalLength}, protected: ${protectedStartLength}, itemType: ${itemType}`);
     const startPart = baseTail.substring(0, protectedStartLength);
@@ -264,6 +297,12 @@ export function generateAppendMutation(baseTail, finalLength, protectedStartLeng
 }
 
 // TG1: Append-Only Mutation (1x)
+/**
+ * @param {string} baseTail
+ * @param {string} originalSerial
+ * @param {number} finalLength
+ * @param {string} [itemType='GENERIC']
+ */
 export function generateCharacterFlipMutation(baseTail, originalSerial, finalLength, itemType = 'GENERIC') {
     if (self.debugMode) console.log(`[DEBUG] > TG1: Append-Only Mutation (1x) | finalLength: ${finalLength}, itemType: ${itemType}`);
     
@@ -299,6 +338,12 @@ export function generateCharacterFlipMutation(baseTail, originalSerial, finalLen
 }
 
 // TG2: Append-Only Mutation (2x)
+/**
+ * @param {string} baseTail
+ * @param {string} originalSerial
+ * @param {number} finalLength
+ * @param {string} [itemType='GENERIC']
+ */
 export function generateSegmentReversalMutation(baseTail, originalSerial, finalLength, itemType = 'GENERIC') {
     if (self.debugMode) console.log(`[DEBUG] > TG2: Append-Only Mutation (2x) | finalLength: ${finalLength}, itemType: ${itemType}`);
     
@@ -336,6 +381,15 @@ export function generateSegmentReversalMutation(baseTail, originalSerial, finalL
 }
 
 // TG3: High-Value Part Manipulation (High Intensity)
+/**
+ * @param {string} baseTail
+ * @param {string} parentTail
+ * @param {string[]} highValueParts
+ * @param {number} legendaryChance
+ * @param {number} mutableStart
+ * @param {number} mutableEnd
+ * @param {number} finalLength
+ */
 export function generatePartManipulationMutation(baseTail, parentTail, highValueParts, legendaryChance, mutableStart, mutableEnd, finalLength) {
     if (self.debugMode) console.log(`[DEBUG] > TG3: Part Manipulation | range: ${mutableStart}-${mutableEnd}`);
 
@@ -355,6 +409,13 @@ export function generatePartManipulationMutation(baseTail, parentTail, highValue
 }
 
 // TG4: Repository Crossover (Very High Intensity)
+/**
+ * @param {string} baseTail
+ * @param {string} parentTail
+ * @param {number} mutableStart
+ * @param {number} mutableEnd
+ * @param {number} finalLength
+ */
 export function generateRepositoryCrossoverMutation(baseTail, parentTail, mutableStart, mutableEnd, finalLength) {
     if (self.debugMode) console.log(`[DEBUG] > TG4: Repository Crossover | range: ${mutableStart}-${mutableEnd}`);
     const prefix = baseTail.substring(0, mutableStart);
@@ -369,7 +430,7 @@ export function generateRepositoryCrossoverMutation(baseTail, parentTail, mutabl
     
     // If chunk is not long enough, fill with random chars
     while(crossoverChunk.length < crossoverLength) {
-        crossoverChunk += randomChoice(ALPHABET);
+        crossoverChunk += randomChoice(ALPHABET.split(''));
     }
 
     if (self.debugMode) console.log(`[DEBUG]   > Overwriting range ${mutableStart}-${mutableEnd} with chunk from parent.`);

@@ -203,7 +203,7 @@
             }
 
             // Fallback to detected position if type-based position is not helpful
-            if(levelFoundAt !== -1) {
+            if(levelFoundAt !== null && levelFoundAt !== -1) {
                 // if standard marker was found, the level bits start after the 6-bit marker
                 const LEVEL_MARKER = '000000';
                 if(modifiedBinary.substring(levelFoundAt, levelFoundAt + 6) === LEVEL_MARKER) {
@@ -240,7 +240,7 @@
 
     function handleV2ElementChange(newElement: string) {
         if (foundV2Element) {
-            const newPattern = ELEMENTAL_PATTERNS_V2[newElement];
+            const newPattern = ELEMENTAL_PATTERNS_V2[newElement as keyof typeof ELEMENTAL_PATTERNS_V2];
             const prefix = modifiedBinary.substring(0, foundV2Element.index);
             const suffix = modifiedBinary.substring(foundV2Element.index + foundV2Element.pattern.length);
             const newModifiedBinary = prefix + newPattern + suffix;
@@ -334,7 +334,7 @@
             {#if foundV2Element}
                 <h3 class="text-lg font-semibold mt-2">Element Editor</h3>
                 <FormGroup label={`Element at index ${foundV2Element.index}`}>
-                    <select bind:value={foundV2Element.element} onchange={(e) => handleV2ElementChange(e.target.value)} class={inputClasses}>
+                    <select bind:value={foundV2Element.element} onchange={(e) => handleV2ElementChange((e.target as HTMLSelectElement).value)} class={inputClasses}>
                         {#each Object.keys(ELEMENTAL_PATTERNS_V2) as type}
                             <option value={type}>{type}</option>
                         {/each}

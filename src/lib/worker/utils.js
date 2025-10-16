@@ -1,25 +1,42 @@
+const self = /** @type {WorkerGlobalScope} */ (/** @type {unknown} */ (globalThis));
 import { ALPHABET, HEADER_RE } from './constants.js';
 import { getNextRandom } from './gpu.js';
 
+/**
+ * @param {number} min
+ * @param {number} max
+ */
 export function randomInt(min, max) {
 	if (min > max) [min, max] = [max, min];
 	return Math.floor(getNextRandom() * (max - min + 1)) + min;
 }
 
+/**
+ * @param {any[]} arr
+ */
 export function randomChoice(arr) {
 	return arr[Math.floor(getNextRandom() * arr.length)];
 }
 
+/**
+ * @param {string} s
+ */
 export function ensureCharset(s) {
 	return [...s].filter((c) => ALPHABET.includes(c)).join('');
 }
 
+/**
+ * @param {string} serial
+ */
 export function splitHeaderTail(serial) {
 	const match = serial.match(HEADER_RE);
 	if (match) return [match[1], serial.substring(match[0].length)];
 	return [serial.substring(0, 12), serial.substring(12)];
 }
 
+/**
+ * @param {string} serial
+ */
 export function getSerialTail(serial) {
 	const match = serial.match(HEADER_RE);
 	if (match && match[0]) {
@@ -28,6 +45,11 @@ export function getSerialTail(serial) {
 	return serial.substring(12);
 }
 
+/**
+ * @param {string[]} repoTails
+ * @param {number} minPartSize
+ * @param {number} maxPartSize
+ */
 export function extractHighValueParts(repoTails, minPartSize, maxPartSize) {
     console.log('[DEBUG] Starting high-value part extraction...');
 	const frequencyMap = new Map();
