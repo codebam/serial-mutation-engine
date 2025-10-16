@@ -253,13 +253,13 @@ export function generateAppendMutation(baseTail, finalLength, protectedStartLeng
     const paddingLength = finalLength - startPart.length;
     if (paddingLength <= 0) return startPart.substring(0, finalLength);
     
-    const charPool = getCharPoolForItemType(itemType);
+    const charPool = BASE85_ALPHABET.split(''); // Use full alphabet as requested
     let padding = '';
     for (let i = 0; i < paddingLength; i++) {
         padding += randomChoice(charPool);
     }
     
-    if (self.debugMode) console.log(`[DEBUG]   > Appending ${paddingLength} random characters using ${itemType} pool.`);
+    if (self.debugMode) console.log(`[DEBUG]   > Appending ${paddingLength} random characters using full alphabet pool.`);
     return startPart + padding;
 }
 
