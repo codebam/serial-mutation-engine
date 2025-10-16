@@ -38,7 +38,7 @@
     let filteredYaml = '';
     let liveMerge = true;
     let baseYaml = '';
-    let isMerging = false;
+
     let searchTerm = '';
     let copyText = 'Copy';
 
@@ -47,6 +47,12 @@
     let chart: Chart;
 
     onMount(async () => {
+        const storedBaseYaml = localStorage.getItem('baseYaml');
+        if (storedBaseYaml) {
+            baseYaml = storedBaseYaml;
+            statusMessage = 'Restored last used base YAML.';
+        }
+
         const MyWorker = await import('$lib/worker/worker.js?worker');
         worker = new MyWorker.default();
 
@@ -278,6 +284,7 @@
         reader.onload = () => {
             try {
                 baseYaml = reader.result as string;
+                localStorage.setItem('baseYaml', baseYaml);
                 statusMessage = 'Base YAML loaded successfully.';
             } catch (error) {
                 console.error('Failed to load base YAML:', error);
@@ -342,7 +349,7 @@
                         class="{inputClasses} min-h-[120px]"
                         bind:value={state.repository}
                         placeholder="Paste serials here..."
-                        disabled={isMerging}
+                        
                     ></textarea>
                 </FormGroup>
                 <FormGroup label="Search Serials">
@@ -353,19 +360,19 @@
                             class={inputClasses}
                             placeholder="Enter search term..."
                             bind:value={searchTerm}
-                            disabled={isMerging}
+                            
                         />
-                        <button onclick={searchSerials} class={btnClasses.secondary} disabled={isMerging}>Search</button>
+                        <button onclick={searchSerials} class={btnClasses.secondary} >Search</button>
                     </div>
                 </FormGroup>
                 <FormGroup label="Base Serial Seed">
-                    <textarea class="{inputClasses} h-24" bind:value={state.seed} disabled={isMerging}></textarea>
+                    <textarea class="{inputClasses} h-24" bind:value={state.seed} ></textarea>
                 </FormGroup>
                 <div class="grid grid-cols-2 gap-4">
-                    <button onclick={saveState} class={btnClasses.secondary} disabled={isMerging}>Save State</button>
-                    <label class="{btnClasses.secondary} text-center cursor-pointer {isMerging ? 'opacity-50 cursor-not-allowed' : ''}">
+                    <button onclick={saveState} class={btnClasses.secondary} >Save State</button>
+                    <label class="{btnClasses.secondary} text-center cursor-pointer ">
                         Restore State
-                        <input type="file" accept=".json" onchange={restoreState} class="hidden" disabled={isMerging} />
+                        <input type="file" accept=".json" onchange={restoreState} class="hidden"  />
                     </label>
                 </div>
             </Accordion>
@@ -377,7 +384,7 @@
                             name="counts.new"
                             bind:value={state.counts.new}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <p class="text-xs text-gray-400">Randomly appends characters to the base seed.</p>
                     </FormGroup>
@@ -387,7 +394,7 @@
                             name="counts.newV1"
                             bind:value={state.counts.newV1}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (full alphabet).</p>
                     </FormGroup>
@@ -397,7 +404,7 @@
                             name="counts.newV2"
                             bind:value={state.counts.newV2}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (restricted alphabet).</p>
                     </FormGroup>
@@ -407,7 +414,7 @@
                             name="counts.newV3"
                             bind:value={state.counts.newV3}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <p class="text-xs text-gray-400">Experimental algorithm for data gathering.</p>
                     </FormGroup>
@@ -417,7 +424,7 @@
                             name="counts.tg1"
                             bind:value={state.counts.tg1}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <p class="text-xs text-gray-400">Inserts one stable motif at a random position within the serial's safe zone.</p>
                     </FormGroup>
@@ -427,7 +434,7 @@
                             name="counts.tg2"
                             bind:value={state.counts.tg2}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <p class="text-xs text-gray-400">Inserts two stable motifs at random positions within the serial's safe zone.</p>
                     </FormGroup>
@@ -437,7 +444,7 @@
                             name="counts.tg3"
                             bind:value={state.counts.tg3}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <p class="text-xs text-gray-400">Injects a repeating high-value part at the end of the serial.</p>
                     </FormGroup>
@@ -447,7 +454,7 @@
                             name="counts.tg4"
                             bind:value={state.counts.tg4}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <p class="text-xs text-gray-400">Overwrites a large part of the serial with a random chunk from the repository.</p>
                     </FormGroup>
@@ -457,7 +464,7 @@
         <div class="flex flex-col gap-4">
             <Accordion title="🧬 Mutation Rules" open={true}>
                 <FormGroup label="Item Type">
-                    <select name="itemType" bind:value={state.itemType} class={inputClasses} disabled={isMerging}>
+                    <select name="itemType" bind:value={state.itemType} class={inputClasses} >
                         <option value="GUN">Gun</option>
                         <option value="SHIELD">Shield</option>
                         <option value="CLASS_MOD">Class Mod</option>
@@ -481,7 +488,7 @@
                             bind:value={state.rules.minChunk}
                             class={inputClasses}
                             title="The smallest crossover segment size."
-                            disabled={isMerging}
+                            
                         />
                         <input
                             type="number"
@@ -489,7 +496,7 @@
                             bind:value={state.rules.maxChunk}
                             class={inputClasses}
                             title="The largest crossover segment size."
-                            disabled={isMerging}
+                            
                         />
                         <input
                             type="number"
@@ -497,7 +504,7 @@
                             bind:value={state.rules.targetChunk}
                             class={inputClasses}
                             title="The preferred crossover segment size."
-                            disabled={isMerging}
+                            
                         />
                     </div>
                 </FormGroup>
@@ -509,7 +516,7 @@
                         max="100"
                         bind:value={state.rules.legendaryChance}
                         class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                        disabled={isMerging}
+                        
                     />
                 </FormGroup>
                 <FormGroup label="High-Value Part Size Range">
@@ -519,14 +526,14 @@
                             name="rules.minPart"
                             bind:value={state.rules.minPart}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                         <input
                             type="number"
                             name="rules.maxPart"
                             bind:value={state.rules.maxPart}
                             class={inputClasses}
-                            disabled={isMerging}
+                            
                         />
                     </div>
                 </FormGroup>
@@ -536,7 +543,7 @@
                         name="rules.targetOffset"
                         bind:value={state.rules.targetOffset}
                         class={inputClasses}
-                        disabled={isMerging}
+                        
                     />
                 </FormGroup>
             </Accordion>
@@ -547,7 +554,7 @@
                         name="validationChars"
                         bind:value={state.validationChars}
                         class={inputClasses}
-                        disabled={isMerging}
+                        
                     />
                 </FormGroup>
                 <button
@@ -565,7 +572,7 @@
                             },
                         })}
                     class={btnClasses.secondary}
-                    disabled={isMerging}
+                    
                 >
                     Filter
                 </button>
@@ -589,30 +596,17 @@
                 <div class="p-4 flex justify-between items-center border-b border-gray-700 flex-wrap">
                     <h3 class="text-lg font-semibold mb-2 md:mb-0">📝 YAML Output (Read-Only)</h3>
                     <div class="flex gap-2 flex-wrap">
-                        <button onclick={copyToClipboard} class={btnClasses.tertiary} disabled={isMerging}>
+                        <button onclick={copyToClipboard} class={btnClasses.tertiary} >
                             {copyText}
                         </button>
-                        <button onclick={downloadYAML} class={btnClasses.tertiary} disabled={isMerging}>
+                        <button onclick={downloadYAML} class={btnClasses.tertiary} >
                             Download
                         </button>
-                        <Dropdown title="Merge" btnClasses={btnClasses.tertiary}>
-
-                            <label class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 cursor-pointer {isMerging ? 'opacity-50 cursor-not-allowed' : ''}">
+                            <label class="{btnClasses.tertiary} cursor-pointer">
                                 Select Base YAML
-                                <input type="file" accept=".yaml,.yml" onchange={selectBaseYaml} class="hidden" disabled={isMerging} />
+                                <input type="file" accept=".yaml,.yml" onchange={selectBaseYaml} class="hidden"  />
                             </label>
-                            <div class="flex items-center px-4 py-2 text-sm text-gray-300">
-                                <input
-                                    type="checkbox"
-                                    id="liveMerge"
-                                    bind:checked={liveMerge}
-                                    disabled={!baseYaml || isMerging}
-                                    class="mr-2"
-                                />
-                                <label for="liveMerge">Live Merge</label>
-                            </div>
-                        </Dropdown>
-                        <button onclick={() => { outputYaml = ''; fullYaml = ''; filteredYaml = ''; }} class={btnClasses.tertiary} disabled={isMerging}>
+                        <button onclick={() => { outputYaml = ''; fullYaml = ''; filteredYaml = ''; }} class={btnClasses.tertiary} >
                             Clear
                         </button>
                     </div>
@@ -623,10 +617,10 @@
             </div>
             <div class="bg-gray-800/50 p-5 rounded-lg border border-gray-700 flex flex-col gap-4">
                 <div class="grid grid-cols-2 gap-4">
-                    <button onclick={startGeneration} disabled={isGenerating || isMerging} class={btnClasses.primary}>
+                    <button onclick={startGeneration} disabled={isGenerating } class={btnClasses.primary}>
                         Generate Serials
                     </button>
-                    <button onclick={resetForm} disabled={isGenerating || isMerging} class={btnClasses.secondary}>
+                    <button onclick={resetForm} disabled={isGenerating } class={btnClasses.secondary}>
                         Reset All
                     </button>
                 </div>
@@ -638,7 +632,7 @@
                             name="generateStats"
                             bind:checked={state.generateStats}
                             class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
-                            disabled={isMerging}
+                            
                         />
                         <label for="genStats" class="ml-2 text-sm font-medium text-gray-300">
                             Generate Part Statistics
@@ -651,7 +645,7 @@
                             name="debugMode"
                             bind:checked={state.debugMode}
                             class="h-4 w-4 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500"
-                            disabled={isMerging}
+                            
                         />
                         <label for="debugMode" class="ml-2 text-sm font-medium text-gray-300">
                             Enable Debug Logging
