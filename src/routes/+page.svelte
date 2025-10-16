@@ -4,11 +4,10 @@
     import FormGroup from '$lib/components/FormGroup.svelte';
     import MutableRangeSelector from '$lib/components/MutableRangeSelector.svelte';
     import SerialEditor from '$lib/components/SerialEditor.svelte';
-    import { onMount } from 'svelte';
     import { Chart, registerables } from 'chart.js';
     Chart.register(...registerables);
 
-    let state = {
+    let state = $state({
         repository: '',
         seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
         itemType: 'GUN',
@@ -27,26 +26,26 @@
         validationChars: 12,
         generateStats: false,
         debugMode: false,
-    };
+    });
 
-    let statusMessage = 'Ready to generate.';
-    let validationResult = '';
-    let progress = 0;
-    let isGenerating = false;
-    let outputYaml = '';
-    let fullYaml = '';
-    let filteredYaml = '';
-    let liveMerge = true;
-    let baseYaml = '';
+    let statusMessage = $state('Ready to generate.');
+    let validationResult = $state('');
+    let progress = $state(0);
+    let isGenerating = $state(false);
+    let outputYaml = $state('');
+    let fullYaml = $state('');
+    let filteredYaml = $state('');
+    let liveMerge = $state(true);
+    let baseYaml = $state('');
 
-    let searchTerm = '';
-    let copyText = 'Copy';
+    let searchTerm = $state('');
+    let copyText = $state('Copy');
 
     let worker: Worker;
 
     let chart: Chart;
 
-    onMount(() => {
+    $effect(() => {
         async function setup() {
             const storedBaseYaml = localStorage.getItem('baseYaml');
             if (storedBaseYaml) {
@@ -322,9 +321,11 @@
         }
     }
 
-    $: if (liveMerge && baseYaml && fullYaml) {
-        importAndMerge();
-    }
+    $effect(() => {
+        if (liveMerge && baseYaml && fullYaml) {
+            importAndMerge();
+        }
+    });
 
     const inputClasses =
         'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
