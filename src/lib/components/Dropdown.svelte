@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+
 
     let { title, btnClasses = '', children } = $props();
 
     let isOpen = $state(false);
     let dropdown: HTMLElement;
 
-    onMount(() => {
+    $effect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (dropdown && !dropdown.contains(event.target as Node)) {
                 isOpen = false;
