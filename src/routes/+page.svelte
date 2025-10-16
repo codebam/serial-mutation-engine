@@ -5,7 +5,8 @@
     import MutableRangeSelector from '$lib/components/MutableRangeSelector.svelte';
     import SerialEditor from '$lib/components/SerialEditor.svelte';
     import { onMount } from 'svelte';
-    
+    import { Chart, registerables } from 'chart.js';
+    Chart.register(...registerables);
 
     let state = {
         repository: '',
@@ -43,9 +44,33 @@
 
     let worker: Worker;
 
+    let chart: Chart;
+
     onMount(async () => {
         const MyWorker = await import('$lib/worker/worker.js?worker');
         worker = new MyWorker.default();
+
+        const ctx = document.getElementById('statsChart') as HTMLCanvasElement;
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Part Frequency',
+                    data: [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
         worker.onmessage = (e) => {
             const { type, payload } = e.data;
@@ -59,7 +84,7 @@
                     }
                     break;
                 case 'stats_complete':
-                    // updateChart(payload.chartData);
+                    updateChart(payload.chartData);
                     break;
                 case 'complete':
                     if (payload.validationResult) {
@@ -68,7 +93,9 @@
                         const filteredCount = payload.validatedYaml ? (payload.validatedYaml.match(/serial:/g) || []).length : 0;
                         statusMessage = `Filtering complete.\nCopy/Download will use the ${filteredCount} filtered serials.`;
                         outputYaml = truncate(payload.validatedYaml || '');
-                        // updateChart(payload.chartData);
+                        if (payload.chartData) {
+                            updateChart(payload.chartData);
+                        }
                     } else {
                         isGenerating = false;
                         outputYaml = payload.truncatedYaml;
@@ -89,6 +116,13 @@
             worker.terminate();
         };
     });
+
+    function updateChart(chartData) {
+        if (!chart) return;
+        chart.data.labels = chartData.labels;
+        chart.data.datasets[0].data = chartData.data;
+        chart.update();
+    }
 
     function truncate(str: string, maxLines = 50): string {
         if (!str) return '';
