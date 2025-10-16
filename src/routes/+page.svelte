@@ -29,7 +29,7 @@
         debugMode: boolean;
     }
 
-    const state = writable<State>({
+    const appState = writable<State>({
         repository: '',
         seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
         itemType: 'GUN',
@@ -171,7 +171,7 @@
             const response = await fetch(`https://kamer-tuintje.be/BL4/BSE/api.php?search=${encodeURIComponent($searchTerm)}&action=records&sort_by=id&sort_order=ASC`);
             const data = await response.json();
             const serials = data.map((item: any) => item.serial).join('\n');
-            $state.repository = $state.repository ? `${$state.repository}\n${serials}` : serials;
+            $appState.repository = $appState.repository ? `${$appState.repository}\n${serials}` : serials;
             $statusMessage = `Found ${data.length} serials.`;
         } catch (error) {
             console.error('Failed to search serials:', error);
@@ -186,36 +186,36 @@
         $validationResult = '';
         $filteredYaml = '';
         const config = {
-            seed: $state.seed,
-            itemType: $state.itemType,
-            repository: $state.repository,
-            newCount: $state.counts.new,
-            newV1Count: $state.counts.newV1,
-            newV2Count: $state.counts.newV2,
-            newV3Count: $state.counts.newV3,
-            tg1Count: $state.counts.tg1,
-            tg2Count: $state.counts.tg2,
-            tg3Count: $state.counts.tg3,
-            tg4Count: $state.counts.tg4,
-            minChunkSize: $state.rules.minChunk,
-            maxChunkSize: $state.rules.maxChunk,
-            targetChunkSize: $state.rules.targetChunk,
-            targetOffset: $state.rules.targetOffset,
-            minPartSize: $state.rules.minPart,
-            maxPartSize: $state.rules.maxPart,
-            legendaryChance: $state.rules.legendaryChance,
-            mutableStart: $state.rules.mutableStart,
-            mutableEnd: $state.rules.mutableEnd,
+            seed: $appState.seed,
+            itemType: $appState.itemType,
+            repository: $appState.repository,
+            newCount: $appState.counts.new,
+            newV1Count: $appState.counts.newV1,
+            newV2Count: $appState.counts.newV2,
+            newV3Count: $appState.counts.newV3,
+            tg1Count: $appState.counts.tg1,
+            tg2Count: $appState.counts.tg2,
+            tg3Count: $appState.counts.tg3,
+            tg4Count: $appState.counts.tg4,
+            minChunkSize: $appState.rules.minChunk,
+            maxChunkSize: $appState.rules.maxChunk,
+            targetChunkSize: $appState.rules.targetChunk,
+            targetOffset: $appState.rules.targetOffset,
+            minPartSize: $appState.rules.minPart,
+            maxPartSize: $appState.rules.maxPart,
+            legendaryChance: $appState.rules.legendaryChance,
+            mutableStart: $appState.rules.mutableStart,
+            mutableEnd: $appState.rules.mutableEnd,
             gpuBatchSize: 250000,
-            generateStats: $state.generateStats,
-            debugMode: $state.debugMode,
+            generateStats: $appState.generateStats,
+            debugMode: $appState.debugMode,
         };
         worker.postMessage({ type: 'generate', payload: config });
     }
 
     function resetForm() {
         if (confirm('Are you sure you want to reset all settings to their original defaults?')) {
-            $state = {
+            $appState = {
                 repository: '',
                 seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
                 itemType: 'GUN',
@@ -265,7 +265,7 @@
 
     function saveState() {
         try {
-            const jsonStr = JSON.stringify($state, null, 2);
+            const jsonStr = JSON.stringify($appState, null, 2);
             const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -289,7 +289,7 @@
         reader.onload = () => {
             try {
                 const restoredState = JSON.parse(reader.result as string);
-                $state = { ...$state, ...restoredState };
+                $appState = { ...$appState, ...restoredState };
                 $statusMessage = 'State restored successfully.';
             } catch (error) {
                 console.error('Failed to restore state:', error);
@@ -375,7 +375,7 @@
                 <FormGroup label="Repository">
                     <textarea
                         class="{inputClasses} min-h-[120px]"
-                        bind:value={$state.repository}
+                        bind:value={$appState.repository}
                         placeholder="Paste serials here..."
                         
                     ></textarea>
@@ -394,7 +394,7 @@
                     </div>
                 </FormGroup>
                 <FormGroup label="Base Serial Seed">
-                    <textarea class="{inputClasses} h-24" bind:value={$state.seed} ></textarea>
+                    <textarea class="{inputClasses} h-24" bind:value={$appState.seed} ></textarea>
                 </FormGroup>
                 <div class="grid grid-cols-2 gap-4">
                     <button onclick={saveState} class={btnClasses.secondary} >Save State</button>
@@ -410,7 +410,7 @@
                         <input
                             type="number"
                             name="counts.new"
-                            bind:value={$state.counts.new}
+                            bind:value={$appState.counts.new}
                             class={inputClasses}
                             
                         />
@@ -420,7 +420,7 @@
                         <input
                             type="number"
                             name="counts.newV1"
-                            bind:value={$state.counts.newV1}
+                            bind:value={$appState.counts.newV1}
                             class={inputClasses}
                             
                         />
@@ -430,7 +430,7 @@
                         <input
                             type="number"
                             name="counts.newV2"
-                            bind:value={$state.counts.newV2}
+                            bind:value={$appState.counts.newV2}
                             class={inputClasses}
                             
                         />
@@ -440,7 +440,7 @@
                         <input
                             type="number"
                             name="counts.newV3"
-                            bind:value={$state.counts.newV3}
+                            bind:value={$appState.counts.newV3}
                             class={inputClasses}
                             
                         />
@@ -450,7 +450,7 @@
                         <input
                             type="number"
                             name="counts.tg1"
-                            bind:value={$state.counts.tg1}
+                            bind:value={$appState.counts.tg1}
                             class={inputClasses}
                             
                         />
@@ -460,7 +460,7 @@
                         <input
                             type="number"
                             name="counts.tg2"
-                            bind:value={$state.counts.tg2}
+                            bind:value={$appState.counts.tg2}
                             class={inputClasses}
                             
                         />
@@ -470,7 +470,7 @@
                         <input
                             type="number"
                             name="counts.tg3"
-                            bind:value={$state.counts.tg3}
+                            bind:value={$appState.counts.tg3}
                             class={inputClasses}
                             
                         />
@@ -480,7 +480,7 @@
                         <input
                             type="number"
                             name="counts.tg4"
-                            bind:value={$state.counts.tg4}
+                            bind:value={$appState.counts.tg4}
                             class={inputClasses}
                             
                         />
@@ -492,7 +492,7 @@
         <div class="flex flex-col gap-4">
             <Accordion title="🧬 Mutation Rules" open={true}>
                 <FormGroup label="Item Type">
-                    <select name="itemType" bind:value={$state.itemType} class={inputClasses} >
+                    <select name="itemType" bind:value={$appState.itemType} class={inputClasses} >
                         <option value="GUN">Gun</option>
                         <option value="SHIELD">Shield</option>
                         <option value="CLASS_MOD">Class Mod</option>
@@ -503,9 +503,9 @@
                     </select>
                 </FormGroup>
                 <MutableRangeSelector
-                    bind:seed={$state.seed}
-                    bind:start={$state.rules.mutableStart}
-                    bind:end={$state.rules.mutableEnd}
+                    bind:seed={$appState.seed}
+                    bind:start={$appState.rules.mutableStart}
+                    bind:end={$appState.rules.mutableEnd}
                     inputClasses={inputClasses}
                     isMerging={$isGenerating}
                 />
@@ -514,7 +514,7 @@
                         <input
                             type="number"
                             name="rules.minChunk"
-                            bind:value={$state.rules.minChunk}
+                            bind:value={$appState.rules.minChunk}
                             class={inputClasses}
                             title="The smallest crossover segment size."
                             
@@ -522,7 +522,7 @@
                         <input
                             type="number"
                             name="rules.maxChunk"
-                            bind:value={$state.rules.maxChunk}
+                            bind:value={$appState.rules.maxChunk}
                             class={inputClasses}
                             title="The largest crossover segment size."
                             
@@ -530,20 +530,20 @@
                         <input
                             type="number"
                             name="rules.targetChunk"
-                            bind:value={$state.rules.targetChunk}
+                            bind:value={$appState.rules.targetChunk}
                             class={inputClasses}
                             title="The preferred crossover segment size."
                             
                         />
                     </div>
                 </FormGroup>
-                <FormGroup label="Legendary Part Chance ({$state.rules.legendaryChance}%)">
+                <FormGroup label="Legendary Part Chance ({$appState.rules.legendaryChance}%)">
                     <input
                         type="range"
                         name="rules.legendaryChance"
                         min="0"
                         max="100"
-                        bind:value={$state.rules.legendaryChance}
+                        bind:value={$appState.rules.legendaryChance}
                         class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                         
                     />
@@ -553,14 +553,14 @@
                         <input
                             type="number"
                             name="rules.minPart"
-                            bind:value={$state.rules.minPart}
+                            bind:value={$appState.rules.minPart}
                             class={inputClasses}
                             
                         />
                         <input
                             type="number"
                             name="rules.maxPart"
-                            bind:value={$state.rules.maxPart}
+                            bind:value={$appState.rules.maxPart}
                             class={inputClasses}
                             
                         />
@@ -570,7 +570,7 @@
                     <input
                         type="number"
                         name="rules.targetOffset"
-                        bind:value={$state.rules.targetOffset}
+                        bind:value={$appState.rules.targetOffset}
                         class={inputClasses}
                         
                     />
@@ -581,7 +581,7 @@
                     <input
                         type="number"
                         name="validationChars"
-                        bind:value={$state.validationChars}
+                        bind:value={$appState.validationChars}
                         class={inputClasses}
                         
                     />
@@ -592,12 +592,12 @@
                             type: 'validate',
                             payload: {
                                 yaml: $fullYaml,
-                                seed: $state.seed,
-                                validationChars: $state.validationChars,
-                                generateStats: $state.generateStats,
-                                minPart: $state.rules.minPart,
-                                maxPart: $state.rules.maxPart,
-                                debugMode: $state.debugMode,
+                                seed: $appState.seed,
+                                validationChars: $appState.validationChars,
+                                generateStats: $appState.generateStats,
+                                minPart: $appState.rules.minPart,
+                                maxPart: $appState.rules.maxPart,
+                                debugMode: $appState.debugMode,
                             },
                         })}
                     class={btnClasses.secondary}
@@ -659,7 +659,7 @@
                             type="checkbox"
                             id="genStats"
                             name="generateStats"
-                            bind:checked={$state.generateStats}
+                            bind:checked={$appState.generateStats}
                             class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
                             
                         />
@@ -672,7 +672,7 @@
                             type="checkbox"
                             id="debugMode"
                             name="debugMode"
-                            bind:checked={$state.debugMode}
+                            bind:checked={$appState.debugMode}
                             class="h-4 w-4 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500"
                             
                         />
