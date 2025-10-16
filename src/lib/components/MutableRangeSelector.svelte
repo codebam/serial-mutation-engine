@@ -41,15 +41,9 @@
 
 <FormGroup label="Mutable Character Range">
     <div class="font-mono text-xs p-3 bg-gray-900 border border-gray-700 rounded-md break-all">
-        <span class="text-gray-500" title="Protected Prefix">
-            {protectedPrefix}
-        </span>
-        <span class="bg-blue-900 text-blue-300 rounded-sm" title="Mutable Part">
-            {mutablePart}
-        </span>
-        <span class="text-gray-500" title="Protected Suffix">
-            {protectedSuffix}
-        </span>
+        <span class="text-gray-500" title="Protected Prefix">{protectedPrefix}</span
+        ><span class="bg-blue-900 text-blue-300 rounded-sm" title="Mutable Part">{mutablePart}</span
+        ><span class="text-gray-500" title="Protected Suffix">{protectedSuffix}</span>
     </div>
     <div class="grid grid-cols-2 gap-4">
         <FormGroup label="Start Index">

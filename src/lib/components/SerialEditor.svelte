@@ -370,9 +370,9 @@
             </div>
             <h3 class="text-lg font-semibold mt-2">Modified Binary Data</h3>
             <div class="font-mono text-xs p-3 bg-gray-900 border border-gray-700 rounded-md break-all">
-                <span>{modifiedBinary.substring(0, selection.start)}</span>
-                <span class="bg-blue-900 text-blue-300">{modifiedBinary.substring(selection.start, selection.end)}</span>
-                <span>{modifiedBinary.substring(selection.end)}</span>
+                <span>{modifiedBinary.substring(0, selection.start)}</span
+                ><span class="bg-blue-900 text-blue-300">{modifiedBinary.substring(selection.start, selection.end)}</span
+                ><span>{modifiedBinary.substring(selection.end)}</span>
             </div>
             {#if modifiedBase85}
                 <div class="mt-4">
