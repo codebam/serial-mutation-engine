@@ -7,9 +7,11 @@
     export let inputClasses: string | undefined = undefined;
     export let isMerging: boolean | undefined = undefined;
 
-    $: {
+    let lastSeed = seed;
+    $: if (seed !== lastSeed) {
         start = seed.length;
         end = seed.length;
+        lastSeed = seed;
     }
 
     function handleRangeChange(e: Event) {
