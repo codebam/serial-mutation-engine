@@ -1,18 +1,16 @@
 <script lang="ts">
     import FormGroup from "./FormGroup.svelte";
 
-    export let seed: string;
-    export let start: number;
-    export let end: number;
-    export let inputClasses: string | undefined = undefined;
-    export let isMerging: boolean | undefined = undefined;
+    let { seed, start, end, inputClasses, isMerging } = $props();
 
-    let lastSeed = seed;
-    $: if (seed !== lastSeed) {
-        start = seed.length;
-        end = seed.length;
-        lastSeed = seed;
-    }
+    let lastSeed = $state(seed);
+    $effect(() => {
+        if (seed !== lastSeed) {
+            start = seed.length;
+            end = seed.length;
+            lastSeed = seed;
+        }
+    });
 
     function handleRangeChange(e: Event) {
         const target = e.target as HTMLInputElement;
@@ -34,9 +32,9 @@
         end = newEnd;
     }
 
-    $: protectedPrefix = seed.substring(0, start);
-    $: mutablePart = seed.substring(start, end);
-    $: protectedSuffix = seed.substring(end);
+    const protectedPrefix = $derived(seed.substring(0, start));
+    const mutablePart = $derived(seed.substring(start, end));
+    const protectedSuffix = $derived(seed.substring(end));
 </script>
 
 <FormGroup label="Mutable Character Range">
