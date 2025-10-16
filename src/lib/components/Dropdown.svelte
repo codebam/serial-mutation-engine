@@ -3,7 +3,7 @@
 
     let { title, btnClasses = '', children } = $props();
 
-    let isOpen = false;
+    let isOpen = $state(false);
     let dropdown: HTMLElement;
 
     onMount(() => {
@@ -23,7 +23,7 @@
 
 <div class="relative inline-block text-left" bind:this={dropdown}>
     <button
-        on:click={() => (isOpen = !isOpen)}
+        onclick={() => (isOpen = !isOpen)}
         class={btnClasses}
     >
         {title}

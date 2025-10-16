@@ -5,6 +5,7 @@
     import MutableRangeSelector from '$lib/components/MutableRangeSelector.svelte';
     import SerialEditor from '$lib/components/SerialEditor.svelte';
     import { onMount } from 'svelte';
+    import yaml from 'js-yaml';
 
     let state = {
         repository: '',
@@ -197,6 +198,76 @@
         URL.revokeObjectURL(link.href);
     }
 
+    function saveState() {
+        try {
+            const yamlStr = yaml.dump(state);
+            const blob = new Blob([yamlStr], { type: 'text/yaml;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'serial-generator-state.yaml';
+            link.click();
+            URL.revokeObjectURL(link.href);
+            statusMessage = 'State saved successfully.';
+        } catch (error) {
+            console.error('Failed to save state:', error);
+            statusMessage = '❌ ERROR: Failed to save state.';
+        }
+    }
+
+    function restoreState(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (!input.files || input.files.length === 0) {
+            return;
+        }
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const restoredState = yaml.load(reader.result as string);
+                state = { ...state, ...restoredState };
+                statusMessage = 'State restored successfully.';
+            } catch (error) {
+                console.error('Failed to restore state:', error);
+                statusMessage = '❌ ERROR: Failed to restore state.';
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function selectBaseYaml(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (!input.files || input.files.length === 0) {
+            return;
+        }
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                baseYaml = reader.result as string;
+                statusMessage = 'Base YAML loaded successfully.';
+            } catch (error) {
+                console.error('Failed to load base YAML:', error);
+                statusMessage = '❌ ERROR: Failed to load base YAML.';
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function importAndMerge() {
+        if (!baseYaml) {
+            statusMessage = 'Please select a base YAML file first.';
+            return;
+        }
+        try {
+            const mergedYaml = baseYaml + '\n' + fullYaml;
+            outputYaml = mergedYaml;
+            statusMessage = 'YAML files merged successfully.';
+        } catch (error) {
+            console.error('Failed to merge YAML files:', error);
+            statusMessage = '❌ ERROR: Failed to merge YAML files.';
+        }
+    }
+
     const inputClasses =
         'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
     const btnClasses = {
@@ -237,17 +308,17 @@
                             bind:value={searchTerm}
                             disabled={isMerging}
                         />
-                        <button on:click={searchSerials} class={btnClasses.secondary} disabled={isMerging}>Search</button>
+                        <button onclick={searchSerials} class={btnClasses.secondary} disabled={isMerging}>Search</button>
                     </div>
                 </FormGroup>
                 <FormGroup label="Base Serial Seed">
                     <textarea class="{inputClasses} h-24" bind:value={state.seed} disabled={isMerging}></textarea>
                 </FormGroup>
                 <div class="grid grid-cols-2 gap-4">
-                    <button on:click={() => {}} class={btnClasses.secondary} disabled={isMerging}>Save State</button>
+                    <button onclick={saveState} class={btnClasses.secondary} disabled={isMerging}>Save State</button>
                     <label class="{btnClasses.secondary} text-center cursor-pointer {isMerging ? 'opacity-50 cursor-not-allowed' : ''}">
                         Restore State
-                        <input type="file" accept=".yaml,.yml" on:change={() => {}} class="hidden" disabled={isMerging} />
+                        <input type="file" accept=".yaml,.yml" onchange={restoreState} class="hidden" disabled={isMerging} />
                     </label>
                 </div>
             </Accordion>
@@ -433,7 +504,7 @@
                     />
                 </FormGroup>
                 <button
-                    on:click={() =>
+                    onclick={() =>
                         worker.postMessage({
                             type: 'validate',
                             payload: {
@@ -471,15 +542,15 @@
                 <div class="p-4 flex justify-between items-center border-b border-gray-700 flex-wrap">
                     <h3 class="text-lg font-semibold mb-2 md:mb-0">📝 YAML Output (Read-Only)</h3>
                     <div class="flex gap-2 flex-wrap">
-                        <button on:click={copyToClipboard} class={btnClasses.tertiary} disabled={isMerging}>
+                        <button onclick={copyToClipboard} class={btnClasses.tertiary} disabled={isMerging}>
                             {copyText}
                         </button>
-                        <button on:click={downloadYAML} class={btnClasses.tertiary} disabled={isMerging}>
+                        <button onclick={downloadYAML} class={btnClasses.tertiary} disabled={isMerging}>
                             Download
                         </button>
                         <Dropdown title="Merge" btnClasses={btnClasses.tertiary}>
                             <button
-                                on:click={() => {}}
+                                onclick={importAndMerge}
                                 class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-600"
                                 disabled={!baseYaml || isMerging}
                             >
@@ -487,7 +558,7 @@
                             </button>
                             <label class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 cursor-pointer {isMerging ? 'opacity-50 cursor-not-allowed' : ''}">
                                 Select Base YAML
-                                <input type="file" accept=".yaml,.yml" on:change={() => {}} class="hidden" disabled={isMerging} />
+                                <input type="file" accept=".yaml,.yml" onchange={selectBaseYaml} class="hidden" disabled={isMerging} />
                             </label>
                             <div class="flex items-center px-4 py-2 text-sm text-gray-300">
                                 <input
@@ -500,7 +571,7 @@
                                 <label for="liveMerge">Live Merge</label>
                             </div>
                         </Dropdown>
-                        <button on:click={() => { outputYaml = ''; fullYaml = ''; filteredYaml = ''; }} class={btnClasses.tertiary} disabled={isMerging}>
+                        <button onclick={() => { outputYaml = ''; fullYaml = ''; filteredYaml = ''; }} class={btnClasses.tertiary} disabled={isMerging}>
                             Clear
                         </button>
                     </div>
@@ -511,10 +582,10 @@
             </div>
             <div class="bg-gray-800/50 p-5 rounded-lg border border-gray-700 flex flex-col gap-4">
                 <div class="grid grid-cols-2 gap-4">
-                    <button on:click={startGeneration} disabled={isGenerating || isMerging} class={btnClasses.primary}>
+                    <button onclick={startGeneration} disabled={isGenerating || isMerging} class={btnClasses.primary}>
                         Generate Serials
                     </button>
-                    <button on:click={resetForm} disabled={isGenerating || isMerging} class={btnClasses.secondary}>
+                    <button onclick={resetForm} disabled={isGenerating || isMerging} class={btnClasses.secondary}>
                         Reset All
                     </button>
                 </div>

@@ -9,7 +9,8 @@
         MANUFACTURER_PATTERNS,
         detectItemLevel,
         hexToBinary,
-        encodeSerial
+        encodeSerial,
+        ELEMENT_FLAG
     } from '$lib/utils';
 
     let serial = '';
@@ -299,7 +300,7 @@
             placeholder="Paste serial here..."
         ></textarea>
     </FormGroup>
-    <button on:click={decodeSerial} class={btnClasses.primary}>Analyze</button>
+    <button onclick={decodeSerial} class={btnClasses.primary}>Analyze</button>
     {#if analysis}
         <div class="flex flex-col gap-2 mt-4">
             <h3 class="text-lg font-semibold">Analysis Results</h3>
@@ -327,13 +328,13 @@
             
             <h3 class="text-lg font-semibold mt-2">Level Editor</h3>
             <FormGroup label="Item Level (0-50)">
-                <input type="number" bind:value={level} on:change={handleLevelChange} class={inputClasses} min="0" max="50" />
+                <input type="number" bind:value={level} onchange={handleLevelChange} class={inputClasses} min="0" max="50" />
             </FormGroup>
 
             {#if foundV2Element}
                 <h3 class="text-lg font-semibold mt-2">Element Editor</h3>
                 <FormGroup label={`Element at index ${foundV2Element.index}`}>
-                    <select bind:value={foundV2Element.element} on:change={(e) => handleV2ElementChange(e.target.value)} class={inputClasses}>
+                    <select bind:value={foundV2Element.element} onchange={(e) => handleV2ElementChange(e.target.value)} class={inputClasses}>
                         {#each Object.keys(ELEMENTAL_PATTERNS_V2) as type}
                             <option value={type}>{type}</option>
                         {/each}
@@ -344,7 +345,7 @@
             {#if bulletType}
                 <h3 class="text-lg font-semibold mt-2">Bullet Type Editor</h3>
                 <FormGroup label="Bullet Type">
-                    <select bind:value={bulletType} on:change={handleBulletTypeChange} class={inputClasses}>
+                    <select bind:value={bulletType} onchange={handleBulletTypeChange} class={inputClasses}>
                         {#each Object.keys(BULLET_TYPE_PATTERNS) as type}
                             <option value={type}>{type}</option>
                         {/each}
@@ -355,17 +356,17 @@
             <h3 class="text-lg font-semibold mt-2">Binary Data Editor</h3>
             <div class="grid grid-cols-2 gap-4">
                 <FormGroup label="Start Index">
-                    <input type="number" name="start" bind:value={selection.start} on:change={handleSelectionChange} class={inputClasses} />
+                    <input type="number" name="start" bind:value={selection.start} onchange={handleSelectionChange} class={inputClasses} />
                 </FormGroup>
                 <FormGroup label="End Index">
-                    <input type="number" name="end" bind:value={selection.end} on:change={handleSelectionChange} class={inputClasses} />
+                    <input type="number" name="end" bind:value={selection.end} onchange={handleSelectionChange} class={inputClasses} />
                 </FormGroup>
             </div>
             <div class="grid grid-cols-4 gap-2 mt-2">
-                <button on:click={() => modifyBits('zero')} class={btnClasses.secondary}>Set to 0</button>
-                <button on:click={() => modifyBits('one')} class={btnClasses.secondary}>Set to 1</button>
-                <button on:click={() => modifyBits('invert')} class={btnClasses.secondary}>Invert</button>
-                <button on:click={() => modifyBits('random')} class={btnClasses.secondary}>Randomize</button>
+                <button onclick={() => modifyBits('zero')} class={btnClasses.secondary}>Set to 0</button>
+                <button onclick={() => modifyBits('one')} class={btnClasses.secondary}>Set to 1</button>
+                <button onclick={() => modifyBits('invert')} class={btnClasses.secondary}>Invert</button>
+                <button onclick={() => modifyBits('random')} class={btnClasses.secondary}>Randomize</button>
             </div>
             <h3 class="text-lg font-semibold mt-2">Modified Binary Data</h3>
             <div class="font-mono text-xs p-3 bg-gray-900 border border-gray-700 rounded-md break-all">
