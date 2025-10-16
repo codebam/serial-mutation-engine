@@ -48,9 +48,39 @@
 		"vitest-browser-svelte": "^1.1.0"
 	},
 	"dependencies": {
-		"@cloudflare/workerd-linux-64": "^1.20251008.0",
-		"@types/chart.js": "^2.9.41",
 		"chart.js": "^4.5.1",
 		"js-yaml": "^4.1.0"
+	},
+	"optionalDependencies": {
+		"@cloudflare/workerd-darwin-64": "1.20251008.0",
+		"@cloudflare/workerd-darwin-arm64": "1.20251008.0",
+		"@cloudflare/workerd-linux-64": "1.20251008.0",
+		"@cloudflare/workerd-linux-arm64": "1.20251008.0",
+		"@cloudflare/workerd-windows-64": "1.20251008.0",
+		"@esbuild/aix-ppc64": "0.25.4",
+		"@esbuild/android-arm": "0.25.4",
+		"@esbuild/android-arm64": "0.25.4",
+		"@esbuild/android-x64": "0.25.4",
+		"@esbuild/darwin-arm64": "0.25.4",
+		"@esbuild/darwin-x64": "0.25.4",
+		"@esbuild/freebsd-arm64": "0.25.4",
+		"@esbuild/freebsd-x64": "0.25.4",
+		"@esbuild/linux-arm": "0.25.4",
+		"@esbuild/linux-arm64": "0.25.4",
+		"@esbuild/linux-ia32": "0.25.4",
+		"@esbuild/linux-loong64": "0.25.4",
+		"@esbuild/linux-mips64el": "0.25.4",
+		"@esbuild/linux-ppc64": "0.25.4",
+		"@esbuild/linux-riscv64": "0.25.4",
+		"@esbuild/linux-s390x": "0.25.4",
+		"@esbuild/linux-x64": "0.25.4",
+		"@esbuild/netbsd-arm64": "0.25.4",
+		"@esbuild/netbsd-x64": "0.25.4",
+		"@esbuild/openbsd-arm64": "0.25.4",
+		"@esbuild/openbsd-x64": "0.25.4",
+		"@esbuild/sunos-x64": "0.25.4",
+		"@esbuild/win32-arm64": "0.25.4",
+		"@esbuild/win32-ia32": "0.25.4",
+		"@esbuild/win32-x64": "0.25.4"
 	}
 }
