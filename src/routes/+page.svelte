@@ -344,6 +344,7 @@
             Serial Mutation <span class="text-blue-400">Engine</span>
         </h1>
         <p class="text-gray-400 text-lg mt-2">A professional tool for procedural serial generation and mutation.</p>
+        <a href="https://github.com/codebam/serial-mutation-engine" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Source Code</a>
     </header>
     <main class="grid grid-cols-1 xl:grid-cols-3 gap-8 max-w-screen-3xl mx-auto">
         <div class="flex flex-col gap-4">
