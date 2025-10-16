@@ -38,6 +38,47 @@
     let newSerial = '';
     let modifiedBase85 = '';
 
+    let deserializedText = '';
+    let serialToDeserialize = '';
+
+    async function deserialize() {
+        try {
+            const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/deserialize", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ serial_b85: serialToDeserialize })
+            });
+            const data = await response.json();
+            if (data.deserialized) {
+                deserializedText = data.deserialized;
+            } else {
+                alert('Deserialization failed: ' + (data.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error("Deserialization error:", error);
+            alert('An error occurred during deserialization.');
+        }
+    }
+
+    async function reserialize() {
+        try {
+            const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/reserialize", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ deserialized: deserializedText })
+            });
+            const data = await response.json();
+            if (data.serial_b85) {
+                serialToDeserialize = data.serial_b85;
+            } else {
+                alert('Reserialization failed: ' + (data.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error("Reserialization error:", error);
+            alert('An error occurred during reserialization.');
+        }
+    }
+
     const inputClasses = 'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
     const btnClasses = {
         primary: 'py-3 px-4 w-full font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all disabled:bg-gray-600 disabled:cursor-not-allowed',
@@ -374,6 +415,26 @@
                 ><span class="bg-blue-900 text-blue-300">{modifiedBinary.substring(selection.start, selection.end)}</span
                 ><span>{modifiedBinary.substring(selection.end)}</span>
             </div>
+
+            <h3 class="text-lg font-semibold mt-4">Deserializer/Reserializer</h3>
+            <FormGroup label="Deserialized Text">
+                <textarea
+                    class={`${inputClasses} min-h-[120px]`}
+                    bind:value={deserializedText}
+                    placeholder="Deserialized output will appear here..."
+                ></textarea>
+            </FormGroup>
+            <button onclick={reserialize} class={btnClasses.secondary}>Reserialize</button>
+
+            <FormGroup label="Serial to Deserialize">
+                <textarea
+                    class={`${inputClasses} min-h-[80px]`}
+                    bind:value={serialToDeserialize}
+                    placeholder="Paste serial here to deserialize..."
+                ></textarea>
+            </FormGroup>
+            <button onclick={deserialize} class={btnClasses.secondary}>Deserialize</button>
+
             {#if modifiedBase85}
                 <div class="mt-4">
                     <h3 class="text-lg font-semibold">Modified Base85 Data</h3>
