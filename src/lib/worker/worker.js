@@ -1,3 +1,4 @@
+
 import { DEFAULT_SEED, TG_FLAGS, RANDOM_SAFETY_MARGIN } from './constants.js';
 import { setupWebGPU, generateRandomNumbersOnGPU, needsRandomNumberGeneration, getGpuDevice } from './gpu.js';
 import { randomChoice, ensureCharset, splitHeaderTail, extractHighValueParts } from './utils.js';
@@ -193,7 +194,7 @@ uniqueCount: 0,
 		}
 		console.log(`[DEBUG] Generation loop finished. Generated ${generatedSerials.length} unique serials.`);
 
-		const fullLines = ['state:', '  inventory:', '    items:', '      backpack:'];
+        const fullLines = ['state:', '  inventory:', '    items:', '      backpack:'];
 		generatedSerials.forEach((item) => {
 			fullLines.push(`        slot_${item.slot}:`);
 			fullLines.push(`          serial: '${item.serial}'`);
@@ -210,9 +211,7 @@ uniqueCount: 0,
 			if (item.flag === 1) truncatedLines.push(`          flags: 1`);
 			if (item.state_flag !== 0) truncatedLines.push(`          state_flags: ${item.state_flag}`);
 		});
-		const truncatedYaml = truncatedLines.join('\n');
-
-		// --- DECOUPLED MESSAGES ---
+		const truncatedYaml = truncatedLines.join('\n');		// --- DECOUPLED MESSAGES ---
 		// 1. Send YAML data immediately for UI responsiveness
 		console.log('[DEBUG] Sending YAML output to main thread.');
 		self.postMessage({

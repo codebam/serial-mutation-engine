@@ -5,7 +5,7 @@
     import MutableRangeSelector from '$lib/components/MutableRangeSelector.svelte';
     import SerialEditor from '$lib/components/SerialEditor.svelte';
     import { onMount } from 'svelte';
-    import yaml from 'js-yaml';
+    
 
     let state = {
         repository: '',
@@ -35,7 +35,7 @@
     let outputYaml = '';
     let fullYaml = '';
     let filteredYaml = '';
-    let liveMerge = false;
+    let liveMerge = true;
     let baseYaml = '';
     let isMerging = false;
     let searchTerm = '';
@@ -200,11 +200,11 @@
 
     function saveState() {
         try {
-            const yamlStr = yaml.dump(state);
-            const blob = new Blob([yamlStr], { type: 'text/yaml;charset=utf-8;' });
+            const jsonStr = JSON.stringify(state, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = 'serial-generator-state.yaml';
+            link.download = 'serial-generator-state.json';
             link.click();
             URL.revokeObjectURL(link.href);
             statusMessage = 'State saved successfully.';
@@ -223,7 +223,7 @@
         const reader = new FileReader();
         reader.onload = () => {
             try {
-                const restoredState = yaml.load(reader.result as string);
+                const restoredState = JSON.parse(reader.result as string);
                 state = { ...state, ...restoredState };
                 statusMessage = 'State restored successfully.';
             } catch (error) {
@@ -253,19 +253,32 @@
         reader.readAsText(file);
     }
 
+
+
     function importAndMerge() {
         if (!baseYaml) {
             statusMessage = 'Please select a base YAML file first.';
             return;
         }
         try {
-            const mergedYaml = baseYaml + '\n' + fullYaml;
-            outputYaml = mergedYaml;
-            statusMessage = 'YAML files merged successfully.';
+            const backpackRegex = /backpack:([^]*)/;
+            const fullYamlBackpack = fullYaml.match(backpackRegex);
+
+            if (fullYamlBackpack && fullYamlBackpack[1]) {
+                outputYaml = baseYaml.replace(/backpack: null/, `backpack:${fullYamlBackpack[1]}`);
+                statusMessage = 'YAML files merged successfully.';
+            } else {
+                outputYaml = baseYaml;
+                statusMessage = 'Could not find backpack in generated YAML.';
+            }
         } catch (error) {
             console.error('Failed to merge YAML files:', error);
             statusMessage = '❌ ERROR: Failed to merge YAML files.';
         }
+    }
+
+    $: if (liveMerge && baseYaml && fullYaml) {
+        importAndMerge();
     }
 
     const inputClasses =
@@ -318,7 +331,7 @@
                     <button onclick={saveState} class={btnClasses.secondary} disabled={isMerging}>Save State</button>
                     <label class="{btnClasses.secondary} text-center cursor-pointer {isMerging ? 'opacity-50 cursor-not-allowed' : ''}">
                         Restore State
-                        <input type="file" accept=".yaml,.yml" onchange={restoreState} class="hidden" disabled={isMerging} />
+                        <input type="file" accept=".json" onchange={restoreState} class="hidden" disabled={isMerging} />
                     </label>
                 </div>
             </Accordion>
@@ -549,13 +562,7 @@
                             Download
                         </button>
                         <Dropdown title="Merge" btnClasses={btnClasses.tertiary}>
-                            <button
-                                onclick={importAndMerge}
-                                class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-600"
-                                disabled={!baseYaml || isMerging}
-                            >
-                                Import & Merge
-                            </button>
+
                             <label class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 cursor-pointer {isMerging ? 'opacity-50 cursor-not-allowed' : ''}">
                                 Select Base YAML
                                 <input type="file" accept=".yaml,.yml" onchange={selectBaseYaml} class="hidden" disabled={isMerging} />
