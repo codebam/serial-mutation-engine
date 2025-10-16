@@ -1,7 +1,8 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
     import FormGroup from "./FormGroup.svelte";
 
-    let { seed, start, end, inputClasses, isMerging } = $props();
+    let { seed = $bindable(), start = $bindable(), end = $bindable(), inputClasses, isMerging } = $props();
 
     let lastSeed = $state(seed);
     $effect(() => {
@@ -11,6 +12,8 @@
             lastSeed = seed;
         }
     });
+
+    const dispatch = createEventDispatcher();
 
     function handleRangeChange(e: Event) {
         const target = e.target as HTMLInputElement;
@@ -30,6 +33,8 @@
 
         start = newStart;
         end = newEnd;
+
+        dispatch('change', { start, end });
     }
 
     const protectedPrefix = $derived(seed.substring(0, start));
@@ -49,7 +54,7 @@
                 type="number"
                 name="start"
                 bind:value={start}
-                on:change={handleRangeChange}
+                onchange={handleRangeChange}
                 class={inputClasses}
                 min="0"
                 max={seed.length}
@@ -61,7 +66,7 @@
                 type="number"
                 name="end"
                 bind:value={end}
-                on:change={handleRangeChange}
+                onchange={handleRangeChange}
                 class={inputClasses}
                 min="0"
                 max={seed.length}
