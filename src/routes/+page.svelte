@@ -5,6 +5,7 @@
     import FormGroup from '$lib/components/FormGroup.svelte';
     import MutableRangeSelector from '$lib/components/MutableRangeSelector.svelte';
     import SerialEditor from '$lib/components/SerialEditor.svelte';
+    import DeserializerOutput from '$lib/components/DeserializerOutput.svelte';
     import { Chart, registerables } from 'chart.js';
     Chart.register(...registerables);
 
@@ -59,6 +60,8 @@
     const filteredYaml = writable('');
     const liveMerge = writable(true);
     const baseYaml = writable('');
+
+    const deserializedText = writable('312, 0, 1, 50| 2, 3819|| {9} {246:[21 58 50 27 56 56 56 56 56 56 29 26 26 29 26 26 54 38 30 44 48 26 54 29]} {248:27} {8} {8} {8} {8} {8} {8} {8} {13:8} {8} {8} {8} {8} {8} {8}|');
 
     const searchTerm = writable('');
     const copyText = writable('Copy');
@@ -611,7 +614,8 @@
                     </div>
                 {/if}
             </Accordion>
-            <SerialEditor />
+            <SerialEditor on:update={(e) => ($deserializedText = e.detail.value)} />
+            <DeserializerOutput bind:deserializedText={$deserializedText} />
         </div>
         <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
             <Accordion title="📊 Statistics">

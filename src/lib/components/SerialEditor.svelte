@@ -1,6 +1,7 @@
 <script lang="ts">
     import Accordion from './Accordion.svelte';
     import FormGroup from './FormGroup.svelte';
+    import { createEventDispatcher } from 'svelte';
     import {
         BASE85_ALPHABET,
         ELEMENTAL_PATTERNS_V2,
@@ -34,6 +35,8 @@
     let bulletTypeFoundAt: number | null = $state(null);
     let foundV2Element: { element: string; pattern: string; index: number } | null = $state(null);
 
+    const dispatch = createEventDispatcher();
+
     let newSerial = $state('');
     let modifiedBase85 = $state('');
 
@@ -50,6 +53,7 @@
             const data = await response.json();
             if (data.deserialized) {
                 deserializedText = data.deserialized;
+                dispatch('update', { value: deserializedText });
             } else {
                 alert('Deserialization failed: ' + (data.error || 'Unknown error'));
             }
