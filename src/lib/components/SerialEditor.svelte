@@ -44,12 +44,8 @@
     const models = [
         '@cf/aisingapore/gemma-sea-lion-v4-27b-it',
         '@cf/deepseek/deepseek-r1-distill-qwen-32b',
-        '@cf/defog/sqlcoder-7b-2',
-        '@cf/google/gemma-2b-it-lora',
         '@cf/google/gemma-3-12b-it',
-        '@cf/google/gemma-7b-it-lora',
         '@cf/ibm-granite/granite-4.0-h-micro',
-        '@cf/meta-llama/llama-2-7b-chat-hf-lora',
         '@cf/meta-llama/meta-llama-3-8b-instruct',
         '@cf/meta/llama-2-7b-chat-fp16',
         '@cf/meta/llama-2-7b-chat-int8',
@@ -58,18 +54,15 @@
         '@cf/meta/llama-3.1-8b-instruct-awq',
         '@cf/meta/llama-3.1-8b-instruct-fast',
         '@cf/meta/llama-3.1-8b-instruct-fp8',
-        '@cf/meta/llama-3.2-11b-vision-instruct',
         '@cf/meta/llama-3.2-1b-instruct',
         '@cf/meta/llama-3.2-3b-instruct',
         '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
         '@cf/meta/llama-3-8b-instruct',
         '@cf/meta/llama-3-8b-instruct-awq',
         '@cf/meta/llama-4-scout-17b-16e-instruct',
-        '@cf/meta/llama-guard-3-8b',
         '@cf/microsoft/phi-2',
         '@cf/mistralai/mistral-7b-instruct-v0.1',
         '@cf/mistralai/mistral-7b-instruct-v0.2',
-        '@cf/mistralai/mistral-7b-instruct-v0.2-lora',
         '@cf/mistralai/mistral-small-3.1-24b-instruct',
         '@cf/nousresearch/hermes-2-pro-mistral-7b',
         '@cf/openai/gpt-oss-120b',
@@ -102,10 +95,15 @@
             }
 
             const data = await response.json();
+            console.log('AI Response:', data);
             const responseText = data.response || data;
-            const newVariation = responseText.replace(/^[0-9]+\.\s*/, '').trim();
-            if (newVariation) {
-                aiVariations = [...aiVariations, newVariation];
+            if (typeof responseText === 'string') {
+                const newVariation = responseText.replace(/^[0-9]+\.\s*/, '').trim();
+                if (newVariation) {
+                    aiVariations = [...aiVariations, newVariation];
+                }
+            } else {
+                aiError = 'Unexpected AI response format';
             }
         } catch (error: any) {
             aiError = error.message;
