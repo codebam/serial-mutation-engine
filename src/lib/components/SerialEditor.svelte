@@ -369,7 +369,7 @@
                     {#if aiLoading}
                         Generating...
                     {:else}
-                        Get AI Variations
+                        Get AI Variation
                     {/if}
                 </button>
             </form>
@@ -380,7 +380,7 @@
 
             {#if aiVariations.length > 0}
                 <div class="mt-4">
-                    <h4 class="text-md font-semibold">Generated Variations</h4>
+                    <h4 class="text-md font-semibold">Generated Variation</h4>
                     <ul class="list-disc list-inside mt-2 space-y-1">
                         {#each aiVariations as variation}
                             <li class="text-sm">{variation}</li>
