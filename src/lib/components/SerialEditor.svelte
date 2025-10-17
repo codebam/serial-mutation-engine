@@ -132,6 +132,30 @@
         }
     }
 
+    function generateRemovalVariations() {
+        if (!deserializedText) return;
+
+        const parts = deserializedText.split(/(\{[^}]*\})/g).filter(p => p);
+
+        const bracketedPartsIndices = [];
+        for (let i = 0; i < parts.length; i++) {
+            if (parts[i].startsWith('{') && parts[i].endsWith('}')) {
+                bracketedPartsIndices.push(i);
+            }
+        }
+
+        const safeZoneIndices = bracketedPartsIndices.slice(-10);
+
+        const newVariations = [];
+        for (const index of safeZoneIndices) {
+            const newParts = [...parts];
+            newParts.splice(index, 1);
+            newVariations.push(newParts.join(''));
+        }
+
+        variations = newVariations;
+    }
+
     async function deserialize(serialToUse: string) {
         try {
             const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/deserialize", {
@@ -419,6 +443,7 @@
             <div class="flex gap-2">
                 <button onclick={reserialize} class={btnClasses.secondary}>Reserialize</button>
                 <button onclick={generateVariation} class={btnClasses.secondary}>Generate Variation</button>
+                <button onclick={generateRemovalVariations} class={btnClasses.secondary}>Generate Removal Variations</button>
             </div>
 
             {#if variations.length > 0}
