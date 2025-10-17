@@ -5,22 +5,41 @@ class Bitstream {
     }
 
     read(length) {
+        if (this.pos + length > this.binary.length) return null;
         const bits = this.binary.substring(this.pos, this.pos + length);
         this.pos += length;
         return bits;
     }
 
     readInt(length) {
-        return parseInt(this.read(length), 2);
+        const bits = this.read(length);
+        if (bits === null) return null;
+        return parseInt(bits, 2);
     }
 }
 
-const binary = "0010000110100100001110010110000000011001000001100010011100000100010000110011011011110111000001011001001010101101111100010110010101100001000101111000100010011100010011011100001000001111000100000111100010000011110001000001111000100000111100010000011110001001011110000100010111000010001011100001001011110000100010111000010001011100001000110111000100011010100010001111100001000011101000100000011100010001011100001000110111000100101111000000101000111111011101110000000101000100101010001001010100010010101000100101010001001010100010010101000100101011011010001000010100010010101000100101010001001010100010010101000100101010001001000000000";
+let input = '';
+process.stdin.on('data', chunk => input += chunk);
+process.stdin.on('end', () => {
+    const binary = input.trim().replace(/\s/g, "");
+    const stream = new Bitstream(binary);
 
-const stream = new Bitstream(binary);
+    const type = stream.read(10);
+    const header = stream.read(78);
 
-const type = stream.read(10);
-console.log(`Type: ${type}`);
+    const chunks = [];
+    while(stream.pos < binary.length) {
+        const chunk = stream.read(12);
+        if (chunk) {
+            chunks.push(chunk);
+        }
+    }
 
-const key9 = stream.readInt(4);
-console.log(`Key: ${key9}`);
+    const parsed = {
+        type: type,
+        header: header,
+        chunks: chunks
+    };
+
+    console.log(JSON.stringify(parsed, null, 2));
+});

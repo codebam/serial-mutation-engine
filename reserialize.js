@@ -22,7 +22,16 @@ function reserialize(deserializedString) {
             data += chunk;
         });
         res.on('end', () => {
-            console.log(JSON.parse(data));
+            try {
+                const jsonData = JSON.parse(data);
+                if (jsonData.serial_b85) {
+                    console.log(jsonData.serial_b85);
+                } else {
+                    console.error("Error: serial_b85 not found in response.");
+                }
+            } catch (e) {
+                console.error("Error parsing JSON:", e);
+            }
         });
     });
 
