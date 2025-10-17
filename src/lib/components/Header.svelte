@@ -22,7 +22,7 @@
     });
 </script>
 
-<header class="fixed left-0 right-0 bg-gray-900/80 backdrop-blur-md shadow-lg z-50 p-2 transition-all duration-300" style="top: {top}">
+<header class="fixed left-0 right-0 bg-gray-900/80 backdrop-blur-md z-50 p-2 transition-all duration-300" style="top: {top}">
     <div class="max-w-screen-3xl mx-auto flex justify-between items-center h-12 px-4 md:px-8">
         <div class="flex items-center space-x-4">
             <a href="/" class="flex items-center" sveltekit-preload-data>
