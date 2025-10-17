@@ -133,6 +133,8 @@
         }
     }
 
+    let removalVariationCount = $state(10);
+
     function generateRemovalVariations() {
         if (!deserializedText) return;
 
@@ -145,16 +147,15 @@
             }
         }
 
-        const safeZoneIndices = bracketedPartsIndices.slice(-10);
+        const safeZoneIndices = bracketedPartsIndices.slice(-removalVariationCount);
 
-        const newVariations = [];
-        for (const index of safeZoneIndices) {
+        if (safeZoneIndices.length > 0) {
+            const randomIndex = safeZoneIndices[Math.floor(Math.random() * safeZoneIndices.length)];
             const newParts = [...parts];
-            newParts.splice(index, 1);
-            newVariations.push(newParts.join(''));
+            newParts.splice(randomIndex, 1);
+            const newVariation = newParts.join('');
+            variations = [...variations, newVariation];
         }
-
-        variations = newVariations;
     }
 
     async function deserialize(serialToUse: string) {
@@ -440,6 +441,10 @@
                 ></textarea>
             </FormGroup>
 
+
+            <FormGroup label="Removal Variation Count">
+                <input type="number" bind:value={removalVariationCount} class={inputClasses} min="1" />
+            </FormGroup>
 
             <div class="flex gap-2">
                 <button onclick={reserialize} class={btnClasses.secondary}>Reserialize</button>
