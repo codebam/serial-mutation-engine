@@ -37,8 +37,8 @@
     let newSerial = $state('');
     let modifiedBase85 = $state('');
 
-    let deserializedText = '';
-    let serialToDeserialize = '';
+    let deserializedText = $state('');
+    let serialToDeserialize = $state('');
 
     async function deserialize() {
         try {
