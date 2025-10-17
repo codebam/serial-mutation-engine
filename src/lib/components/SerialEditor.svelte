@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
     import Accordion from './Accordion.svelte';
     import FormGroup from './FormGroup.svelte';
     import {
@@ -13,7 +12,7 @@
         ELEMENT_FLAG
     } from '$lib/utils';
 
-    let serial = '';
+    let serial = $state('');
     let analysis: {
         type: string;
         manufacturer: string;
@@ -23,20 +22,20 @@
         level: number | string;
         v2Element: { element: string; index: number; pattern: string } | null;
         bulletType: string | null;
-    } | null = null;
-    let binary = '';
-    let modifiedBinary = '';
-    let selection = { start: 0, end: 0 };
-    let level: number | null = null;
-    let levelFoundAt: number | null = null;
+    } | null = $state(null);
+    let binary = $state('');
+    let modifiedBinary = $state('');
+    let selection = $state({ start: 0, end: 0 });
+    let level: number | null = $state(null);
+    let levelFoundAt: number | null = $state(null);
 
-    let bulletType: string | null = null;
-    let bulletTypeHex: string | null = null;
-    let bulletTypeFoundAt: number | null = null;
-    let foundV2Element: { element: string; pattern: string; index: number } | null = null;
+    let bulletType: string | null = $state(null);
+    let bulletTypeHex: string | null = $state(null);
+    let bulletTypeFoundAt: number | null = $state(null);
+    let foundV2Element: { element: string; pattern: string; index: number } | null = $state(null);
 
-    let newSerial = '';
-    let modifiedBase85 = '';
+    let newSerial = $state('');
+    let modifiedBase85 = $state('');
 
     let deserializedText = '';
     let serialToDeserialize = '';
@@ -326,11 +325,11 @@
         modifiedBinary = prefix + newBits + suffix;
     }
 
-    $: {
+    $effect(() => {
         if (modifiedBinary) {
             modifiedBase85 = encodeSerial(modifiedBinary);
         }
-    }
+    });
 </script>
 
 <Accordion title="🔧 Serial Editor" open={true}>
