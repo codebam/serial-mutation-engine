@@ -34,7 +34,7 @@
     let modifiedBase85 = $state('');
 
     let deserializedText = $state('');
-    let variations = $state<string[]>([]);
+    let variations = $state<{ variation: string; removedPart: string; }[]>([]);
     let reserializedVariations = $state<string[]>([]);
 
     function deleteVariation(index: number) {
@@ -129,7 +129,7 @@
         });
 
         if (changed) {
-            variations = [...variations, newParts.join('')];
+            variations = [...variations, { variation: newParts.join(''), removedPart: '' }];
         }
     }
 
@@ -151,10 +151,11 @@
 
         if (safeZoneIndices.length > 0) {
             const randomIndex = safeZoneIndices[Math.floor(Math.random() * safeZoneIndices.length)];
+            const removedPart = parts[randomIndex];
             const newParts = [...parts];
             newParts.splice(randomIndex, 1);
             const newVariation = newParts.join('');
-            variations = [...variations, newVariation];
+            variations = [...variations, { variation: newVariation, removedPart }];
         }
     }
 
@@ -457,10 +458,15 @@
                     <h4 class="text-md font-semibold">Generated Variations</h4>
                     {#each variations as variation, i (i)}
                         <div class="flex items-center gap-2">
-                            <textarea
-                                class={`${inputClasses} h-16 flex-grow`}
-                                bind:value={variations[i]}
-                            ></textarea>
+                            <div class="flex-grow">
+                                <textarea
+                                    class={`${inputClasses} h-16 w-full`}
+                                    bind:value={variation.variation}
+                                ></textarea>
+                                {#if variation.removedPart}
+                                    <p class="text-sm text-gray-400 mt-1">Removed: <span class="font-mono">{variation.removedPart}</span></p>
+                                {/if}
+                            </div>
                             <button
                                 type="button"
                                 onclick={() => deleteVariation(i)}
@@ -470,7 +476,7 @@
                             </button>
                             <button
                                 type="button"
-                                onclick={() => reserializeVariation(variations[i])}
+                                onclick={() => reserializeVariation(variation.variation)}
                                 class={btnClasses.secondary}
                             >
                                 Reserialize
