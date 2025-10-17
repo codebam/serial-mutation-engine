@@ -59,7 +59,10 @@
             }
 
             const data = await response.json();
-            aiVariations = data.response.split('\n').map(v => v.replace(/^[0-9]+\.\s*/, '')).filter(v => v.trim() !== '');
+            const lines = data.response.split('\n');
+            const firstVariationIndex = lines.findIndex(line => line.includes('|'));
+            const variations = firstVariationIndex === -1 ? lines : lines.slice(firstVariationIndex);
+            aiVariations = variations.map(v => v.replace(/^[0-9]+\.\s*/, '')).filter(v => v.trim() !== '');
         } catch (error: any) {
             aiError = error.message;
         } finally {

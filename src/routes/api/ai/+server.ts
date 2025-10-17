@@ -9,13 +9,13 @@ export const POST: RequestHandler = async ({ request, platform }) => {
     return json({ error: 'Missing deserialized_serial' }, { status: 400 });
   }
 
-  const prompt = `Given the following serialized code, provide 10 modified and unique versions of it. Only output the modified code, with each version on a new line. Do not include any other text or explanations.\n\n${deserialized_serial}`;
+  const prompt = `Your task is to generate 10 modified and unique versions of the following serialized code. You must only output the modified code. Each version must be on a new line. Do not output any other text, explanations, or introductions. When modifying the code, only change the values at the end of the string. For example, in the code '312, 0, 1, 50| 2, 3819|| {9} {246:[...]} {248:27} {8} {8}', modifications should start from '{248:27}'. The goal is to keep the beginning of the code unchanged.\n\n${deserialized_serial}`;
 
   if (!platform?.env?.AI) {
     return json({ error: 'AI binding not found' }, { status: 500 });
   }
 
-  const response = await platform.env.AI.run('@cf/meta/llama-3-8b-instruct', {
+  const response = await platform.env.AI.run('@cf/openai/gpt-oss-120b', {
     prompt
   });
 
