@@ -7,14 +7,21 @@ function hexToBin(hexStr) {
 }
 
 function encode(parsed) {
-    let binary = parsed.type;
+    let binary = '';
+    if (parsed.type) {
+        const typeBin = hexToBin(parsed.type.hex);
+        binary += typeBin.substring(0, parsed.type.bits);
+    }
     
     if (parsed.header) {
         const headerBin = hexToBin(parsed.header.hex);
         binary += headerBin.substring(0, parsed.header.bits);
     }
 
-    binary += parsed.prefix;
+    if (parsed.prefix) {
+        const prefixBin = hexToBin(parsed.prefix.hex);
+        binary += prefixBin.substring(0, parsed.prefix.bits);
+    }
 
     parsed.chunks.forEach(c => {
         binary += c.len_code.toString(2).padStart(4, '0');

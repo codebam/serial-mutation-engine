@@ -56,9 +56,9 @@ process.stdin.on('end', () => {
     const binary = input.trim().replace(/\s/g, "");
     const stream = new Bitstream(binary);
 
-    const type = stream.read(10);
+    const type = readHex(stream, 10);
     const header = readHex(stream, 78);
-    const prefix = stream.read(4);
+    const prefix = readHex(stream, 4);
     
     const chunks = [];
     let trailer = null;
