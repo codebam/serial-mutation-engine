@@ -72,10 +72,6 @@
     ];
     let selectedModel = $state(models[0]);
 
-    function clearAIVariations() {
-        aiVariations = [];
-    }
-
     async function getAIVariations(event: SubmitEvent) {
         event.preventDefault();
         aiLoading = true;
@@ -433,7 +429,6 @@
                             Get AI Variation
                         {/if}
                     </button>
-                    <button type="button" onclick={clearAIVariations} class={btnClasses.secondary}>Clear</button>
                 </div>
             </form>
 
@@ -445,11 +440,20 @@
                 <div class="mt-4 space-y-2">
                     <h4 class="text-md font-semibold">Generated Variations</h4>
                     {#each aiVariations as variation, i (i)}
-                        <textarea
-                            class={`${inputClasses} h-16`}
-                            readonly
-                            value={variation}
-                        ></textarea>
+                        <div class="flex items-center gap-2">
+                            <textarea
+                                class={`${inputClasses} h-16 flex-grow`}
+                                readonly
+                                value={variation}
+                            ></textarea>
+                            <button
+                                type="button"
+                                onclick={() => aiVariations = aiVariations.filter((_, j) => i !== j)}
+                                class="py-1 px-2 text-sm font-medium text-gray-300 bg-red-700 rounded-md hover:bg-red-600 transition-all"
+                            >
+                                Delete
+                            </button>
+                        </div>
                     {/each}
                 </div>
             {/if}
