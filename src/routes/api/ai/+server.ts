@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
     return json({ error: 'AI binding not found' }, { status: 500 });
   }
 
-  const response = await platform.env.AI.run('@cf/openai/gpt-oss-120b', {
+  const response = await platform.env.AI.run('@cf/meta/llama-4-scout-17b-16e-instruct', {
     prompt
   });
 
