@@ -42,7 +42,7 @@
 
     async function deserialize() {
         try {
-            const response = await fetch("/api/deserialize", {
+            const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/deserialize", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ serial_b85: serialToDeserialize })
@@ -61,7 +61,7 @@
 
     async function reserialize() {
         try {
-            const response = await fetch("/api/reserialize", {
+            const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/reserialize", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ deserialized: deserializedText })
