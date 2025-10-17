@@ -36,9 +36,13 @@
 
     let deserializedText = $state('');
 
-    let aiVariations = $state([]);
+    let aiVariations: string[] = $state([]);
     let aiLoading = $state(false);
     let aiError = $state('');
+
+    function clearAIVariations() {
+        aiVariations = [];
+    }
 
     async function getAIVariations(event: SubmitEvent) {
         event.preventDefault();
@@ -59,10 +63,10 @@
             }
 
             const data = await response.json();
-            const lines = data.response.split('\n');
-            const firstVariationIndex = lines.findIndex(line => line.includes('|'));
-            const variations = firstVariationIndex === -1 ? lines : lines.slice(firstVariationIndex);
-            aiVariations = variations.map(v => v.replace(/^[0-9]+\.\s*/, '')).filter(v => v.trim() !== '');
+            const newVariation = data.response.replace(/^[0-9]+\.\s*/, '').trim();
+            if (newVariation) {
+                aiVariations = [...aiVariations, newVariation];
+            }
         } catch (error: any) {
             aiError = error.message;
         } finally {
@@ -365,13 +369,16 @@
                         placeholder="Deserialized output will appear here..."
                     ></textarea>
                 </FormGroup>
-                <button type="submit" class={btnClasses.primary} disabled={aiLoading}>
-                    {#if aiLoading}
-                        Generating...
-                    {:else}
-                        Get AI Variation
-                    {/if}
-                </button>
+                <div class="flex gap-2 mt-2">
+                    <button type="submit" class={btnClasses.primary} disabled={aiLoading}>
+                        {#if aiLoading}
+                            Generating...
+                        {:else}
+                            Get AI Variation
+                        {/if}
+                    </button>
+                    <button type="button" onclick={clearAIVariations} class={btnClasses.secondary}>Clear</button>
+                </div>
             </form>
 
             {#if aiError}
@@ -379,13 +386,15 @@
             {/if}
 
             {#if aiVariations.length > 0}
-                <div class="mt-4">
-                    <h4 class="text-md font-semibold">Generated Variation</h4>
-                    <ul class="list-disc list-inside mt-2 space-y-1">
-                        {#each aiVariations as variation}
-                            <li class="text-sm">{variation}</li>
-                        {/each}
-                    </ul>
+                <div class="mt-4 space-y-2">
+                    <h4 class="text-md font-semibold">Generated Variations</h4>
+                    {#each aiVariations as variation, i (i)}
+                        <textarea
+                            class={`${inputClasses} h-16`}
+                            readonly
+                            value={variation}
+                        ></textarea>
+                    {/each}
                 </div>
             {/if}
 
