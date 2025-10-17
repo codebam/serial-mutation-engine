@@ -26,19 +26,9 @@ process.stdin.on('end', () => {
 
     const type = stream.read(10);
     const header = stream.read(78);
+    const rest = stream.read(binary.length - 88);
 
     console.log(type);
     console.log(header);
-
-    while(stream.pos < binary.length) {
-        const chunk = stream.read(12);
-        if (chunk) {
-            console.log(chunk);
-        } else {
-            const remainingBits = binary.length - stream.pos;
-            if (remainingBits > 0) {
-                console.log(stream.read(remainingBits));
-            }
-        }
-    }
+    console.log(rest);
 });

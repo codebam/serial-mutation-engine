@@ -5,12 +5,11 @@ process.stdin.on('end', () => {
     lines = input.trim().split('\n');
     const type = lines[0];
     const header = lines[1];
-    const chunks = lines.slice(2);
+    const rest = lines.slice(2).join('');
     
     let binary = type;
     binary += header;
-    binary += chunks.join('');
+    binary += rest;
     
     console.log(binary);
 });
-
