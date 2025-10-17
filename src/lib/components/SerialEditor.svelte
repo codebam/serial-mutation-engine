@@ -35,7 +35,7 @@
 
     let deserializedText = $state('');
     let variations = $state<{ variation: string; removedPart: string; }[]>([]);
-    let reserializedVariations = $state<string[]>([]);
+    let reserializedVariations = $state<{ [key: number]: string }>({});
 
     function deleteVariation(index: number) {
         variations = variations.filter((_, i) => i !== index);
@@ -49,7 +49,7 @@
         }
     }
 
-    async function reserializeVariation(variation: string) {
+    async function reserializeVariation(variation: string, index: number) {
         try {
             const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/reserialize", {
                 method: "POST",
@@ -58,7 +58,7 @@
             });
             const data = await response.json();
             if (data.serial_b85) {
-                reserializedVariations = [...reserializedVariations, data.serial_b85];
+                reserializedVariations[index] = data.serial_b85;
             } else {
                 console.error('Reserialization failed: ' + (data.error || 'Unknown error'));
             }
@@ -468,11 +468,18 @@
                                 {#if variation.removedPart}
                                     <p class="text-sm text-gray-400 mt-1">Removed: <span class="font-mono">{variation.removedPart}</span></p>
                                 {/if}
+                                {#if reserializedVariations[i]}
+                                    <textarea
+                                        class={`${inputClasses} h-16 w-full mt-2`}
+                                        readonly
+                                        value={reserializedVariations[i]}
+                                    ></textarea>
+                                {/if}
                             </div>
                             <div class="grid grid-cols-1 gap-2">
                                 <button
                                     type="button"
-                                    onclick={() => reserializeVariation(variation.variation)}
+                                    onclick={() => reserializeVariation(variation.variation, i)}
                                     class={btnClasses.secondary}
                                 >
                                     Reserialize
@@ -490,36 +497,7 @@
                 </div>
             {/if}
 
-            {#if reserializedVariations.length > 0}
-                <div class="mt-4 space-y-2">
-                    <h4 class="text-md font-semibold">Reserialized Variations</h4>
-                    {#each reserializedVariations as reserialized, i (i)}
-                        <div class="flex items-center gap-2">
-                            <textarea
-                                class={`${inputClasses} h-16 flex-grow`}
-                                readonly
-                                value={reserialized}
-                            ></textarea>
-                            <div class="grid grid-cols-1 gap-2">
-                                <button
-                                    type="button"
-                                    onclick={() => copyVariation(reserialized)}
-                                    class={btnClasses.secondary}
-                                >
-                                    Copy
-                                </button>
-                                <button
-                                    type="button"
-                                    onclick={() => reserializedVariations = reserializedVariations.filter((_, j) => i !== j)}
-                                    class={btnClasses.secondary}
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    {/each}
-                </div>
-            {/if}
+
 
             {#if modifiedBase85}
                 <div class="mt-4">
