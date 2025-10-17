@@ -64,33 +64,33 @@
 
         const parts = deserializedText.split(/(\{[^}]*\})/g);
         let changed = false;
-        let chance = 0.2;
 
         const bracketedParts = parts.map((part, index) => ({ part, index })).filter(item => item.part.startsWith('{') && item.part.endsWith('}'));
         const lastFiveBracketedParts = bracketedParts.slice(-5);
 
+        if (lastFiveBracketedParts.length === 0) return;
+
         const newParts = [...parts];
 
-        lastFiveBracketedParts.forEach(item => {
+        // Iterate from the last part and change the first one that can be changed
+        for (const item of lastFiveBracketedParts.reverse()) {
             const { part, index } = item;
             const content = part.slice(1, -1);
 
             // Handle numeric ranges like {0..2}
             if (/^\d+\.\.\d+$/.test(content)) {
                 const [min, max] = content.split('..').map(Number);
-                if (Math.random() < chance) {
-                    const currentValue = Number(parts[index - 1]);
-                    let newValue = currentValue;
-                    if (Math.random() < 0.5) {
-                        newValue = Math.max(min, currentValue - 1);
-                    } else {
-                        newValue = Math.min(max, currentValue + 1);
-                    }
-                    if (newValue !== currentValue) {
-                        changed = true;
-                        chance = 0.05;
-                        newParts[index] = `{${newValue}}`;
-                    }
+                const currentValue = Number(parts[index - 1]);
+                let newValue = currentValue;
+                if (currentValue > min) {
+                    newValue = currentValue - 1;
+                } else if (currentValue < max) {
+                    newValue = currentValue + 1;
+                }
+                if (newValue !== currentValue) {
+                    newParts[index] = `{${newValue}}`;
+                    changed = true;
+                    break;
                 }
             }
             // Handle numeric options like {0|1|2}
@@ -99,34 +99,28 @@
                 const numericOptions = options.map(Number).filter(n => !isNaN(n));
                 if (numericOptions.length === options.length) {
                     const currentIndex = numericOptions.indexOf(Number(options[0]));
-                    if (Math.random() < chance) {
-                        const newIndex = Math.random() < 0.5 ? Math.max(0, currentIndex - 1) : Math.min(options.length - 1, currentIndex + 1);
-                        if (newIndex !== currentIndex) {
-                            changed = true;
-                            chance = 0.05;
-                            newParts[index] = `{${options[newIndex]}}`;
-                        }
+                    let newIndex = currentIndex;
+                    if (currentIndex > 0) {
+                        newIndex = currentIndex - 1;
+                    } else if (currentIndex < options.length - 1) {
+                        newIndex = currentIndex + 1;
+                    }
+                    if (newIndex !== currentIndex) {
+                        newParts[index] = `{${options[newIndex]}}`;
+                        changed = true;
+                        break;
                     }
                 }
             }
             // Handle single numeric values like {5}
             else if (!isNaN(Number(content))) {
-                if (Math.random() < chance) {
-                    const currentValue = Number(content);
-                    let newValue = currentValue;
-                    if (Math.random() < 0.5) {
-                        newValue = currentValue - 1;
-                    } else {
-                        newValue = currentValue + 1;
-                    }
-                    if (newValue !== currentValue) {
-                        changed = true;
-                        chance = 0.05;
-                        newParts[index] = `{${newValue}}`;
-                    }
-                }
+                const currentValue = Number(content);
+                const newValue = currentValue + 1;
+                newParts[index] = `{${newValue}}`;
+                changed = true;
+                break;
             }
-        });
+        }
 
         if (changed) {
             variations = [...variations, { variation: newParts.join(''), removedPart: '' }];
