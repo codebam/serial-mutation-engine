@@ -47,7 +47,6 @@
         '@cf/defog/sqlcoder-7b-2',
         '@cf/google/gemma-2b-it-lora',
         '@cf/google/gemma-3-12b-it',
-        '@cf/google/gemma-7b-it',
         '@cf/google/gemma-7b-it-lora',
         '@cf/ibm-granite/granite-4.0-h-micro',
         '@cf/meta-llama/llama-2-7b-chat-hf-lora',

@@ -15,10 +15,13 @@ export const POST: RequestHandler = async ({ request, platform }) => {
     return json({ error: 'AI binding not found' }, { status: 500 });
   }
 
+  let data: any = { prompt: finalPrompt };
+  if (model.startsWith('@cf/openai/')) {
+    data = { input: { prompt: finalPrompt } };
+  }
+
   try {
-    const response = await platform.env.AI.run(model, {
-      prompt: finalPrompt
-    });
+    const response = await platform.env.AI.run(model, data);
     return json(response);
   } catch (e: any) {
     return json({ error: e.message }, { status: 500 });
