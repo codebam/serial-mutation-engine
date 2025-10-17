@@ -50,7 +50,8 @@
 	},
 	"dependencies": {
 		"chart.js": "^4.5.1",
-		"js-yaml": "^4.1.0"
+		"js-yaml": "^4.1.0",
+		"svelte-awesome-icons": "^2.0.2"
 	},
 	"optionalDependencies": {
 		"@cloudflare/workerd-darwin-64": "1.20251008.0",
