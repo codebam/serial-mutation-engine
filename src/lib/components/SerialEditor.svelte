@@ -56,7 +56,7 @@
         '@cf/tiiuae/falcon-7b-instruct',
         '@cf/tinyllama/tinyllama-1.1b-chat-v1.0'
     ];
-    let selectedModel = $state(models[4]);
+    let selectedModel = $state(models[1]);
 
     function clearAIVariations() {
         aiVariations = [];
