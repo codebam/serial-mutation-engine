@@ -43,63 +43,66 @@
         let changed = false;
         let chance = 0.2;
 
-        const newParts = parts.map(part => {
-            if (part.startsWith('{') && part.endsWith('}')) {
-                const content = part.slice(1, -1);
-                
-                // Handle numeric ranges like {0..2}
-                if (/^\d+\.\.\d+$/.test(content)) {
-                    const [min, max] = content.split('..').map(Number);
+        const bracketedParts = parts.map((part, index) => ({ part, index })).filter(item => item.part.startsWith('{') && item.part.endsWith('}'));
+        const lastFiveBracketedParts = bracketedParts.slice(-5);
+
+        const newParts = [...parts];
+
+        lastFiveBracketedParts.forEach(item => {
+            const { part, index } = item;
+            const content = part.slice(1, -1);
+
+            // Handle numeric ranges like {0..2}
+            if (/^\d+\.\.\d+$/.test(content)) {
+                const [min, max] = content.split('..').map(Number);
+                if (Math.random() < chance) {
+                    const currentValue = Number(parts[index - 1]);
+                    let newValue = currentValue;
+                    if (Math.random() < 0.5) {
+                        newValue = Math.max(min, currentValue - 1);
+                    } else {
+                        newValue = Math.min(max, currentValue + 1);
+                    }
+                    if (newValue !== currentValue) {
+                        changed = true;
+                        chance = 0.05;
+                        newParts[index] = `{${newValue}}`;
+                    }
+                }
+            }
+            // Handle numeric options like {0|1|2}
+            else if (content.includes('|')) {
+                const options = content.split('|');
+                const numericOptions = options.map(Number).filter(n => !isNaN(n));
+                if (numericOptions.length === options.length) {
+                    const currentIndex = numericOptions.indexOf(Number(options[0]));
                     if (Math.random() < chance) {
-                        const currentValue = Number(parts[parts.indexOf(part) - 1]);
-                        let newValue = currentValue;
-                        if (Math.random() < 0.5) {
-                            newValue = Math.max(min, currentValue - 1);
-                        } else {
-                            newValue = Math.min(max, currentValue + 1);
-                        }
-                        if (newValue !== currentValue) {
+                        const newIndex = Math.random() < 0.5 ? Math.max(0, currentIndex - 1) : Math.min(options.length - 1, currentIndex + 1);
+                        if (newIndex !== currentIndex) {
                             changed = true;
                             chance = 0.05;
-                            return `{${newValue}}`;
-                        }
-                    }
-                } 
-                // Handle numeric options like {0|1|2}
-                else if (content.includes('|')) {
-                    const options = content.split('|');
-                    const numericOptions = options.map(Number).filter(n => !isNaN(n));
-                    if (numericOptions.length === options.length) {
-                        const currentIndex = numericOptions.indexOf(Number(options[0]));
-                        if (Math.random() < chance) {
-                            const newIndex = Math.random() < 0.5 ? Math.max(0, currentIndex - 1) : Math.min(options.length - 1, currentIndex + 1);
-                            if (newIndex !== currentIndex) {
-                                changed = true;
-                                chance = 0.05;
-                                return `{${options[newIndex]}}`;
-                            }
-                        }
-                    }
-                } 
-                // Handle single numeric values like {5}
-                else if (!isNaN(Number(content))) {
-                    if (Math.random() < chance) {
-                        const currentValue = Number(content);
-                        let newValue = currentValue;
-                        if (Math.random() < 0.5) {
-                            newValue = currentValue - 1;
-                        } else {
-                            newValue = currentValue + 1;
-                        }
-                        if (newValue !== currentValue) {
-                            changed = true;
-                            chance = 0.05;
-                            return `{${newValue}}`;
+                            newParts[index] = `{${options[newIndex]}}`;
                         }
                     }
                 }
             }
-            return part;
+            // Handle single numeric values like {5}
+            else if (!isNaN(Number(content))) {
+                if (Math.random() < chance) {
+                    const currentValue = Number(content);
+                    let newValue = currentValue;
+                    if (Math.random() < 0.5) {
+                        newValue = currentValue - 1;
+                    } else {
+                        newValue = currentValue + 1;
+                    }
+                    if (newValue !== currentValue) {
+                        changed = true;
+                        chance = 0.05;
+                        newParts[index] = `{${newValue}}`;
+                    }
+                }
+            }
         });
 
         if (changed) {
