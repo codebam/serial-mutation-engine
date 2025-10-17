@@ -36,6 +36,37 @@
 
     let deserializedText = $state('');
 
+    let aiVariations = $state([]);
+    let aiLoading = $state(false);
+    let aiError = $state('');
+
+    async function getAIVariations(event: SubmitEvent) {
+        event.preventDefault();
+        aiLoading = true;
+        aiError = '';
+        try {
+            const response = await fetch('/api/ai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ deserialized_serial: deserializedText })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to fetch AI variations');
+            }
+
+            const data = await response.json();
+            aiVariations = data.response.split('\n'); // Assuming the AI returns variations separated by newlines
+        } catch (error: any) {
+            aiError = error.message;
+        } finally {
+            aiLoading = false;
+        }
+    }
+
     async function deserialize(serialToUse: string) {
         try {
             const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/deserialize", {
@@ -320,6 +351,40 @@
                 ></textarea>
             </FormGroup>
             <button onclick={reserialize} class={btnClasses.secondary}>Reserialize</button>
+
+            <h3 class="text-lg font-semibold mt-4">AI Variations</h3>
+            <p class="text-sm text-gray-400">Use AI to generate variations of your deserialized serial.</p>
+            <form onsubmit={getAIVariations}>
+                <FormGroup label="Deserialized Serial for AI">
+                    <textarea
+                        class={`${inputClasses} min-h-[120px]`}
+                        bind:value={deserializedText}
+                        placeholder="Deserialized output will appear here..."
+                    ></textarea>
+                </FormGroup>
+                <button type="submit" class={btnClasses.primary} disabled={aiLoading}>
+                    {#if aiLoading}
+                        Generating...
+                    {:else}
+                        Get AI Variations
+                    {/if}
+                </button>
+            </form>
+
+            {#if aiError}
+                <p class="text-red-500 mt-2">{aiError}</p>
+            {/if}
+
+            {#if aiVariations.length > 0}
+                <div class="mt-4">
+                    <h4 class="text-md font-semibold">Generated Variations</h4>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        {#each aiVariations as variation}
+                            <li class="text-sm">{variation}</li>
+                        {/each}
+                    </ul>
+                </div>
+            {/if}
 
             {#if modifiedBase85}
                 <div class="mt-4">
