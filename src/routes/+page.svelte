@@ -628,9 +628,6 @@
                     </div>
                 {/if}
             </Accordion>
-            <div class="flex justify-end">
-                <button onclick={addSerialEditor} class="{btnClasses.tertiary} mb-4">+ Add Serial Editor</button>
-            </div>
             {#each $serialEditors as editor (editor.id)}
                 {@const title = `⚙️ Serial Editor #${editor.id}`}
                 <Accordion {title} open={true}>
@@ -659,6 +656,9 @@
                     {/snippet}
                 </Accordion>
             {/each}
+            <div class="flex justify-end">
+                <button onclick={addSerialEditor} class="{btnClasses.tertiary} mb-4">+ Add Serial Editor</button>
+            </div>
         </div>
         <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
             <Accordion title="📊 Statistics">
