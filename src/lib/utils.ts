@@ -8,21 +8,6 @@ export const ELEMENTAL_PATTERNS_V2 = {
     "RAD": "11011000",
     "SHOCK": "10111000",
 };
-export const BULLET_TYPE_PATTERNS: Record<string, string[]> = {
-    "Jakobs Kinetic": ["2210", "2211"],
-    "Jakobs Explosive": ["2212", "2213"],
-    "Maliwan Elemental": ["2214", "2215"],
-    "Maliwan Cryo": ["2216"],
-    "Maliwan Shock": ["2217"],
-    "Torgue Explosive": ["2218", "2219"],
-    "Torgue Kinetic": ["221a", "221b"],
-    "Daedalus Kinetic": ["221c", "221d"],
-    "Daedalus Precision": ["221e", "221f"],
-    "COV Kinetic": ["2220", "2221"],
-    "COV Explosive": ["2222", "2223"],
-    "Ripper Kinetic": ["2224", "2225"],
-    "Ripper Melee": ["2226", "2227"],
-};
 export const MANUFACTURER_PATTERNS: Record<string, string[]> = {
     "Jakobs": [
         "2107",

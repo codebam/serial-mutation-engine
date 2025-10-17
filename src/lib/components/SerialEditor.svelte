@@ -5,7 +5,6 @@
     import {
         BASE85_ALPHABET,
         ELEMENTAL_PATTERNS_V2,
-        BULLET_TYPE_PATTERNS,
         MANUFACTURER_PATTERNS,
         detectItemLevel,
         hexToBinary,
@@ -23,7 +22,6 @@
         safeEditEnd: number | string;
         level: number | string;
         v2Element: { element: string; index: number; pattern: string } | null;
-        bulletType: string | null;
     } | null = $state(null);
     let binary = $state('');
     let modifiedBinary = $state('');
@@ -31,9 +29,6 @@
     let level: number | null = $state(null);
     let levelFoundAt: number | null = $state(null);
 
-    let bulletType: string | null = $state(null);
-    let bulletTypeHex: string | null = $state(null);
-    let bulletTypeFoundAt: number | null = $state(null);
     let foundV2Element: { element: string; pattern: string; index: number } | null = $state(null);
 
     let newSerial = $state('');
@@ -176,26 +171,6 @@
         level = detectedLevel as number;
         levelFoundAt = levelPos;
 
-        // Bullet Type Pattern Detection (Hex)
-        let foundBulletType: string | null = null;
-        let foundBulletHex: string | null = null;
-        let foundBulletIndex: number | null = null;
-        for (const [type, patterns] of Object.entries(BULLET_TYPE_PATTERNS)) {
-            for (const pattern of patterns) {
-                const index = hex_data.indexOf(pattern);
-                if (index !== -1) {
-                    foundBulletType = type;
-                    foundBulletHex = pattern;
-                    foundBulletIndex = index;
-                    break;
-                }
-            }
-            if (foundBulletType) break;
-        }
-        bulletType = foundBulletType;
-        bulletTypeHex = foundBulletHex;
-        bulletTypeFoundAt = foundBulletIndex;
-
         // V2 Elemental Pattern Detection
         const v2ElementIndex = binary_string.indexOf(ELEMENT_FLAG);
         let foundV2ElementData: { element: string; pattern: string; index: number } | null = null;
@@ -217,7 +192,6 @@
             safeEditEnd: safeEditEnd > safeEditStart ? safeEditEnd : 'N/A',
             level: detectedLevel,
             v2Element: foundV2ElementData,
-            bulletType: foundBulletType,
         };
     }
 
@@ -267,23 +241,6 @@
         }
     }
 
-    function handleBulletTypeChange(e: Event) {
-        const target = e.target as HTMLSelectElement;
-        const newBulletType = target.value;
-        const newHex = BULLET_TYPE_PATTERNS[newBulletType][0];
-
-        if (bulletTypeFoundAt !== null) {
-            const newBinary = hexToBinary(newHex);
-            const start = bulletTypeFoundAt * 4;
-            const end = start + 16;
-            const prefix = modifiedBinary.substring(0, start);
-            const suffix = modifiedBinary.substring(end);
-            modifiedBinary = prefix + newBinary + suffix;
-            bulletType = newBulletType;
-            bulletTypeHex = newHex;
-        }
-    }
-
     function handleV2ElementChange(newElement: string) {
         if (foundV2Element) {
             const newPattern = ELEMENTAL_PATTERNS_V2[newElement as keyof typeof ELEMENTAL_PATTERNS_V2];
@@ -328,17 +285,8 @@
             {#if analysis.v2Element}
                 <p><strong>Element:</strong> {analysis.v2Element.element} at index {analysis.v2Element.index}</p>
             {/if}
-            {#if analysis.bulletType}
-                <p><strong>Bullet Type:</strong> {analysis.bulletType}</p>
-            {/if}
             <p><strong>Hex:</strong> <span class="font-mono text-xs break-all">
-                {#if bulletTypeFoundAt !== null && analysis.hex}
-                    {analysis.hex.substring(0, bulletTypeFoundAt)}
-                    <span class="bg-green-900 text-green-300">{analysis.hex.substring(bulletTypeFoundAt, bulletTypeFoundAt + 4)}</span>
-                    {analysis.hex.substring(bulletTypeFoundAt + 4)}
-                {:else}
-                    {analysis.hex}
-                {/if}
+                {analysis.hex}
             </span></p>
             <p><strong>Safe Edit Start (after u~Q):</strong> {analysis.safeEditStart}</p>
             <p><strong>Safe Edit End (preserve trailer):</strong> {analysis.safeEditEnd}</p>
@@ -353,17 +301,6 @@
                 <FormGroup label={`Element at index ${foundV2Element.index}`}>
                     <select bind:value={foundV2Element.element} onchange={(e) => handleV2ElementChange((e.target as HTMLSelectElement).value)} class={inputClasses}>
                         {#each Object.keys(ELEMENTAL_PATTERNS_V2) as type}
-                            <option value={type}>{type}</option>
-                        {/each}
-                    </select>
-                </FormGroup>
-            {/if}
-
-            {#if bulletType}
-                <h3 class="text-lg font-semibold mt-2">Bullet Type Editor</h3>
-                <FormGroup label="Bullet Type">
-                    <select bind:value={bulletType} onchange={handleBulletTypeChange} class={inputClasses}>
-                        {#each Object.keys(BULLET_TYPE_PATTERNS) as type}
                             <option value={type}>{type}</option>
                         {/each}
                     </select>
