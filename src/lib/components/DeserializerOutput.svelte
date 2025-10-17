@@ -72,7 +72,7 @@
     }
 </script>
 
-<div class="p-4 border border-gray-700 rounded-lg bg-gray-800/50" on:dragover={handleDragOver}>
+<div class="p-4 border border-gray-700 rounded-lg bg-gray-800/50" on:dragover={handleDragOver} role="list">
     <h3 class="text-lg font-semibold mb-4">Deserialized Output</h3>
     <div class="flex flex-wrap gap-2">
         {#each items as item, i (item.value + i)}
@@ -81,6 +81,7 @@
                 draggable="true"
                 on:dragstart={(e) => handleDragStart(e, i)}
                 on:drop={(e) => handleDrop(e, i)}
+                role="listitem"
             >
                 <span>{item.value}</span>
                 <button
