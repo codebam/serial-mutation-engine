@@ -97,8 +97,14 @@
             const data = await response.json();
             console.log('AI Response:', data);
             let responseText;
-            if (data.output && Array.isArray(data.output) && data.output.length > 0) {
-                responseText = data.output[0];
+            if (data.output && Array.isArray(data.output) && data.output.length > 1) {
+                const assistantMessage = data.output[data.output.length - 1];
+                if (assistantMessage.content && Array.isArray(assistantMessage.content) && assistantMessage.content.length > 0) {
+                    const firstContent = assistantMessage.content[0];
+                    if (firstContent && firstContent.text) {
+                        responseText = firstContent.text;
+                    }
+                }
             } else {
                 responseText = data.response || data;
             }
