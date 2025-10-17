@@ -41,6 +41,14 @@
         variations = variations.filter((_, i) => i !== index);
     }
 
+    async function copyVariation(variation: string) {
+        try {
+            await navigator.clipboard.writeText(variation);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+    }
+
     async function reserializeVariation(variation: string) {
         try {
             const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/reserialize", {
@@ -193,7 +201,7 @@
     const inputClasses = 'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
     const btnClasses = {
         primary: 'py-3 px-4 w-full font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all disabled:bg-gray-600 disabled:cursor-not-allowed',
-        secondary: 'py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all',
+        secondary: 'py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all w-full text-center',
     };
 
     async function decodeSerial() {
@@ -461,20 +469,22 @@
                                     <p class="text-sm text-gray-400 mt-1">Removed: <span class="font-mono">{variation.removedPart}</span></p>
                                 {/if}
                             </div>
-                            <button
-                                type="button"
-                                onclick={() => deleteVariation(i)}
-                                class="py-1 px-2 text-sm font-medium text-gray-300 bg-red-700 rounded-md hover:bg-red-600 transition-all"
-                            >
-                                Delete
-                            </button>
-                            <button
-                                type="button"
-                                onclick={() => reserializeVariation(variation.variation)}
-                                class={btnClasses.secondary}
-                            >
-                                Reserialize
-                            </button>
+                            <div class="grid grid-cols-1 gap-2">
+                                <button
+                                    type="button"
+                                    onclick={() => reserializeVariation(variation.variation)}
+                                    class={btnClasses.secondary}
+                                >
+                                    Reserialize
+                                </button>
+                                <button
+                                    type="button"
+                                    onclick={() => deleteVariation(i)}
+                                    class={btnClasses.secondary}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     {/each}
                 </div>
@@ -490,13 +500,22 @@
                                 readonly
                                 value={reserialized}
                             ></textarea>
-                            <button
-                                type="button"
-                                onclick={() => reserializedVariations = reserializedVariations.filter((_, j) => i !== j)}
-                                class="py-1 px-2 text-sm font-medium text-gray-300 bg-red-700 rounded-md hover:bg-red-600 transition-all"
-                            >
-                                Delete
-                            </button>
+                            <div class="grid grid-cols-1 gap-2">
+                                <button
+                                    type="button"
+                                    onclick={() => copyVariation(reserialized)}
+                                    class={btnClasses.secondary}
+                                >
+                                    Copy
+                                </button>
+                                <button
+                                    type="button"
+                                    onclick={() => reserializedVariations = reserializedVariations.filter((_, j) => i !== j)}
+                                    class={btnClasses.secondary}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     {/each}
                 </div>
