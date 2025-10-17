@@ -96,7 +96,13 @@
 
             const data = await response.json();
             console.log('AI Response:', data);
-            const responseText = data.response || data;
+            let responseText;
+            if (data.output && Array.isArray(data.output) && data.output.length > 0) {
+                responseText = data.output[0];
+            } else {
+                responseText = data.response || data;
+            }
+
             if (typeof responseText === 'string') {
                 const newVariation = responseText.replace(/^[0-9]+\.\s*/, '').trim();
                 if (newVariation) {
