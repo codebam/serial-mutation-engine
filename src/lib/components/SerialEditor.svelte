@@ -39,6 +39,7 @@
     let aiVariations: string[] = $state([]);
     let aiLoading = $state(false);
     let aiError = $state('');
+    let prompt = $state(`Generate one modified and unique version of the following serialized code. Only modify the values in the last few bracketed sections. Keep the beginning of the code unchanged. Output only the modified code.\n\n${deserialized_serial}`);
 
     function clearAIVariations() {
         aiVariations = [];
@@ -54,7 +55,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ deserialized_serial: deserializedText })
+                body: JSON.stringify({ deserialized_serial: deserializedText, prompt })
             });
 
             if (!response.ok) {
@@ -367,6 +368,12 @@
                         class={`${inputClasses} min-h-[120px]`}
                         bind:value={deserializedText}
                         placeholder="Deserialized output will appear here..."
+                    ></textarea>
+                </FormGroup>
+                <FormGroup label="AI Prompt">
+                    <textarea
+                        class={`${inputClasses} min-h-[120px]`}
+                        bind:value={prompt}
                     ></textarea>
                 </FormGroup>
                 <div class="flex gap-2 mt-2">
