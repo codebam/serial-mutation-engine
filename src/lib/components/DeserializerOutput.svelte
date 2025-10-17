@@ -10,22 +10,22 @@
 
     function parseText(text: string) {
         if (!text) return [];
-        const parsedItems: { value: string, separator: string }[] = [];
         const regex = /(\|\||\||\s+(?=\{))/g;
-        
-        const parts = text.split(regex).filter(p => p);
+        const partsAndSeps = text.split(regex);
+        const parsedItems: { value: string, separator: string }[] = [];
 
-        for (let i = 0; i < parts.length; i++) {
-            const part = parts[i];
-            if (part.match(regex)) {
-                if (parsedItems.length > 0) {
-                    parsedItems[parsedItems.length - 1].separator += part;
-                }
+        for (let i = 0; i < partsAndSeps.length; i++) {
+            if (i % 2 === 0) {
+                // It's a value part
+                parsedItems.push({ value: partsAndSeps[i], separator: '' });
             } else {
-                parsedItems.push({ value: part, separator: '' });
+                // It's a separator part
+                if (parsedItems.length > 0) {
+                    parsedItems[parsedItems.length - 1].separator = partsAndSeps[i];
+                }
             }
         }
-        return parsedItems;
+        return parsedItems.filter(p => p.value || p.separator);
     }
 
     $: {
