@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 
   let data: any = { prompt: finalPrompt };
   if (model.startsWith('@cf/openai/')) {
-    data = { input: { prompt: finalPrompt } };
+    data = { input: { text: finalPrompt } };
   }
 
   try {
