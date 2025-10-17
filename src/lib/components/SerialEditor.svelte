@@ -41,6 +41,23 @@
     let aiError = $state('');
     let prompt = $state(`Generate one modified and unique version of the following serialized code. Only modify the values in the last few bracketed sections. Keep the beginning of the code unchanged. Output only the modified code.\n\n\${deserialized_serial}`);
 
+    const models = [
+        '@cf/meta/llama-3-8b-instruct',
+        '@cf/mistral/mistral-7b-instruct-v0.1',
+        '@cf/google/gemma-7b-it',
+        '@cf/openai/gpt-oss-120b',
+        '@cf/meta/llama-4-scout-17b-16e-instruct',
+        '@cf/deepseek-ai/deepseek-math-7b-instruct',
+        '@cf/google/gemma-2b-it',
+        '@cf/meta/llama-2-7b-chat-fp16',
+        '@cf/meta/llama-2-7b-chat-int8',
+        '@cf/mistral/mistral-7b-instruct-v0.2',
+        '@cf/thebloke/codellama-7b-instruct-awq',
+        '@cf/tiiuae/falcon-7b-instruct',
+        '@cf/tinyllama/tinyllama-1.1b-chat-v1.0'
+    ];
+    let selectedModel = $state(models[4]);
+
     function clearAIVariations() {
         aiVariations = [];
     }
@@ -55,7 +72,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ deserialized_serial: deserializedText, prompt })
+                body: JSON.stringify({ deserialized_serial: deserializedText, prompt, model: selectedModel })
             });
 
             if (!response.ok) {
@@ -363,12 +380,12 @@
             <h3 class="text-lg font-semibold mt-4">AI Variations</h3>
             <p class="text-sm text-gray-400">Use AI to generate variations of your deserialized serial.</p>
             <form onsubmit={getAIVariations}>
-                <FormGroup label="Deserialized Serial for AI">
-                    <textarea
-                        class={`${inputClasses} min-h-[120px]`}
-                        bind:value={deserializedText}
-                        placeholder="Deserialized output will appear here..."
-                    ></textarea>
+                <FormGroup label="AI Model">
+                    <select class={inputClasses} bind:value={selectedModel}>
+                        {#each models as model}
+                            <option value={model}>{model}</option>
+                        {/each}
+                    </select>
                 </FormGroup>
                 <FormGroup label="AI Prompt">
                     <textarea
