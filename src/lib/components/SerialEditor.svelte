@@ -14,6 +14,7 @@
     } from '$lib/utils';
 
     let serial = $state('');
+    let serialInput = $state('');
     let analysis: {
         type: string;
         manufacturer: string;
@@ -45,7 +46,7 @@
             const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/deserialize", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ serial_b85: serial })
+                body: JSON.stringify({ serial_b85: serialInput })
             });
             const data = await response.json();
             if (data.deserialized) {
@@ -69,7 +70,6 @@
             const data = await response.json();
             if (data.serial_b85) {
                 modifiedBase85 = data.serial_b85;
-                serial = data.serial_b85;
             } else {
                 alert('Reserialization failed: ' + (data.error || 'Unknown error'));
             }
@@ -86,6 +86,7 @@
     };
 
     function decodeSerial() {
+        serial = serialInput;
         if (!serial.startsWith('@U')) {
             alert('Invalid serial format. It must start with @U');
             return;
@@ -337,7 +338,7 @@
     <FormGroup label="Serial to Analyze">
         <textarea
             class={`${inputClasses} min-h-[80px]`}
-            bind:value={serial}
+            bind:value={serialInput}
             placeholder="Paste serial here..."
         ></textarea>
     </FormGroup>
