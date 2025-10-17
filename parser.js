@@ -11,15 +11,7 @@ class Bitstream {
         return bits;
     }
 
-    readHex(length) {
-        let bits = this.read(length);
-        if (bits === null) return null;
-        let hex = '';
-        for (let i = 0; i < bits.length; i += 4) {
-            hex += parseInt(bits.substring(i, i + 4), 2).toString(16);
-        }
-        return hex;
-    }
+
 }
 
 function parse_chunk(stream) {
@@ -39,7 +31,7 @@ function parse_chunk(stream) {
         return null;
     }
 
-    const chunk_data = stream.readHex(len - 4);
+    const chunk_data = stream.read(len - 4);
     return { len_code: len_code, chunk_data };
 }
 
@@ -50,7 +42,7 @@ process.stdin.on('end', () => {
     const stream = new Bitstream(binary);
 
     const type = stream.read(10);
-    const header = stream.readHex(78);
+    const header = stream.read(78);
     const prefix = stream.read(4);
     
     const chunks = [];
@@ -62,14 +54,7 @@ process.stdin.on('end', () => {
         } else {
             const remaining = stream.read(binary.length - stream.pos);
             if (remaining && remaining.length > 0) {
-                let hex = '';
-                for (let i = 0; i < remaining.length; i += 4) {
-                    const segment = remaining.substring(i, i + 4);
-                    if (segment.length > 0) {
-                        hex += parseInt(segment, 2).toString(16);
-                    }
-                }
-                trailer = hex.replace(/\s/g, "");
+                trailer = remaining;
             }
             break;
         }
