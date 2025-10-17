@@ -35,6 +35,7 @@
 
     let deserializedText = $state('');
     let variations = $state<string[]>([]);
+    let reserializedVariations = $state<string[]>([]);
 
     function deleteVariation(index: number) {
         variations = variations.filter((_, i) => i !== index);
@@ -49,7 +50,7 @@
             });
             const data = await response.json();
             if (data.serial_b85) {
-                modifiedBase85 = data.serial_b85;
+                reserializedVariations = [...reserializedVariations, data.serial_b85];
             } else {
                 console.error('Reserialization failed: ' + (data.error || 'Unknown error'));
             }
@@ -453,8 +454,7 @@
                         <div class="flex items-center gap-2">
                             <textarea
                                 class={`${inputClasses} h-16 flex-grow`}
-                                readonly
-                                value={variation}
+                                bind:value={variations[i]}
                             ></textarea>
                             <button
                                 type="button"
@@ -465,10 +465,32 @@
                             </button>
                             <button
                                 type="button"
-                                onclick={() => reserializeVariation(variation)}
+                                onclick={() => reserializeVariation(variations[i])}
                                 class={btnClasses.secondary}
                             >
                                 Reserialize
+                            </button>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
+
+            {#if reserializedVariations.length > 0}
+                <div class="mt-4 space-y-2">
+                    <h4 class="text-md font-semibold">Reserialized Variations</h4>
+                    {#each reserializedVariations as reserialized, i (i)}
+                        <div class="flex items-center gap-2">
+                            <textarea
+                                class={`${inputClasses} h-16 flex-grow`}
+                                readonly
+                                value={reserialized}
+                            ></textarea>
+                            <button
+                                type="button"
+                                onclick={() => reserializedVariations = reserializedVariations.filter((_, j) => i !== j)}
+                                class="py-1 px-2 text-sm font-medium text-gray-300 bg-red-700 rounded-md hover:bg-red-600 transition-all"
+                            >
+                                Delete
                             </button>
                         </div>
                     {/each}
