@@ -39,7 +39,7 @@
     let aiVariations: string[] = $state([]);
     let aiLoading = $state(false);
     let aiError = $state('');
-    let prompt = $state(`Generate one modified and unique version of the following serialized code. Only modify the values in the last few bracketed sections. Keep the beginning of the code unchanged. Output only the modified code.\n\n${deserialized_serial}`);
+    let prompt = $state(`Generate one modified and unique version of the following serialized code. Only modify the values in the last few bracketed sections. Keep the beginning of the code unchanged. Output only the modified code.\n\n\${deserialized_serial}`);
 
     function clearAIVariations() {
         aiVariations = [];
