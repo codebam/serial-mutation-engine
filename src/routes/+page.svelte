@@ -613,7 +613,7 @@
                     </div>
                 {/if}
             </Accordion>
-            <SerialEditor deserializedText={$deserializedText} on:update={(e) => $deserializedText = e.detail.value} />
+            <SerialEditor bind:deserializedText={$deserializedText} />
         </div>
         <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
             <Accordion title="📊 Statistics">

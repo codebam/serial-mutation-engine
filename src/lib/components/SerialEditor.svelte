@@ -2,7 +2,6 @@
     import Accordion from './Accordion.svelte';
     import FormGroup from './FormGroup.svelte';
     import DeserializerOutput from './DeserializerOutput.svelte';
-    import { createEventDispatcher } from 'svelte';
     import {
         BASE85_ALPHABET,
         ELEMENTAL_PATTERNS_V2,
@@ -36,24 +35,21 @@
     let bulletTypeFoundAt: number | null = $state(null);
     let foundV2Element: { element: string; pattern: string; index: number } | null = $state(null);
 
-    const dispatch = createEventDispatcher();
-
     let newSerial = $state('');
     let modifiedBase85 = $state('');
 
-    let { deserializedText } = $props();
-    let serialToDeserialize = $state('');
+    let { deserializedText = $bindable() } = $props();
 
     async function deserialize() {
         try {
             const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/deserialize", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ serial_b85: serialToDeserialize })
+                body: JSON.stringify({ serial_b85: serial })
             });
             const data = await response.json();
             if (data.deserialized) {
-                dispatch('update', { value: data.deserialized });
+                deserializedText = data.deserialized;
             } else {
                 alert('Deserialization failed: ' + (data.error || 'Unknown error'));
             }
@@ -72,7 +68,8 @@
             });
             const data = await response.json();
             if (data.serial_b85) {
-                serialToDeserialize = data.serial_b85;
+                modifiedBase85 = data.serial_b85;
+                serial = data.serial_b85;
             } else {
                 alert('Reserialization failed: ' + (data.error || 'Unknown error'));
             }
@@ -419,22 +416,14 @@
                 ><span>{modifiedBinary.substring(selection.end)}</span>
             </div>
 
-            <FormGroup label="Serial to Deserialize">
-                <textarea
-                    class={`${inputClasses} min-h-[80px]`}
-                    bind:value={serialToDeserialize}
-                    placeholder="Paste serial here to deserialize..."
-                ></textarea>
-            </FormGroup>
             <button onclick={deserialize} class={btnClasses.secondary}>Deserialize</button>
 
             <h3 class="text-lg font-semibold mt-4">Deserializer/Reserializer</h3>
-            <DeserializerOutput deserializedText={deserializedText} on:update={(e) => dispatch('update', { value: e.detail.value })} />
+            <DeserializerOutput deserializedText={deserializedText} on:update={(e) => deserializedText = e.detail.value} />
             <FormGroup label="Deserialized Text">
                 <textarea
                     class={`${inputClasses} min-h-[120px]`}
-                    value={deserializedText}
-                    oninput={(e) => dispatch('update', { value: e.currentTarget.value })}
+                    bind:value={deserializedText}
                     placeholder="Deserialized output will appear here..."
                 ></textarea>
             </FormGroup>
