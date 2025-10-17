@@ -3,7 +3,7 @@ import { DEFAULT_SEED, TG_FLAGS, RANDOM_SAFETY_MARGIN } from './constants.js';
 import { setupWebGPU, generateRandomNumbersOnGPU, needsRandomNumberGeneration, getGpuDevice } from './gpu.js';
 import { randomChoice, ensureCharset, splitHeaderTail, extractHighValueParts } from './utils.js';
 import { calculateHighValuePartsStats } from './stats.js';
-import { filterSerials } from './yaml-filter.js';
+
 import {
     generateAppendMutation,
     generateStackedPartMutationV1,
@@ -25,29 +25,7 @@ self.onmessage = async function (e) {
 
 	console.log(`[DEBUG] Worker received message of type: ${type}. Debug mode is ${debugMode ? 'ENABLED' : 'DISABLED'}.`);
 
-	if (type === 'validate') {
-		const validationData = filterSerials(payload.yaml, payload.seed, payload.validationChars);
-		let chartData = null;
-		if (payload.generateStats && validationData.validatedSerials && validationData.validatedSerials.length > 0) {
-			self.postMessage({ type: 'progress', payload: { processed: 0, total: 100, stage: 'stats' } });
-			/** @param {number} progress */
-			const onProgress = (progress) => {
-				self.postMessage({ type: 'progress', payload: { processed: progress, total: 100, stage: 'stats' } });
-			};
-			const highValueParts = calculateHighValuePartsStats(validationData.validatedSerials, payload.minPart, payload.maxPart, onProgress);
-			let sortedParts = highValueParts.sort((a, b) => b[1] - a[1]);
-			const maxBars = 200;
-			if (sortedParts.length > maxBars) {
-				sortedParts = sortedParts.slice(0, maxBars);
-			}
-			chartData = {
-				labels: sortedParts.map((p) => p[0]),
-				data: sortedParts.map((p) => p[1]),
-			};
-		}
-		self.postMessage({ type: 'complete', payload: { ...validationData, chartData } });
-		return;
-	}
+	
 
 	if (type !== 'generate') return;
 	const config = e.data.payload;

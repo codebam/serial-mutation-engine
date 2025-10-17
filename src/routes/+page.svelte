@@ -24,7 +24,6 @@
             maxPart: number;
             legendaryChance: number;
         };
-        validationChars: number;
         generateStats: boolean;
         debugMode: boolean;
     }
@@ -45,13 +44,11 @@
             maxPart: 8,
             legendaryChance: 100,
         },
-        validationChars: 12,
         generateStats: false,
         debugMode: false,
     });
 
     const statusMessage = writable('Ready to generate.');
-    const validationResult = writable('');
     const progress = writable(0);
     const isGenerating = writable(false);
     const outputYaml = writable('');
@@ -130,23 +127,11 @@
                         updateChart(payload.chartData);
                         break;
                     case 'complete':
-                        if (payload.validationResult) {
-                            $validationResult = payload.validationResult;
-                            $filteredYaml = payload.validatedYaml || '';
-                            const filteredCount = payload.validatedYaml ? (payload.validatedYaml.match(/serial:/g) || []).length : 0;
-                            $statusMessage = `Filtering complete.\nCopy/Download will use the ${filteredCount} filtered serials.`;
-                            $outputYaml = truncate(payload.validatedYaml || '');
-                            if (payload.chartData) {
-                                updateChart(payload.chartData);
-                            }
-                        } else {
-                            $isGenerating = false;
-                            $outputYaml = payload.truncatedYaml;
-                            $fullYaml = payload.yaml;
-                            $filteredYaml = '';
-                            $validationResult = '';
-                            $statusMessage = `✅ Complete! ${payload.uniqueCount.toLocaleString()} unique serials generated.`;
-                        }
+                        $isGenerating = false;
+                        $outputYaml = payload.truncatedYaml;
+                        $fullYaml = payload.yaml;
+                        $filteredYaml = '';
+                        $statusMessage = `✅ Complete! ${payload.uniqueCount.toLocaleString()} unique serials generated.`;
                         break;
                     case 'error':
                         $isGenerating = false;
@@ -198,7 +183,6 @@
         $isGenerating = true;
         $statusMessage = 'Sending job...';
         $progress = 0;
-        $validationResult = '';
         $filteredYaml = '';
         const config = {
             seed: $appState.seed,
@@ -246,14 +230,12 @@
                     maxPart: 8,
                     legendaryChance: 100,
                 },
-                validationChars: 12,
                 generateStats: false,
                 debugMode: false,
             };
             $outputYaml = '';
             $fullYaml = '';
             $filteredYaml = '';
-            $validationResult = '';
             $statusMessage = 'Settings have been reset to original defaults.';
         }
     }
@@ -598,41 +580,7 @@
                     </div>
                 </div>
             </Accordion>
-            <Accordion title="✔️ Filtering">
-                <FormGroup label="Characters to Filter">
-                    <input
-                        type="number"
-                        name="validationChars"
-                        bind:value={$appState.validationChars}
-                        class={inputClasses}
-                        
-                    />
-                </FormGroup>
-                <button
-                    onclick={() =>
-                        worker.postMessage({
-                            type: 'validate',
-                            payload: {
-                                yaml: $fullYaml,
-                                seed: $appState.seed,
-                                validationChars: $appState.validationChars,
-                                generateStats: $appState.generateStats,
-                                minPart: $appState.rules.minPart,
-                                maxPart: $appState.rules.maxPart,
-                                debugMode: $appState.debugMode,
-                            },
-                        })}
-                    class={btnClasses.secondary}
-                    
-                >
-                    Filter
-                </button>
-                {#if $validationResult}
-                    <div class="p-3 bg-green-500/10 border border-green-500/30 text-green-300 text-sm rounded-md text-center whitespace-pre-wrap">
-                        {$validationResult}
-                    </div>
-                {/if}
-            </Accordion>
+
             <div class="bg-gray-800/50 border border-gray-700 rounded-lg flex flex-col flex-grow">
                 <div class="p-4 flex justify-between items-center border-b border-gray-700 flex-wrap">
                     <h3 class="text-lg font-semibold mb-2 md:mb-0">📝 YAML Output (Read-Only)</h3>
@@ -697,7 +645,13 @@
                     class="h-10 text-center text-sm text-gray-400 flex items-center justify-center"
                     style="white-space: pre-line"
                 >
-                    {$statusMessage}
+                    {#if $statusMessage.startsWith('✅')}
+                        <div class="p-3 bg-green-500/10 border border-green-500/30 text-green-300 text-sm rounded-md text-center whitespace-pre-wrap">
+                            {$statusMessage}
+                        </div>
+                    {:else}
+                        {$statusMessage}
+                    {/if}
                 </div>
                 {#if $isGenerating}
                     <div class="w-full bg-gray-700 rounded-full h-2.5">
