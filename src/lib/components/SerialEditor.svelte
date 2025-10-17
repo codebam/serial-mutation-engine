@@ -1,7 +1,6 @@
 <script lang="ts">
     import Accordion from './Accordion.svelte';
     import FormGroup from './FormGroup.svelte';
-    import DeserializerOutput from './DeserializerOutput.svelte';
     import {
         BASE85_ALPHABET,
         ELEMENTAL_PATTERNS_V2,
@@ -35,6 +34,29 @@
     let modifiedBase85 = $state('');
 
     let deserializedText = $state('');
+    let variations = $state<string[]>([]);
+
+    function deleteVariation(index: number) {
+        variations = variations.filter((_, i) => i !== index);
+    }
+
+    async function reserializeVariation(variation: string) {
+        try {
+            const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/reserialize", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ deserialized: variation })
+            });
+            const data = await response.json();
+            if (data.serial_b85) {
+                modifiedBase85 = data.serial_b85;
+            } else {
+                console.error('Reserialization failed: ' + (data.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error("Reserialization error:", error);
+        }
+    }
 
     function generateVariation() {
         if (!deserializedText) return;
@@ -106,7 +128,7 @@
         });
 
         if (changed) {
-            deserializedText = newParts.join('');
+            variations = [...variations, newParts.join('')];
         }
     }
 
@@ -385,7 +407,6 @@
             <p class="text-sm text-gray-400">
                 Powered by <a href="https://borderlands4-deserializer.nicnl.com/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">borderlands4-deserializer</a> by @Nicnl and @InflamedSebi
             </p>
-            <DeserializerOutput deserializedText={deserializedText} on:update={(e) => deserializedText = e.detail.value} />
             <FormGroup label="Deserialized Text">
                 <textarea
                     class={`${inputClasses} min-h-[120px]`}
@@ -393,10 +414,41 @@
                     placeholder="Deserialized output will appear here..."
                 ></textarea>
             </FormGroup>
+
+
             <div class="flex gap-2">
                 <button onclick={reserialize} class={btnClasses.secondary}>Reserialize</button>
                 <button onclick={generateVariation} class={btnClasses.secondary}>Generate Variation</button>
             </div>
+
+            {#if variations.length > 0}
+                <div class="mt-4 space-y-2">
+                    <h4 class="text-md font-semibold">Generated Variations</h4>
+                    {#each variations as variation, i (i)}
+                        <div class="flex items-center gap-2">
+                            <textarea
+                                class={`${inputClasses} h-16 flex-grow`}
+                                readonly
+                                value={variation}
+                            ></textarea>
+                            <button
+                                type="button"
+                                onclick={() => deleteVariation(i)}
+                                class="py-1 px-2 text-sm font-medium text-gray-300 bg-red-700 rounded-md hover:bg-red-600 transition-all"
+                            >
+                                Delete
+                            </button>
+                            <button
+                                type="button"
+                                onclick={() => reserializeVariation(variation)}
+                                class={btnClasses.secondary}
+                            >
+                                Reserialize
+                            </button>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
 
             {#if modifiedBase85}
                 <div class="mt-4">
