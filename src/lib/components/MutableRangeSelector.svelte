@@ -48,7 +48,7 @@
         ><span class="bg-blue-900 text-blue-300 rounded-sm" title="Mutable Part">{mutablePart}</span
         ><span class="text-gray-500" title="Protected Suffix">{protectedSuffix}</span>
     </div>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-2 gap-4 mt-4">
         <FormGroup label="Start Index">
             <input
                 type="number"
