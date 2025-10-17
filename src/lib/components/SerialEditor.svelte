@@ -420,6 +420,9 @@
             <button onclick={deserialize} class={btnClasses.secondary}>Deserialize</button>
 
             <h3 class="text-lg font-semibold mt-4">Deserializer/Reserializer</h3>
+            <p class="text-sm text-gray-400">
+                Powered by <a href="https://borderlands4-deserializer.nicnl.com/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">borderlands4-deserializer</a> by @Nicnl and @InflamedSebi
+            </p>
             <DeserializerOutput deserializedText={deserializedText} on:update={(e) => deserializedText = e.detail.value} />
             <FormGroup label="Deserialized Text">
                 <textarea
