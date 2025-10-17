@@ -415,6 +415,15 @@
                 ><span>{modifiedBinary.substring(selection.end)}</span>
             </div>
 
+            <FormGroup label="Serial to Deserialize">
+                <textarea
+                    class={`${inputClasses} min-h-[80px]`}
+                    bind:value={serialToDeserialize}
+                    placeholder="Paste serial here to deserialize..."
+                ></textarea>
+            </FormGroup>
+            <button onclick={deserialize} class={btnClasses.secondary}>Deserialize</button>
+
             <h3 class="text-lg font-semibold mt-4">Deserializer/Reserializer</h3>
             <FormGroup label="Deserialized Text">
                 <textarea
@@ -424,15 +433,6 @@
                 ></textarea>
             </FormGroup>
             <button onclick={reserialize} class={btnClasses.secondary}>Reserialize</button>
-
-            <FormGroup label="Serial to Deserialize">
-                <textarea
-                    class={`${inputClasses} min-h-[80px]`}
-                    bind:value={serialToDeserialize}
-                    placeholder="Paste serial here to deserialize..."
-                ></textarea>
-            </FormGroup>
-            <button onclick={deserialize} class={btnClasses.secondary}>Deserialize</button>
 
             {#if modifiedBase85}
                 <div class="mt-4">
