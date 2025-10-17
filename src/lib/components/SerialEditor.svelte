@@ -366,22 +366,6 @@
                 </FormGroup>
             {/if}
 
-            <h3 class="text-lg font-semibold mt-2">Binary Data Editor</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <FormGroup label="Start Index">
-                    <input type="number" name="start" bind:value={selection.start} onchange={handleSelectionChange} class={inputClasses} />
-                </FormGroup>
-                <FormGroup label="End Index">
-                    <input type="number" name="end" bind:value={selection.end} onchange={handleSelectionChange} class={inputClasses} />
-                </FormGroup>
-            </div>
-            <h3 class="text-lg font-semibold mt-2">Modified Binary Data</h3>
-            <div class="font-mono text-xs p-3 bg-gray-900 border border-gray-700 rounded-md break-all">
-                <span>{modifiedBinary.substring(0, selection.start)}</span
-                ><span class="bg-blue-900 text-blue-300">{modifiedBinary.substring(selection.start, selection.end)}</span
-                ><span>{modifiedBinary.substring(selection.end)}</span>
-            </div>
-
             <h3 class="text-lg font-semibold mt-4">Deserializer/Reserializer</h3>
             <p class="text-sm text-gray-400">
                 Powered by <a href="https://borderlands4-deserializer.nicnl.com/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">borderlands4-deserializer</a> by @Nicnl and @InflamedSebi
