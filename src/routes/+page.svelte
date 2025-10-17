@@ -419,92 +419,6 @@
                     </label>
                 </div>
             </Accordion>
-            <Accordion title="🔢 Output Counts" open={true}>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <FormGroup label="NEW (v0)">
-                        <input
-                            type="number"
-                            name="counts.new"
-                            bind:value={$appState.counts.new}
-                            class={inputClasses}
-                            
-                        />
-                        <p class="text-xs text-gray-400">Randomly appends characters to the base seed.</p>
-                    </FormGroup>
-                    <FormGroup label="NEW (v1)">
-                        <input
-                            type="number"
-                            name="counts.newV1"
-                            bind:value={$appState.counts.newV1}
-                            class={inputClasses}
-                            
-                        />
-                        <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (full alphabet).</p>
-                    </FormGroup>
-                    <FormGroup label="NEW (v2)">
-                        <input
-                            type="number"
-                            name="counts.newV2"
-                            bind:value={$appState.counts.newV2}
-                            class={inputClasses}
-                            
-                        />
-                        <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (restricted alphabet).</p>
-                    </FormGroup>
-                    <FormGroup label="NEW (v3)">
-                        <input
-                            type="number"
-                            name="counts.newV3"
-                            bind:value={$appState.counts.newV3}
-                            class={inputClasses}
-                            
-                        />
-                        <p class="text-xs text-gray-400">Experimental algorithm for data gathering.</p>
-                    </FormGroup>
-                    <FormGroup label="TG1">
-                        <input
-                            type="number"
-                            name="counts.tg1"
-                            bind:value={$appState.counts.tg1}
-                            class={inputClasses}
-                            
-                        />
-                        <p class="text-xs text-gray-400">Inserts one stable motif at a random position within the serial's safe zone.</p>
-                    </FormGroup>
-                    <FormGroup label="TG2">
-                        <input
-                            type="number"
-                            name="counts.tg2"
-                            bind:value={$appState.counts.tg2}
-                            class={inputClasses}
-                            
-                        />
-                        <p class="text-xs text-gray-400">Inserts two stable motifs at random positions within the serial's safe zone.</p>
-                    </FormGroup>
-                    <FormGroup label="TG3">
-                        <input
-                            type="number"
-                            name="counts.tg3"
-                            bind:value={$appState.counts.tg3}
-                            class={inputClasses}
-                            
-                        />
-                        <p class="text-xs text-gray-400">Injects a repeating high-value part at the end of the serial.</p>
-                    </FormGroup>
-                    <FormGroup label="TG4">
-                        <input
-                            type="number"
-                            name="counts.tg4"
-                            bind:value={$appState.counts.tg4}
-                            class={inputClasses}
-                            
-                        />
-                        <p class="text-xs text-gray-400">Overwrites a large part of the serial with a random chunk from the repository.</p>
-                    </FormGroup>
-                </div>
-            </Accordion>
-        </div>
-        <div class="flex flex-col gap-4">
             <Accordion title="🧬 Mutation Rules" open={true}>
                 <FormGroup label="Item Type">
                     <select name="itemType" bind:value={$appState.itemType} class={inputClasses} >
@@ -591,6 +505,99 @@
                     />
                 </FormGroup>
             </Accordion>
+            <Accordion title="🔢 Output Counts" open={true}>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <FormGroup label="NEW (v0)">
+                        <input
+                            type="number"
+                            name="counts.new"
+                            bind:value={$appState.counts.new}
+                            class={inputClasses}
+                            
+                        />
+                        <p class="text-xs text-gray-400">Randomly appends characters to the base seed.</p>
+                    </FormGroup>
+                    <FormGroup label="NEW (v1)">
+                        <input
+                            type="number"
+                            name="counts.newV1"
+                            bind:value={$appState.counts.newV1}
+                            class={inputClasses}
+                            
+                        />
+                        <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (full alphabet).</p>
+                    </FormGroup>
+                    <FormGroup label="NEW (v2)">
+                        <input
+                            type="number"
+                            name="counts.newV2"
+                            bind:value={$appState.counts.newV2}
+                            class={inputClasses}
+                            
+                        />
+                        <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (restricted alphabet).</p>
+                    </FormGroup>
+                    <FormGroup label="NEW (v3)">
+                        <input
+                            type="number"
+                            name="counts.newV3"
+                            bind:value={$appState.counts.newV3}
+                            class={inputClasses}
+                            
+                        />
+                        <p class="text-xs text-gray-400">Experimental algorithm for data gathering.</p>
+                    </FormGroup>
+                    <FormGroup label="TG1">
+                        <input
+                            type="number"
+                            name="counts.tg1"
+                            bind:value={$appState.counts.tg1}
+                            class={inputClasses}
+                            
+                        />
+                        <p class="text-xs text-gray-400">Inserts one stable motif at a random position within the serial's safe zone.</p>
+                    </FormGroup>
+                    <FormGroup label="TG2">
+                        <input
+                            type="number"
+                            name="counts.tg2"
+                            bind:value={$appState.counts.tg2}
+                            class={inputClasses}
+                            
+                        />
+                        <p class="text-xs text-gray-400">Inserts two stable motifs at random positions within the serial's safe zone.</p>
+                    </FormGroup>
+                    <FormGroup label="TG3">
+                        <input
+                            type="number"
+                            name="counts.tg3"
+                            bind:value={$appState.counts.tg3}
+                            class={inputClasses}
+                            
+                        />
+                        <p class="text-xs text-gray-400">Injects a repeating high-value part at the end of the serial.</p>
+                    </FormGroup>
+                    <FormGroup label="TG4">
+                        <input
+                            type="number"
+                            name="counts.tg4"
+                            bind:value={$appState.counts.tg4}
+                            class={inputClasses}
+                            
+                        />
+                        <p class="text-xs text-gray-400">Overwrites a large part of the serial with a random chunk from the repository.</p>
+                    </FormGroup>
+                </div>
+            </Accordion>
+        </div>
+        <div class="flex flex-col gap-4">
+            <Accordion title="📊 Statistics">
+                <div class="overflow-x-auto">
+                    <div id="chartContainer" style="position: relative; height: 400px;">
+                        <canvas id="statsChart"></canvas>
+                    </div>
+                </div>
+            </Accordion>
             <Accordion title="✔️ Filtering">
                 <FormGroup label="Characters to Filter">
                     <input
@@ -625,46 +632,6 @@
                         {$validationResult}
                     </div>
                 {/if}
-            </Accordion>
-            {#each $serialEditors as editor (editor.id)}
-                {@const title = `⚙️ Serial Editor #${editor.id}`}
-                <Accordion {title} open={true}>
-                    <SerialEditor />
-                    {#snippet actions()}
-                        <button
-                            onclick={() => removeSerialEditor(editor.id)}
-                            class="text-gray-400 hover:text-white transition-colors"
-                            aria-label="Remove Serial Editor"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-5 h-5"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M6 18L18 6M6 6l12 12"
-                                ></path>
-                            </svg>
-                        </button>
-                    {/snippet}
-                </Accordion>
-            {/each}
-            <div class="flex justify-end">
-                <button onclick={addSerialEditor} class="{btnClasses.tertiary} mb-4">+ Add Serial Editor</button>
-            </div>
-        </div>
-        <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
-            <Accordion title="📊 Statistics">
-                <div class="overflow-x-auto">
-                    <div id="chartContainer" style="position: relative; height: 400px;">
-                        <canvas id="statsChart"></canvas>
-                    </div>
-                </div>
             </Accordion>
             <div class="bg-gray-800/50 border border-gray-700 rounded-lg flex flex-col flex-grow">
                 <div class="p-4 flex justify-between items-center border-b border-gray-700 flex-wrap">
@@ -737,6 +704,39 @@
                         <div class="bg-blue-600 h-2.5 rounded-full" style="width: {$progress}%;"></div>
                     </div>
                 {/if}
+            </div>
+        </div>
+        <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
+            {#each $serialEditors as editor (editor.id)}
+                {@const title = `⚙️ Serial Editor #${editor.id}`}
+                <Accordion {title} open={true}>
+                    <SerialEditor />
+                    {#snippet actions()}
+                        <button
+                            onclick={() => removeSerialEditor(editor.id)}
+                            class="text-gray-400 hover:text-white transition-colors"
+                            aria-label="Remove Serial Editor"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-5 h-5"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M6 18L18 6M6 6l12 12"
+                                ></path>
+                            </svg>
+                        </button>
+                    {/snippet}
+                </Accordion>
+            {/each}
+            <div class="flex justify-end">
+                <button onclick={addSerialEditor} class="{btnClasses.tertiary} mb-4">+ Add Serial Editor</button>
             </div>
         </div>
     </main>
