@@ -102,7 +102,8 @@
             }
 
             const data = await response.json();
-            const newVariation = data.response.replace(/^[0-9]+\.\s*/, '').trim();
+            const responseText = data.response || data;
+            const newVariation = responseText.replace(/^[0-9]+\.\s*/, '').trim();
             if (newVariation) {
                 aiVariations = [...aiVariations, newVariation];
             }
