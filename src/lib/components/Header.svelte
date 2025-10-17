@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { GithubBrands } from 'svelte-awesome-icons';
 
     let prevScrollpos = 0;
     let top = '0px';
@@ -34,6 +35,7 @@
         </div>
         <div class="flex items-center space-x-4">
             <a href="https://github.com/codebam/serial-mutation-engine" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline text-sm flex items-center gap-1">
+                <GithubBrands class="w-4 h-4" />
                 Source Code
             </a>
         </div>
