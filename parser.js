@@ -11,10 +11,14 @@ class Bitstream {
         return bits;
     }
 
-    readInt(length) {
-        const bits = this.read(length);
+    readHex(length) {
+        let bits = this.read(length);
         if (bits === null) return null;
-        return parseInt(bits, 2);
+        let hex = '';
+        for (let i = 0; i < bits.length; i += 4) {
+            hex += parseInt(bits.substring(i, i + 4), 2).toString(16);
+        }
+        return hex;
     }
 }
 
@@ -35,8 +39,8 @@ function parse_chunk(stream) {
         return null;
     }
 
-    const chunk_data = len_code_bits + stream.read(len - 4);
-    return { len, chunk_data };
+    const chunk_data = stream.readHex(len - 4);
+    return { len_code: len_code, chunk_data };
 }
 
 let input = '';
@@ -46,17 +50,27 @@ process.stdin.on('end', () => {
     const stream = new Bitstream(binary);
 
     const type = stream.read(10);
-    const header = stream.read(78);
+    const header = stream.readHex(78);
     const prefix = stream.read(4);
     
     const chunks = [];
+    let trailer = null;
     while(stream.pos < binary.length) {
         const chunk = parse_chunk(stream);
         if (chunk) {
             chunks.push(chunk);
         } else {
             const remaining = stream.read(binary.length - stream.pos);
-            if (remaining) chunks.push({len: remaining.length, chunk_data: remaining});
+            if (remaining && remaining.length > 0) {
+                let hex = '';
+                for (let i = 0; i < remaining.length; i += 4) {
+                    const segment = remaining.substring(i, i + 4);
+                    if (segment.length > 0) {
+                        hex += parseInt(segment, 2).toString(16);
+                    }
+                }
+                trailer = hex.replace(/\s/g, "");
+            }
             break;
         }
     }
@@ -67,6 +81,9 @@ process.stdin.on('end', () => {
         prefix: prefix,
         chunks: chunks
     };
+    if (trailer) {
+        parsed.trailer = trailer;
+    }
 
     console.log(JSON.stringify(parsed));
 });
