@@ -1,16 +1,16 @@
-function encode(parsed) {
-    let binary = parsed.type;
-    binary += parsed.header;
-    parsed.keys.forEach(kv => {
-        binary += kv.key.toString(2).padStart(4, '0');
-    });
-    return binary;
-}
-
+let lines = [];
 let input = '';
 process.stdin.on('data', chunk => input += chunk);
 process.stdin.on('end', () => {
-    const parsed = JSON.parse(input);
-    const binary = encode(parsed);
+    lines = input.trim().split('\n');
+    const type = lines[0];
+    const header = lines[1];
+    const chunks = lines.slice(2);
+    
+    let binary = type;
+    binary += header;
+    binary += chunks.join('');
+    
     console.log(binary);
 });
+

@@ -27,19 +27,18 @@ process.stdin.on('end', () => {
     const type = stream.read(10);
     const header = stream.read(78);
 
-    const chunks = [];
+    console.log(type);
+    console.log(header);
+
     while(stream.pos < binary.length) {
         const chunk = stream.read(12);
         if (chunk) {
-            chunks.push(chunk);
+            console.log(chunk);
+        } else {
+            const remainingBits = binary.length - stream.pos;
+            if (remainingBits > 0) {
+                console.log(stream.read(remainingBits));
+            }
         }
     }
-
-    const parsed = {
-        type: type,
-        header: header,
-        chunks: chunks
-    };
-
-    console.log(JSON.stringify(parsed, null, 2));
 });

@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 SERIAL="$1"
 ORIGINAL_BINARY=$(node decode.js "$SERIAL")
-echo "Original Binary: $ORIGINAL_BINARY"
-PARSED_JSON=$(echo "$ORIGINAL_BINARY" | node parser.js)
-echo "Parsed JSON: $PARSED_JSON"
-
+PARSED_JSON=$(printf "%s" "$ORIGINAL_BINARY" | node parser.js)
 RECONSTRUCTED_BINARY=$(echo "$PARSED_JSON" | node encoder.js)
 
 # Get the length of the reconstructed binary
