@@ -329,7 +329,7 @@
 
             if (fullYamlBackpack && fullYamlBackpack[1]) {
                 $outputYaml = $baseYaml.replace(/backpack: null/, `backpack:${fullYamlBackpack[1]}`);
-                $statusMessage = 'YAML files merged successfully.';
+                $statusMessage = '✅ YAML files merged successfully.';
             } else {
                 $outputYaml = $baseYaml;
                 $statusMessage = 'Could not find backpack in generated YAML.';
