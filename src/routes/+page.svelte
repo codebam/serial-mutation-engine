@@ -60,7 +60,22 @@
     const liveMerge = writable(true);
     const baseYaml = writable('');
 
-    const deserializedText = writable('312, 0, 1, 50| 2, 3819|| {9} {246:[21 58 50 27 56 56 56 56 56 56 29 26 26 29 26 26 54 38 30 44 48 26 54 29]} {248:27} {8} {8} {8} {8} {8} {8} {8} {13:8} {8} {8} {8} {8} {8} {8}|');
+    const serialEditors = writable([
+        {
+            id: 1,
+            deserializedText:
+                '312, 0, 1, 50| 2, 3819|| {9} {246:[21 58 50 27 56 56 56 56 56 56 29 26 26 29 26 26 54 38 30 44 48 26 54 29]} {248:27} {8} {8} {8} {8} {8} {8} {8} {13:8} {8} {8} {8} {8} {8} {8}|',
+        },
+    ]);
+    let nextSerialEditorId = 2;
+
+    function addSerialEditor() {
+        $serialEditors = [...$serialEditors, { id: nextSerialEditorId++, deserializedText: '' }];
+    }
+
+    function removeSerialEditor(id: number) {
+        $serialEditors = $serialEditors.filter((editor) => editor.id !== id);
+    }
 
     const searchTerm = writable('');
     const copyText = writable('Copy');
@@ -613,7 +628,37 @@
                     </div>
                 {/if}
             </Accordion>
-            <SerialEditor bind:deserializedText={$deserializedText} />
+            <div class="flex justify-end">
+                <button onclick={addSerialEditor} class="{btnClasses.tertiary} mb-4">+ Add Serial Editor</button>
+            </div>
+            {#each $serialEditors as editor (editor.id)}
+                {@const title = `⚙️ Serial Editor #${editor.id}`}
+                <Accordion {title} open={true}>
+                    <SerialEditor bind:deserializedText={editor.deserializedText} />
+                    {#snippet actions()}
+                        <button
+                            onclick={() => removeSerialEditor(editor.id)}
+                            class="text-gray-400 hover:text-white transition-colors"
+                            aria-label="Remove Serial Editor"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-5 h-5"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M6 18L18 6M6 6l12 12"
+                                ></path>
+                            </svg>
+                        </button>
+                    {/snippet}
+                </Accordion>
+            {/each}
         </div>
         <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
             <Accordion title="📊 Statistics">
