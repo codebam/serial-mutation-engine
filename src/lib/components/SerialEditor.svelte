@@ -298,35 +298,6 @@
         selection = { ...selection, [name]: parseInt(value, 10) };
     }
 
-    function modifyBits(modification: string) {
-        const { start, end } = selection;
-        if (start > end) {
-            alert('Start index cannot be greater than end index.');
-            return;
-        }
-        const prefix = modifiedBinary.substring(0, start);
-        const suffix = modifiedBinary.substring(end);
-        const selectedBits = modifiedBinary.substring(start, end);
-        let newBits = '';
-        switch (modification) {
-            case 'zero':
-                newBits = '0'.repeat(selectedBits.length);
-                break;
-            case 'one':
-                newBits = '1'.repeat(selectedBits.length);
-                break;
-            case 'invert':
-                newBits = selectedBits.split('').map(bit => (bit === '0' ? '1' : '0')).join('');
-                break;
-            case 'random':
-                newBits = Array.from({ length: selectedBits.length }, () => Math.round(Math.random())).join('');
-                break;
-            default:
-                newBits = selectedBits;
-        }
-        modifiedBinary = prefix + newBits + suffix;
-    }
-
     $effect(() => {
         if (modifiedBinary) {
             modifiedBase85 = encodeSerial(modifiedBinary);
@@ -404,20 +375,12 @@
                     <input type="number" name="end" bind:value={selection.end} onchange={handleSelectionChange} class={inputClasses} />
                 </FormGroup>
             </div>
-            <div class="grid grid-cols-4 gap-2 mt-2">
-                <button onclick={() => modifyBits('zero')} class={btnClasses.secondary}>Set to 0</button>
-                <button onclick={() => modifyBits('one')} class={btnClasses.secondary}>Set to 1</button>
-                <button onclick={() => modifyBits('invert')} class={btnClasses.secondary}>Invert</button>
-                <button onclick={() => modifyBits('random')} class={btnClasses.secondary}>Randomize</button>
-            </div>
             <h3 class="text-lg font-semibold mt-2">Modified Binary Data</h3>
             <div class="font-mono text-xs p-3 bg-gray-900 border border-gray-700 rounded-md break-all">
                 <span>{modifiedBinary.substring(0, selection.start)}</span
                 ><span class="bg-blue-900 text-blue-300">{modifiedBinary.substring(selection.start, selection.end)}</span
                 ><span>{modifiedBinary.substring(selection.end)}</span>
             </div>
-
-            <button onclick={deserialize} class={btnClasses.secondary}>Deserialize</button>
 
             <h3 class="text-lg font-semibold mt-4">Deserializer/Reserializer</h3>
             <p class="text-sm text-gray-400">
