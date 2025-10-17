@@ -9,7 +9,8 @@ if ! echo "$PARSED_JSON" | nix run nixpkgs#jq . > /dev/null 2>&1; then
     exit 1
 fi
 
-RECONSTRUCTED_BINARY=$(echo "$PARSED_JSON" | node encoder.js)
+RECONSTRUCTED_SERIAL=$(echo "$PARSED_JSON" | node encoder.js)
+RECONSTRUCTED_BINARY=$(node decode.js "$RECONSTRUCTED_SERIAL")
 
 # Get the length of the reconstructed binary
 RECONSTRUCTED_LENGTH=${#RECONSTRUCTED_BINARY}
@@ -23,6 +24,8 @@ else
     echo "Failure: Binaries do not match."
     echo "Original (trimmed):"
     echo "$TRIMMED_ORIGINAL_BINARY"
-    echo "Reconstructed:"
+    echo "Reconstructed Serial:"
+    echo "$RECONSTRUCTED_SERIAL"
+    echo "Reconstructed Binary:"
     echo "$RECONSTRUCTED_BINARY"
 fi

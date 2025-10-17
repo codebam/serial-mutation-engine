@@ -38,10 +38,8 @@ function decodeBase85Bytes(encodedSerial) {
     return decodedBytes;
 }
 
-if (process.argv.length > 2) {
-    const serial = process.argv[2];
-
-    const decodedBytes = decodeBase85Bytes(serial);
+function processSerial(serial) {
+    const decodedBytes = decodeBase85Bytes(serial.trim());
     const mirroredBytes = decodedBytes.map(byte => {
         let mirrored = 0;
         for (let j = 0; j < 8; j++) {
@@ -53,4 +51,14 @@ if (process.argv.length > 2) {
     });
     const mirroredBinary = mirroredBytes.map(b => b.toString(2).padStart(8, '0')).join('');
     console.log(mirroredBinary);
+}
+
+if (process.argv.length > 2) {
+    processSerial(process.argv[2]);
+} else {
+    let input = '';
+    process.stdin.on('data', chunk => input += chunk);
+    process.stdin.on('end', () => {
+        processSerial(input);
+    });
 }
