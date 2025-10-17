@@ -305,7 +305,7 @@
     });
 </script>
 
-<Accordion title="🔧 Serial Editor" open={true}>
+
     <FormGroup label="Serial to Analyze">
         <textarea
             class={`${inputClasses} min-h-[80px]`}
@@ -388,4 +388,4 @@
             {/if}
         </div>
     {/if}
-</Accordion>
+
