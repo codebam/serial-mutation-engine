@@ -63,14 +63,12 @@
     const serialEditors = writable([
         {
             id: 1,
-            deserializedText:
-                '312, 0, 1, 50| 2, 3819|| {9} {246:[21 58 50 27 56 56 56 56 56 56 29 26 26 29 26 26 54 38 30 44 48 26 54 29]} {248:27} {8} {8} {8} {8} {8} {8} {8} {13:8} {8} {8} {8} {8} {8} {8}|',
         },
     ]);
     let nextSerialEditorId = 2;
 
     function addSerialEditor() {
-        $serialEditors = [...$serialEditors, { id: nextSerialEditorId++, deserializedText: '' }];
+        $serialEditors = [...$serialEditors, { id: nextSerialEditorId++ }];
     }
 
     function removeSerialEditor(id: number) {
@@ -631,7 +629,7 @@
             {#each $serialEditors as editor (editor.id)}
                 {@const title = `⚙️ Serial Editor #${editor.id}`}
                 <Accordion {title} open={true}>
-                    <SerialEditor bind:deserializedText={editor.deserializedText} />
+                    <SerialEditor />
                     {#snippet actions()}
                         <button
                             onclick={() => removeSerialEditor(editor.id)}

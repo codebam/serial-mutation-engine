@@ -39,24 +39,25 @@
     let newSerial = $state('');
     let modifiedBase85 = $state('');
 
-    let { deserializedText = $bindable() } = $props();
+    let deserializedText = $state('');
 
-    async function deserialize() {
+    async function deserialize(serialToUse: string) {
         try {
             const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/deserialize", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ serial_b85: serialInput })
+                body: JSON.stringify({ serial_b85: serialToUse })
             });
             const data = await response.json();
             if (data.deserialized) {
                 deserializedText = data.deserialized;
-            } else {
-                alert('Deserialization failed: ' + (data.error || 'Unknown error'));
+                return true;
             }
+            console.error('Deserialization failed: ' + (data.error || 'Unknown error'));
+            return false;
         } catch (error) {
             console.error("Deserialization error:", error);
-            alert('An error occurred during deserialization.');
+            return false;
         }
     }
 
@@ -71,11 +72,10 @@
             if (data.serial_b85) {
                 modifiedBase85 = data.serial_b85;
             } else {
-                alert('Reserialization failed: ' + (data.error || 'Unknown error'));
+                console.error('Reserialization failed: ' + (data.error || 'Unknown error'));
             }
         } catch (error) {
             console.error("Reserialization error:", error);
-            alert('An error occurred during reserialization.');
         }
     }
 
@@ -85,11 +85,16 @@
         secondary: 'py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all',
     };
 
-    function decodeSerial() {
+    async function decodeSerial() {
         serial = serialInput;
         if (!serial.startsWith('@U')) {
-            alert('Invalid serial format. It must start with @U');
+            console.error('Invalid serial format. It must start with @U');
             return;
+        }
+
+        const ok = await deserialize(serialInput);
+        if (!ok) {
+            console.error('Deserialization failed.');
         }
 
         const encoded = serial.substring(2);
@@ -301,6 +306,9 @@
     $effect(() => {
         if (modifiedBinary) {
             modifiedBase85 = encodeSerial(modifiedBinary);
+            if (serial && modifiedBase85 !== serial) {
+                deserialize(modifiedBase85);
+            }
         }
     });
 </script>
