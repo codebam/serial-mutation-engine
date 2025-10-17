@@ -1,6 +1,7 @@
 <script lang="ts">
     import Accordion from './Accordion.svelte';
     import FormGroup from './FormGroup.svelte';
+    import DeserializerOutput from './DeserializerOutput.svelte';
     import { createEventDispatcher } from 'svelte';
     import {
         BASE85_ALPHABET,
@@ -40,7 +41,7 @@
     let newSerial = $state('');
     let modifiedBase85 = $state('');
 
-    let deserializedText = $state('');
+    let { deserializedText } = $props();
     let serialToDeserialize = $state('');
 
     async function deserialize() {
@@ -52,8 +53,7 @@
             });
             const data = await response.json();
             if (data.deserialized) {
-                deserializedText = data.deserialized;
-                dispatch('update', { value: deserializedText });
+                dispatch('update', { value: data.deserialized });
             } else {
                 alert('Deserialization failed: ' + (data.error || 'Unknown error'));
             }
@@ -429,10 +429,12 @@
             <button onclick={deserialize} class={btnClasses.secondary}>Deserialize</button>
 
             <h3 class="text-lg font-semibold mt-4">Deserializer/Reserializer</h3>
+            <DeserializerOutput deserializedText={deserializedText} on:update={(e) => dispatch('update', { value: e.detail.value })} />
             <FormGroup label="Deserialized Text">
                 <textarea
                     class={`${inputClasses} min-h-[120px]`}
-                    bind:value={deserializedText}
+                    value={deserializedText}
+                    oninput={(e) => dispatch('update', { value: e.currentTarget.value })}
                     placeholder="Deserialized output will appear here..."
                 ></textarea>
             </FormGroup>

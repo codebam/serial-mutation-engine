@@ -5,7 +5,6 @@
     import FormGroup from '$lib/components/FormGroup.svelte';
     import MutableRangeSelector from '$lib/components/MutableRangeSelector.svelte';
     import SerialEditor from '$lib/components/SerialEditor.svelte';
-    import DeserializerOutput from '$lib/components/DeserializerOutput.svelte';
     import { Chart, registerables } from 'chart.js';
     Chart.register(...registerables);
 
@@ -614,8 +613,7 @@
                     </div>
                 {/if}
             </Accordion>
-            <SerialEditor on:update={(e) => ($deserializedText = e.detail.value)} />
-            <DeserializerOutput deserializedText={$deserializedText} on:update={(e) => ($deserializedText = e.detail.value)} />
+            <SerialEditor deserializedText={$deserializedText} on:update={(e) => $deserializedText = e.detail.value} />
         </div>
         <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
             <Accordion title="📊 Statistics">
