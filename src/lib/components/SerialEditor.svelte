@@ -60,7 +60,6 @@
             return false;
         }
     }
-
     async function reserialize() {
         try {
             const response = await fetch("https://borderlands4-deserializer.nicnl.com/api/v1/reserialize", {
@@ -306,9 +305,6 @@
     $effect(() => {
         if (modifiedBinary) {
             modifiedBase85 = encodeSerial(modifiedBinary);
-            if (serial && modifiedBase85 !== serial) {
-                deserialize(modifiedBase85);
-            }
         }
     });
 </script>
