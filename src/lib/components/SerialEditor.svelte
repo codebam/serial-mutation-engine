@@ -36,87 +36,74 @@
 
     let deserializedText = $state('');
 
-    let aiVariations: string[] = $state([]);
-    let aiLoading = $state(false);
-    let aiError = $state('');
-    let prompt = $state(`Generate one modified and unique version of the following serialized code. Only modify the values in the last few bracketed sections. Keep the beginning of the code unchanged. Output only the modified code.\n\n\${deserialized_serial}`);
+    function generateVariation() {
+        if (!deserializedText) return;
 
-    const models = [
-        '@cf/aisingapore/gemma-sea-lion-v4-27b-it',
-        '@cf/deepseek/deepseek-r1-distill-qwen-32b',
-        '@cf/google/gemma-3-12b-it',
-        '@cf/ibm-granite/granite-4.0-h-micro',
-        '@cf/meta-llama/meta-llama-3-8b-instruct',
-        '@cf/meta/llama-2-7b-chat-fp16',
-        '@cf/meta/llama-2-7b-chat-int8',
-        '@cf/meta/llama-3.1-70b-instruct',
-        '@cf/meta/llama-3.1-8b-instruct',
-        '@cf/meta/llama-3.1-8b-instruct-awq',
-        '@cf/meta/llama-3.1-8b-instruct-fast',
-        '@cf/meta/llama-3.1-8b-instruct-fp8',
-        '@cf/meta/llama-3.2-1b-instruct',
-        '@cf/meta/llama-3.2-3b-instruct',
-        '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
-        '@cf/meta/llama-3-8b-instruct',
-        '@cf/meta/llama-3-8b-instruct-awq',
-        '@cf/meta/llama-4-scout-17b-16e-instruct',
-        '@cf/microsoft/phi-2',
-        '@cf/mistralai/mistral-7b-instruct-v0.1',
-        '@cf/mistralai/mistral-7b-instruct-v0.2',
-        '@cf/mistralai/mistral-small-3.1-24b-instruct',
-        '@cf/nousresearch/hermes-2-pro-mistral-7b',
-        '@cf/openai/gpt-oss-120b',
-        '@cf/openai/gpt-oss-20b',
-        '@cf/qwen/qwen2.5-coder-32b-instruct',
-        '@cf/qwen/qwq-32b',
-    ];
-    let selectedModel = $state(models[0]);
+        const parts = deserializedText.split(/(\{[^}]*\})/g);
+        let changed = false;
+        let chance = 0.2;
 
-    async function getAIVariations(event: SubmitEvent) {
-        event.preventDefault();
-        aiLoading = true;
-        aiError = '';
-        try {
-            const response = await fetch('/api/ai', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ deserialized_serial: deserializedText, prompt, model: selectedModel })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to fetch AI variations');
-            }
-
-            const data = await response.json();
-            console.log('AI Response:', data);
-            let responseText;
-            if (data.output && Array.isArray(data.output) && data.output.length > 1) {
-                const assistantMessage = data.output[data.output.length - 1];
-                if (assistantMessage.content && Array.isArray(assistantMessage.content) && assistantMessage.content.length > 0) {
-                    const firstContent = assistantMessage.content[0];
-                    if (firstContent && firstContent.text) {
-                        responseText = firstContent.text;
+        const newParts = parts.map(part => {
+            if (part.startsWith('{') && part.endsWith('}')) {
+                const content = part.slice(1, -1);
+                
+                // Handle numeric ranges like {0..2}
+                if (/^\d+\.\.\d+$/.test(content)) {
+                    const [min, max] = content.split('..').map(Number);
+                    if (Math.random() < chance) {
+                        const currentValue = Number(parts[parts.indexOf(part) - 1]);
+                        let newValue = currentValue;
+                        if (Math.random() < 0.5) {
+                            newValue = Math.max(min, currentValue - 1);
+                        } else {
+                            newValue = Math.min(max, currentValue + 1);
+                        }
+                        if (newValue !== currentValue) {
+                            changed = true;
+                            chance = 0.05;
+                            return `{${newValue}}`;
+                        }
+                    }
+                } 
+                // Handle numeric options like {0|1|2}
+                else if (content.includes('|')) {
+                    const options = content.split('|');
+                    const numericOptions = options.map(Number).filter(n => !isNaN(n));
+                    if (numericOptions.length === options.length) {
+                        const currentIndex = numericOptions.indexOf(Number(options[0]));
+                        if (Math.random() < chance) {
+                            const newIndex = Math.random() < 0.5 ? Math.max(0, currentIndex - 1) : Math.min(options.length - 1, currentIndex + 1);
+                            if (newIndex !== currentIndex) {
+                                changed = true;
+                                chance = 0.05;
+                                return `{${options[newIndex]}}`;
+                            }
+                        }
+                    }
+                } 
+                // Handle single numeric values like {5}
+                else if (!isNaN(Number(content))) {
+                    if (Math.random() < chance) {
+                        const currentValue = Number(content);
+                        let newValue = currentValue;
+                        if (Math.random() < 0.5) {
+                            newValue = currentValue - 1;
+                        } else {
+                            newValue = currentValue + 1;
+                        }
+                        if (newValue !== currentValue) {
+                            changed = true;
+                            chance = 0.05;
+                            return `{${newValue}}`;
+                        }
                     }
                 }
-            } else {
-                responseText = data.response || data;
             }
+            return part;
+        });
 
-            if (typeof responseText === 'string') {
-                const newVariation = responseText.replace(/^[0-9]+\.\s*/, '').trim();
-                if (newVariation) {
-                    aiVariations = [...aiVariations, newVariation];
-                }
-            } else {
-                aiError = 'Unexpected AI response format';
-            }
-        } catch (error: any) {
-            aiError = error.message;
-        } finally {
-            aiLoading = false;
+        if (changed) {
+            deserializedText = newParts.join('');
         }
     }
 
@@ -403,60 +390,10 @@
                     placeholder="Deserialized output will appear here..."
                 ></textarea>
             </FormGroup>
-            <button onclick={reserialize} class={btnClasses.secondary}>Reserialize</button>
-
-            <h3 class="text-lg font-semibold mt-4">AI Variations</h3>
-            <p class="text-sm text-gray-400">Use AI to generate variations of your deserialized serial.</p>
-            <form onsubmit={getAIVariations}>
-                <FormGroup label="AI Model">
-                    <select class={inputClasses} bind:value={selectedModel}>
-                        {#each models as model}
-                            <option value={model}>{model}</option>
-                        {/each}
-                    </select>
-                </FormGroup>
-                <FormGroup label="AI Prompt">
-                    <textarea
-                        class={`${inputClasses} min-h-[120px]`}
-                        bind:value={prompt}
-                    ></textarea>
-                </FormGroup>
-                <div class="flex gap-2 mt-2">
-                    <button type="submit" class={btnClasses.primary} disabled={aiLoading}>
-                        {#if aiLoading}
-                            Generating...
-                        {:else}
-                            Get AI Variation
-                        {/if}
-                    </button>
-                </div>
-            </form>
-
-            {#if aiError}
-                <p class="text-red-500 mt-2">{aiError}</p>
-            {/if}
-
-            {#if aiVariations.length > 0}
-                <div class="mt-4 space-y-2">
-                    <h4 class="text-md font-semibold">Generated Variations</h4>
-                    {#each aiVariations as variation, i (i)}
-                        <div class="flex items-center gap-2">
-                            <textarea
-                                class={`${inputClasses} h-16 flex-grow`}
-                                readonly
-                                value={variation}
-                            ></textarea>
-                            <button
-                                type="button"
-                                onclick={() => aiVariations = aiVariations.filter((_, j) => i !== j)}
-                                class="py-1 px-2 text-sm font-medium text-gray-300 bg-red-700 rounded-md hover:bg-red-600 transition-all"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    {/each}
-                </div>
-            {/if}
+            <div class="flex gap-2">
+                <button onclick={reserialize} class={btnClasses.secondary}>Reserialize</button>
+                <button onclick={generateVariation} class={btnClasses.secondary}>Generate Variation</button>
+            </div>
 
             {#if modifiedBase85}
                 <div class="mt-4">
