@@ -15,9 +15,12 @@ export const POST: RequestHandler = async ({ request, platform }) => {
     return json({ error: 'AI binding not found' }, { status: 500 });
   }
 
-  const response = await platform.env.AI.run(model, {
-    prompt: finalPrompt
-  });
-
-  return json(response);
+  try {
+    const response = await platform.env.AI.run(model, {
+      prompt: finalPrompt
+    });
+    return json(response);
+  } catch (e: any) {
+    return json({ error: e.message }, { status: 500 });
+  }
 };

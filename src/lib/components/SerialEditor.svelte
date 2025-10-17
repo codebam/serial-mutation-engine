@@ -42,21 +42,43 @@
     let prompt = $state(`Generate one modified and unique version of the following serialized code. Only modify the values in the last few bracketed sections. Keep the beginning of the code unchanged. Output only the modified code.\n\n\${deserialized_serial}`);
 
     const models = [
-        '@cf/meta/llama-3-8b-instruct',
-        '@cf/mistral/mistral-7b-instruct-v0.1',
+        '@cf/aisingapore/gemma-sea-lion-v4-27b-it',
+        '@cf/deepseek/deepseek-r1-distill-qwen-32b',
+        '@cf/defog/sqlcoder-7b-2',
+        '@cf/google/gemma-2b-it-lora',
+        '@cf/google/gemma-3-12b-it',
         '@cf/google/gemma-7b-it',
-        '@cf/openai/gpt-oss-120b',
-        '@cf/meta/llama-4-scout-17b-16e-instruct',
-        '@cf/deepseek-ai/deepseek-math-7b-instruct',
-        '@cf/google/gemma-2b-it',
+        '@cf/google/gemma-7b-it-lora',
+        '@cf/ibm-granite/granite-4.0-h-micro',
+        '@cf/meta-llama/llama-2-7b-chat-hf-lora',
+        '@cf/meta-llama/meta-llama-3-8b-instruct',
         '@cf/meta/llama-2-7b-chat-fp16',
         '@cf/meta/llama-2-7b-chat-int8',
-        '@cf/mistral/mistral-7b-instruct-v0.2',
-        '@cf/thebloke/codellama-7b-instruct-awq',
-        '@cf/tiiuae/falcon-7b-instruct',
-        '@cf/tinyllama/tinyllama-1.1b-chat-v1.0'
+        '@cf/meta/llama-3.1-70b-instruct',
+        '@cf/meta/llama-3.1-8b-instruct',
+        '@cf/meta/llama-3.1-8b-instruct-awq',
+        '@cf/meta/llama-3.1-8b-instruct-fast',
+        '@cf/meta/llama-3.1-8b-instruct-fp8',
+        '@cf/meta/llama-3.2-11b-vision-instruct',
+        '@cf/meta/llama-3.2-1b-instruct',
+        '@cf/meta/llama-3.2-3b-instruct',
+        '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
+        '@cf/meta/llama-3-8b-instruct',
+        '@cf/meta/llama-3-8b-instruct-awq',
+        '@cf/meta/llama-4-scout-17b-16e-instruct',
+        '@cf/meta/llama-guard-3-8b',
+        '@cf/microsoft/phi-2',
+        '@cf/mistralai/mistral-7b-instruct-v0.1',
+        '@cf/mistralai/mistral-7b-instruct-v0.2',
+        '@cf/mistralai/mistral-7b-instruct-v0.2-lora',
+        '@cf/mistralai/mistral-small-3.1-24b-instruct',
+        '@cf/nousresearch/hermes-2-pro-mistral-7b',
+        '@cf/openai/gpt-oss-120b',
+        '@cf/openai/gpt-oss-20b',
+        '@cf/qwen/qwen2.5-coder-32b-instruct',
+        '@cf/qwen/qwq-32b',
     ];
-    let selectedModel = $state(models[1]);
+    let selectedModel = $state(models[0]);
 
     function clearAIVariations() {
         aiVariations = [];
