@@ -55,8 +55,12 @@ function writeVarInt(value: bigint): string {
 function encode(parsed: any): string {
     let binary = '';
     if (parsed.assets) {
-        for (const assetId of parsed.assets) {
-            binary += writeVarInt(assetId);
+        for (const asset of parsed.assets) {
+            if (typeof asset === 'bigint') {
+                binary += writeVarInt(asset);
+            } else if (typeof asset === 'string') {
+                binary += asset;
+            }
         }
     }
     return binary;

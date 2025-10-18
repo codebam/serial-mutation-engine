@@ -73,12 +73,10 @@ export function parse(binary: string): any {
 
     console.log('stream.pos before loop:', stream.pos);
     console.log('stream.binary.length:', stream.binary.length);
-    while (stream.binary.length - stream.pos >= 8) {
-        try {
-            const assetId = readVarInt(stream);
-            assets.push(assetId);
-        } catch (e) {
-            break;
+    while (stream.binary.length - stream.pos >= 6) {
+        const chunk = stream.read(6);
+        if (chunk) {
+            assets.push(chunk);
         }
     }
     trailer = stream.binary.substring(stream.pos);
