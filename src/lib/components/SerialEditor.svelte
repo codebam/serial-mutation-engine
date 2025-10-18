@@ -141,7 +141,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Assets</h4>
             <FormGroup label="Assets (comma-separated hex)">
-                <input type="text" class="{inputClasses} {assetsError ? 'border-red-500' : ''}" bind:value={assetsString} oninput={handleAssetsInput} />
+                <textarea class="{inputClasses} {assetsError ? 'border-red-500' : ''} min-h-[80px]" bind:value={assetsString} oninput={handleAssetsInput}></textarea>
             </FormGroup>
         </div>
 
