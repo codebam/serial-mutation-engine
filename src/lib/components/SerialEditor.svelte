@@ -38,6 +38,22 @@
         };
     }
 
+    function debounce(func: Function, timeout = 1000){
+        let timer: NodeJS.Timeout;
+        return (...args: any[]) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+
+    const debouncedAnalyzeSerial = debounce(analyzeSerial);
+
+    $effect(() => {
+        if (serialInput) {
+            debouncedAnalyzeSerial();
+        }
+    });
+
 </script>
 
 <FormGroup label="Serial Input">
@@ -47,10 +63,7 @@
         placeholder="Paste serial here..."
     ></textarea>
 </FormGroup>
-<div class="flex gap-2">
-    <button onclick={analyzeSerial} class={btnClasses.primary}>Parse</button>
-    <button onclick={reserialize} class={btnClasses.primary} disabled={!parsedOutput}>Reserialize</button>
-</div>
+
 
 
 {#if parsedOutput}
