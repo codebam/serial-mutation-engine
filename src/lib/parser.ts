@@ -1,4 +1,4 @@
-import { ELEMENT_FLAG, ELEMENTAL_PATTERNS_V2 } from './utils';
+import { ELEMENT_FLAG, ELEMENTAL_PATTERNS_V2, detectItemLevel, MANUFACTURER_PATTERNS } from './utils';
 
 export interface Chunk {
     chunk_type: string;
@@ -107,6 +107,33 @@ export function parse(binary: string): any {
         chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
     }
 
+    // Detect level
+    const [level, level_pos] = detectItemLevel(binary);
+    if (level !== 'Unknown') {
+        parsed.level = {
+            value: level,
+            position: level_pos
+        };
+    }
+
+    // Detect manufacturer
+    for (const [manufacturer, patterns] of Object.entries(MANUFACTURER_PATTERNS)) {
+        for (const pattern of patterns) {
+            const pattern_binary = parseInt(pattern, 16).toString(2).padStart(16, '0');
+            const manufacturerIndex = binary.indexOf(pattern_binary);
+            if (manufacturerIndex !== -1) {
+                parsed.manufacturer = {
+                    name: manufacturer,
+                    pattern: pattern,
+                    position: manufacturerIndex
+                };
+                break;
+            }
+        }
+        if (parsed.manufacturer) {
+            break;
+        }
+    }
 
     return parsed;
 }
