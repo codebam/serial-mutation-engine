@@ -61,17 +61,17 @@ function encode(parsed: any): string {
 
     if (parsed.chunks) {
         parsed.chunks.forEach((c: any) => {
-            if (c.chunk_type === 'element') {
-                binary += ELEMENT_FLAG;
-                binary += c.pattern;
-            } else if (c.chunk_type === 'standard') {
-                binary += c.len_code.toString(2).padStart(4, '0');
-                if (c.chunk_data) {
-                    const chunkBin = hexToBin(c.chunk_data.hex);
-                    binary += chunkBin.substring(0, c.chunk_data.bits);
-                }
+            binary += c.len_code.toString(2).padStart(4, '0');
+            if (c.chunk_data) {
+                const chunkBin = hexToBin(c.chunk_data.hex);
+                binary += chunkBin.substring(0, c.chunk_data.bits);
             }
         });
+    }
+
+    if (parsed.v2_element) {
+        binary += ELEMENT_FLAG;
+        binary += parsed.v2_element.pattern;
     }
 
     if (parsed.trailer_chunks) {

@@ -37,25 +37,6 @@ function readHex(stream: Bitstream, length: number): { hex: string; bits: number
 function parse_chunk(stream: Bitstream): any | null {
     const initialPos = stream.pos;
 
-    // Check for element flag
-    if (stream.binary.substring(initialPos, initialPos + ELEMENT_FLAG.length) === ELEMENT_FLAG) {
-        stream.read(ELEMENT_FLAG.length);
-        const elementPattern = stream.read(8);
-        if (elementPattern) {
-            const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
-            if (foundElement) {
-                return {
-                    chunk_type: 'element',
-                    element: foundElement[0],
-                    pattern: elementPattern
-                };
-            }
-        }
-        // Rewind if not a valid element chunk
-        stream.pos = initialPos;
-    }
-
-    // Check for standard chunks
     const len_code_bits = stream.read(4);
     if (len_code_bits === null) {
         stream.pos = initialPos;
@@ -68,7 +49,7 @@ function parse_chunk(stream: Bitstream): any | null {
     else if (len_code === 10) len = 20;
     else if (len_code === 11) len = 14;
     else {
-        stream.pos = initialPos; // Rewind fully
+        stream.pos = initialPos;
         return null;
     }
 
@@ -100,19 +81,34 @@ export function parse(binary: string): any {
         const chunk = parse_chunk(stream);
         if (chunk) {
             chunks.push(chunk);
-        } else {
-            break;
+            continue;
         }
+
+        // Could not parse a standard chunk. Check for element.
+        if (stream.binary.substring(stream.pos, stream.pos + ELEMENT_FLAG.length) === ELEMENT_FLAG) {
+            stream.read(ELEMENT_FLAG.length);
+            const elementPattern = stream.read(8);
+            if (elementPattern) {
+                const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
+                if (foundElement) {
+                    parsed.v2_element = {
+                        element: foundElement[0],
+                        pattern: elementPattern
+                    };
+                    continue; // Continue parsing
+                }
+            }
+        }
+
+        // If we are here, we could not parse a standard chunk or an element.
+        break;
     }
 
     const remainingBits = stream.read(binary.length - stream.pos);
     if (remainingBits && remainingBits.length > 0) {
         let trailerChunkSize = 16; // Default size
         if (chunks.length > 0) {
-            const totalBits = chunks.reduce((acc, c) => {
-                if (c.chunk_type === 'element') return acc + ELEMENT_FLAG.length + 8;
-                return acc + c.chunk_data.bits + 4;
-            }, 0);
+            const totalBits = chunks.reduce((acc, c) => acc + c.chunk_data.bits + 4, 0);
             trailerChunkSize = Math.round(totalBits / chunks.length);
         }
 

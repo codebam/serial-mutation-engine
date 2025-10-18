@@ -27,11 +27,12 @@
         reserializedOutput = parsedToSerial(parsedOutput);
     }
 
-    function handleElementChange(e: Event, chunk: any) {
+    function handleElementChange(e: Event) {
+        if (!parsedOutput || !parsedOutput.v2_element) return;
         const newElement = (e.target as HTMLSelectElement).value;
         const newPattern = ELEMENTAL_PATTERNS_V2[newElement as keyof typeof ELEMENTAL_PATTERNS_V2];
-        chunk.element = newElement;
-        chunk.pattern = newPattern;
+        parsedOutput.v2_element.element = newElement;
+        parsedOutput.v2_element.pattern = newPattern;
     }
 
 </script>
@@ -68,32 +69,32 @@
             </div>
         </div>
 
+        {#if parsedOutput.v2_element}
+            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+                <h4 class="font-semibold">V2 Element</h4>
+                <FormGroup label="Element">
+                    <select class={inputClasses} onchange={handleElementChange}>
+                        {#each Object.keys(ELEMENTAL_PATTERNS_V2) as element}
+                            <option value={element} selected={element === parsedOutput.v2_element.element}>{element}</option>
+                        {/each}
+                    </select>
+                </FormGroup>
+            </div>
+        {/if}
+
         {#if parsedOutput.chunks && parsedOutput.chunks.length > 0}
             <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
                 <h4 class="font-semibold">Body Chunks</h4>
                 <div class="space-y-2 mt-2">
                     {#each parsedOutput.chunks as chunk, i}
-                        {#if chunk.chunk_type === 'element'}
-                            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
-                                <h4 class="font-semibold">V2 Element</h4>
-                                <FormGroup label="Element">
-                                    <select class={inputClasses} onchange={(e) => handleElementChange(e, chunk)}>
-                                        {#each Object.keys(ELEMENTAL_PATTERNS_V2) as element}
-                                            <option value={element} selected={element === chunk.element}>{element}</option>
-                                        {/each}
-                                    </select>
-                                </FormGroup>
-                            </div>
-                        {:else if chunk.chunk_type === 'standard'}
-                            <div class="flex items-center gap-2">
-                                <FormGroup label={`Len Code ${i}`}>
-                                    <input type="number" class={inputClasses} bind:value={chunk.len_code} />
-                                </FormGroup>
-                                <FormGroup label={`Chunk Data ${i} (hex)`}>
-                                    <input type="text" class={inputClasses} bind:value={chunk.chunk_data.hex} />
-                                </FormGroup>
-                            </div>
-                        {/if}
+                        <div class="flex items-center gap-2">
+                            <FormGroup label={`Len Code ${i}`}>
+                                <input type="number" class={inputClasses} bind:value={chunk.len_code} />
+                            </FormGroup>
+                            <FormGroup label={`Chunk Data ${i} (hex)`}>
+                                <input type="text" class={inputClasses} bind:value={chunk.chunk_data.hex} />
+                            </FormGroup>
+                        </div>
                     {/each}
                 </div>
             </div>
