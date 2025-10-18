@@ -41,4 +41,11 @@ describe('parser', () => {
         expect(parsed.chunks.length).toBe(1);
         expect(parsed.chunks[0].chunk_data.bits).toBe('0'.repeat(8));
     });
+
+    it('should correctly identify the element from a complex serial', () => {
+        const serial = '@Ugydj=2}TYg41n&T3U#PNHEPIE8dOQtNYqSJ7*r @!7}Pn`NYqT!NYqT!NYqT!NYqSJE>xm!p;DqoqDrE/pzfglphBT?q1vGmm8e{(Kd3mUbf{aXTc}&8Tc}&8Tc}&8Tc}&8Tc}&8Td1QRXi<w=)S?!(s6{PmQHMIzp$>JZLq#+$E-o%EA}%g2E-o%6A}%g2E-nrL';
+        const binary = serialToBinary(serial);
+        const parsed = parse(binary);
+        expect(parsed.v2_element.element).toBe('FIRE');
+    });
 });
