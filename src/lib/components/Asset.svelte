@@ -1,28 +1,35 @@
 <script lang="ts">
-	export let value: number;
-	export let onUpdate: (newValue: number) => void;
-	export let color: string = 'bg-gray-100'; // Default color
+	let { value, onUpdate, color = 'bg-gray-100' } = $props<{
+		value: number;
+		onUpdate: (newValue: number) => void;
+		color?: string;
+	}>();
 
-	function handleInput(e: Event) {
-		const target = e.target as HTMLDivElement;
-		const newValue = parseInt(target.textContent || '0', 10);
+	let localValue = $state(value.toString());
+
+	function handleChange() {
+		const newValue = parseInt(localValue, 10);
 		if (!isNaN(newValue)) {
 			if (onUpdate) {
 				onUpdate(newValue);
 			}
 		} else {
-			target.textContent = '0';
-			if (onUpdate) {
-				onUpdate(0);
-			}
-		}
+            if (onUpdate) {
+                onUpdate(0);
+            }
+        }
 	}
+
+    $effect(() => {
+        if (value.toString() !== localValue) {
+            localValue = value.toString();
+        }
+    });
 </script>
 
-<div
-	contenteditable="true"
-	oninput={handleInput}
-	class={`border border-gray-300 p-2.5 cursor-move min-w-[40px] text-center ${color} text-black`}
->
-	{value}
-</div>
+<input
+	type="text"
+	bind:value={localValue}
+	onchange={handleChange}
+	class={`border border-gray-300 p-2.5 cursor-move min-w-[40px] text-center ${color} text-black w-16`}
+/>

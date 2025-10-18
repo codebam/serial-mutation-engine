@@ -19,6 +19,18 @@
         'bg-red-300', 'bg-green-300', 'bg-blue-300', 'bg-yellow-300', 'bg-purple-300', 'bg-pink-300',
     ];
 
+    const colorMap = new Map<number, string>();
+    let colorIndex = 0;
+
+    function getColorForAsset(value: number): string {
+        if (!colorMap.has(value)) {
+            const color = assetColors[colorIndex % assetColors.length];
+            colorMap.set(value, color);
+            colorIndex++;
+        }
+        return colorMap.get(value)!;
+    }
+
     function bitsToHex(bits: string): string {
         let hex = '';
         for (let i = 0; i < bits.length; i += 4) {
@@ -104,13 +116,14 @@
 
     let assetsWithIds = $state<{ id: number; value: number }[]>([]);
     let assetIdCounter = 0;
+    let isUpdatingFromAssets = false;
 
     $effect(() => {
         if (serialInput) {
             debouncedAnalyzeSerial();
         }
 
-        if (parsedOutput) {
+        if (parsedOutput && !isUpdatingFromAssets) {
             assetsWithIds = parsedOutput.assets
                 .map((asset: string) => {
                     if (asset === '') return null;
@@ -124,8 +137,10 @@
 
     function updateParsedAssets() {
         if (parsedOutput) {
+            isUpdatingFromAssets = true;
             parsedOutput.assets = assetsWithIds.map(a => a.value.toString(2).padStart(6, '0'));
             updateSerial();
+            isUpdatingFromAssets = false;
         }
     }
 
@@ -211,7 +226,7 @@
                         <Asset 
                             value={asset.value} 
                             onUpdate={(newValue) => updateAsset(asset.id, newValue)} 
-                            color={assetColors[i % assetColors.length]}
+                            color={getColorForAsset(asset.value)}
                         />
                     </div>
                 {/each}
