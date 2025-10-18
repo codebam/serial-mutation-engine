@@ -65,9 +65,19 @@ function encode(parsed) {
         }
     });
 
-    if (parsed.trailer) {
-        const trailerBin = hexToBin(parsed.trailer.hex);
-        binary += trailerBin.substring(0, parsed.trailer.bits);
+    if (parsed.trailer_chunks) {
+        parsed.trailer_chunks.forEach(c => {
+            if (c.len_code === 'raw') {
+                const chunkBin = hexToBin(c.chunk_data.hex);
+                binary += chunkBin.substring(0, c.chunk_data.bits);
+            } else {
+                binary += c.len_code.toString(2).padStart(4, '0');
+                if (c.chunk_data) {
+                    const chunkBin = hexToBin(c.chunk_data.hex);
+                    binary += chunkBin.substring(0, c.chunk_data.bits);
+                }
+            }
+        });
     }
 
     return binary;
