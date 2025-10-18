@@ -32,7 +32,15 @@ function parse_chunk(stream: Bitstream): { success: boolean; chunk: any | null }
     }
     const len_code = parseInt(len_code_bits, 2);
 
-    let len = 36;
+    let len = 0;
+    if (len_code === 2 || len_code === 4) len = 36;
+    else if (len_code === 5) len = 12;
+    else if (len_code === 10) len = 20;
+    else if (len_code === 11) len = 14;
+    else {
+        stream.pos = initialPos;
+        return { success: false, chunk: null };
+    }
 
     if (stream.pos + (len - 4) > stream.binary.length) {
         stream.pos = initialPos;
@@ -84,6 +92,11 @@ export function parse(binary: string): any {
         } else {
             break;
         }
+    }
+
+    const rawBits = remainingBinary.substring(chunkStream.pos);
+    if (rawBits.length > 0) {
+        chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
     }
 
 

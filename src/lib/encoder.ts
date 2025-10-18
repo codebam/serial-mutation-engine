@@ -50,14 +50,6 @@ function encode(parsed: any): string {
         });
     }
 
-    if (parsed.v2_element) {
-        const elementPart = ELEMENT_FLAG + parsed.v2_element.pattern;
-        const position = parsed.v2_element.position;
-        binary = binary.slice(0, position) + elementPart + binary.slice(position);
-    }
-
-
-
     if (parsed.trailer_chunks) {
         parsed.trailer_chunks.forEach((c: any) => {
             if (c.chunk_type === 'raw') {
@@ -84,6 +76,11 @@ export function parsedToSerial(parsed: any): string {
     }
 
     binary += encode(parsed);
+
+    if (parsed.v2_element) {
+        const elementPart = ELEMENT_FLAG + parsed.v2_element.pattern;
+        binary = binary.slice(0, 92 + parsed.v2_element.position) + elementPart + binary.slice(92 + parsed.v2_element.position);
+    }
 
     const bytes: number[] = [];
     for (let i = 0; i < binary.length; i += 8) {
