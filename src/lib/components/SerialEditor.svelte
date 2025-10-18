@@ -19,12 +19,13 @@
         const binary = serialToBinary(serialInput);
         const parsed = parse(binary);
         parsedOutput = parsed;
-        reserializedOutput = '';
+        reserialize();
     }
 
     function reserialize() {
         if (!parsedOutput) return;
-        reserializedOutput = parsedToSerial(parsedOutput);
+        const reserialized = parsedToSerial(parsedOutput);
+        serialInput = reserialized;
     }
 
     function handleElementChange(e: Event) {
@@ -51,6 +52,12 @@
     $effect(() => {
         if (serialInput) {
             debouncedAnalyzeSerial();
+        }
+    });
+
+    $effect(() => {
+        if (parsedOutput) {
+            reserialize();
         }
     });
 
@@ -134,12 +141,5 @@
             </div>
         {/if}
 
-    </div>
-{/if}
-
-{#if reserializedOutput}
-    <div class="mt-4">
-        <h3 class="text-lg font-semibold">Reserialized Output</h3>
-        <textarea class={`${inputClasses} h-24`} readonly bind:value={reserializedOutput}></textarea>
     </div>
 {/if}
