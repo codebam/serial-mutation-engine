@@ -32,7 +32,7 @@
     }
 
     let preambleHex = $derived(parsedOutput ? bitsToHex(parsedOutput.preamble) : '');
-    let assetsString = $derived(parsedOutput ? parsedOutput.assets.join(', ') : '');
+    let assetsString = $derived(parsedOutput ? parsedOutput.assets.map(asset => parseInt(asset, 2).toString(16)).join(', ') : '');
     let trailerHex = $derived(parsedOutput ? bitsToHex(parsedOutput.trailer) : '');
 
     function analyzeSerial() {
@@ -45,6 +45,23 @@
     function updateSerial() {
         const newSerial = parsedToSerial(parsedOutput);
         serialInput = newSerial;
+    }
+
+    let assetsError = $state(false);
+
+    function handleAssetsInput(e: Event) {
+        const value = (e.target as HTMLInputElement).value;
+        try {
+            parsedOutput.assets = value.split(',').map(s => {
+                const trimmed = s.trim();
+                if (trimmed === '') return '';
+                return parseInt(trimmed, 16).toString(2).padStart(6, '0');
+            });
+            assetsError = false;
+            updateSerial();
+        } catch (error) {
+            assetsError = true;
+        }
     }
 
     function reserialize() {
@@ -123,8 +140,8 @@
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Assets</h4>
-            <FormGroup label="Assets (comma-separated)">
-                <input type="text" class={inputClasses} bind:value={assetsString} oninput={(e) => { parsedOutput.assets = e.currentTarget.value.split(',').map(s => BigInt(s.trim())); updateSerial(); }} />
+            <FormGroup label="Assets (comma-separated hex)">
+                <input type="text" class="{inputClasses} {assetsError ? 'border-red-500' : ''}" bind:value={assetsString} oninput={handleAssetsInput} />
             </FormGroup>
         </div>
 
