@@ -64,37 +64,51 @@ export function parse(binary: string): any {
     const assets: number[] = [];
     let trailer: string = '';
 
-    if (serial_type === 'TYPE A') {
-        const first12Bytes = binary.substring(10, 106);
-        const markerIndex = first12Bytes.indexOf('00100010');
-
-        if (markerIndex !== -1) {
-            const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
-            preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
-            stream.pos = 10 + markerIndex + 16 + headerSizeInBits;
-        } else {
-            preamble = binary.substring(0, 92);
-            stream.pos = 92;
-        }
-
-        console.log('stream.pos before loop:', stream.pos);
-        while (stream.binary.length - stream.pos >= 8) {
-            try {
-                const assetId = readVarInt(stream);
-                assets.push(assetId);
-            } catch (e) {
-                console.error(e);
-                break;
-            }
-        }
-        console.log('stream.pos after loop:', stream.pos);
-        trailer = stream.binary.substring(stream.pos);
-    } else {
-        preamble = binary.substring(0, 92);
-        stream.pos = 92;
-        trailer = stream.binary.substring(stream.pos);
-    }
+        if (serial_type === 'TYPE A') {
     
+            const first12Bytes = binary.substring(10, 106);
+    
+            const markerIndex = first12Bytes.indexOf('00100010');
+    
+    
+    
+            if (markerIndex !== -1) {
+    
+                const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
+    
+                preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
+    
+                stream.pos = 10 + markerIndex + 16 + headerSizeInBits;
+    
+            } else {
+    
+                preamble = binary.substring(0, 92);
+    
+                stream.pos = 92;
+    
+            }
+    
+    
+    
+            while (stream.binary.length - stream.pos >= 8) {
+                try {
+                    const assetId = readVarInt(stream);
+                    assets.push(assetId);
+                } catch (e) {
+                    break;
+                }
+            }
+            trailer = stream.binary.substring(stream.pos);
+    
+        } else {
+    
+            preamble = binary.substring(0, 92);
+    
+            stream.pos = 92;
+    
+            trailer = stream.binary.substring(stream.pos);
+    
+        }    
     const parsed: any = {
         serial_type: serial_type,
         preamble: preamble,
@@ -109,6 +123,25 @@ export function parse(binary: string): any {
             value: level,
             position: level_pos
         };
+    }
+
+    // Detect manufacturer
+    for (const [manufacturer, patterns] of Object.entries(MANUFACTURER_PATTERNS)) {
+        for (const pattern of patterns) {
+            const pattern_binary = parseInt(pattern, 16).toString(2).padStart(16, '0');
+            const manufacturerIndex = binary.indexOf(pattern_binary);
+            if (manufacturerIndex !== -1) {
+                parsed.manufacturer = {
+                    name: manufacturer,
+                    pattern: pattern,
+                    position: manufacturerIndex
+                };
+                break;
+            }
+        }
+        if (parsed.manufacturer) {
+            break;
+        }
     }
 
     return parsed;

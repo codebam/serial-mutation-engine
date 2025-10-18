@@ -40,7 +40,6 @@ function decodeBase85Bytes(encodedSerial: string): number[] {
 
 export function serialToBinary(serial: string): string {
     const decodedBytes = decodeBase85Bytes(serial.trim());
-    console.log('decodedBytes length:', decodedBytes.length);
     const mirroredBytes = decodedBytes.map(byte => {
         let mirrored = 0;
         for (let j = 0; j < 8; j++) {
@@ -50,8 +49,5 @@ export function serialToBinary(serial: string): string {
         }
         return mirrored;
     });
-    console.log('mirroredBytes length:', mirroredBytes.length);
-    const binary = mirroredBytes.map(b => b.toString(2).padStart(8, '0')).join('');
-    console.log('binary length in serialToBinary:', binary.length);
-    return binary;
+    return mirroredBytes.map(b => b.toString(2).padStart(8, '0')).join('');
 }
