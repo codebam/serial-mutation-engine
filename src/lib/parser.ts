@@ -82,11 +82,10 @@ export function parse(binary: string): any {
             if (elementPattern) {
                 const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
                 if (foundElement) {
-                    chunks.push({
-                        chunk_type: 'v2_element',
+                    parsed.v2_element = {
                         element: foundElement[0],
                         pattern: elementPattern
-                    });
+                    };
                 }
             }
             lastPos = chunkStream.pos;
