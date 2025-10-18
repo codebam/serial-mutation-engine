@@ -59,11 +59,11 @@
         };
     }
 
-    function debounce(func: Function, timeout = 1000){
+    function debounce<T extends (...args: any[]) => any>(func: T, timeout = 1000) {
         let timer: NodeJS.Timeout;
-        return (...args: any[]) => {
+        return (...args: Parameters<T>) => {
             clearTimeout(timer);
-            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            timer = setTimeout(() => func(...args), timeout);
         };
     }
 

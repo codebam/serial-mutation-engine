@@ -1,5 +1,13 @@
 import { ELEMENT_FLAG, ELEMENTAL_PATTERNS_V2 } from './utils';
 
+export interface Chunk {
+    chunk_type: string;
+    len_code?: number;
+    chunk_data: {
+        bits: string;
+    } | null;
+}
+
 export class Bitstream {
     binary: string;
     pos: number;
@@ -23,7 +31,7 @@ function readData(stream: Bitstream, length: number): { bits: string } | null {
     return { bits: bits };
 }
 
-function parse_chunk(stream: Bitstream): { success: boolean; chunk: any | null } {
+function parse_chunk(stream: Bitstream): { success: boolean; chunk: Chunk | null } {
     const initialPos = stream.pos;
 
     const len_code_bits = stream.read(4);
@@ -58,7 +66,7 @@ export function parse(binary: string): any {
     const header = readData(stream, 78);
     const prefix = readData(stream, 4);
     
-    const chunks = [];
+    const chunks: Chunk[] = [];
     const parsed: any = {
         type: type,
         header: header,
@@ -87,7 +95,7 @@ export function parse(binary: string): any {
     const chunkStream = new Bitstream(remainingBinary);
     while(chunkStream.pos < remainingBinary.length) {
         const result = parse_chunk(chunkStream);
-        if (result.success) {
+        if (result.success && result.chunk) {
             chunks.push(result.chunk);
         } else {
             break;
