@@ -18,10 +18,11 @@ function encodeBase85Bytes(bytes: number[]): string {
 
     if (i < bytes.length) {
         const remaining = bytes.length - i;
-        let value = 0;
-        for (let j = 0; j < remaining; j++) {
-            value += bytes[i + j] << (8 * (3 - j));
+        const lastChunk = bytes.slice(i);
+        while (lastChunk.length < 4) {
+            lastChunk.push(0);
         }
+        let value = ((lastChunk[0] << 24) >>> 0) + ((lastChunk[1] << 16) >>> 0) + ((lastChunk[2] << 8) >>> 0) + lastChunk[3];
 
         let block = '';
         for (let j = 0; j < 5; j++) {
