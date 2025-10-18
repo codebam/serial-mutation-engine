@@ -146,6 +146,24 @@
         </div>
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+            <h4 class="font-semibold">Manufacturer</h4>
+            <FormGroup label="Manufacturer">
+                <select class={inputClasses} bind:value={parsedOutput.manufacturer.name} onchange={handleManufacturerChange}>
+                    {#each Object.keys(MANUFACTURER_PATTERNS) as manufacturer}
+                        <option value={manufacturer}>{manufacturer}</option>
+                    {/each}
+                </select>
+            </FormGroup>
+        </div>
+
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+            <h4 class="font-semibold">Level</h4>
+            <FormGroup label="Level">
+                <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} oninput={updateSerial} />
+            </FormGroup>
+        </div>
+
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Trailer</h4>
             <FormGroup label="Trailer (hex)">
                 <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => { parsedOutput.trailer = hexToBits(e.currentTarget.value); updateSerial(); }} />

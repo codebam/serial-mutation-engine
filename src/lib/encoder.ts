@@ -1,4 +1,4 @@
-import { ELEMENT_FLAG } from './utils';
+import { ELEMENT_FLAG, MANUFACTURER_PATTERNS } from './utils';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
@@ -64,6 +64,27 @@ function encode(parsed: any): string {
         }
     }
     return binary;
+}
+
+export function updateParsed(parsed: any, updates: any): any {
+    const newParsed = { ...parsed };
+
+    if (updates.manufacturer) {
+        newParsed.manufacturer = {
+            ...newParsed.manufacturer,
+            name: updates.manufacturer,
+            pattern: MANUFACTURER_PATTERNS[updates.manufacturer][0],
+        };
+    }
+
+    if (updates.level) {
+        newParsed.level = {
+            ...newParsed.level,
+            value: updates.level,
+        };
+    }
+
+    return newParsed;
 }
 
 export function parsedToSerial(parsed: any): string {
