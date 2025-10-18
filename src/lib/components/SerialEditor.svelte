@@ -31,8 +31,11 @@
         if (!parsedOutput || !parsedOutput.v2_element) return;
         const newElement = (e.target as HTMLSelectElement).value;
         const newPattern = ELEMENTAL_PATTERNS_V2[newElement as keyof typeof ELEMENTAL_PATTERNS_V2];
-        parsedOutput.v2_element.element = newElement;
-        parsedOutput.v2_element.pattern = newPattern;
+        parsedOutput.v2_element = {
+            ...parsedOutput.v2_element,
+            element: newElement,
+            pattern: newPattern,
+        };
     }
 
 </script>
