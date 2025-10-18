@@ -8,18 +8,15 @@
 
     let serialInput = $state('');
     let parsedOutput = $state<any>(null);
+    let assetsWithIds = $state<{ id: number; value: number }[]>([]);
+    let assetIdCounter = 0;
 
     const inputClasses = 'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
-    const btnClasses = {
-        primary: 'py-3 px-4 w-full font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all disabled:bg-gray-600 disabled:cursor-not-allowed',
-    };
-
     const assetColors = [
         'bg-blue-100', 'bg-blue-200', 'bg-blue-300', 'bg-blue-400', 'bg-blue-500',
         'bg-blue-600', 'bg-sky-200', 'bg-cyan-200', 'bg-teal-200', 'bg-indigo-200',
         'bg-sky-300', 'bg-cyan-300', 'bg-teal-300', 'bg-indigo-300'
     ];
-
     const colorMap = new Map<number, string>();
     let colorIndex = 0;
 
@@ -51,49 +48,34 @@
     }
 
     let preambleHex = $derived(parsedOutput ? bitsToHex(parsedOutput.preamble) : '');
-    let assetsString = $derived(parsedOutput ? parsedOutput.assets.map(asset => parseInt(asset, 2).toString(16)).join(', ') : '');
     let trailerHex = $derived(parsedOutput ? bitsToHex(parsedOutput.trailer) : '');
 
     function analyzeSerial() {
-        if (!serialInput) return;
+        if (!serialInput) {
+            parsedOutput = null;
+            assetsWithIds = [];
+            return;
+        }
         const binary = serialToBinary(serialInput);
         const parsed = parse(binary);
         parsedOutput = parsed;
-    }
 
-    function updateSerial() {
-        if (parsedOutput) {
-            const newSerial = parsedToSerial(parsedOutput);
-            serialInput = newSerial;
+        if (parsed) {
+            assetIdCounter = 0;
+            assetsWithIds = parsed.assets.map((asset: string) => {
+                const value = parseInt(asset, 2);
+                return { id: assetIdCounter++, value: isNaN(value) ? 0 : value };
+            });
+        } else {
+            assetsWithIds = [];
         }
     }
 
-    function reserialize() {
-        if (!parsedOutput) return;
-        console.log('reserializing:', parsedOutput);
-    }
-
-    function handleElementChange(e: Event) {
-        if (!parsedOutput || !parsedOutput.v2_element) return;
-        const newElement = (e.target as HTMLSelectElement).value;
-        const newPattern = ELEMENTAL_PATTERNS_V2[newElement as keyof typeof ELEMENTAL_PATTERNS_V2];
-        parsedOutput.v2_element = {
-            ...parsedOutput.v2_element,
-            element: newElement,
-            pattern: newPattern,
-        };
-    }
-
-    function handleManufacturerChange(e: Event) {
-        if (!parsedOutput || !parsedOutput.manufacturer) return;
-        const newManufacturer = (e.target as HTMLSelectElement).value;
-        const newPattern = MANUFACTURER_PATTERNS[newManufacturer][0];
-        parsedOutput.manufacturer = {
-            ...parsedOutput.manufacturer,
-            name: newManufacturer,
-            pattern: newPattern,
-        };
-        updateSerial();
+    function updateSerialFromAssets() {
+        if (parsedOutput) {
+            parsedOutput.assets = assetsWithIds.map(a => a.value.toString(2).padStart(6, '0'));
+            serialInput = parsedToSerial(parsedOutput);
+        }
     }
 
     function debounce<T extends (...args: any[]) => any>(func: T, timeout = 1000) {
@@ -104,7 +86,12 @@
         };
     }
 
-    const debouncedAnalyzeSerial = debounce(analyzeSerial);
+    const debouncedAnalyzeSerial = debounce(analyzeSerial, 200);
+    const debouncedUpdateSerialFromAssets = debounce(updateSerialFromAssets, 5000);
+
+    $effect(() => {
+        debouncedAnalyzeSerial();
+    });
 
     function handlePaste(event: ClipboardEvent) {
         event.preventDefault();
@@ -115,38 +102,6 @@
         }
     }
 
-    let assetsWithIds = $state<{ id: number; value: number }[]>([]);
-    let assetIdCounter = 0;
-    let isUpdatingFromAssets = false;
-
-    $effect(() => {
-        if (serialInput) {
-            debouncedAnalyzeSerial();
-        }
-
-        if (parsedOutput && !isUpdatingFromAssets) {
-            assetsWithIds = parsedOutput.assets
-                .map((asset: string) => {
-                    if (asset === '') return null;
-                    const value = parseInt(asset, 2);
-                    if (isNaN(value)) return null;
-                    return { id: assetIdCounter++, value };
-                })
-                .filter(Boolean) as { id: number; value: number }[];
-        }
-    });
-
-    function updateParsedAssets() {
-        if (parsedOutput) {
-            isUpdatingFromAssets = true;
-            parsedOutput.assets = assetsWithIds.map(a => a.value.toString(2).padStart(6, '0'));
-            updateSerial();
-            isUpdatingFromAssets = false;
-        }
-    }
-
-    const debouncedUpdateParsedAssets = debounce(updateParsedAssets, 5000);
-
     let dragIndex;
 
     function handleDragStart(index: number) {
@@ -156,20 +111,19 @@
     function handleDrop(index: number) {
         const draggedItem = assetsWithIds.splice(dragIndex, 1)[0];
         assetsWithIds.splice(index, 0, draggedItem);
-        assetsWithIds = [...assetsWithIds]; // Trigger reactivity
-        debouncedUpdateParsedAssets();
+        debouncedUpdateSerialFromAssets();
     }
 
     function addAsset() {
-        assetsWithIds = [...assetsWithIds, { id: assetIdCounter++, value: 0 }];
-        debouncedUpdateParsedAssets();
+        assetsWithIds.push({ id: assetIdCounter++, value: 1 });
+        debouncedUpdateSerialFromAssets();
     }
 
     function updateAsset(id: number, newValue: number) {
         const asset = assetsWithIds.find((a) => a.id === id);
         if (asset) {
             asset.value = newValue;
-            debouncedUpdateParsedAssets();
+            debouncedUpdateSerialFromAssets();
         }
     }
 
@@ -191,7 +145,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Manufacturer</h4>
             <FormGroup label="Manufacturer">
-                <select class={inputClasses} bind:value={parsedOutput.manufacturer.name} onchange={handleManufacturerChange}>
+                <select class={inputClasses} bind:value={parsedOutput.manufacturer.name}>
                     {#each Object.keys(MANUFACTURER_PATTERNS) as manufacturer}
                         <option value={manufacturer}>{manufacturer}</option>
                     {/each}
@@ -202,14 +156,14 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Level</h4>
             <FormGroup label="Level">
-                <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} oninput={updateSerial} />
+                <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} />
             </FormGroup>
         </div>
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Preamble</h4>
             <FormGroup label="Preamble (hex)">
-                <input type="text" class={inputClasses} bind:value={preambleHex} oninput={(e) => { parsedOutput.preamble = hexToBits(e.currentTarget.value); updateSerial(); }} />
+                <input type="text" class={inputClasses} bind:value={preambleHex} oninput={(e) => { parsedOutput.preamble = hexToBits(e.currentTarget.value); }} />
             </FormGroup>
         </div>
 
@@ -235,7 +189,7 @@
                 {/each}
                 <button
                     onclick={addAsset}
-                    class="w-10 h-10 rounded-full border border-gray-300 bg-gray-200 text-2xl cursor-pointer flex justify-center items-center"
+                    class="w-10 h-10 rounded-full border border-gray-300 bg-gray-200 text-2xl cursor-pointer flex justify-center items-center text-black"
                     >+</button
                 >
             </div>
@@ -244,7 +198,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Trailer</h4>
             <FormGroup label="Trailer (hex)">
-                <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => { parsedOutput.trailer = hexToBits(e.currentTarget.value); updateSerial(); }} />
+                <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => { parsedOutput.trailer = hexToBits(e.currentTarget.value); }} />
             </FormGroup>
             {#if trailerHex === ''}
                 <p class="text-xs text-gray-400 mt-2">No trailer bits were found for this serial.</p>
