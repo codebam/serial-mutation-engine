@@ -31,80 +31,74 @@ function readData(stream: Bitstream, length: number): { bits: string } | null {
     return { bits: bits };
 }
 
-function parse_chunk(stream: Bitstream): { success: boolean; chunk: Chunk | null } {
-    const initialPos = stream.pos;
-
-    const len_code_bits = stream.read(4);
-    if (len_code_bits === null) {
-        return { success: false, chunk: null }; // End of stream
+function readVarInt(stream: Bitstream): number {
+    let result = 0;
+    let shift = 0;
+    while (true) {
+        const byte_str = stream.read(5);
+        if (byte_str === null) {
+            throw new Error("Not enough bits to read VarInt");
+        }
+        const byte = parseInt(byte_str, 2);
+        const data = byte & 0b01111;
+        result |= data << shift;
+        shift += 4;
+        if ((byte & 0b10000) === 0) {
+            return result;
+        }
     }
-    const len_code = parseInt(len_code_bits, 2);
-
-    let len = 0;
-    if (len_code === 2 || len_code === 4) len = 36;
-    else if (len_code === 5) len = 12;
-    else if (len_code === 10) len = 20;
-    else if (len_code === 11) len = 14;
-    else {
-        stream.pos = initialPos;
-        return { success: false, chunk: null };
-    }
-
-    if (stream.pos + (len - 4) > stream.binary.length) {
-        stream.pos = initialPos;
-        return { success: false, chunk: null }; // Not enough bits for chunk data
-    }
-
-    const chunk_data = readData(stream, len - 4);
-    return { success: true, chunk: { chunk_type: 'standard', len_code: len_code, chunk_data } };
 }
 
 export function parse(binary: string): any {
     const stream = new Bitstream(binary);
 
-    const type = readData(stream, 10);
-    const header = readData(stream, 78);
-    const prefix = readData(stream, 4);
+    const type_bits = stream.read(10);
+    let serial_type = 'Unknown';
+    if (type_bits === '0010000100') {
+        serial_type = 'TYPE A';
+    } else if (type_bits === '0010000110') {
+        serial_type = 'TYPE B';
+    }
+
+
+    let header: { bits: string } | null = null;
+    let prefix: { bits: string } | null = null;
+
+    if (serial_type === 'TYPE A') {
+        const first12Bytes = binary.substring(10, 106);
+        const markerIndex = first12Bytes.indexOf('00100010');
+
+        if (markerIndex !== -1) {
+            const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
+            stream.pos = 10 + markerIndex + 16;
+            header = readData(stream, headerSizeInBits);
+        } else {
+            header = readData(stream, 78);
+            prefix = readData(stream, 4);
+        }
+    } else {
+        header = readData(stream, 78);
+        prefix = readData(stream, 4);
+    }
     
-    const chunks: Chunk[] = [];
+    const assets: number[] = [];
     const parsed: any = {
-        type: type,
+        type: { bits: type_bits },
         header: header,
         prefix: prefix,
-        chunks: chunks
+        assets: assets
     };
 
-    let remainingBinary = stream.binary.substring(stream.pos);
-
-    // Find and parse the v2_element first
-    const elementIndex = remainingBinary.indexOf(ELEMENT_FLAG);
-    if (elementIndex !== -1) {
-        const elementPattern = remainingBinary.substring(elementIndex + ELEMENT_FLAG.length, elementIndex + ELEMENT_FLAG.length + 8);
-        const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
-        if (foundElement) {
-            parsed.v2_element = {
-                element: foundElement[0],
-                pattern: elementPattern,
-                position: elementIndex
-            };
-            // Reconstruct the remaining binary without the element part
-            remainingBinary = remainingBinary.substring(0, elementIndex) + remainingBinary.substring(elementIndex + ELEMENT_FLAG.length + 8);
+    if (serial_type === 'TYPE A') {
+        while (stream.pos < stream.binary.length) {
+            try {
+                const assetId = readVarInt(stream);
+                assets.push(assetId);
+            } catch (e) {
+                console.error(e);
+                break;
+            }
         }
-    }
-
-    const chunkStream = new Bitstream(remainingBinary);
-    while(chunkStream.pos < remainingBinary.length) {
-        const result = parse_chunk(chunkStream);
-        if (result.success && result.chunk) {
-            chunks.push(result.chunk);
-        } else {
-            break;
-        }
-    }
-
-    const rawBits = remainingBinary.substring(chunkStream.pos);
-    if (rawBits.length > 0) {
-        chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
     }
 
     // Detect level
