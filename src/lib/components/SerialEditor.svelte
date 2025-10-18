@@ -2,7 +2,7 @@
     import { serialToBinary } from '$lib/decode';
     import { parse } from '$lib/parser';
     import { parsedToSerial } from '$lib/encoder';
-    import { ELEMENTAL_PATTERNS_V2 } from '$lib/utils';
+    import { ELEMENTAL_PATTERNS_V2, MANUFACTURER_PATTERNS } from '$lib/utils';
     import FormGroup from './FormGroup.svelte';
 
     let serialInput = $state('');
@@ -59,6 +59,17 @@
         };
     }
 
+    function handleManufacturerChange(e: Event) {
+        if (!parsedOutput || !parsedOutput.manufacturer) return;
+        const newManufacturer = (e.target as HTMLSelectElement).value;
+        const newPattern = MANUFACTURER_PATTERNS[newManufacturer][0];
+        parsedOutput.manufacturer = {
+            ...parsedOutput.manufacturer,
+            name: newManufacturer,
+            pattern: newPattern,
+        };
+    }
+
     function debounce<T extends (...args: any[]) => any>(func: T, timeout = 1000) {
         let timer: NodeJS.Timeout;
         return (...args: Parameters<T>) => {
@@ -108,6 +119,28 @@
                 </FormGroup>
             </div>
         </div>
+
+        {#if parsedOutput.level}
+            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+                <h4 class="font-semibold">Level</h4>
+                <FormGroup label="Level">
+                    <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} />
+                </FormGroup>
+            </div>
+        {/if}
+
+        {#if parsedOutput.manufacturer}
+            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+                <h4 class="font-semibold">Manufacturer</h4>
+                <FormGroup label="Manufacturer">
+                    <select class={inputClasses} onchange={handleManufacturerChange}>
+                        {#each Object.keys(MANUFACTURER_PATTERNS) as manufacturer}
+                            <option value={manufacturer} selected={manufacturer === parsedOutput.manufacturer.name}>{manufacturer}</option>
+                        {/each}
+                    </select>
+                </FormGroup>
+            </div>
+        {/if}
 
         {#if parsedOutput.v2_element}
             <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
