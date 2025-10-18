@@ -10,7 +10,14 @@ describe('parser and encoder', () => {
     it.each(serials)('should parse and encode serial %s, maintaining integrity', (originalSerial) => {
         const binary = serialToBinary(originalSerial);
         const parsed = parse(binary);
-        const newSerial = parsedToSerial(parsed);
-        expect(newSerial).toBe(originalSerial);
-    });
-});
+                const newSerial = parsedToSerial(parsed);
+                expect(newSerial).toBe(originalSerial);
+            });
+        
+            it.each(serials)('should parse a trailer for every serial %s', (originalSerial) => {
+                const binary = serialToBinary(originalSerial);
+                const parsed = parse(binary);
+                expect(typeof parsed.trailer).toBe('string');
+            });
+        });
+        
