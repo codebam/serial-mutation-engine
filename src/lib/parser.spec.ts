@@ -10,8 +10,7 @@ describe('parser and encoder', () => {
         const binary = serialToBinary(originalSerial);
         const parsed = parse(binary);
         const newSerial = parsedToSerial(parsed);
-        const newBinary = serialToBinary(newSerial);
-        expect(newBinary).toBe(binary);
+        expect(newSerial).toBe(originalSerial);
     });
 });
 
