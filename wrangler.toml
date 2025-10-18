@@ -1,5 +1,2 @@
 name = "serial-mutation-engine"
 pages_build_output_dir = "build"
-
-[ai]
-binding = "AI"
