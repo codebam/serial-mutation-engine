@@ -85,7 +85,9 @@ export function parse(binary: string): any {
         }
 
         // Could not parse a standard chunk. Check for element.
-        if (stream.binary.substring(stream.pos, stream.pos + ELEMENT_FLAG.length) === ELEMENT_FLAG) {
+        const elementFlagIndex = stream.binary.indexOf(ELEMENT_FLAG, stream.pos);
+        if (elementFlagIndex !== -1) {
+            stream.pos = elementFlagIndex;
             stream.read(ELEMENT_FLAG.length);
             const elementPattern = stream.read(8);
             if (elementPattern) {
