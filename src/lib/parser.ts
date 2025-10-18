@@ -93,22 +93,30 @@ export function parse(binary: string): any {
     }
 
     // Detect manufacturer
+    const allOccurrences = [];
     for (const [manufacturer, patterns] of Object.entries(MANUFACTURER_PATTERNS)) {
         for (const pattern of patterns) {
             const pattern_binary = parseInt(pattern, 16).toString(2).padStart(16, '0');
-            const manufacturerIndex = binary.indexOf(pattern_binary);
-            if (manufacturerIndex !== -1) {
-                parsed.manufacturer = {
-                    name: manufacturer,
-                    pattern: pattern,
-                    position: manufacturerIndex
-                };
-                break;
+            let fromIndex = 0;
+            while (true) {
+                const index = binary.indexOf(pattern_binary, fromIndex);
+                if (index === -1) {
+                    break;
+                }
+                const score = 100 - Math.floor(index / 10);
+                allOccurrences.push({ name: manufacturer, pattern: pattern, position: index, score: score });
+                fromIndex = index + 1;
             }
         }
-        if (parsed.manufacturer) {
-            break;
-        }
+    }
+
+    if (allOccurrences.length > 0) {
+        const bestMatch = allOccurrences.reduce((best, current) => (current.score > best.score ? current : best));
+        parsed.manufacturer = {
+            name: bestMatch.name,
+            pattern: bestMatch.pattern,
+            position: bestMatch.position
+        };
     }
 
     return parsed;

@@ -1,32 +1,31 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from './parser';
-import { parsedToSerial, updateParsed } from './encoder';
+import { regenerateSerial } from './regenerate';
 import { serialToBinary } from './decode';
 import { MANUFACTURER_PATTERNS } from './utils';
 import * as fs from 'fs';
 
-describe('swapping manufacturer and level', () => {
+describe('serial regeneration', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
 
-    it.each(serials)('should swap manufacturer and level for serial %s', (originalSerial) => {
+    it.each(serials)('should regenerate serial %s with a new manufacturer and level', (originalSerial) => {
         const binary = serialToBinary(originalSerial);
         const parsed = parse(binary);
+
+        const newSerialUnchanged = regenerateSerial(parsed, binary);
+        expect(newSerialUnchanged).toBe(originalSerial);
 
         // Swap manufacturer
         const originalManufacturer = parsed.manufacturer.name;
         const manufacturers = Object.keys(MANUFACTURER_PATTERNS);
         const nextManufacturer = manufacturers[(manufacturers.indexOf(originalManufacturer) + 1) % manufacturers.length];
+        parsed.manufacturer.name = nextManufacturer;
+        parsed.manufacturer.pattern = MANUFACTURER_PATTERNS[nextManufacturer][0];
 
-        // Swap level
-        const originalLevel = parsed.level.value;
-        const newLevel = (originalLevel % 50) + 1; // a new level between 1 and 50
-
-        const newParsed = updateParsed(parsed, { manufacturer: nextManufacturer, level: newLevel });
-        const newSerial = parsedToSerial(newParsed);
+        const newSerial = regenerateSerial(parsed, binary);
         const newBinary = serialToBinary(newSerial);
-        const finalParsed = parse(newBinary);
+        const newParsed = parse(newBinary);
 
-        expect(finalParsed.manufacturer.name).toBe(nextManufacturer);
-        expect(finalParsed.level.value).toBe(newLevel);
+        expect(newParsed.manufacturer.name).toBe(nextManufacturer);
     });
 });

@@ -1,4 +1,4 @@
-import { ELEMENT_FLAG, MANUFACTURER_PATTERNS } from './utils';
+import { MANUFACTURER_PATTERNS } from './utils';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
@@ -35,66 +35,26 @@ function encodeBase85Bytes(bytes: number[]): string {
     return '@U' + encoded;
 }
 
-function writeVarInt(value: bigint): string {
-    if (value === 0n) {
-        return '00000000';
-    }
-    let bits = '';
-    while (value > 0n) {
-        const part = value & 0b01111111n;
-        value >>= 7n;
-        if (value > 0n) {
-            bits += (part | 0b10000000n).toString(2).padStart(8, '0');
-        } else {
-            bits += part.toString(2).padStart(8, '0');
-        }
-    }
-    return bits;
-}
 
-function encode(parsed: any): string {
-    let binary = '';
-    if (parsed.assets) {
-        for (const asset of parsed.assets) {
-            if (typeof asset === 'bigint') {
-                binary += writeVarInt(asset);
-            } else if (typeof asset === 'string') {
-                binary += asset;
-            }
-        }
-    }
-    return binary;
-}
 
-export function parsedToSerial(parsed: any): string {
-    let binary = '';
-    if (parsed.preamble) {
-        binary += parsed.preamble;
-    }
-    binary += encode(parsed);
 
-    if (parsed.trailer) {
-        binary += parsed.trailer;
-    }
+
+export function regenerateSerial(parsed: any, originalBinary: string): string {
+    let binary = originalBinary;
 
     if (parsed.level && parsed.level.position !== undefined) {
         const LEVEL_MARKER = '000000';
         const newLevel = parseInt(parsed.level.value, 10);
-        let levelValueToEncode;
-
-        if (newLevel === 1) {
-            levelValueToEncode = 49;
-        } else if (newLevel === 50) {
-            levelValueToEncode = 50;
-        } else if (newLevel > 1 && newLevel < 50) {
-            levelValueToEncode = newLevel + 48;
-        } else {
-            levelValueToEncode = newLevel;
-        }
+        const levelValueToEncode = newLevel;
         
         const level_bits = levelValueToEncode.toString(2).padStart(8, '0');
-        const level_part = LEVEL_MARKER + level_bits;
-        binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
+        
+        if (binary.substring(parsed.level.position, parsed.level.position + 6) === LEVEL_MARKER) {
+            const level_part = LEVEL_MARKER + level_bits;
+            binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
+        } else {
+            binary = binary.slice(0, parsed.level.position) + level_bits + binary.slice(parsed.level.position + level_bits.length);
+        }
     }
 
     if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
