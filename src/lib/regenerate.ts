@@ -1,4 +1,7 @@
 import { MANUFACTURER_PATTERNS } from './utils';
+import * as fs from 'fs';
+import { parse } from './parser';
+import { serialToBinary } from './decode';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
@@ -35,9 +38,35 @@ function encodeBase85Bytes(bytes: number[]): string {
     return '@U' + encoded;
 }
 
+const manufacturerChunkCache: Record<string, string> = {};
+let cacheInitialized = false;
 
+function initializeCache() {
+    if (cacheInitialized) return;
 
+    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
+    for (const manufacturerName of Object.keys(MANUFACTURER_PATTERNS)) {
+        if (manufacturerChunkCache[manufacturerName]) {
+            continue;
+        }
 
+        for (const serial of serials) {
+            const binary = serialToBinary(serial);
+            const parsed = parse(binary);
+            if (parsed.manufacturer && parsed.manufacturer.name === manufacturerName) {
+                const chunk = binary.substring(parsed.manufacturer.position - 16, parsed.manufacturer.position + 32);
+                manufacturerChunkCache[manufacturerName] = chunk;
+                break;
+            }
+        }
+    }
+    cacheInitialized = true;
+}
+
+function getManufacturerChunk(manufacturerName: string): string | null {
+    initializeCache();
+    return manufacturerChunkCache[manufacturerName] || null;
+}
 
 export function regenerateSerial(parsed: any, originalBinary: string): string {
     let binary = originalBinary;
@@ -58,8 +87,14 @@ export function regenerateSerial(parsed: any, originalBinary: string): string {
     }
 
     if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
-        const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
-        binary = binary.slice(0, parsed.manufacturer.position) + manufacturerPattern + binary.slice(parsed.manufacturer.position + 16);
+        const originalParsed = parse(originalBinary);
+        if (originalParsed.manufacturer.name !== parsed.manufacturer.name) {
+            const newChunk = getManufacturerChunk(parsed.manufacturer.name);
+            if (newChunk) {
+                const oldChunk = originalBinary.substring(parsed.manufacturer.position - 16, parsed.manufacturer.position + 32);
+                binary = binary.replace(oldChunk, newChunk);
+            }
+        }
     }
 
     const bytes: number[] = [];
