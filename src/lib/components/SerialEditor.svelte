@@ -19,13 +19,12 @@
         const binary = serialToBinary(serialInput);
         const parsed = parse(binary);
         parsedOutput = parsed;
-        reserialize();
+        reserializedOutput = '';
     }
 
     function reserialize() {
         if (!parsedOutput) return;
-        const reserialized = parsedToSerial(parsedOutput);
-        serialInput = reserialized;
+        reserializedOutput = parsedToSerial(parsedOutput);
     }
 
     function handleElementChange(e: Event) {
@@ -55,11 +54,7 @@
         }
     });
 
-    $effect(() => {
-        if (parsedOutput) {
-            reserialize();
-        }
-    });
+
 
 </script>
 
@@ -70,6 +65,9 @@
         placeholder="Paste serial here..."
     ></textarea>
 </FormGroup>
+<div class="flex gap-2">
+    <button onclick={reserialize} class={btnClasses.primary} disabled={!parsedOutput}>Reserialize</button>
+</div>
 
 
 
@@ -140,6 +138,12 @@
                 </div>
             </div>
         {/if}
+    </div>
+{/if}
 
+{#if reserializedOutput}
+    <div class="mt-4">
+        <h3 class="text-lg font-semibold">Reserialized Output</h3>
+        <textarea class={`${inputClasses} h-24`} readonly bind:value={reserializedOutput}></textarea>
     </div>
 {/if}
