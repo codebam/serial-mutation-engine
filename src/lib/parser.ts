@@ -65,50 +65,51 @@ export function parse(binary: string): any {
         chunks: chunks
     };
 
-    while(stream.pos < binary.length) {
-        const result = parse_chunk(stream);
-        if (result.success) {
-            chunks.push(result.chunk);
-            continue;
-        }
+    const remainingBinary = stream.binary.substring(stream.pos);
+    const chunkStream = new Bitstream(remainingBinary);
+    let lastPos = 0;
+    while(chunkStream.pos < remainingBinary.length) {
+        const initialPos = chunkStream.pos;
 
-        // Could not parse a standard chunk. Check for element.
-        const remainingBinary = stream.binary.substring(stream.pos);
-        const elementIndex = remainingBinary.indexOf(ELEMENT_FLAG);
-        if (elementIndex !== -1) {
-            // Element found. The bits before the element are trailer chunks.
-            const trailerBits = remainingBinary.substring(0, elementIndex);
-            if (trailerBits.length > 0) {
-                if (!parsed.trailer_chunks) parsed.trailer_chunks = [];
-                parsed.trailer_chunks.push({ chunk_type: 'raw', chunk_data: { bits: trailerBits } });
+        // Check for element first
+        if (remainingBinary.substring(initialPos, initialPos + ELEMENT_FLAG.length) === ELEMENT_FLAG) {
+            if (initialPos > lastPos) {
+                const rawBits = remainingBinary.substring(lastPos, initialPos);
+                chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
             }
-
-            stream.pos += elementIndex;
-            stream.read(ELEMENT_FLAG.length);
-            const elementPattern = stream.read(8);
+            chunkStream.pos += ELEMENT_FLAG.length;
+            const elementPattern = chunkStream.read(8);
             if (elementPattern) {
                 const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
                 if (foundElement) {
-                    parsed.v2_element = {
+                    chunks.push({
+                        chunk_type: 'v2_element',
                         element: foundElement[0],
                         pattern: elementPattern
-                    };
+                    });
                 }
             }
+            lastPos = chunkStream.pos;
+            continue;
         }
 
-        // If we are here, we could not parse a standard chunk or an element.
-        break;
+        const result = parse_chunk(chunkStream);
+        if (result.success) {
+            if (initialPos > lastPos) {
+                const rawBits = remainingBinary.substring(lastPos, initialPos);
+                chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
+            }
+            chunks.push(result.chunk);
+            lastPos = chunkStream.pos;
+        } else {
+            chunkStream.pos = initialPos + 1;
+        }
+    }
+    if (lastPos < remainingBinary.length) {
+        const rawBits = remainingBinary.substring(lastPos);
+        chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
     }
 
-    const remainingBits = stream.read(binary.length - stream.pos);
-    if (remainingBits && remainingBits.length > 0) {
-        const trailerChunks: any[] = [];
-        if (remainingBits.length > 0) {
-            trailerChunks.push({ chunk_type: 'raw', chunk_data: { bits: remainingBits } });
-        }
-        parsed.trailer_chunks = trailerChunks;
-    }
 
     return parsed;
 }

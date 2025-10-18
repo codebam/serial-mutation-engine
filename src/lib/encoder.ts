@@ -50,17 +50,21 @@ function encode(parsed: any): string {
 
     if (parsed.chunks) {
         parsed.chunks.forEach((c: any) => {
-            binary += c.len_code.toString(2).padStart(4, '0');
-            if (c.chunk_data) {
+            if (c.chunk_type === 'standard') {
+                binary += c.len_code.toString(2).padStart(4, '0');
+                if (c.chunk_data) {
+                    binary += c.chunk_data.bits;
+                }
+            } else if (c.chunk_type === 'raw') {
                 binary += c.chunk_data.bits;
+            } else if (c.chunk_type === 'v2_element') {
+                binary += ELEMENT_FLAG;
+                binary += c.pattern;
             }
         });
     }
 
-    if (parsed.v2_element) {
-        binary += ELEMENT_FLAG;
-        binary += parsed.v2_element.pattern;
-    }
+
 
     if (parsed.trailer_chunks) {
         parsed.trailer_chunks.forEach((c: any) => {

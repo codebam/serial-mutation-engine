@@ -37,8 +37,9 @@ describe('parser', () => {
             element: element,
             pattern: elementPattern
         });
-        expect(parsed.chunks.length).toBe(1);
+        expect(parsed.chunks.length).toBe(2);
         expect(parsed.chunks[0].chunk_data.bits).toBe('0'.repeat(8));
+        expect(parsed.chunks[1].chunk_data.bits).toBe('0'.repeat(16));
     });
 
     it('should correctly identify the element from a complex serial', () => {
