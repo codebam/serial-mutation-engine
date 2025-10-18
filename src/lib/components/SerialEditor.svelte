@@ -124,7 +124,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Assets</h4>
             <FormGroup label="Assets (comma-separated)">
-                <input type="text" class={inputClasses} bind:value={assetsString} oninput={(e) => { parsedOutput.assets = e.currentTarget.value.split(',').map(s => parseInt(s.trim())); updateSerial(); }} />
+                <input type="text" class={inputClasses} bind:value={assetsString} oninput={(e) => { parsedOutput.assets = e.currentTarget.value.split(',').map(s => BigInt(s.trim())); updateSerial(); }} />
             </FormGroup>
         </div>
 

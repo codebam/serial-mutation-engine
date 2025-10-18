@@ -31,77 +31,55 @@ function readData(stream: Bitstream, length: number): { bits: string } | null {
     return { bits: bits };
 }
 
-function readVarInt(stream: Bitstream): number {
-    let result = 0;
-    let shift = 0;
+function readVarInt(stream: Bitstream): bigint {
+    let result = 0n;
+    let shift = 0n;
     while (true) {
         const byte_str = stream.read(8);
         if (byte_str === null) {
             throw new Error("Not enough bits to read VarInt");
         }
-        const byte = parseInt(byte_str, 2);
-        const data = byte & 0b01111111;
+        const byte = BigInt(parseInt(byte_str, 2));
+        const data = byte & 0b01111111n;
         result |= data << shift;
-        shift += 7;
-        if ((byte & 0b10000000) === 0) {
+        shift += 7n;
+        if ((byte & 0b10000000n) === 0n) {
             return result;
         }
     }
 }
 
 export function parse(binary: string): any {
-        const stream = new Bitstream(binary);
-    
+    const stream = new Bitstream(binary);
 
-        let preamble: string = '';
+    const type_bits = stream.read(10);
 
-        const assets: number[] = [];
+    let preamble: string = '';
+    const assets: bigint[] = [];
+    let trailer: string = '';
 
-        let trailer: string = '';
+    const first12Bytes = binary.substring(10, 106);
+    const markerIndex = first12Bytes.indexOf('00100010');
 
-    
+    if (markerIndex !== -1) {
+        const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
+        preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
+        stream.pos = 10 + markerIndex + 16 + headerSizeInBits;
+    } else {
+        preamble = binary.substring(0, 92);
+        stream.pos = 92;
+    }
 
-        const first12Bytes = binary.substring(10, 106);
-
-        const markerIndex = first12Bytes.indexOf('00100010');
-
-    
-
-        if (markerIndex !== -1) {
-
-            const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
-
-            preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
-
-            stream.pos = 10 + markerIndex + 16 + headerSizeInBits;
-
-        } else {
-
-            preamble = binary.substring(0, 92);
-
-            stream.pos = 92;
-
+    while (stream.binary.length - stream.pos >= 8) {
+        try {
+            const assetId = readVarInt(stream);
+            assets.push(assetId);
+        } catch (e) {
+            break;
         }
-
+    }
+    trailer = stream.binary.substring(stream.pos);
     
-
-        while (stream.binary.length - stream.pos >= 8) {
-
-            try {
-
-                const assetId = readVarInt(stream);
-
-                assets.push(assetId);
-
-            } catch (e) {
-
-                break;
-
-            }
-
-        }
-
-        trailer = stream.binary.substring(stream.pos);    
     const parsed: any = {
         preamble: preamble,
         assets: assets,

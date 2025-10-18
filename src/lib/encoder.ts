@@ -34,20 +34,21 @@ function encodeBase85Bytes(bytes: number[]): string {
     return '@U' + encoded;
 }
 
-function writeVarInt(value: number): string {
-    if (isNaN(value)) {
-        return '';
+function writeVarInt(value: bigint): string {
+    if (value === 0n) {
+        return '00000000';
     }
     let bits = '';
-    while (true) {
-        const part = value & 0b01111111;
-        value >>= 7;
-        if (value === 0) {
+    while (value > 0n) {
+        const part = value & 0b01111111n;
+        value >>= 7n;
+        if (value > 0n) {
+            bits += (part | 0b10000000n).toString(2).padStart(8, '0');
+        } else {
             bits += part.toString(2).padStart(8, '0');
-            return bits;
         }
-        bits += (part | 0b10000000).toString(2).padStart(8, '0');
     }
+    return bits;
 }
 
 function encode(parsed: any): string {
@@ -61,7 +62,6 @@ function encode(parsed: any): string {
 }
 
 export function parsedToSerial(parsed: any): string {
-    console.log('parsedToSerial received:', parsed);
     let binary = '';
     if (parsed.preamble) {
         binary += parsed.preamble;

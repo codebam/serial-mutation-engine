@@ -3,11 +3,12 @@ import { parse } from './parser';
 import { parsedToSerial } from './encoder';
 import { serialToBinary } from './decode';
 
-describe('parser', () => {
-    it('should correctly classify a TYPE B serial', () => {
-        const serial = '@Ugydj=2}TYg93=h!/NsC0/NqcERG/))s74JLN`oqi8i/^T3WExT3WGX_8i/^T8i/^T8i/^T8i/^T%7seQEmTU>NK{Ew7}OoqA5<t*E>t^Iq7s!0^#>IPl @4_abqjS1bqjS1bqjS1bqjS1bqjS1bqjUW11)M%i(1s87PY8FE$UE*I';
-        const binary = serialToBinary(serial);
+describe('parser and encoder', () => {
+    it('should parse and encode a large serial, maintaining integrity', () => {
+        const originalSerial = '@Ugydj=2}TYg41n&T3U#PNHEPIE8dOQtNYqSJ7*r@!7}Pn`NYqT!NYqT!NYqT!NYqSJE>xm!p;DqoqDrE/pzfglphBT?q1vGmm8e{(Kd3mUbf{aXTc}&8Tc}&8Tc}&8Tc}&8Tc}&8Td1QRXi<w=)S?!(s6{PmQHMIzp$>JZLq#+$E-o%EA}%g2E-o%6A}%g2E-nrL';
+        const binary = serialToBinary(originalSerial);
         const parsed = parse(binary);
-        expect(parsed.serial_type).toBe('TYPE B');
+        const newSerial = parsedToSerial(parsed);
+        expect(newSerial).toBe(originalSerial);
     });
 });
