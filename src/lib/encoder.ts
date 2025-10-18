@@ -34,78 +34,51 @@ function encodeBase85Bytes(bytes: number[]): string {
     return '@U' + encoded;
 }
 
+function writeVarInt(value: number): string {
+    let bits = '';
+    while (true) {
+        const part = value & 0b01111;
+        value >>= 4;
+        if (value === 0) {
+            bits += part.toString(2).padStart(5, '0');
+            return bits;
+        }
+        bits += (part | 0b10000).toString(2).padStart(5, '0');
+    }
+}
+
 function encode(parsed: any): string {
     let binary = '';
-
-    if (parsed.chunks) {
-        parsed.chunks.forEach((c: any) => {
-            if (c.chunk_type === 'standard') {
-                binary += c.len_code.toString(2).padStart(4, '0');
-                if (c.chunk_data) {
-                    binary += c.chunk_data.bits;
-                }
-            } else if (c.chunk_type === 'raw') {
-                binary += c.chunk_data.bits;
-            }
-        });
+    if (parsed.assets) {
+        for (const assetId of parsed.assets) {
+            binary += writeVarInt(assetId);
+        }
     }
-
-    if (parsed.trailer_chunks) {
-        parsed.trailer_chunks.forEach((c: any) => {
-            if (c.chunk_type === 'raw') {
-                binary += c.chunk_data.bits;
-            }
-        });
-    }
-
     return binary;
 }
 
 export function parsedToSerial(parsed: any): string {
     let binary = '';
-    if (parsed.type) {
-        binary += parsed.type.bits;
-    }
-    
-    if (parsed.header) {
-        binary += parsed.header.bits;
+    if (parsed.preamble) {
+        binary += parsed.preamble;
+        console.log('preamble length:', parsed.preamble.length);
     }
 
-    if (parsed.prefix) {
-        binary += parsed.prefix.bits;
+    const encoded_assets = encode(parsed);
+    console.log('encoded assets length:', encoded_assets.length);
+    binary += encoded_assets;
+
+    if (parsed.trailer) {
+        binary += parsed.trailer;
+        console.log('trailer length:', parsed.trailer.length);
     }
+    console.log('binary after encode:', binary);
 
-    binary += encode(parsed);
 
-    if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
-        const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
-        binary = binary.slice(0, parsed.manufacturer.position) + manufacturerPattern + binary.slice(parsed.manufacturer.position + 16);
-    }
 
-    if (parsed.level && parsed.level.position !== undefined) {
-        const LEVEL_MARKER = '000000';
-        const newLevel = parseInt(parsed.level.value, 10);
-        let levelValueToEncode;
 
-        if (newLevel === 1) {
-            levelValueToEncode = 49;
-        } else if (newLevel === 50) {
-            levelValueToEncode = 50;
-        } else if (newLevel > 1 && newLevel < 50) {
-            levelValueToEncode = newLevel + 48;
-        } else {
-            levelValueToEncode = newLevel;
-        }
-        
-        const level_bits = levelValueToEncode.toString(2).padStart(8, '0');
-        const level_part = LEVEL_MARKER + level_bits;
-        binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
-    }
 
-    if (parsed.v2_element) {
-        const elementPart = ELEMENT_FLAG + parsed.v2_element.pattern;
-        binary = binary.slice(0, 92 + parsed.v2_element.position) + elementPart + binary.slice(92 + parsed.v2_element.position);
-    }
+    console.log('binary length:', binary.length);
 
     const bytes: number[] = [];
     for (let i = 0; i < binary.length; i += 8) {

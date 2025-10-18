@@ -50,84 +50,107 @@ function readVarInt(stream: Bitstream): number {
 }
 
 export function parse(binary: string): any {
+
     const stream = new Bitstream(binary);
 
+
+
     const type_bits = stream.read(10);
+
     let serial_type = 'Unknown';
+
     if (type_bits === '0010000100') {
+
         serial_type = 'TYPE A';
+
     } else if (type_bits === '0010000110') {
+
         serial_type = 'TYPE B';
+
     }
 
 
-    let header: { bits: string } | null = null;
-    let prefix: { bits: string } | null = null;
+
+    let preamble: string = '';
+
+    const assets: number[] = [];
+
+    let trailer: string = '';
+
+
 
     if (serial_type === 'TYPE A') {
+
         const first12Bytes = binary.substring(10, 106);
+
         const markerIndex = first12Bytes.indexOf('00100010');
 
+
+
         if (markerIndex !== -1) {
+
             const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
-            stream.pos = 10 + markerIndex + 16;
-            header = readData(stream, headerSizeInBits);
+
+            preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
+
+            stream.pos = 10 + markerIndex + 16 + headerSizeInBits;
+
         } else {
-            header = readData(stream, 78);
-            prefix = readData(stream, 4);
+
+            preamble = binary.substring(0, 92);
+
+            stream.pos = 92;
+
         }
+
+
+
+        while (stream.binary.length - stream.pos >= 5) {
+
+            try {
+
+                const assetId = readVarInt(stream);
+
+                assets.push(assetId);
+
+            } catch (e) {
+
+                break;
+
+            }
+
+                }
+
+                trailer = stream.binary.substring(stream.pos);
+
+                console.log('assets:', assets);
+
+                console.log('trailer:', trailer);
+
     } else {
-        header = readData(stream, 78);
-        prefix = readData(stream, 4);
+
+        preamble = binary.substring(0, 92);
+
+                                trailer = stream.binary.substring(stream.pos);
+
     }
+
     
-    const assets: number[] = [];
+
     const parsed: any = {
-        type: { bits: type_bits },
-        header: header,
-        prefix: prefix,
-        assets: assets
+
+        serial_type: serial_type,
+
+        preamble: preamble,
+
+        assets: assets,
+
+        trailer: trailer
+
     };
 
-    if (serial_type === 'TYPE A') {
-        while (stream.pos < stream.binary.length) {
-            try {
-                const assetId = readVarInt(stream);
-                assets.push(assetId);
-            } catch (e) {
-                console.error(e);
-                break;
-            }
-        }
-    }
 
-    // Detect level
-    const [level, level_pos] = detectItemLevel(binary);
-    if (level !== 'Unknown') {
-        parsed.level = {
-            value: level,
-            position: level_pos
-        };
-    }
-
-    // Detect manufacturer
-    for (const [manufacturer, patterns] of Object.entries(MANUFACTURER_PATTERNS)) {
-        for (const pattern of patterns) {
-            const pattern_binary = parseInt(pattern, 16).toString(2).padStart(16, '0');
-            const manufacturerIndex = binary.indexOf(pattern_binary);
-            if (manufacturerIndex !== -1) {
-                parsed.manufacturer = {
-                    name: manufacturer,
-                    pattern: pattern,
-                    position: manufacturerIndex
-                };
-                break;
-            }
-        }
-        if (parsed.manufacturer) {
-            break;
-        }
-    }
 
     return parsed;
+
 }
