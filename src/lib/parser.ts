@@ -62,17 +62,13 @@ export function parse(binary: string): any {
     const markerIndex = first12Bytes.indexOf('00100010');
 
             if (markerIndex !== -1) {
-                console.log('markerIndex:', markerIndex);
-                const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
-                console.log('headerSizeInBits:', headerSizeInBits);
+                const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2);
                 preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
                 stream.pos = 10 + markerIndex + 16 + headerSizeInBits;    } else {
         preamble = binary.substring(0, 92);
         stream.pos = 92;
     }
 
-    console.log('stream.pos before loop:', stream.pos);
-    console.log('stream.binary.length:', stream.binary.length);
     while (stream.binary.length - stream.pos >= 6) {
         const chunk = stream.read(6);
         if (chunk) {
