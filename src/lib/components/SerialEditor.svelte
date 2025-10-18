@@ -31,9 +31,9 @@
         return bits;
     }
 
-    let typeHex = $derived(parsedOutput ? bitsToHex(parsedOutput.type.bits) : '');
-    let headerHex = $derived(parsedOutput ? bitsToHex(parsedOutput.header.bits) : '');
-    let prefixHex = $derived(parsedOutput ? bitsToHex(parsedOutput.prefix.bits) : '');
+    let preambleHex = $derived(parsedOutput ? bitsToHex(parsedOutput.preamble) : '');
+    let assetsString = $derived(parsedOutput ? parsedOutput.assets.join(', ') : '');
+    let trailerHex = $derived(parsedOutput ? bitsToHex(parsedOutput.trailer) : '');
 
     function analyzeSerial() {
         if (!serialInput) return;
@@ -80,6 +80,15 @@
 
     const debouncedAnalyzeSerial = debounce(analyzeSerial);
 
+    function handlePaste(event: ClipboardEvent) {
+        event.preventDefault();
+        const pastedText = event.clipboardData?.getData('text/plain');
+        if (pastedText) {
+            serialInput = pastedText;
+            analyzeSerial();
+        }
+    }
+
     $effect(() => {
         if (serialInput) {
             debouncedAnalyzeSerial();
@@ -93,6 +102,7 @@
         class={`${inputClasses} min-h-[80px]`}
         bind:value={serialInput}
         placeholder="Paste serial here..."
+        onpaste={analyzeSerial}
     ></textarea>
 </FormGroup>
 
@@ -101,90 +111,25 @@
         <h3 class="text-lg font-semibold">Parsed Parts</h3>
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
-            <h4 class="font-semibold">Header</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                <FormGroup label="Type (hex)">
-                    <input type="text" class={inputClasses} bind:value={typeHex} oninput={(e) => parsedOutput.type.bits = hexToBits(e.currentTarget.value)} />
-                </FormGroup>
-                <FormGroup label="Header (hex)">
-                    <input type="text" class={inputClasses} bind:value={headerHex} oninput={(e) => parsedOutput.header.bits = hexToBits(e.currentTarget.value)} />
-                </FormGroup>
-                <FormGroup label="Prefix (hex)">
-                    <input type="text" class={inputClasses} bind:value={prefixHex} oninput={(e) => parsedOutput.prefix.bits = hexToBits(e.currentTarget.value)} />
-                </FormGroup>
-            </div>
+            <h4 class="font-semibold">Preamble</h4>
+            <FormGroup label="Preamble (hex)">
+                <input type="text" class={inputClasses} bind:value={preambleHex} oninput={(e) => parsedOutput.preamble = hexToBits(e.currentTarget.value)} />
+            </FormGroup>
         </div>
 
-        {#if parsedOutput.level}
-            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
-                <h4 class="font-semibold">Level</h4>
-                <FormGroup label="Level">
-                    <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} />
-                </FormGroup>
-            </div>
-        {/if}
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+            <h4 class="font-semibold">Assets</h4>
+            <FormGroup label="Assets (comma-separated)">
+                <input type="text" class={inputClasses} bind:value={assetsString} oninput={(e) => parsedOutput.assets = e.currentTarget.value.split(',').map(s => parseInt(s.trim()))} />
+            </FormGroup>
+        </div>
 
-        {#if parsedOutput.manufacturer}
-            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
-                <h4 class="font-semibold">Manufacturer</h4>
-                <FormGroup label="Manufacturer">
-                    <select class={inputClasses} onchange={handleManufacturerChange}>
-                        {#each Object.keys(MANUFACTURER_PATTERNS) as manufacturer}
-                            <option value={manufacturer} selected={manufacturer === parsedOutput.manufacturer.name}>{manufacturer}</option>
-                        {/each}
-                    </select>
-                </FormGroup>
-            </div>
-        {/if}
-
-        {#if parsedOutput.v2_element}
-            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
-                <h4 class="font-semibold">V2 Element</h4>
-                <FormGroup label="Element">
-                    <select class={inputClasses} onchange={handleElementChange}>
-                        {#each Object.keys(ELEMENTAL_PATTERNS_V2) as element}
-                            <option value={element} selected={element === parsedOutput.v2_element.element}>{element}</option>
-                        {/each}
-                    </select>
-                </FormGroup>
-            </div>
-        {/if}
-
-        {#if parsedOutput.chunks && parsedOutput.chunks.length > 0}
-            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
-                <h4 class="font-semibold">Body Chunks</h4>
-                <div class="space-y-2 mt-2">
-                    {#each parsedOutput.chunks as chunk, i}
-                        <div class="flex items-center gap-2">
-                            <FormGroup label={`Len Code ${i}`}>
-                                <input type="number" class={inputClasses} bind:value={chunk.len_code} />
-                            </FormGroup>
-                            <FormGroup label={`Chunk Data ${i} (hex)`}>
-                                <input type="text" class={inputClasses} value={bitsToHex(chunk.chunk_data.bits)} oninput={(e) => chunk.chunk_data.bits = hexToBits(e.currentTarget.value)} />
-                            </FormGroup>
-                        </div>
-                    {/each}
-                </div>
-            </div>
-        {/if}
-
-        {#if parsedOutput.trailer_chunks && parsedOutput.trailer_chunks.length > 0}
-            <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
-                <h4 class="font-semibold">Trailer Chunks</h4>
-                <div class="space-y-2 mt-2">
-                    {#each parsedOutput.trailer_chunks as chunk, i}
-                        <div class="flex items-center gap-2">
-                            <FormGroup label={`Chunk Type ${i}`}>
-                                <input type="text" class={inputClasses} bind:value={chunk.chunk_type} disabled />
-                            </FormGroup>
-                            <FormGroup label={`Chunk Data ${i} (hex)`}>
-                                <input type="text" class={inputClasses} value={bitsToHex(chunk.chunk_data.bits)} oninput={(e) => chunk.chunk_data.bits = hexToBits(e.currentTarget.value)} />
-                            </FormGroup>
-                        </div>
-                    {/each}
-                </div>
-            </div>
-        {/if}
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+            <h4 class="font-semibold">Trailer</h4>
+            <FormGroup label="Trailer (hex)">
+                <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => parsedOutput.trailer = hexToBits(e.currentTarget.value)} />
+            </FormGroup>
+        </div>
     </div>
 {/if}
 

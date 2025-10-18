@@ -50,67 +50,59 @@ function readVarInt(stream: Bitstream): number {
 }
 
 export function parse(binary: string): any {
-    const stream = new Bitstream(binary);
+        const stream = new Bitstream(binary);
+    
 
-    const type_bits = stream.read(10);
-    let serial_type = 'Unknown';
-    if (type_bits === '0010000100') {
-        serial_type = 'TYPE A';
-    } else if (type_bits === '0010000110') {
-        serial_type = 'TYPE B';
-    }
+        let preamble: string = '';
 
-    let preamble: string = '';
-    const assets: number[] = [];
-    let trailer: string = '';
+        const assets: number[] = [];
 
-        if (serial_type === 'TYPE A') {
+        let trailer: string = '';
+
     
-            const first12Bytes = binary.substring(10, 106);
+
+        const first12Bytes = binary.substring(10, 106);
+
+        const markerIndex = first12Bytes.indexOf('00100010');
+
     
-            const markerIndex = first12Bytes.indexOf('00100010');
-    
-    
-    
-            if (markerIndex !== -1) {
-    
-                const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
-    
-                preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
-    
-                stream.pos = 10 + markerIndex + 16 + headerSizeInBits;
-    
-            } else {
-    
-                preamble = binary.substring(0, 92);
-    
-                stream.pos = 92;
-    
-            }
-    
-    
-    
-            while (stream.binary.length - stream.pos >= 8) {
-                try {
-                    const assetId = readVarInt(stream);
-                    assets.push(assetId);
-                } catch (e) {
-                    break;
-                }
-            }
-            trailer = stream.binary.substring(stream.pos);
-    
+
+        if (markerIndex !== -1) {
+
+            const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2) * 8;
+
+            preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
+
+            stream.pos = 10 + markerIndex + 16 + headerSizeInBits;
+
         } else {
-    
+
             preamble = binary.substring(0, 92);
-    
+
             stream.pos = 92;
+
+        }
+
     
-            trailer = stream.binary.substring(stream.pos);
-    
-        }    
+
+        while (stream.binary.length - stream.pos >= 8) {
+
+            try {
+
+                const assetId = readVarInt(stream);
+
+                assets.push(assetId);
+
+            } catch (e) {
+
+                break;
+
+            }
+
+        }
+
+        trailer = stream.binary.substring(stream.pos);    
     const parsed: any = {
-        serial_type: serial_type,
         preamble: preamble,
         assets: assets,
         trailer: trailer

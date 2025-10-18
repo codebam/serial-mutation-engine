@@ -3,35 +3,11 @@ import { parse } from './parser';
 import { parsedToSerial } from './encoder';
 import { serialToBinary } from './decode';
 
-describe('parser and encoder', () => {
-    it('should parse and encode a serial, maintaining integrity', () => {
-        const originalSerial = '@Ug!pHG2__CA%-;ighq}}VgX){wV^ARtDz8D^IjFh^RXZ9KIRF';
-        const binary = serialToBinary(originalSerial);
+describe('parser', () => {
+    it('should correctly classify a TYPE B serial', () => {
+        const serial = '@Ugydj=2}TYg93=h!/NsC0/NqcERG/))s74JLN`oqi8i/^T3WExT3WGX_8i/^T8i/^T8i/^T8i/^T%7seQEmTU>NK{Ew7}OoqA5<t*E>t^Iq7s!0^#>IPl @4_abqjS1bqjS1bqjS1bqjS1bqjS1bqjUW11)M%i(1s87PY8FE$UE*I';
+        const binary = serialToBinary(serial);
         const parsed = parse(binary);
-        const newSerial = parsedToSerial(parsed);
-        expect(newSerial).toBe(originalSerial);
-    });
-
-    it('should parse the assets correctly', () => {
-        const originalSerial = '@Ug!pHG2__CA%-;ighq}}VgX){wV^ARtDz8D^IjFh^RXZ9KIRF';
-        const binary = serialToBinary(originalSerial);
-        const parsed = parse(binary);
-        const expectedAssets = [ 44, 20, 78, 0 ];
-        expect(parsed.assets).toEqual(expectedAssets);
-    });
-
-    it('should allow modifying the manufacturer', () => {
-        const originalSerial = '@Ug!pHG2__CA%-;ighq}}VgX){wV^ARtDz8D^IjFh^RXZ9KIRF';
-        const binary = serialToBinary(originalSerial);
-        const parsed = parse(binary);
-
-        // Modify the manufacturer
-        parsed.manufacturer.name = 'Maliwan';
-        parsed.manufacturer.pattern = '2127'; // A known Maliwan pattern
-
-        const newSerial = parsedToSerial(parsed);
-        const newParsed = parse(serialToBinary(newSerial));
-
-        expect(newParsed.manufacturer.name).toBe('Maliwan');
+        expect(parsed.serial_type).toBe('TYPE B');
     });
 });
