@@ -189,7 +189,7 @@
                 {/each}
                 <button
                     onclick={addAsset}
-                    class="w-10 h-10 rounded-full border border-gray-300 bg-gray-200 text-2xl cursor-pointer flex justify-center items-center text-black"
+                    class="border border-gray-300 p-2.5 bg-gray-200 text-2xl cursor-pointer flex justify-center items-center text-black w-16 rounded-md"
                     >+</button
                 >
             </div>
