@@ -95,11 +95,6 @@
         placeholder="Paste serial here..."
     ></textarea>
 </FormGroup>
-<div class="flex gap-2">
-    <button onclick={reserialize} class={btnClasses.primary} disabled={!parsedOutput}>Reserialize</button>
-</div>
-
-
 
 {#if parsedOutput}
     <div class="mt-4 space-y-4">
@@ -192,6 +187,10 @@
         {/if}
     </div>
 {/if}
+
+<div class="flex gap-2">
+    <button onclick={reserialize} class={btnClasses.primary} disabled={!parsedOutput}>Reserialize</button>
+</div>
 
 {#if reserializedOutput}
     <div class="mt-4">
