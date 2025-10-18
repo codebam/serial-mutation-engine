@@ -23,13 +23,12 @@ function readData(stream: Bitstream, length: number): { bits: string } | null {
     return { bits: bits };
 }
 
-function parse_chunk(stream: Bitstream): any | null {
+function parse_chunk(stream: Bitstream): { success: boolean; chunk: any | null } {
     const initialPos = stream.pos;
 
     const len_code_bits = stream.read(4);
     if (len_code_bits === null) {
-        stream.pos = initialPos;
-        return null;
+        return { success: false, chunk: null }; // End of stream
     }
     const len_code = parseInt(len_code_bits, 2);
 
@@ -39,16 +38,16 @@ function parse_chunk(stream: Bitstream): any | null {
     else if (len_code === 11) len = 14;
     else {
         stream.pos = initialPos;
-        return null;
+        return { success: false, chunk: null }; // Invalid len_code
     }
 
     if (stream.pos + (len - 4) > stream.binary.length) {
         stream.pos = initialPos;
-        return null;
+        return { success: false, chunk: null }; // Not enough bits for chunk data
     }
 
     const chunk_data = readData(stream, len - 4);
-    return { chunk_type: 'standard', len_code: len_code, chunk_data };
+    return { success: true, chunk: { chunk_type: 'standard', len_code: len_code, chunk_data } };
 }
 
 export function parse(binary: string): any {
@@ -67,14 +66,24 @@ export function parse(binary: string): any {
     };
 
     while(stream.pos < binary.length) {
-        const chunk = parse_chunk(stream);
-        if (chunk) {
-            chunks.push(chunk);
+        const result = parse_chunk(stream);
+        if (result.success) {
+            chunks.push(result.chunk);
             continue;
         }
 
         // Could not parse a standard chunk. Check for element.
-        if (stream.binary.substring(stream.pos, stream.pos + ELEMENT_FLAG.length) === ELEMENT_FLAG) {
+        const remainingBinary = stream.binary.substring(stream.pos);
+        const elementIndex = remainingBinary.indexOf(ELEMENT_FLAG);
+        if (elementIndex !== -1) {
+            // Element found. The bits before the element are trailer chunks.
+            const trailerBits = remainingBinary.substring(0, elementIndex);
+            if (trailerBits.length > 0) {
+                if (!parsed.trailer_chunks) parsed.trailer_chunks = [];
+                parsed.trailer_chunks.push({ chunk_type: 'raw', chunk_data: { bits: trailerBits } });
+            }
+
+            stream.pos += elementIndex;
             stream.read(ELEMENT_FLAG.length);
             const elementPattern = stream.read(8);
             if (elementPattern) {
@@ -84,7 +93,6 @@ export function parse(binary: string): any {
                         element: foundElement[0],
                         pattern: elementPattern
                     };
-                    break; // Element found, stop parsing standard chunks
                 }
             }
         }
