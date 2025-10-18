@@ -145,6 +145,8 @@
         }
     }
 
+    const debouncedUpdateParsedAssets = debounce(updateParsedAssets, 5000);
+
     let dragIndex;
 
     function handleDragStart(index: number) {
@@ -155,19 +157,19 @@
         const draggedItem = assetsWithIds.splice(dragIndex, 1)[0];
         assetsWithIds.splice(index, 0, draggedItem);
         assetsWithIds = [...assetsWithIds]; // Trigger reactivity
-        updateParsedAssets();
+        debouncedUpdateParsedAssets();
     }
 
     function addAsset() {
         assetsWithIds = [...assetsWithIds, { id: assetIdCounter++, value: 0 }];
-        updateParsedAssets();
+        debouncedUpdateParsedAssets();
     }
 
     function updateAsset(id: number, newValue: number) {
         const asset = assetsWithIds.find((a) => a.id === id);
         if (asset) {
             asset.value = newValue;
-            updateParsedAssets();
+            debouncedUpdateParsedAssets();
         }
     }
 
