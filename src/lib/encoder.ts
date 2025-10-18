@@ -75,103 +75,37 @@ export function parsedToSerial(parsed: any): string {
         binary += parsed.prefix.bits;
     }
 
-        binary += encode(parsed);
+    binary += encode(parsed);
 
-    
+    if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
+        const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
+        binary = binary.slice(0, parsed.manufacturer.position) + manufacturerPattern + binary.slice(parsed.manufacturer.position + 16);
+    }
 
-        if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
+    if (parsed.level && parsed.level.position !== undefined) {
+        const LEVEL_MARKER = '000000';
+        const newLevel = parseInt(parsed.level.value, 10);
+        let levelValueToEncode;
 
-            const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
-
-            binary = binary.slice(0, parsed.manufacturer.position) + manufacturerPattern + binary.slice(parsed.manufacturer.position + 16);
-
+        if (newLevel === 1) {
+            levelValueToEncode = 49;
+        } else if (newLevel === 50) {
+            levelValueToEncode = 50;
+        } else if (newLevel > 1 && newLevel < 50) {
+            levelValueToEncode = newLevel + 48;
+        } else {
+            levelValueToEncode = newLevel;
         }
+        
+        const level_bits = levelValueToEncode.toString(2).padStart(8, '0');
+        const level_part = LEVEL_MARKER + level_bits;
+        binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
+    }
 
-    
-
-                if (parsed.level && parsed.level.position !== undefined) {
-
-    
-
-                    const LEVEL_MARKER = '000000';
-
-    
-
-                    const newLevel = parseInt(parsed.level.value, 10);
-
-    
-
-                    let levelValueToEncode;
-
-    
-
-            
-
-    
-
-                    if (newLevel === 1) {
-
-    
-
-                        levelValueToEncode = 49;
-
-    
-
-                    } else if (newLevel === 50) {
-
-    
-
-                        levelValueToEncode = 50;
-
-    
-
-                                    } else if (newLevel > 1 && newLevel < 50) {
-
-    
-
-                                        levelValueToEncode = newLevel + 48;
-
-    
-
-                                    } else {
-
-    
-
-                        levelValueToEncode = newLevel;
-
-    
-
-                    }
-
-    
-
-                    
-
-    
-
-                    const level_bits = levelValueToEncode.toString(2).padStart(8, '0');
-
-    
-
-                    const level_part = LEVEL_MARKER + level_bits;
-
-    
-
-                    binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
-
-    
-
-                }
-
-    
-
-        if (parsed.v2_element) {
-
-            const elementPart = ELEMENT_FLAG + parsed.v2_element.pattern;
-
-            binary = binary.slice(0, 92 + parsed.v2_element.position) + elementPart + binary.slice(92 + parsed.v2_element.position);
-
-        }
+    if (parsed.v2_element) {
+        const elementPart = ELEMENT_FLAG + parsed.v2_element.pattern;
+        binary = binary.slice(0, 92 + parsed.v2_element.position) + elementPart + binary.slice(92 + parsed.v2_element.position);
+    }
 
     const bytes: number[] = [];
     for (let i = 0; i < binary.length; i += 8) {

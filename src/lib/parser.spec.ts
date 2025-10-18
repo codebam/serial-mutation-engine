@@ -5,57 +5,31 @@ import { serialToBinary } from './decode';
 import { ELEMENT_FLAG, ELEMENTAL_PATTERNS_V2 } from './utils';
 
 describe('parser and encoder', () => {
-
     it('should parse and encode a serial with a v2 element, maintaining integrity', () => {
-
         const originalSerial = '@Ugydj=2}TYg41n&T3U#PNHEPIE8dOQtNYqSJ7*r@!7}Pn`NYqT!NYqT!NYqT!NYqSJE>xm!p;DqoqDrE/pzfglphBT?q1vGmm8e{(Kd3mUbf{aXTc}&8Tc}&8Tc}&8Tc}&8Tc}&8Td1QRXi<w=)S?!(s6{PmQHMIzp$>JZLq#+$E-o%EA}%g2E-o%6A}%g2E-nrL';
-
         const binary = serialToBinary(originalSerial);
-
         const parsed = parse(binary);
-
         const newSerial = parsedToSerial(parsed);
-
         expect(newSerial).toBe(originalSerial);
-
     });
 
-
-
     it('should correctly encode a modified level', () => {
-
         const level50pattern = '00110010'; // 50
-
         const marker = '000000';
 
-
-
         const binary = '1'.repeat(92) + marker + level50pattern + '1'.repeat(100);
-
         const parsed = parse(binary);
-
-
 
         expect(parsed.level.value).toBe(50);
 
-
-
         parsed.level.value = 25;
-
         
-
         const newSerial = parsedToSerial(parsed);
-
         const newBinary = serialToBinary(newSerial);
 
-
-
         const newParsed = parse(newBinary);
-
         expect(newParsed.level.value).toBe(25);
-
     });
-
 });
 
 describe('parser', () => {
