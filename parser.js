@@ -68,23 +68,30 @@ process.stdin.on('end', () => {
         chunks: chunks
     };
 
+    let remainingBits = null;
     while(stream.pos < binary.length) {
         const chunk = parse_chunk(stream);
         if (chunk) {
             chunks.push(chunk);
         } else {
-            const remainingBits = stream.read(binary.length - stream.pos);
-            if (remainingBits && remainingBits.length > 0) {
-                const trailerChunks = [];
-                const chunkSize = 64;
-                for (let i = 0; i < remainingBits.length; i += chunkSize) {
-                    const chunk = remainingBits.substring(i, i + chunkSize);
-                    trailerChunks.push({ len_code: 'raw', chunk_data: readHex({ read: () => chunk }, chunk.length) });
-                }
-                parsed.trailer_chunks = trailerChunks;
-            }
+            remainingBits = stream.read(binary.length - stream.pos);
             break;
         }
+    }
+
+    if (remainingBits && remainingBits.length > 0) {
+        let trailerChunkSize = 16; // Default size
+        if (chunks.length > 0) {
+            const totalBits = chunks.reduce((acc, c) => acc + c.chunk_data.bits + 4, 0);
+            trailerChunkSize = Math.round(totalBits / chunks.length);
+        }
+
+        const trailerChunks = [];
+        for (let i = 0; i < remainingBits.length; i += trailerChunkSize) {
+            const chunk = remainingBits.substring(i, i + trailerChunkSize);
+            trailerChunks.push({ len_code: 'raw', chunk_data: readHex({ read: () => chunk }, chunk.length) });
+        }
+        parsed.trailer_chunks = trailerChunks;
     }
 
     console.log(JSON.stringify(parsed));
