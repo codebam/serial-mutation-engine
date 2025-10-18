@@ -14,6 +14,27 @@
         primary: 'py-3 px-4 w-full font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all disabled:bg-gray-600 disabled:cursor-not-allowed',
     };
 
+    function bitsToHex(bits: string): string {
+        let hex = '';
+        for (let i = 0; i < bits.length; i += 4) {
+            const chunk = bits.substring(i, i + 4);
+            hex += parseInt(chunk, 2).toString(16);
+        }
+        return hex;
+    }
+
+    function hexToBits(hex: string): string {
+        let bits = '';
+        for (let i = 0; i < hex.length; i++) {
+            bits += parseInt(hex[i], 16).toString(2).padStart(4, '0');
+        }
+        return bits;
+    }
+
+    let typeHex = $derived(parsedOutput ? bitsToHex(parsedOutput.type.bits) : '');
+    let headerHex = $derived(parsedOutput ? bitsToHex(parsedOutput.header.bits) : '');
+    let prefixHex = $derived(parsedOutput ? bitsToHex(parsedOutput.prefix.bits) : '');
+
     function analyzeSerial() {
         if (!serialInput) return;
         const binary = serialToBinary(serialInput);
@@ -54,8 +75,6 @@
         }
     });
 
-
-
 </script>
 
 <FormGroup label="Serial Input">
@@ -79,13 +98,13 @@
             <h4 class="font-semibold">Header</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                 <FormGroup label="Type (hex)">
-                    <input type="text" class={inputClasses} bind:value={parsedOutput.type.hex} />
+                    <input type="text" class={inputClasses} bind:value={typeHex} oninput={(e) => parsedOutput.type.bits = hexToBits(e.currentTarget.value)} />
                 </FormGroup>
                 <FormGroup label="Header (hex)">
-                    <input type="text" class={inputClasses} bind:value={parsedOutput.header.hex} />
+                    <input type="text" class={inputClasses} bind:value={headerHex} oninput={(e) => parsedOutput.header.bits = hexToBits(e.currentTarget.value)} />
                 </FormGroup>
                 <FormGroup label="Prefix (hex)">
-                    <input type="text" class={inputClasses} bind:value={parsedOutput.prefix.hex} />
+                    <input type="text" class={inputClasses} bind:value={prefixHex} oninput={(e) => parsedOutput.prefix.bits = hexToBits(e.currentTarget.value)} />
                 </FormGroup>
             </div>
         </div>
@@ -113,7 +132,7 @@
                                 <input type="number" class={inputClasses} bind:value={chunk.len_code} />
                             </FormGroup>
                             <FormGroup label={`Chunk Data ${i} (hex)`}>
-                                <input type="text" class={inputClasses} bind:value={chunk.chunk_data.hex} />
+                                <input type="text" class={inputClasses} value={bitsToHex(chunk.chunk_data.bits)} oninput={(e) => chunk.chunk_data.bits = hexToBits(e.currentTarget.value)} />
                             </FormGroup>
                         </div>
                     {/each}
@@ -131,7 +150,7 @@
                                 <input type="text" class={inputClasses} bind:value={chunk.chunk_type} disabled />
                             </FormGroup>
                             <FormGroup label={`Chunk Data ${i} (hex)`}>
-                                <input type="text" class={inputClasses} bind:value={chunk.chunk_data.hex} />
+                                <input type="text" class={inputClasses} value={bitsToHex(chunk.chunk_data.bits)} oninput={(e) => chunk.chunk_data.bits = hexToBits(e.currentTarget.value)} />
                             </FormGroup>
                         </div>
                     {/each}

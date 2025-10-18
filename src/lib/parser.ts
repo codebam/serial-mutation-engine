@@ -17,21 +17,10 @@ export class Bitstream {
     }
 }
 
-function readHex(stream: Bitstream, length: number): { hex: string; bits: number } | null {
+function readData(stream: Bitstream, length: number): { bits: string } | null {
     const bits = stream.read(length);
     if (bits === null) return null;
-
-    let paddedBits = bits;
-    while (paddedBits.length % 4 !== 0) {
-        paddedBits += '0';
-    }
-
-    let hex = '';
-    for (let i = 0; i < paddedBits.length; i += 4) {
-        hex += parseInt(paddedBits.substring(i, i + 4), 2).toString(16);
-    }
-
-    return { hex: hex, bits: length };
+    return { bits: bits };
 }
 
 function parse_chunk(stream: Bitstream): any | null {
@@ -58,16 +47,16 @@ function parse_chunk(stream: Bitstream): any | null {
         return null;
     }
 
-    const chunk_data = readHex(stream, len - 4);
+    const chunk_data = readData(stream, len - 4);
     return { chunk_type: 'standard', len_code: len_code, chunk_data };
 }
 
 export function parse(binary: string): any {
     const stream = new Bitstream(binary);
 
-    const type = readHex(stream, 10);
-    const header = readHex(stream, 78);
-    const prefix = readHex(stream, 4);
+    const type = readData(stream, 10);
+    const header = readData(stream, 78);
+    const prefix = readData(stream, 4);
     
     const chunks = [];
     const parsed: any = {
@@ -95,7 +84,7 @@ export function parse(binary: string): any {
                         element: foundElement[0],
                         pattern: elementPattern
                     };
-                    continue; // Continue parsing
+                    break; // Element found, stop parsing standard chunks
                 }
             }
         }
@@ -106,16 +95,9 @@ export function parse(binary: string): any {
 
     const remainingBits = stream.read(binary.length - stream.pos);
     if (remainingBits && remainingBits.length > 0) {
-        let trailerChunkSize = 16; // Default size
-        if (chunks.length > 0) {
-            const totalBits = chunks.reduce((acc, c) => acc + c.chunk_data.bits + 4, 0);
-            trailerChunkSize = Math.round(totalBits / chunks.length);
-        }
-
         const trailerChunks: any[] = [];
-        for (let i = 0; i < remainingBits.length; i += trailerChunkSize) {
-            const chunk = remainingBits.substring(i, i + trailerChunkSize);
-            trailerChunks.push({ chunk_type: 'raw', chunk_data: readHex({ read: (length: number) => chunk.substring(0, length) } as Bitstream, chunk.length) });
+        if (remainingBits.length > 0) {
+            trailerChunks.push({ chunk_type: 'raw', chunk_data: { bits: remainingBits } });
         }
         parsed.trailer_chunks = trailerChunks;
     }

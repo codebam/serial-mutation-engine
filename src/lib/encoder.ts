@@ -34,37 +34,25 @@ function encodeBase85Bytes(bytes: number[]): string {
     return '@U' + encoded;
 }
 
-function hexToBin(hexStr: string): string {
-    let bin = '';
-    for (let i = 0; i < hexStr.length; i++) {
-        bin += parseInt(hexStr[i], 16).toString(2).padStart(4, '0');
-    }
-    return bin;
-}
-
 function encode(parsed: any): string {
     let binary = '';
     if (parsed.type) {
-        const typeBin = hexToBin(parsed.type.hex);
-        binary += typeBin.substring(0, parsed.type.bits);
+        binary += parsed.type.bits;
     }
     
     if (parsed.header) {
-        const headerBin = hexToBin(parsed.header.hex);
-        binary += headerBin.substring(0, parsed.header.bits);
+        binary += parsed.header.bits;
     }
 
     if (parsed.prefix) {
-        const prefixBin = hexToBin(parsed.prefix.hex);
-        binary += prefixBin.substring(0, parsed.prefix.bits);
+        binary += parsed.prefix.bits;
     }
 
     if (parsed.chunks) {
         parsed.chunks.forEach((c: any) => {
             binary += c.len_code.toString(2).padStart(4, '0');
             if (c.chunk_data) {
-                const chunkBin = hexToBin(c.chunk_data.hex);
-                binary += chunkBin.substring(0, c.chunk_data.bits);
+                binary += c.chunk_data.bits;
             }
         });
     }
@@ -77,8 +65,7 @@ function encode(parsed: any): string {
     if (parsed.trailer_chunks) {
         parsed.trailer_chunks.forEach((c: any) => {
             if (c.chunk_type === 'raw') {
-                const chunkBin = hexToBin(c.chunk_data.hex);
-                binary += chunkBin.substring(0, c.chunk_data.bits);
+                binary += c.chunk_data.bits;
             }
         });
     }
@@ -91,8 +78,10 @@ export function parsedToSerial(parsed: any): string {
 
     const bytes: number[] = [];
     for (let i = 0; i < binary.length; i += 8) {
-        const byteString = binary.substring(i, i + 8);
-        if (byteString.length < 8) continue; // Ignore incomplete bytes
+        let byteString = binary.substring(i, i + 8);
+        if (byteString.length < 8) {
+            byteString = byteString.padEnd(8, '0');
+        }
         bytes.push(parseInt(byteString, 2));
     }
 

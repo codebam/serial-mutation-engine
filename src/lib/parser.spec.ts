@@ -1,6 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from './parser';
+import { parsedToSerial } from './encoder';
+import { serialToBinary } from './decode';
 import { ELEMENT_FLAG, ELEMENTAL_PATTERNS_V2 } from './utils';
+
+describe('parser and encoder', () => {
+    it('should parse and encode a serial with a v2 element, maintaining integrity', () => {
+        const originalSerial = '@Uj8Z<pP(j2ZpG)2*pX)FhB%S\'2_@bCj8Z<pP(j2ZpG)2*pX)FhB%S\'2_@bC';
+        const binary = serialToBinary(originalSerial);
+        const parsed = parse(binary);
+        const newSerial = parsedToSerial(parsed);
+        const newBinary = serialToBinary(newSerial);
+        expect(newBinary).toBe(binary);
+    });
+});
 
 describe('parser', () => {
     it('should parse a binary string with an element', () => {
@@ -25,6 +38,7 @@ describe('parser', () => {
             element: element,
             pattern: elementPattern
         });
-        expect(parsed.chunks.length).toBe(2);
+        expect(parsed.chunks.length).toBe(1);
+        expect(parsed.chunks[0].chunk_data.bits).toBe('0'.repeat(8));
     });
 });
