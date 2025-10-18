@@ -10,6 +10,7 @@ describe('parser and encoder', () => {
         const binary = serialToBinary(originalSerial);
         fs.writeFileSync('./original', binary);
         const parsed = parse(binary);
+        console.log('parsed object:', parsed);
         const newSerial = parsedToSerial(parsed);
         expect(newSerial).toBe(originalSerial);
     });

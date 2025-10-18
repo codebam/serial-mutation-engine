@@ -37,13 +37,13 @@ function encodeBase85Bytes(bytes: number[]): string {
 function writeVarInt(value: number): string {
     let bits = '';
     while (true) {
-        const part = value & 0b01111;
-        value >>= 4;
+        const part = value & 0b01111111;
+        value >>= 7;
         if (value === 0) {
-            bits += part.toString(2).padStart(5, '0');
+            bits += part.toString(2).padStart(8, '0');
             return bits;
         }
-        bits += (part | 0b10000).toString(2).padStart(5, '0');
+        bits += (part | 0b10000000).toString(2).padStart(8, '0');
     }
 }
 
@@ -61,24 +61,8 @@ export function parsedToSerial(parsed: any): string {
     let binary = '';
     if (parsed.preamble) {
         binary += parsed.preamble;
-        console.log('preamble length:', parsed.preamble.length);
     }
-
-    const encoded_assets = encode(parsed);
-    console.log('encoded assets length:', encoded_assets.length);
-    binary += encoded_assets;
-
-    if (parsed.trailer) {
-        binary += parsed.trailer;
-        console.log('trailer length:', parsed.trailer.length);
-    }
-    console.log('binary after encode:', binary);
-
-
-
-
-
-    console.log('binary length:', binary.length);
+    binary += encode(parsed);
 
     const bytes: number[] = [];
     for (let i = 0; i < binary.length; i += 8) {
