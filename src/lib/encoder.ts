@@ -36,17 +36,6 @@ function encodeBase85Bytes(bytes: number[]): string {
 
 function encode(parsed: any): string {
     let binary = '';
-    if (parsed.type) {
-        binary += parsed.type.bits;
-    }
-    
-    if (parsed.header) {
-        binary += parsed.header.bits;
-    }
-
-    if (parsed.prefix) {
-        binary += parsed.prefix.bits;
-    }
 
     if (parsed.chunks) {
         parsed.chunks.forEach((c: any) => {
@@ -57,11 +46,14 @@ function encode(parsed: any): string {
                 }
             } else if (c.chunk_type === 'raw') {
                 binary += c.chunk_data.bits;
-            } else if (c.chunk_type === 'v2_element') {
-                binary += ELEMENT_FLAG;
-                binary += c.pattern;
             }
         });
+    }
+
+    if (parsed.v2_element) {
+        const elementPart = ELEMENT_FLAG + parsed.v2_element.pattern;
+        const position = parsed.v2_element.position;
+        binary = binary.slice(0, position) + elementPart + binary.slice(position);
     }
 
 
@@ -78,7 +70,20 @@ function encode(parsed: any): string {
 }
 
 export function parsedToSerial(parsed: any): string {
-    const binary = encode(parsed);
+    let binary = '';
+    if (parsed.type) {
+        binary += parsed.type.bits;
+    }
+    
+    if (parsed.header) {
+        binary += parsed.header.bits;
+    }
+
+    if (parsed.prefix) {
+        binary += parsed.prefix.bits;
+    }
+
+    binary += encode(parsed);
 
     const bytes: number[] = [];
     for (let i = 0; i < binary.length; i += 8) {

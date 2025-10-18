@@ -65,48 +65,37 @@ export function parse(binary: string): any {
         chunks: chunks
     };
 
-    const remainingBinary = stream.binary.substring(stream.pos);
-    const chunkStream = new Bitstream(remainingBinary);
-    let lastPos = 0;
-    while(chunkStream.pos < remainingBinary.length) {
-        const initialPos = chunkStream.pos;
+    let remainingBinary = stream.binary.substring(stream.pos);
 
-        // Check for element first
-        if (remainingBinary.substring(initialPos, initialPos + ELEMENT_FLAG.length) === ELEMENT_FLAG) {
-            if (initialPos > lastPos) {
-                const rawBits = remainingBinary.substring(lastPos, initialPos);
-                chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
-            }
-            chunkStream.pos += ELEMENT_FLAG.length;
-            const elementPattern = chunkStream.read(8);
-            if (elementPattern) {
-                const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
-                if (foundElement) {
-                    parsed.v2_element = {
-                        element: foundElement[0],
-                        pattern: elementPattern
-                    };
-                }
-            }
-            lastPos = chunkStream.pos;
-            continue;
-        }
-
-        const result = parse_chunk(chunkStream);
-        if (result.success) {
-            if (initialPos > lastPos) {
-                const rawBits = remainingBinary.substring(lastPos, initialPos);
-                chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
-            }
-            chunks.push(result.chunk);
-            lastPos = chunkStream.pos;
-        } else {
-            chunkStream.pos = initialPos + 1;
+    // Find and parse the v2_element first
+    const elementIndex = remainingBinary.indexOf(ELEMENT_FLAG);
+    if (elementIndex !== -1) {
+        const elementPattern = remainingBinary.substring(elementIndex + ELEMENT_FLAG.length, elementIndex + ELEMENT_FLAG.length + 8);
+        const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
+        if (foundElement) {
+            parsed.v2_element = {
+                element: foundElement[0],
+                pattern: elementPattern,
+                position: elementIndex
+            };
+            // Reconstruct the remaining binary without the element part
+            remainingBinary = remainingBinary.substring(0, elementIndex) + remainingBinary.substring(elementIndex + ELEMENT_FLAG.length + 8);
         }
     }
-    if (lastPos < remainingBinary.length) {
-        const rawBits = remainingBinary.substring(lastPos);
-        chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
+
+    const chunkStream = new Bitstream(remainingBinary);
+    while(chunkStream.pos < remainingBinary.length) {
+        const result = parse_chunk(chunkStream);
+        if (result.success) {
+            chunks.push(result.chunk);
+        } else {
+            // If parsing a chunk fails, treat the rest as raw bits
+            const rawBits = remainingBinary.substring(chunkStream.pos);
+            if (rawBits.length > 0) {
+                chunks.push({ chunk_type: 'raw', chunk_data: { bits: rawBits } });
+            }
+            break;
+        }
     }
 
 

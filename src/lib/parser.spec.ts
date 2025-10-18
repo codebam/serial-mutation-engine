@@ -20,10 +20,10 @@ describe('parser', () => {
         const elementPattern = ELEMENTAL_PATTERNS_V2[element];
         const binary = '0101010101' + '0'.repeat(78) + '0101' + ELEMENT_FLAG + elementPattern;
         const parsed = parse(binary);
-        expect(parsed.v2_element).toEqual({
+        expect(parsed.v2_element).toEqual(expect.objectContaining({
             element: element,
             pattern: elementPattern
-        });
+        }));
     });
 
     it('should parse a binary string with an element and other chunks', () => {
@@ -33,10 +33,10 @@ describe('parser', () => {
         const chunk2 = '1010' + '0'.repeat(16);
         const binary = '0101010101' + '0'.repeat(78) + '0101' + chunk1 + ELEMENT_FLAG + elementPattern + chunk2;
         const parsed = parse(binary);
-        expect(parsed.v2_element).toEqual({
+        expect(parsed.v2_element).toEqual(expect.objectContaining({
             element: element,
             pattern: elementPattern
-        });
+        }));
         expect(parsed.chunks.length).toBe(2);
         expect(parsed.chunks[0].chunk_data.bits).toBe('0'.repeat(8));
         expect(parsed.chunks[1].chunk_data.bits).toBe('0'.repeat(16));
