@@ -7,7 +7,6 @@
 
     let serialInput = $state('');
     let parsedOutput = $state<any>(null);
-    let reserializedOutput = $state('');
 
     const inputClasses = 'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
     const btnClasses = {
@@ -24,6 +23,7 @@
     }
 
     function hexToBits(hex: string): string {
+        hex = hex.replace(/[^0-9a-fA-F]/g, '');
         let bits = '';
         for (let i = 0; i < hex.length; i++) {
             bits += parseInt(hex[i], 16).toString(2).padStart(4, '0');
@@ -40,12 +40,16 @@
         const binary = serialToBinary(serialInput);
         const parsed = parse(binary);
         parsedOutput = parsed;
-        reserializedOutput = '';
+    }
+
+    function updateSerial() {
+        const newSerial = parsedToSerial(parsedOutput);
+        serialInput = newSerial;
     }
 
     function reserialize() {
         if (!parsedOutput) return;
-        reserializedOutput = parsedToSerial(parsedOutput);
+        console.log('reserializing:', parsedOutput);
     }
 
     function handleElementChange(e: Event) {
@@ -113,33 +117,22 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Preamble</h4>
             <FormGroup label="Preamble (hex)">
-                <input type="text" class={inputClasses} bind:value={preambleHex} oninput={(e) => parsedOutput.preamble = hexToBits(e.currentTarget.value)} />
+                <input type="text" class={inputClasses} bind:value={preambleHex} oninput={(e) => { parsedOutput.preamble = hexToBits(e.currentTarget.value); updateSerial(); }} />
             </FormGroup>
         </div>
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Assets</h4>
             <FormGroup label="Assets (comma-separated)">
-                <input type="text" class={inputClasses} bind:value={assetsString} oninput={(e) => parsedOutput.assets = e.currentTarget.value.split(',').map(s => parseInt(s.trim()))} />
+                <input type="text" class={inputClasses} bind:value={assetsString} oninput={(e) => { parsedOutput.assets = e.currentTarget.value.split(',').map(s => parseInt(s.trim())); updateSerial(); }} />
             </FormGroup>
         </div>
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Trailer</h4>
             <FormGroup label="Trailer (hex)">
-                <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => parsedOutput.trailer = hexToBits(e.currentTarget.value)} />
+                <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => { parsedOutput.trailer = hexToBits(e.currentTarget.value); updateSerial(); }} />
             </FormGroup>
         </div>
-    </div>
-{/if}
-
-<div class="flex gap-2">
-    <button onclick={reserialize} class={btnClasses.primary} disabled={!parsedOutput}>Reserialize</button>
-</div>
-
-{#if reserializedOutput}
-    <div class="mt-4">
-        <h3 class="text-lg font-semibold">Reserialized Output</h3>
-        <textarea class={`${inputClasses} h-24`} readonly bind:value={reserializedOutput}></textarea>
     </div>
 {/if}

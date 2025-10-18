@@ -35,6 +35,9 @@ function encodeBase85Bytes(bytes: number[]): string {
 }
 
 function writeVarInt(value: number): string {
+    if (isNaN(value)) {
+        return '';
+    }
     let bits = '';
     while (true) {
         const part = value & 0b01111111;
@@ -58,6 +61,7 @@ function encode(parsed: any): string {
 }
 
 export function parsedToSerial(parsed: any): string {
+    console.log('parsedToSerial received:', parsed);
     let binary = '';
     if (parsed.preamble) {
         binary += parsed.preamble;
