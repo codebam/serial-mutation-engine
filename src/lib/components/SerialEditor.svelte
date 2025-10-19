@@ -6,10 +6,15 @@
     import FormGroup from './FormGroup.svelte';
     import Asset from './Asset.svelte';
 
-    let serialInput = $state('');
+    let { serial, onSerialUpdate } = $props<{
+        serial: string;
+        onSerialUpdate: (newSerial: string) => void;
+    }>();
+
     let parsedOutput = $state<any>(null);
     let assetsWithIds = $state<{ id: number; value: number }[]>([]);
     let assetIdCounter = 0;
+    let copyJsonText = $state('Copy JSON');
 
     const inputClasses = 'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
     const assetColors = [
@@ -19,6 +24,21 @@
     ];
     const colorMap = new Map<number, string>();
     let colorIndex = 0;
+
+    async function copyJson() {
+        if (parsedOutput) {
+            try {
+                const jsonString = JSON.stringify(parsedOutput, null, 2);
+                await navigator.clipboard.writeText(jsonString);
+                copyJsonText = 'Copied!';
+                setTimeout(() => (copyJsonText = 'Copy JSON'), 2000);
+            } catch (error) {
+                console.error('Failed to copy JSON:', error);
+                copyJsonText = 'Error!';
+                setTimeout(() => (copyJsonText = 'Copy JSON'), 2000);
+            }
+        }
+    }
 
     function getColorForAsset(value: number): string {
         if (!colorMap.has(value)) {
@@ -51,12 +71,12 @@
     let trailerHex = $derived(parsedOutput ? bitsToHex(parsedOutput.trailer) : '');
 
     function analyzeSerial() {
-        if (!serialInput) {
+        if (!serial) {
             parsedOutput = null;
             assetsWithIds = [];
             return;
         }
-        const binary = serialToBinary(serialInput);
+        const binary = serialToBinary(serial);
         const parsed = parse(binary);
         parsedOutput = parsed;
 
@@ -74,7 +94,7 @@
     function updateSerialFromAssets() {
         if (parsedOutput) {
             parsedOutput.assets = assetsWithIds.map(a => a.value.toString(2).padStart(6, '0'));
-            serialInput = parsedToSerial(parsedOutput);
+            onSerialUpdate(parsedToSerial(parsedOutput));
         }
     }
 
@@ -90,19 +110,23 @@
     const debouncedUpdateSerialFromAssets = debounce(updateSerialFromAssets, 5000);
 
     $effect(() => {
-        debouncedAnalyzeSerial();
+        if (serial) {
+            debouncedAnalyzeSerial();
+        } else {
+            analyzeSerial();
+        }
     });
 
     function handlePaste(event: ClipboardEvent) {
         event.preventDefault();
         const pastedText = event.clipboardData?.getData('text/plain');
         if (pastedText) {
-            serialInput = pastedText;
+            onSerialUpdate(pastedText);
             analyzeSerial();
         }
     }
 
-    let dragIndex;
+    let dragIndex: number;
 
     function handleDragStart(index: number) {
         dragIndex = index;
@@ -132,7 +156,8 @@
 <FormGroup label="Serial Input">
     <textarea
         class={`${inputClasses} min-h-[80px]`}
-        bind:value={serialInput}
+        value={serial}
+        oninput={(e) => onSerialUpdate(e.currentTarget.value)}
         placeholder="Paste serial here..."
         onpaste={handlePaste}
     ></textarea>
@@ -140,7 +165,10 @@
 
 {#if parsedOutput}
     <div class="mt-4 space-y-4">
-        <h3 class="text-lg font-semibold">Parsed Parts</h3>
+        <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Parsed Parts</h3>
+            <button onclick={copyJson} class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">{copyJsonText}</button>
+        </div>
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Manufacturer</h4>
@@ -172,6 +200,7 @@
             <div class="flex flex-wrap gap-2">
                 {#each assetsWithIds as asset, i (asset.id)}
                     <div
+                        role="listitem"
                         draggable="true"
                         ondragstart={() => handleDragStart(i)}
                         ondragover={(e) => e.preventDefault()}

@@ -54,22 +54,32 @@
     const outputYaml = writable('');
     const fullYaml = writable('');
     const filteredYaml = writable('');
-    const liveMerge = writable(true);
     const baseYaml = writable('');
 
     const serialEditors = writable([
         {
             id: 1,
+            serial: '',
+            merged: false
         },
     ]);
     let nextSerialEditorId = 2;
 
     function addSerialEditor() {
-        $serialEditors = [...$serialEditors, { id: nextSerialEditorId++ }];
+        $serialEditors = [...$serialEditors, { id: nextSerialEditorId++, serial: '', merged: false }];
     }
 
     function removeSerialEditor(id: number) {
         $serialEditors = $serialEditors.filter((editor) => editor.id !== id);
+    }
+
+    function updateEditorSerial(editorId: number, newSerial: string) {
+        const editor = $serialEditors.find(e => e.id === editorId);
+        if (editor) {
+            editor.serial = newSerial;
+            editor.merged = false;
+            $serialEditors = $serialEditors;
+        }
     }
 
     const searchTerm = writable('');
@@ -308,6 +318,8 @@
                 $baseYaml = reader.result as string;
                 localStorage.setItem('baseYaml', $baseYaml);
                 $statusMessage = 'Base YAML loaded successfully.';
+                $serialEditors.forEach(e => e.merged = false);
+                $serialEditors = $serialEditors;
             } catch (error) {
                 console.error('Failed to load base YAML:', error);
                 $statusMessage = '❌ ERROR: Failed to load base YAML.';
@@ -316,35 +328,91 @@
         reader.readAsText(file);
     }
 
-
-
     function importAndMerge() {
         if (!$baseYaml) {
             $statusMessage = 'Please select a base YAML file first.';
             return;
         }
-        try {
-            const backpackRegex = /backpack:([^]*)/;
-            const fullYamlBackpack = $fullYaml.match(backpackRegex);
 
-            if (fullYamlBackpack && fullYamlBackpack[1]) {
-                $outputYaml = $baseYaml.replace(/backpack: null/, `backpack:${fullYamlBackpack[1]}`);
-                $statusMessage = '✅ YAML files merged successfully.';
-            } else {
-                $outputYaml = $baseYaml;
-                $statusMessage = 'Could not find backpack in generated YAML.';
+        const editorToMerge = $serialEditors.find(e => e.serial && !e.merged);
+
+        if (!editorToMerge) {
+            $statusMessage = 'No unmerged serials found to merge.';
+            return;
+        }
+
+        const serialToInsert = editorToMerge.serial;
+        let currentYaml = $outputYaml || $baseYaml;
+
+        if (currentYaml.includes('backpack: null')) {
+            const backpackLine = currentYaml.split('\n').find(line => line.trim() === 'backpack: null');
+            const indent = ' '.repeat(backpackLine!.search(/\S/));
+            const newBackpackString = [
+                `${indent}backpack:`,
+                `${indent}  slot_0:`,
+                `${indent}    serial: '${serialToInsert}'`
+            ].join('\n');
+            $outputYaml = currentYaml.replace(backpackLine!, newBackpackString);
+            editorToMerge.merged = true;
+            $serialEditors = $serialEditors;
+            $statusMessage = `✅ Merged serial from Editor #${editorToMerge.id} into new backpack.`;
+        } else if (currentYaml.includes('backpack:')) {
+            let lines = currentYaml.split('\n');
+            let backpackIndex = -1;
+            let backpackIndent = -1;
+
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].trim() === 'backpack:') {
+                    backpackIndex = i;
+                    backpackIndent = lines[i].search(/\S/);
+                    break;
+                }
             }
-        } catch (error) {
-            console.error('Failed to merge YAML files:', error);
-            $statusMessage = '❌ ERROR: Failed to merge YAML files.';
+
+            let lastSlot = -1;
+            let endOfBackpackIndex = -1;
+
+            for (let i = backpackIndex + 1; i < lines.length; i++) {
+                if (lines[i].trim() !== '' && lines[i].search(/\S/) <= backpackIndent) {
+                    endOfBackpackIndex = i;
+                    break;
+                }
+                const slotMatch = lines[i].match(/^\s*slot_(\d+):/);
+                if (slotMatch) {
+                    lastSlot = Math.max(lastSlot, parseInt(slotMatch[1], 10));
+                }
+            }
+            if (endOfBackpackIndex === -1) {
+                endOfBackpackIndex = lines.length;
+            }
+
+            const nextSlotNum = lastSlot + 1;
+            const indent = ' '.repeat(backpackIndent + 2);
+            const newSlotLines = [
+                `${indent}slot_${nextSlotNum}:`,
+                `${indent}  serial: '${serialToInsert}'`
+            ];
+
+            lines.splice(endOfBackpackIndex, 0, ...newSlotLines);
+            $outputYaml = lines.join('\n');
+            editorToMerge.merged = true;
+            $serialEditors = $serialEditors;
+            $statusMessage = `✅ Merged serial from Editor #${editorToMerge.id} into slot_${nextSlotNum}.`;
+        } else {
+            const newStructure = [
+                'state:',
+                '  inventory:',
+                '    items:',
+                '      backpack:',
+                '        slot_0:',
+                `          serial: '${serialToInsert}'`
+            ];
+            $outputYaml = (currentYaml.trim() === '' ? '' : currentYaml + '\n') + newStructure.join('\n');
+            editorToMerge.merged = true;
+            $serialEditors = $serialEditors;
+            $statusMessage = '✅ Created new backpack structure and merged serial.';
         }
     }
-
-    $effect(() => {
-        if ($liveMerge && $baseYaml && $fullYaml) {
-            importAndMerge();
-        }
-    });
 
     const inputClasses =
         'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
@@ -584,10 +652,11 @@
                         <button onclick={downloadYAML} class={btnClasses.tertiary} >
                             Download
                         </button>
-                            <label class="{btnClasses.tertiary} cursor-pointer">
+                        <button onclick={importAndMerge} class={btnClasses.tertiary} >Merge Serial</button>
+                        <label class="{btnClasses.tertiary} cursor-pointer">
                                 Select Base YAML
                                 <input type="file" accept=".yaml,.yml" onchange={selectBaseYaml} class="hidden"  />
-                            </label>
+                        </label>
                         <button onclick={() => { $outputYaml = ''; $fullYaml = ''; $filteredYaml = ''; }} class={btnClasses.tertiary} >
                             Clear
                         </button>
@@ -657,7 +726,7 @@
             {#each $serialEditors as editor (editor.id)}
                 {@const title = `⚙️ Serial Editor #${editor.id}`}
                 <Accordion {title} open={true}>
-                    <SerialEditor />
+                    <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} />
                     {#snippet actions()}
                         <button
                             onclick={() => removeSerialEditor(editor.id)}

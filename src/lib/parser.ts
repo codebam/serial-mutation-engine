@@ -55,7 +55,7 @@ export function parse(binary: string): any {
     const type_bits = stream.read(10);
 
     let preamble: string = '';
-    const assets: bigint[] = [];
+    const assets: string[] = [];
     let trailer: string = '';
 
     const first12Bytes = binary.substring(10, 106);
