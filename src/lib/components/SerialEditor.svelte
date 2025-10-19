@@ -18,7 +18,22 @@
     let assetsWithIds = $state<{ id: number; value: number }[]>([]);
     let assetIdCounter = 0;
     let copyJsonText = $state('Copy JSON');
+    let copyUrlText = $state('Copy URL');
     let originalAssetsCount = $state(0);
+
+    async function copyUrl() {
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('serial', serial);
+            await navigator.clipboard.writeText(url.toString());
+            copyUrlText = 'Copied!';
+            setTimeout(() => (copyUrlText = 'Copy URL'), 2000);
+        } catch (error) {
+            console.error('Failed to copy URL:', error);
+            copyUrlText = 'Error!';
+            setTimeout(() => (copyUrlText = 'Copy URL'), 2000);
+        }
+    }
 
     const inputClasses = 'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
     const assetColors = [
@@ -318,7 +333,8 @@
     ></textarea>
 </FormGroup>
 
-<div class="mt-4 flex justify-end">
+<div class="mt-4 flex justify-end gap-2">
+    <button onclick={copyUrl} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">{copyUrlText}</button>
     <button onclick={pasteJson} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Paste JSON</button>
 </div>
 
