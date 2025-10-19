@@ -114,12 +114,6 @@ export const standardLevelDetection_byte = (bytes: number[]): [number | string, 
 
     valid_markers.sort((a, b) => a[0] - b[0]);
 
-    const level_50_markers = valid_markers.filter(m => m[1] === 50);
-    if (level_50_markers.length > 0) return [50, level_50_markers[0][0]];
-
-    const level_49_markers = valid_markers.filter(m => m[1] === 49);
-    if (level_49_markers.length > 0) return [49, level_49_markers[0][0]];
-
     if (valid_markers.length > 0) return [valid_markers[0][1], valid_markers[0][0]];
 
     return ['Unknown', -1];
@@ -156,12 +150,6 @@ export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, 
 
     all_candidates.sort((a, b) => b[2] - a[2]);
 
-    const level_50_candidates = all_candidates.filter(c => c[0] === 50);
-    if (level_50_candidates.length > 0) return [50, level_50_candidates[0][1]];
-
-    const level_49_candidates = all_candidates.filter(c => c[0] === 49);
-    if (level_49_candidates.length > 0) return [49, level_49_candidates[0][1]];
-    
     const level_0_candidates = all_candidates.filter(c => c[0] === 0);
     if (level_0_candidates.length > 0 && level_0_candidates[0][2] >= 20) return [0, level_0_candidates[0][1]];
 
@@ -176,16 +164,9 @@ export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, 
 export const detectItemLevel_byte = (bytes: number[]): [number | string, number] => {
     const [standard_result, standard_pos] = standardLevelDetection_byte(bytes);
 
-    if (standard_result === 50) return [50, standard_pos];
-    if (standard_result === 49) return [49, standard_pos];
-
     const [enhanced_result, enhanced_pos] = enhancedLevelDetection_byte(bytes);
-
-    if (enhanced_result === 50) return [50, enhanced_pos];
-    if (enhanced_result === 49) return [49, enhanced_pos];
 
     if (standard_result !== 'Unknown') return [standard_result, standard_pos];
 
     return [enhanced_result, enhanced_pos];
 };
-

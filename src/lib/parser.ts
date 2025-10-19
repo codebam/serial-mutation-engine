@@ -100,7 +100,7 @@ export function parse(bytes: number[]): any {
     const [level, level_pos] = detectItemLevel_byte(bytes);
     if (level !== 'Unknown') {
         parsed.level = {
-            value: level.toString(),
+            value: level,
             position: level_pos
         };
     }
