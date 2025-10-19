@@ -153,6 +153,15 @@
         }
     }
 
+    function handleElementChange() {
+        if (parsedOutput?.element) {
+            const newName = parsedOutput.element.name;
+            const newPattern = ELEMENTAL_PATTERNS_V2[newName];
+            parsedOutput.element.pattern = newPattern;
+            debouncedReserialize();
+        }
+    }
+
     function debounce<T extends (...args: any[]) => any>(func: T, timeout = 1000) {
         let timer: NodeJS.Timeout;
         return (...args: Parameters<T>) => {
@@ -340,6 +349,19 @@
                 <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} oninput={debouncedReserialize} disabled />
             </FormGroup>
         </div>
+
+        {#if parsedOutput.element}
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+            <h4 class="font-semibold">Element</h4>
+            <FormGroup label="Element">
+                <select class={inputClasses} bind:value={parsedOutput.element.name} onchange={handleElementChange}>
+                    {#each Object.keys(ELEMENTAL_PATTERNS_V2) as element}
+                        <option value={element}>{element}</option>
+                    {/each}
+                </select>
+            </FormGroup>
+        </div>
+{/if}
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Preamble</h4>

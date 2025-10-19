@@ -6,6 +6,8 @@
     import MutableRangeSelector from '$lib/components/MutableRangeSelector.svelte';
     import SerialEditor from '$lib/components/SerialEditor.svelte';
     import { Chart, registerables } from 'chart.js';
+    import { page } from '$app/stores';
+
     Chart.register(...registerables);
 
     import type { State } from '$lib/types';
@@ -73,6 +75,17 @@
 
     $effect(() => {
         async function setup() {
+            page.subscribe(p => {
+                const serialFromUrl = p.url.searchParams.get('serial');
+                if (serialFromUrl) {
+                    const firstEditor = $serialEditors[0];
+                    if (firstEditor) {
+                        firstEditor.serial = serialFromUrl;
+                        $serialEditors = $serialEditors; // Trigger update
+                    }
+                }
+            });
+
             const storedBaseYaml = localStorage.getItem('baseYaml');
             if (storedBaseYaml) {
                 $baseYaml = storedBaseYaml;
