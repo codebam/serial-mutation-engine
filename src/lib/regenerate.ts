@@ -1,4 +1,4 @@
-import { MANUFACTURER_PATTERNS } from './utils';
+import { MANUFACTURER_PATTERNS, ELEMENT_FLAG, ELEMENTAL_PATTERNS_V2 } from './utils';
 import * as fs from 'fs';
 import { parse } from './parser';
 import { serialToBinary } from './decode';
@@ -38,63 +38,61 @@ function encodeBase85Bytes(bytes: number[]): string {
     return '@U' + encoded;
 }
 
-const manufacturerChunkCache: Record<string, string> = {};
-let cacheInitialized = false;
-
-function initializeCache() {
-    if (cacheInitialized) return;
-
-    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
-    for (const manufacturerName of Object.keys(MANUFACTURER_PATTERNS)) {
-        if (manufacturerChunkCache[manufacturerName]) {
-            continue;
-        }
-
-        for (const serial of serials) {
-            const binary = serialToBinary(serial);
-            const parsed = parse(binary);
-            if (parsed.manufacturer && parsed.manufacturer.name === manufacturerName) {
-                const chunk = binary.substring(parsed.manufacturer.position - 16, parsed.manufacturer.position + 32);
-                manufacturerChunkCache[manufacturerName] = chunk;
-                break;
-            }
-        }
-    }
-    cacheInitialized = true;
-}
-
-function getManufacturerChunk(manufacturerName: string): string | null {
-    initializeCache();
-    return manufacturerChunkCache[manufacturerName] || null;
-}
-
 export function regenerateSerial(parsed: any, originalBinary: string): string {
-    let binary = originalBinary;
+    const originalParsed = parse(originalBinary);
+    const assetsStartPosition = originalParsed.preamble.length;
+    const oldAssetsLength = originalParsed.assets.length * 6;
+    const newAssetsString = parsed.assets.join('');
+    
+    let binary = originalBinary.slice(0, assetsStartPosition) + newAssetsString + originalBinary.slice(assetsStartPosition + oldAssetsLength);
+
+    const lengthDifference = newAssetsString.length - oldAssetsLength;
 
     if (parsed.level && parsed.level.position !== undefined) {
+        let pos = originalParsed.level.position;
+        if (pos > assetsStartPosition) {
+            pos += lengthDifference;
+        }
         const LEVEL_MARKER = '000000';
         const newLevel = parseInt(parsed.level.value, 10);
-        const levelValueToEncode = newLevel;
+        let levelValueToEncode;
+
+        if (newLevel === 1) {
+            levelValueToEncode = 49;
+        } else if (newLevel === 50) {
+            levelValueToEncode = 50;
+        } else if (newLevel > 1 && newLevel < 50) {
+            levelValueToEncode = newLevel + 48;
+        } else {
+            levelValueToEncode = newLevel;
+        }
         
         const level_bits = levelValueToEncode.toString(2).padStart(8, '0');
         
-        if (binary.substring(parsed.level.position, parsed.level.position + 6) === LEVEL_MARKER) {
+        if (binary.substring(pos, pos + 6) === LEVEL_MARKER) {
             const level_part = LEVEL_MARKER + level_bits;
-            binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
+            binary = binary.slice(0, pos) + level_part + binary.slice(pos + level_part.length);
         } else {
-            binary = binary.slice(0, parsed.level.position) + level_bits + binary.slice(parsed.level.position + level_bits.length);
+            binary = binary.slice(0, pos) + level_bits + binary.slice(pos + 8);
         }
     }
 
     if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
-        const originalParsed = parse(originalBinary);
-        if (originalParsed.manufacturer.name !== parsed.manufacturer.name) {
-            const newChunk = getManufacturerChunk(parsed.manufacturer.name);
-            if (newChunk) {
-                const oldChunk = originalBinary.substring(parsed.manufacturer.position - 16, parsed.manufacturer.position + 32);
-                binary = binary.replace(oldChunk, newChunk);
-            }
+        let pos = originalParsed.manufacturer.position;
+        if (pos > assetsStartPosition) {
+            pos += lengthDifference;
         }
+        const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
+        binary = binary.slice(0, pos) + manufacturerPattern + binary.slice(pos + 16);
+    }
+
+    if (parsed.element && parsed.element.position !== undefined) {
+        let pos = originalParsed.element.position;
+        if (pos > assetsStartPosition) {
+            pos += lengthDifference;
+        }
+        const elementPart = ELEMENT_FLAG + parsed.element.pattern;
+        binary = binary.slice(0, pos) + elementPart + binary.slice(pos + elementPart.length);
     }
 
     const bytes: number[] = [];

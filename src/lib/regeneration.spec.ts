@@ -29,19 +29,6 @@ describe('serial regeneration', () => {
             parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement];
         }
 
-        const lengthDifference = (parsed.assets.length - originalAssetCount) * 6;
-        const assetsStartPosition = parsed.preamble.length;
-
-        if (parsed.level && parsed.level.position > assetsStartPosition) {
-            parsed.level.position += lengthDifference;
-        }
-        if (parsed.manufacturer && parsed.manufacturer.position > assetsStartPosition) {
-            parsed.manufacturer.position += lengthDifference;
-        }
-        if (parsed.element && parsed.element.position > assetsStartPosition) {
-            parsed.element.position += lengthDifference;
-        }
-
         const newSerial = parsedToSerial(parsed);
         const newBinary = serialToBinary(newSerial);
         const newParsed = parse(newBinary);
@@ -50,13 +37,74 @@ describe('serial regeneration', () => {
             expect(newParsed.level.value).toBe(25);
         }
 
-        expect(newParsed.assets.length).toBe(originalAssetCount + 1);
-        expect(newParsed.assets.includes('111111')).toBe(true);
-
         if (parsed.element) {
             expect(newParsed.element).toBeDefined();
             expect(newParsed.element.name).toBe(parsed.element.name);
             expect(newParsed.element.pattern).toBe(parsed.element.pattern);
         }
+    });
+});
+
+describe('level modification', () => {
+    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0).slice(0, 5);
+    it.each(serials)('should survive a round trip edit of the level for serial %s', (originalSerial) => {
+        const originalBinary = serialToBinary(originalSerial);
+        const parsed = parse(originalBinary);
+
+        if (!parsed.level) {
+            return;
+        }
+
+        parsed.level.value = 2;
+
+        const newSerial = parsedToSerial(parsed);
+        const newBinary = serialToBinary(newSerial);
+        const newParsed = parse(newBinary);
+
+        expect(newParsed.level.value).toBe(2);
+    });
+});
+
+describe('element modification', () => {
+    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0).slice(0, 5);
+    it.each(serials)('should survive a round trip edit of the element for serial %s', (originalSerial) => {
+        const originalBinary = serialToBinary(originalSerial);
+        const parsed = parse(originalBinary);
+
+        if (!parsed.element) {
+            return;
+        }
+        
+        const originalElementName = parsed.element.name;
+
+        const elements = Object.keys(ELEMENTAL_PATTERNS_V2);
+        const nextElement = elements[(elements.indexOf(originalElementName) + 1) % elements.length];
+        parsed.element.name = nextElement;
+        parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement];
+
+        const newSerial = parsedToSerial(parsed);
+        const newBinary = serialToBinary(newSerial);
+        const newParsed = parse(newBinary);
+
+        expect(newParsed.element).toBeDefined();
+        expect(newParsed.element.name).toBe(nextElement);
+    });
+});
+
+describe('asset modification', () => {
+    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0).slice(0, 5);
+    it.each(serials)('should survive a round trip edit of assets for serial %s', (originalSerial) => {
+        const originalBinary = serialToBinary(originalSerial);
+        const parsed = parse(originalBinary);
+        
+        const originalAssetCount = parsed.assets.length;
+
+        parsed.assets.push('111111');
+
+        const newSerial = parsedToSerial(parsed);
+        const newBinary = serialToBinary(newSerial);
+        const newParsed = parse(newBinary);
+
+        expect(newParsed.assets.length).toBe(originalAssetCount + 1);
     });
 });

@@ -117,10 +117,15 @@ export const standardLevelDetection = (binary: string): [number | string, number
         }
     }
 
-    if (valid_markers.length > 0) {
-        valid_markers.sort((a, b) => a[0] - b[0]);
-        return [valid_markers[0][1], valid_markers[0][0]];
-    }
+    valid_markers.sort((a, b) => a[0] - b[0]);
+
+    const level_50_markers = valid_markers.filter(m => m[1] === 50);
+    if (level_50_markers.length > 0) return [50, level_50_markers[0][0]];
+
+    const level_49_markers = valid_markers.filter(m => m[1] === 49);
+    if (level_49_markers.length > 0) return [49, level_49_markers[0][0]];
+
+    if (valid_markers.length > 0) return [valid_markers[0][1], valid_markers[0][0]];
 
     return ['Unknown', -1];
 };

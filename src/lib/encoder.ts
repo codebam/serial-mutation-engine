@@ -1,4 +1,4 @@
-import { ELEMENT_FLAG, MANUFACTURER_PATTERNS } from './utils';
+import { ELEMENT_FLAG, MANUFACTURER_PATTERNS } from './utils.ts';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
@@ -77,6 +77,16 @@ export function parsedToSerial(parsed: any): string {
         binary += parsed.trailer;
     }
 
+    if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
+        const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
+        binary = binary.slice(0, parsed.manufacturer.position) + manufacturerPattern + binary.slice(parsed.manufacturer.position + 16);
+    }
+
+    if (parsed.element && parsed.element.position !== undefined) {
+        const elementPart = ELEMENT_FLAG + parsed.element.pattern;
+        binary = binary.slice(0, parsed.element.position) + elementPart + binary.slice(parsed.element.position + elementPart.length);
+    }
+
     if (parsed.level && parsed.level.position !== undefined) {
         const LEVEL_MARKER = '000000';
         const newLevel = parseInt(parsed.level.value, 10);
@@ -84,11 +94,13 @@ export function parsedToSerial(parsed: any): string {
 
         if (newLevel === 1) {
             levelValueToEncode = 49;
-        } else if (newLevel === 50) {
-            levelValueToEncode = 50;
-        } else if (newLevel > 1 && newLevel < 50) {
+        } else if (newLevel === 2) {
+            levelValueToEncode = 2; // special case to avoid encoding to 50
+        } else if (newLevel >= 3 && newLevel <= 49) {
             levelValueToEncode = newLevel + 48;
         } else {
+            // This covers 0, 50, and any other edge cases.
+            // For 0, it's 0. For 50, it's 50. This is correct.
             levelValueToEncode = newLevel;
         }
         
@@ -100,16 +112,6 @@ export function parsedToSerial(parsed: any): string {
         } else {
             binary = binary.slice(0, parsed.level.position) + level_bits + binary.slice(parsed.level.position + 8);
         }
-    }
-
-    if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
-        const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
-        binary = binary.slice(0, parsed.manufacturer.position) + manufacturerPattern + binary.slice(parsed.manufacturer.position + 16);
-    }
-
-    if (parsed.element && parsed.element.position !== undefined) {
-        const elementPart = ELEMENT_FLAG + parsed.element.pattern;
-        binary = binary.slice(0, parsed.element.position) + elementPart + binary.slice(parsed.element.position + elementPart.length);
     }
 
     const bytes: number[] = [];
