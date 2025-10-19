@@ -16,16 +16,23 @@
 	});
 
 	function handleChange() {
-		const newValue = parseInt(localValue, 10);
-		if (!isNaN(newValue)) {
-			if (onUpdate) {
-				onUpdate(newValue);
-			}
-		} else {
-            if (onUpdate) {
-                onUpdate(0);
-            }
+		let newValue = parseInt(localValue, 10);
+
+        if (isNaN(newValue)) {
+            newValue = 0;
         }
+
+        if (newValue < 0) {
+            newValue = 0;
+        } else if (newValue > 63) {
+            newValue = 63;
+        }
+
+        localValue = newValue.toString();
+
+		if (onUpdate) {
+			onUpdate(newValue);
+		}
 	}
 
 </script>
