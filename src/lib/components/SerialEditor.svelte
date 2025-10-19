@@ -47,7 +47,9 @@
     async function copyJson() {
         if (parsedOutput) {
             try {
-                const jsonString = JSON.stringify(parsedOutput, null, 2);
+                const replacer = (key: any, value: any) =>
+                    typeof value === 'bigint' ? value.toString() : value;
+                const jsonString = JSON.stringify(parsedOutput, replacer, 2);
                 await navigator.clipboard.writeText(jsonString);
                 copyJsonText = 'Copied!';
                 setTimeout(() => (copyJsonText = 'Copy JSON'), 2000);
