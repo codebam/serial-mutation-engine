@@ -8,25 +8,7 @@
     import { Chart, registerables } from 'chart.js';
     Chart.register(...registerables);
 
-    interface State {
-        repository: string;
-        seed: string;
-        itemType: string;
-        counts: { [key: string]: number };
-        rules: {
-            targetOffset: number;
-            mutableStart: number;
-            mutableEnd: number;
-            minChunk: number;
-            maxChunk: number;
-            targetChunk: number;
-            minPart: number;
-            maxPart: number;
-            legendaryChance: number;
-        };
-        generateStats: boolean;
-        debugMode: boolean;
-    }
+    import type { State } from '$lib/types';
 
     const appState = writable<State>({
         repository: '',
@@ -259,8 +241,9 @@
         }
     }
 
+
     function downloadYAML() {
-        const contentToDownload = $filteredYaml || $fullYaml;
+        const contentToDownload = $outputYaml || $filteredYaml || $fullYaml;
         if (!contentToDownload) return;
         const blob = new Blob([contentToDownload], { type: 'text/yaml;charset=utf-8;' });
         const link = document.createElement('a');
@@ -454,6 +437,7 @@
                 <FormGroup label="Base Serial Seed">
                     <textarea class="{inputClasses} h-24" bind:value={$appState.seed} ></textarea>
                 </FormGroup>
+
                 <div class="grid grid-cols-2 gap-4">
                     <button onclick={saveState} class={btnClasses.secondary} >Save State</button>
                     <label class="{btnClasses.secondary} text-center cursor-pointer ">

@@ -1,19 +1,12 @@
 
-import { DEFAULT_SEED, TG_FLAGS, RANDOM_SAFETY_MARGIN } from './constants.js';
+import { DEFAULT_SEED, TG_FLAGS, RANDOM_SAFETY_MARGIN } from '../constants';
 import { setupWebGPU, generateRandomNumbersOnGPU, needsRandomNumberGeneration, getGpuDevice } from './gpu.js';
 import { randomChoice, ensureCharset, splitHeaderTail, extractHighValueParts } from './utils.js';
 import { calculateHighValuePartsStats } from './stats.js';
 
-import {
-    generateAppendMutation,
-    generateStackedPartMutationV1,
-    generateStackedPartMutationV2,
-    generateEvolvingMutation,
-    generateCharacterFlipMutation,
-    generateSegmentReversalMutation,
-    generatePartManipulationMutation,
-    generateRepositoryCrossoverMutation
-} from './mutations.js';
+import { parse } from '../parser';
+import { parsedToSerial } from '../encoder';
+import * as mutations from '../mutations';
 
 let debugMode = false; // Global debug flag
 
@@ -110,47 +103,23 @@ uniqueCount: 0,
 				let dynamicTargetLength = Math.floor(baseTail.length + config.targetOffset);
 				dynamicTargetLength = Math.max(dynamicTargetLength, protectedStartLength);
 
-				switch (/** @type {string} */ (item.tg)) {
-					                    case 'NEW_V0':
-                        mutatedTail = generateAppendMutation(baseTail, dynamicTargetLength, adjustedMutableStart, config.itemType);
-                        break;
-                    case 'NEW_V1':
-                        mutatedTail = generateStackedPartMutationV1(baseTail, config.minPartSize, config.maxPartSize, dynamicTargetLength, config.itemType);
-                        break;
-                    case 'NEW_V2':
-                        mutatedTail = generateStackedPartMutationV2(baseTail, config.minPartSize, config.maxPartSize, dynamicTargetLength, config.itemType);
-                        break;
-                    case 'NEW_V3':
-                        mutatedTail = generateEvolvingMutation(baseTail, config.minChunkSize, config.maxChunkSize, dynamicTargetLength, config.itemType);
-                        break;
-					case 'TG1':
-						mutatedTail = generateCharacterFlipMutation(baseTail, config.seed || DEFAULT_SEED, dynamicTargetLength, config.itemType);
-						break;
-					case 'TG2':
-						mutatedTail = generateSegmentReversalMutation(baseTail, config.seed || DEFAULT_SEED, dynamicTargetLength, config.itemType);
-						break;
-					case 'TG3':
-						mutatedTail = generatePartManipulationMutation(
-                            baseTail,
-                            parentTail,
-                            highValueParts,
-                            legendaryStackingChance,
-                            adjustedMutableStart,
-                            adjustedMutableEnd,
-                            dynamicTargetLength
-                        );
-						break;
-					case 'TG4':
-						                        mutatedTail = generateRepositoryCrossoverMutation(
-						                            baseTail,
-						                            parentTail,
-						                            adjustedMutableStart,
-						                            adjustedMutableEnd,
-						                            dynamicTargetLength
-						                        );						break;
-					default:
-						mutatedTail = generateAppendMutation(baseTail, dynamicTargetLength, protectedStartLength, config.itemType);
-				}
+				                const parsedSerial = parse(baseTail);
+
+                const mutationMap = {
+                    'NEW_V0': mutations.appendMutation,
+                    'NEW_V1': mutations.stackedPartMutationV1,
+                    'NEW_V2': mutations.stackedPartMutationV2,
+                    'NEW_V3': mutations.evolvingMutation,
+                    'TG1': mutations.characterFlipMutation,
+                    'TG2': mutations.segmentReversalMutation,
+                    'TG3': mutations.partManipulationMutation,
+                    'TG4': mutations.repositoryCrossoverMutation,
+                };
+
+                const mutation = mutationMap[item.tg] || mutations.appendMutation;
+                const mutatedParsedSerial = mutation(parsedSerial, config);
+
+				mutatedTail = parsedToSerial(mutatedParsedSerial);
 
 				serial = ensureCharset(baseHeader + mutatedTail);
 				innerAttempts++;

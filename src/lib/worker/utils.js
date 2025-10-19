@@ -1,5 +1,5 @@
 const self = /** @type {WorkerGlobalScope} */ (/** @type {unknown} */ (globalThis));
-import { ALPHABET, HEADER_RE } from './constants.js';
+import { ALPHABET, HEADER_RE } from '../constants';
 import { getNextRandom } from './gpu.js';
 
 /**

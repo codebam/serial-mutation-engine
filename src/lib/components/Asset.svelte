@@ -1,7 +1,8 @@
 <script lang="ts">
-	let { value, onUpdate, color = 'bg-gray-100' } = $props<{
+	let { value, onUpdate, onDelete, color = 'bg-gray-100' } = $props<{
 		value: number;
 		onUpdate: (newValue: number) => void;
+        onDelete?: () => void;
 		color?: string;
 	}>();
 
@@ -35,11 +36,19 @@
 		}
 	}
 
+    function handleDelete(event: MouseEvent) {
+        event.preventDefault();
+        if (onDelete) {
+            onDelete();
+        }
+    }
+
 </script>
 
 <input
 	type="text"
 	bind:value={localValue}
 	onchange={handleChange}
+    oncontextmenu={handleDelete}
 	class={`border border-gray-300 p-2.5 cursor-move min-w-[40px] text-center ${color} text-black w-16 rounded-md`}
 />

@@ -5,13 +5,15 @@
     import { ELEMENTAL_PATTERNS_V2, MANUFACTURER_PATTERNS } from '$lib/utils';
     import FormGroup from './FormGroup.svelte';
     import Asset from './Asset.svelte';
+    import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation } from '$lib/mutations';
+    import type { ParsedSerial, State } from '$lib/types';
 
     let { serial, onSerialUpdate } = $props<{
         serial: string;
         onSerialUpdate: (newSerial: string) => void;
     }>();
 
-    let parsedOutput = $state<any>(null);
+    let parsedOutput = $state<ParsedSerial | null>(null);
     let assetsWithIds = $state<{ id: number; value: number }[]>([]);
     let assetIdCounter = 0;
     let copyJsonText = $state('Copy JSON');
@@ -151,6 +153,84 @@
         }
     }
 
+    function deleteAsset(id: number) {
+        const index = assetsWithIds.findIndex(a => a.id === id);
+        if (index !== -1) {
+            assetsWithIds.splice(index, 1);
+            debouncedUpdateSerialFromAssets();
+        }
+    }
+
+    function applyMutation(mutation: (parsed: ParsedSerial, state: State) => ParsedSerial) {
+        if (parsedOutput) {
+            // A dummy state is created here because the mutations in the editor
+            // don't rely on the full app state. This might need to be adjusted
+            // if more complex mutations are added.
+            const dummyState: State = {
+                repository: '',
+                seed: '',
+                itemType: 'GUN',
+                counts: { new: 0, newV1: 0, newV2: 0, newV3: 0, tg1: 0, tg2: 0, tg3: 0, tg4: 0 },
+                rules: {
+                    targetOffset: 0,
+                    mutableStart: 0,
+                    mutableEnd: 0,
+                    minChunk: 0,
+                    maxChunk: 0,
+                    targetChunk: 0,
+                    minPart: 0,
+                    maxPart: 0,
+                    legendaryChance: 0,
+                },
+                generateStats: false,
+                debugMode: false,
+            };
+            const newParsedOutput = mutation(parsedOutput, dummyState);
+            parsedOutput = newParsedOutput;
+            assetsWithIds = newParsedOutput.assets.map((asset: string) => {
+                const value = parseInt(asset, 2);
+                return { id: assetIdCounter++, value: isNaN(value) ? 0 : value };
+            });
+            updateSerialFromAssets();
+        }
+    }
+
+    let generationCount = $state(10);
+    let generatedSerials = $state('');
+
+    function generateSerials(mutation: (parsed: ParsedSerial, state: State) => ParsedSerial) {
+        if (parsedOutput) {
+            const newSerials: string[] = [];
+            const dummyState: State = {
+                repository: '',
+                seed: '',
+                itemType: 'GUN',
+                counts: { new: 0, newV1: 0, newV2: 0, newV3: 0, tg1: 0, tg2: 0, tg3: 0, tg4: 0 },
+                rules: {
+                    targetOffset: 0,
+                    mutableStart: 0,
+                    mutableEnd: 0,
+                    minChunk: 0,
+                    maxChunk: 0,
+                    targetChunk: 0,
+                    minPart: 0,
+                    maxPart: 0,
+                    legendaryChance: 0,
+                },
+                generateStats: false,
+                debugMode: false,
+            };
+
+            for (let i = 0; i < generationCount; i++) {
+                // Deep copy parsedOutput for each iteration to avoid mutating the original object
+                const newParsedOutput = mutation(JSON.parse(JSON.stringify(parsedOutput)), dummyState);
+                const newSerial = parsedToSerial(newParsedOutput);
+                newSerials.push(newSerial);
+            }
+            generatedSerials = newSerials.join('\n');
+        }
+    }
+
 </script>
 
 <FormGroup label="Serial Input">
@@ -212,6 +292,7 @@
                         <Asset 
                             value={asset.value} 
                             onUpdate={(newValue) => updateAsset(asset.id, newValue)} 
+                            onDelete={() => deleteAsset(asset.id)}
                             color={getColorForAsset(asset.value)}
                         />
                     </div>
@@ -222,6 +303,38 @@
                     >+</button
                 >
             </div>
+            <div class="flex gap-2 mt-4">
+                <button onclick={() => applyMutation(appendMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Append Asset</button>
+                <button onclick={() => applyMutation(deleteMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Delete Asset</button>
+                <button onclick={() => applyMutation(shuffleAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Shuffle Assets</button>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button onclick={() => applyMutation(randomizeAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Randomize Assets</button>
+                <button onclick={() => applyMutation(repeatHighValuePartMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Repeat High Value Part</button>
+            </div>
+        </div>
+
+        <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+            <h4 class="font-semibold">Generate Serials</h4>
+            <FormGroup label="Number of Serials">
+                <input type="number" class={inputClasses} bind:value={generationCount} />
+            </FormGroup>
+            <div class="flex gap-2 mt-4">
+                <button onclick={() => generateSerials(shuffleAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Generate Shuffled</button>
+                <button onclick={() => generateSerials(randomizeAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Generate Randomized</button>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button onclick={() => generateSerials(repeatHighValuePartMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Generate Repeating</button>
+            </div>
+            {#if generatedSerials}
+                <FormGroup label="Generated Serials" extraClasses="mt-4">
+                    <textarea
+                        class={`${inputClasses} min-h-[160px]`}
+                        readonly
+                        value={generatedSerials}
+                    ></textarea>
+                </FormGroup>
+            {/if}
         </div>
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">

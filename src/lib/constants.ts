@@ -1,5 +1,5 @@
 // --- CONSTANTS ---
-import { BASE85_ALPHABET } from './knowledge.js';
+import { BASE85_ALPHABET } from './knowledge';
 
 // --- CONSTANTS ---
 export const DEFAULT_SEED = '@Uge8pzm/)}}!t8IjFw;$d;-DH;sYyj@*ifd*pw6Jyw*U';
