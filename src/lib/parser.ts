@@ -34,17 +34,22 @@ function readData(stream: Bitstream, length: number): { bits: string } | null {
 function readVarInt(stream: Bitstream): bigint {
     let result = 0n;
     let shift = 0n;
+    let bytesRead = 0;
     while (true) {
         const byte_str = stream.read(8);
         if (byte_str === null) {
             throw new Error("Not enough bits to read VarInt");
         }
+        bytesRead++;
         const byte = BigInt(parseInt(byte_str, 2));
         const data = byte & 0b01111111n;
         result |= data << shift;
         shift += 7n;
         if ((byte & 0b10000000n) === 0n) {
             return result;
+        }
+        if (bytesRead > 10) {
+            throw new Error("Varint is too long");
         }
     }
 }
