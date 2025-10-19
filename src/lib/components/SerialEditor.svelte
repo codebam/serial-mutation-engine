@@ -44,6 +44,27 @@
         }
     }
 
+    async function pasteJson() {
+        try {
+            const clipboardText = await navigator.clipboard.readText();
+            const newParsed = JSON.parse(clipboardText) as ParsedSerial;
+
+            parsedOutput = newParsed;
+
+            assetIdCounter = 0; // Reset counter
+            assetsWithIds = newParsed.assets.map((asset: string) => {
+                const value = parseInt(asset, 2);
+                return { id: assetIdCounter++, value: isNaN(value) ? 0 : value };
+            });
+            originalAssetsCount = newParsed.assets.length;
+
+            reserialize();
+        } catch (error) {
+            console.error('Failed to paste or parse JSON:', error);
+            alert('Failed to paste or parse JSON from clipboard.');
+        }
+    }
+
     function getColorForAsset(value: number): string {
         if (!colorMap.has(value)) {
             const color = assetColors[colorIndex % assetColors.length];
@@ -117,6 +138,21 @@
         }
     }
 
+    function reserialize() {
+        if (parsedOutput) {
+            onSerialUpdate(parsedToSerial(parsedOutput));
+        }
+    }
+
+    function handleManufacturerChange() {
+        if (parsedOutput?.manufacturer) {
+            const newName = parsedOutput.manufacturer.name;
+            const newPattern = MANUFACTURER_PATTERNS[newName][0];
+            parsedOutput.manufacturer.pattern = newPattern;
+            debouncedReserialize();
+        }
+    }
+
     function debounce<T extends (...args: any[]) => any>(func: T, timeout = 1000) {
         let timer: NodeJS.Timeout;
         return (...args: Parameters<T>) => {
@@ -127,6 +163,7 @@
 
     const debouncedAnalyzeSerial = debounce(analyzeSerial, 200);
     const debouncedUpdateSerialFromAssets = debounce(updateSerialFromAssets, 5000);
+    const debouncedReserialize = debounce(reserialize, 1000);
 
     $effect(() => {
         if (serial) {
@@ -275,6 +312,10 @@
     ></textarea>
 </FormGroup>
 
+<div class="mt-4 flex justify-end">
+    <button onclick={pasteJson} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Paste JSON</button>
+</div>
+
 {#if parsedOutput}
     <div class="mt-4 space-y-4">
         <div class="flex justify-between items-center">
@@ -285,7 +326,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Manufacturer</h4>
             <FormGroup label="Manufacturer">
-                <select class={inputClasses} bind:value={parsedOutput.manufacturer.name}>
+                <select class={inputClasses} bind:value={parsedOutput.manufacturer.name} oninput={handleManufacturerChange} disabled>
                     {#each Object.keys(MANUFACTURER_PATTERNS) as manufacturer}
                         <option value={manufacturer}>{manufacturer}</option>
                     {/each}
@@ -296,14 +337,14 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Level</h4>
             <FormGroup label="Level">
-                <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} />
+                <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} oninput={debouncedReserialize} disabled />
             </FormGroup>
         </div>
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Preamble</h4>
             <FormGroup label="Preamble (hex)">
-                <input type="text" class={inputClasses} bind:value={preambleHex} oninput={(e) => { parsedOutput.preamble = hexToBits(e.currentTarget.value); }} />
+                <input type="text" class={inputClasses} bind:value={preambleHex} oninput={(e) => { parsedOutput.preamble = hexToBits(e.currentTarget.value); debouncedReserialize(); }} />
             </FormGroup>
         </div>
 
@@ -378,7 +419,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Trailer</h4>
             <FormGroup label="Trailer (hex)">
-                <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => { parsedOutput.trailer = hexToBits(e.currentTarget.value); }} />
+                <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => { parsedOutput.trailer = hexToBits(e.currentTarget.value); debouncedReserialize(); }} />
             </FormGroup>
             {#if trailerHex === ''}
                 <p class="text-xs text-gray-400 mt-2">No trailer bits were found for this serial.</p>
