@@ -1,4 +1,10 @@
 
+export interface AssetToken {
+    value: bigint;
+    bitLength: number;
+    bits: number[];
+}
+
 export interface ParsedSerial {
     preamble: string;
     assets: string[];

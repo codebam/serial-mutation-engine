@@ -1,3 +1,4 @@
+import { AssetToken } from './types';
 import { ELEMENT_FLAG_BITS, END_OF_ASSETS_MARKER_BITS } from './utils';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
@@ -59,28 +60,21 @@ function writeVarInt_bits(value: bigint): number[] {
         let part = Number(value & 0b011111n);
         value >>= 5n;
         if (value > 0n) {
-            part |= 0b100000n;
+            part |= 0b100000;
         }
         bits.push(...part.toString(2).padStart(6, '0').split('').map(Number));
     }
     return bits;
 }
 
-function encodeAssets(parsed: any): number[] {
+function encodeAssets(parsed: { assets?: AssetToken[] }): number[] {
     let bits: number[] = [];
     if (parsed.assets) {
-        if (parsed.isVarInt) {
-            for (const asset of parsed.assets) {
-                bits.push(...writeVarInt_bits(asset));
-            }
-        } else {
-            for (const asset of parsed.assets) {
-                const assetBits = [];
-                let num = Number(asset);
-                for(let i=5; i>=0; i--) {
-                    assetBits.push((num >> i) & 1);
-                }
-                bits.push(...assetBits);
+        for (const asset of parsed.assets) {
+            if (asset.bits) {
+                bits.push(...asset.bits);
+            } else {
+                bits.push(...writeVarInt_bits(asset.value));
             }
         }
     }
@@ -90,8 +84,8 @@ function encodeAssets(parsed: any): number[] {
 export function parsedToSerial(parsed: any): string {
     const assets_bits = encodeAssets(parsed);
 
-        let all_bits;
-    if (parsed.isVarInt) {
+    let all_bits;
+    if (parsed.hasEndOfAssetsMarker) {
         all_bits = [...parsed.preamble_bits, ...assets_bits, ...END_OF_ASSETS_MARKER_BITS, ...parsed.trailer_bits];
     } else {
         all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
