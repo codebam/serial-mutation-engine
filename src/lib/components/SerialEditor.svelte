@@ -288,14 +288,18 @@
             isGenerating = true;
             generationProgress = 0;
             generatedSerials = '';
+
+            const replacer = (key: any, value: any) =>
+                typeof value === 'bigint' ? value.toString() : value;
+
             worker.postMessage({
                 type: 'generate_from_editor',
                 payload: {
-                    parsedSerial: JSON.parse(JSON.stringify(parsedOutput)),
+                    parsedSerial: JSON.parse(JSON.stringify(parsedOutput, replacer)),
                     originalAssetsCount: originalAssetsCount,
                     generationCount: generationCount,
                     mutationName: mutationName,
-                    rules: rules
+                    rules: JSON.parse(JSON.stringify(rules))
                 }
             });
         }
@@ -325,6 +329,7 @@
             <button onclick={copyJson} class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">{copyJsonText}</button>
         </div>
 
+        {#if parsedOutput.manufacturer}
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Manufacturer</h4>
             <FormGroup label="Manufacturer">
@@ -335,6 +340,7 @@
                 </select>
             </FormGroup>
         </div>
+        {/if}
 
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Level</h4>

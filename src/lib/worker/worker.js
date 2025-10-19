@@ -273,10 +273,10 @@ uniqueCount: generatedSerials.length,
             for (const newParsedOutput of newSerials.values()) {
                 const lengthDifference = (newParsedOutput.assets.length - originalAssetsCount) * 6;
 
-                if (newParsedOutput.level && newParsedOutput.level.position > newParsedOutput.preamble.length) {
+                if (newParsedOutput.level && newParsedOutput.level.position > newParsedOutput.preamble_bits.length) {
                     newParsedOutput.level.position += lengthDifference;
                 }
-                if (newParsedOutput.manufacturer && newParsedOutput.manufacturer.position > newParsedOutput.preamble.length) {
+                if (newParsedOutput.manufacturer && newParsedOutput.manufacturer.position > newParsedOutput.preamble_bits.length) {
                     newParsedOutput.manufacturer.position += lengthDifference;
                 }
 
