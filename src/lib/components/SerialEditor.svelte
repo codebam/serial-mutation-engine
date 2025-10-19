@@ -14,7 +14,7 @@
         rules: State['rules'];
     }>();
 
-    let parsedOutput = $state<ParsedSerial | null>(null);
+    let parsedOutput = $state<any | null>(null);
     let assetsWithIds = $state<{ id: number; value: number }[]>([]);
     let assetIdCounter = 0;
     let copyJsonText = $state('Copy JSON');
@@ -47,14 +47,13 @@
     async function pasteJson() {
         try {
             const clipboardText = await navigator.clipboard.readText();
-            const newParsed = JSON.parse(clipboardText) as ParsedSerial;
+            const newParsed = JSON.parse(clipboardText);
 
             parsedOutput = newParsed;
 
             assetIdCounter = 0; // Reset counter
-            assetsWithIds = newParsed.assets.map((asset: string) => {
-                const value = parseInt(asset, 2);
-                return { id: assetIdCounter++, value: isNaN(value) ? 0 : value };
+            assetsWithIds = newParsed.assets.map((asset: bigint) => {
+                return { id: assetIdCounter++, value: Number(asset) };
             });
             originalAssetsCount = newParsed.assets.length;
 
@@ -74,26 +73,27 @@
         return colorMap.get(value)!;
     }
 
-    function bitsToHex(bits: string): string {
+    function bitsToHex(bits: number[]): string {
+        if (!bits) return '';
         let hex = '';
         for (let i = 0; i < bits.length; i += 4) {
-            const chunk = bits.substring(i, i + 4);
+            const chunk = bits.slice(i, i + 4).join('');
             hex += parseInt(chunk, 2).toString(16);
         }
         return hex;
     }
 
-    function hexToBits(hex: string): string {
+    function hexToBits(hex: string): number[] {
         hex = hex.replace(/[^0-9a-fA-F]/g, '');
-        let bits = '';
+        let bits: number[] = [];
         for (let i = 0; i < hex.length; i++) {
-            bits += parseInt(hex[i], 16).toString(2).padStart(4, '0');
+            bits.push(...parseInt(hex[i], 16).toString(2).padStart(4, '0').split('').map(Number));
         }
         return bits;
     }
 
-    let preambleHex = $derived(parsedOutput ? bitsToHex(parsedOutput.preamble) : '');
-    let trailerHex = $derived(parsedOutput ? bitsToHex(parsedOutput.trailer) : '');
+    let preambleHex = $derived(parsedOutput ? bitsToHex(parsedOutput.preamble_bits) : '');
+    let trailerHex = $derived(parsedOutput ? bitsToHex(parsedOutput.trailer_bits) : '');
 
     function analyzeSerial() {
         if (!serial) {
@@ -102,18 +102,24 @@
             originalAssetsCount = 0;
             return;
         }
-        const bytes = serialToBytes(serial);
-        const parsed = parse(bytes);
-        parsedOutput = parsed;
+        try {
+            const bytes = serialToBytes(serial);
+            const parsed = parse(bytes);
+            parsedOutput = parsed;
 
-        if (parsed) {
-            originalAssetsCount = parsed.assets.length;
-            assetIdCounter = 0;
-            assetsWithIds = parsed.assets.map((asset: string) => {
-                const value = parsed.isVarInt ? parseInt(asset, 10) : parseInt(asset, 2);
-                return { id: assetIdCounter++, value: isNaN(value) ? 0 : value };
-            });
-        } else {
+            if (parsed) {
+                originalAssetsCount = parsed.assets.length;
+                assetIdCounter = 0;
+                assetsWithIds = parsed.assets.map((asset: bigint) => {
+                    return { id: assetIdCounter++, value: Number(asset) };
+                });
+            } else {
+                assetsWithIds = [];
+                originalAssetsCount = 0;
+            }
+        } catch (error) {
+            console.error('Failed to parse serial:', error);
+            parsedOutput = null;
             assetsWithIds = [];
             originalAssetsCount = 0;
         }
@@ -123,9 +129,8 @@
         if (parsedOutput) {
             const newAssets = assetsWithIds.map(a => BigInt(a.value));
 
-            const newParsed = JSON.parse(JSON.stringify(parsedOutput));
+            const newParsed = { ...parsedOutput };
             newParsed.assets = newAssets;
-            newParsed.isVarInt = true;
 
             onSerialUpdate(parsedToSerial(newParsed));
         }
@@ -163,9 +168,11 @@
         };
     }
 
-    const debouncedAnalyzeSerial = debounce(analyzeSerial, 200);
+    const debouncedAnalyzeSerial = debounce(analyzeSerial, 0);
     const debouncedUpdateSerialFromAssets = debounce(updateSerialFromAssets, 5000);
     const debouncedReserialize = debounce(reserialize, 1000);
+
+    
 
     $effect(() => {
         if (serial) {
@@ -175,14 +182,7 @@
         }
     });
 
-    function handlePaste(event: ClipboardEvent) {
-        event.preventDefault();
-        const pastedText = event.clipboardData?.getData('text/plain');
-        if (pastedText) {
-            onSerialUpdate(pastedText);
-            analyzeSerial();
-        }
-    }
+    
 
     let dragIndex: number;
 
@@ -217,7 +217,7 @@
         }
     }
 
-    function applyMutation(mutation: (parsed: ParsedSerial, state: State) => ParsedSerial) {
+    function applyMutation(mutation: (parsed: any, state: State) => any) {
         if (parsedOutput) {
             // A dummy state is created here because the mutations in the editor
             // don't rely on the full app state. This might need to be adjusted
@@ -243,9 +243,8 @@
             };
             const newParsedOutput = mutation(parsedOutput, dummyState);
             parsedOutput = newParsedOutput;
-            assetsWithIds = newParsedOutput.assets.map((asset: string) => {
-                const value = parseInt(asset, 2);
-                return { id: assetIdCounter++, value: isNaN(value) ? 0 : value };
+            assetsWithIds = newParsedOutput.assets.map((asset: bigint) => {
+                return { id: assetIdCounter++, value: Number(asset) };
             });
             updateSerialFromAssets();
         }
@@ -310,7 +309,8 @@
         value={serial}
         oninput={(e) => onSerialUpdate(e.currentTarget.value)}
         placeholder="Paste serial here..."
-        onpaste={handlePaste}
+        
+        
     ></textarea>
 </FormGroup>
 
@@ -359,7 +359,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Preamble</h4>
             <FormGroup label="Preamble (hex)">
-                <input type="text" class={inputClasses} bind:value={preambleHex} oninput={(e) => { parsedOutput.preamble = hexToBits(e.currentTarget.value); debouncedReserialize(); }} />
+                <input type="text" class={inputClasses} value={preambleHex} oninput={(e) => { parsedOutput.preamble_bits = hexToBits(e.currentTarget.value); debouncedReserialize(); }} />
             </FormGroup>
         </div>
 
@@ -434,7 +434,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Trailer</h4>
             <FormGroup label="Trailer (hex)">
-                <input type="text" class={inputClasses} bind:value={trailerHex} oninput={(e) => { parsedOutput.trailer = hexToBits(e.currentTarget.value); debouncedReserialize(); }} />
+                <input type="text" class={inputClasses} value={trailerHex} oninput={(e) => { parsedOutput.trailer_bits = hexToBits(e.currentTarget.value); debouncedReserialize(); }} />
             </FormGroup>
             {#if trailerHex === ''}
                 <p class="text-xs text-gray-400 mt-2">No trailer bits were found for this serial.</p>

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { writable } from 'svelte/store';
     import Accordion from '$lib/components/Accordion.svelte';
     import Dropdown from '$lib/components/Dropdown.svelte';
     import FormGroup from '$lib/components/FormGroup.svelte';
@@ -12,7 +11,7 @@
 
     import type { State } from '$lib/types';
 
-    const appState = writable<State>({
+    let appState = $state<State>({
         repository: '',
         seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
         itemType: 'GUN',
@@ -32,15 +31,15 @@
         debugMode: false,
     });
 
-    const statusMessage = writable('Ready to generate.');
-    const progress = writable(0);
-    const isGenerating = writable(false);
-    const outputYaml = writable('');
-    const fullYaml = writable('');
-    const filteredYaml = writable('');
-    const baseYaml = writable('');
+    let statusMessage = $state('Ready to generate.');
+    let progress = $state(0);
+    let isGenerating = $state(false);
+    let outputYaml = $state('');
+    let fullYaml = $state('');
+    let filteredYaml = $state('');
+    let baseYaml = $state('');
 
-    const serialEditors = writable([
+    let serialEditors = $state([
         {
             id: 1,
             serial: '',
@@ -50,107 +49,108 @@
     let nextSerialEditorId = 2;
 
     function addSerialEditor() {
-        $serialEditors = [...$serialEditors, { id: nextSerialEditorId++, serial: '', merged: false }];
+        serialEditors.push({ id: nextSerialEditorId++, serial: '', merged: false });
     }
 
     function removeSerialEditor(id: number) {
-        $serialEditors = $serialEditors.filter((editor) => editor.id !== id);
+        serialEditors = serialEditors.filter((editor) => editor.id !== id);
     }
 
     function updateEditorSerial(editorId: number, newSerial: string) {
-        const editor = $serialEditors.find(e => e.id === editorId);
+        const editor = serialEditors.find(e => e.id === editorId);
         if (editor) {
             editor.serial = newSerial;
             editor.merged = false;
-            $serialEditors = $serialEditors;
         }
     }
 
-    const searchTerm = writable('');
-    const copyText = writable('Copy');
+    let searchTerm = $state('');
+    let copyText = $state('Copy');
 
     let worker: Worker;
 
     let chart: Chart;
 
     $effect(() => {
-        async function setup() {
-            page.subscribe(p => {
-                const serialFromUrl = p.url.searchParams.get('serial');
-                if (serialFromUrl) {
-                    const firstEditor = $serialEditors[0];
-                    if (firstEditor) {
-                        firstEditor.serial = serialFromUrl;
-                        $serialEditors = $serialEditors; // Trigger update
-                    }
-                }
-            });
+        const storedBaseYaml = localStorage.getItem('baseYaml');
+        if (storedBaseYaml) {
+            baseYaml = storedBaseYaml;
+            statusMessage = 'Restored last used base YAML.';
+        }
 
-            const storedBaseYaml = localStorage.getItem('baseYaml');
-            if (storedBaseYaml) {
-                $baseYaml = storedBaseYaml;
-                $statusMessage = 'Restored last used base YAML.';
-            }
-
+        async function setupWorkerAndChart() {
             const MyWorker = await import('$lib/worker/worker.js?worker');
             worker = new MyWorker.default();
 
             const ctx = document.getElementById('statsChart') as HTMLCanvasElement;
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Part Frequency',
-                        data: [],
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+            if (ctx) {
+                if (chart) chart.destroy();
+                chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Part Frequency',
+                            data: [],
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
 
             worker.onmessage = (e) => {
                 const { type, payload } = e.data;
                 switch (type) {
                     case 'progress':
-                        $progress = (payload.processed / payload.total) * 100;
+                        progress = (payload.processed / payload.total) * 100;
                         if (payload.stage === 'stats') {
-                            $statusMessage = `Generating Statistics... ${Math.round($progress)}%`;
+                            statusMessage = `Generating Statistics... ${Math.round(progress)}%`;
                         } else {
-                            $statusMessage = `Generating... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
+                            statusMessage = `Generating... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
                         }
                         break;
                     case 'stats_complete':
                         updateChart(payload.chartData);
                         break;
                     case 'complete':
-                        $isGenerating = false;
-                        $outputYaml = payload.truncatedYaml;
-                        $fullYaml = payload.yaml;
-                        $filteredYaml = '';
-                        $statusMessage = `✅ Complete! ${payload.uniqueCount.toLocaleString()} unique serials generated.`;
+                        isGenerating = false;
+                        outputYaml = payload.truncatedYaml;
+                        fullYaml = payload.yaml;
+                        filteredYaml = '';
+                        statusMessage = `✅ Complete! ${payload.uniqueCount.toLocaleString()} unique serials generated.`;
                         break;
                     case 'error':
-                        $isGenerating = false;
-                        $statusMessage = `❌ ERROR: ${payload.message}`;
+                        isGenerating = false;
+                        statusMessage = `❌ ERROR: ${payload.message}`;
                         break;
                 }
             };
         }
 
-        setup();
+        setupWorkerAndChart();
 
         return () => {
-            worker.terminate();
+            worker?.terminate();
+            chart?.destroy();
         };
+    });
+
+    $effect(() => {
+        const serialFromUrl = $page.url.searchParams.get('serial');
+        if (serialFromUrl) {
+            if (serialEditors[0]) {
+                serialEditors[0].serial = serialFromUrl;
+            }
+        }
     });
 
     function updateChart(chartData: { labels: string[]; data: number[] }) {
@@ -170,56 +170,56 @@
     }
 
     async function searchSerials() {
-        if (!$searchTerm) return;
-        $statusMessage = 'Searching...';
+        if (!searchTerm) return;
+        statusMessage = 'Searching...';
         try {
-            const response = await fetch(`https://kamer-tuintje.be/BL4/BSE/api.php?search=${encodeURIComponent($searchTerm)}&action=records&sort_by=id&sort_order=ASC`);
+            const response = await fetch(`https://kamer-tuintje.be/BL4/BSE/api.php?search=${encodeURIComponent(searchTerm)}&action=records&sort_by=id&sort_order=ASC`);
             const data = await response.json();
             const serials = data.map((item: any) => item.serial).join('\n');
-            $appState.repository = $appState.repository ? `${$appState.repository}\n${serials}` : serials;
-            $statusMessage = `Found ${data.length} serials.`;
+            appState.repository = appState.repository ? `${appState.repository}\n${serials}` : serials;
+            statusMessage = `Found ${data.length} serials.`;
         } catch (error) {
             console.error('Failed to search serials:', error);
-            $statusMessage = '❌ ERROR: Failed to search serials.';
+            statusMessage = '❌ ERROR: Failed to search serials.';
         }
     }
 
     function startGeneration() {
-        $isGenerating = true;
-        $statusMessage = 'Sending job...';
-        $progress = 0;
-        $filteredYaml = '';
+        isGenerating = true;
+        statusMessage = 'Sending job...';
+        progress = 0;
+        filteredYaml = '';
         const config = {
-            seed: $appState.seed,
-            itemType: $appState.itemType,
-            repository: $appState.repository,
-            newCount: $appState.counts.new,
-            newV1Count: $appState.counts.newV1,
-            newV2Count: $appState.counts.newV2,
-            newV3Count: $appState.counts.newV3,
-            tg1Count: $appState.counts.tg1,
-            tg2Count: $appState.counts.tg2,
-            tg3Count: $appState.counts.tg3,
-            tg4Count: $appState.counts.tg4,
-            minChunkSize: $appState.rules.minChunk,
-            maxChunkSize: $appState.rules.maxChunk,
-            targetChunkSize: $appState.rules.targetChunk,
-            targetOffset: $appState.rules.targetOffset,
-            minPartSize: $appState.rules.minPart,
-            maxPartSize: $appState.rules.maxPart,
-            legendaryChance: $appState.rules.legendaryChance,
-            mutableStart: $appState.rules.mutableStart,
-            mutableEnd: $appState.rules.mutableEnd,
+            seed: appState.seed,
+            itemType: appState.itemType,
+            repository: appState.repository,
+            newCount: appState.counts.new,
+            newV1Count: appState.counts.newV1,
+            newV2Count: appState.counts.newV2,
+            newV3Count: appState.counts.newV3,
+            tg1Count: appState.counts.tg1,
+            tg2Count: appState.counts.tg2,
+            tg3Count: appState.counts.tg3,
+            tg4Count: appState.counts.tg4,
+            minChunkSize: appState.rules.minChunk,
+            maxChunkSize: appState.rules.maxChunk,
+            targetChunkSize: appState.rules.targetChunk,
+            targetOffset: appState.rules.targetOffset,
+            minPartSize: appState.rules.minPart,
+            maxPartSize: appState.rules.maxPart,
+            legendaryChance: appState.rules.legendaryChance,
+            mutableStart: appState.rules.mutableStart,
+            mutableEnd: appState.rules.mutableEnd,
             gpuBatchSize: 250000,
-            generateStats: $appState.generateStats,
-            debugMode: $appState.debugMode,
+            generateStats: appState.generateStats,
+            debugMode: appState.debugMode,
         };
         worker.postMessage({ type: 'generate', payload: config });
     }
 
     function resetForm() {
         if (confirm('Are you sure you want to reset all settings to their original defaults?')) {
-            $appState = {
+            appState = {
                 repository: '',
                 seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
                 itemType: 'GUN',
@@ -238,25 +238,25 @@
                 generateStats: false,
                 debugMode: false,
             };
-            $outputYaml = '';
-            $fullYaml = '';
-            $filteredYaml = '';
-            $statusMessage = 'Settings have been reset to original defaults.';
+            outputYaml = '';
+            fullYaml = '';
+            filteredYaml = '';
+            statusMessage = 'Settings have been reset to original defaults.';
         }
     }
 
     async function copyToClipboard() {
-        const contentToCopy = $filteredYaml || $fullYaml;
+        const contentToCopy = filteredYaml || fullYaml;
         if (contentToCopy) {
             await navigator.clipboard.writeText(contentToCopy);
-            $copyText = 'Copied!';
-            setTimeout(() => ($copyText = 'Copy'), 2000);
+            copyText = 'Copied!';
+            setTimeout(() => (copyText = 'Copy'), 2000);
         }
     }
 
 
     function downloadYAML() {
-        const contentToDownload = $outputYaml || $filteredYaml || $fullYaml;
+        const contentToDownload = outputYaml || filteredYaml || fullYaml;
         if (!contentToDownload) return;
         const blob = new Blob([contentToDownload], { type: 'text/yaml;charset=utf-8;' });
         const link = document.createElement('a');
@@ -268,17 +268,17 @@
 
     function saveState() {
         try {
-            const jsonStr = JSON.stringify($appState, null, 2);
+            const jsonStr = JSON.stringify(appState, null, 2);
             const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'serial-generator-state.json';
             link.click();
             URL.revokeObjectURL(link.href);
-            $statusMessage = 'State saved successfully.';
+            statusMessage = 'State saved successfully.';
         } catch (error) {
             console.error('Failed to save state:', error);
-            $statusMessage = '❌ ERROR: Failed to save state.';
+            statusMessage = '❌ ERROR: Failed to save state.';
         }
     }
 
@@ -292,11 +292,11 @@
         reader.onload = () => {
             try {
                 const restoredState = JSON.parse(reader.result as string);
-                $appState = { ...$appState, ...restoredState };
-                $statusMessage = 'State restored successfully.';
+                appState = { ...appState, ...restoredState };
+                statusMessage = 'State restored successfully.';
             } catch (error) {
                 console.error('Failed to restore state:', error);
-                $statusMessage = '❌ ERROR: Failed to restore state.';
+                statusMessage = '❌ ERROR: Failed to restore state.';
             }
         };
         reader.readAsText(file);
@@ -311,34 +311,33 @@
         const reader = new FileReader();
         reader.onload = () => {
             try {
-                $baseYaml = reader.result as string;
-                localStorage.setItem('baseYaml', $baseYaml);
-                $statusMessage = 'Base YAML loaded successfully.';
-                $serialEditors.forEach(e => e.merged = false);
-                $serialEditors = $serialEditors;
+                baseYaml = reader.result as string;
+                localStorage.setItem('baseYaml', baseYaml);
+                statusMessage = 'Base YAML loaded successfully.';
+                serialEditors.forEach(e => e.merged = false);
             } catch (error) {
                 console.error('Failed to load base YAML:', error);
-                $statusMessage = '❌ ERROR: Failed to load base YAML.';
+                statusMessage = '❌ ERROR: Failed to load base YAML.';
             }
         };
         reader.readAsText(file);
     }
 
     function importAndMerge() {
-        if (!$baseYaml) {
-            $statusMessage = 'Please select a base YAML file first.';
+        if (!baseYaml) {
+            statusMessage = 'Please select a base YAML file first.';
             return;
         }
 
-        const editorToMerge = $serialEditors.find(e => e.serial && !e.merged);
+        const editorToMerge = serialEditors.find(e => e.serial && !e.merged);
 
         if (!editorToMerge) {
-            $statusMessage = 'No unmerged serials found to merge.';
+            statusMessage = 'No unmerged serials found to merge.';
             return;
         }
 
         const serialToInsert = editorToMerge.serial;
-        let currentYaml = $outputYaml || $baseYaml;
+        let currentYaml = outputYaml || baseYaml;
 
         if (currentYaml.includes('backpack: null')) {
             const backpackLine = currentYaml.split('\n').find(line => line.trim() === 'backpack: null');
@@ -348,10 +347,9 @@
                 `${indent}  slot_0:`,
                 `${indent}    serial: '${serialToInsert}'`
             ].join('\n');
-            $outputYaml = currentYaml.replace(backpackLine!, newBackpackString);
+            outputYaml = currentYaml.replace(backpackLine!, newBackpackString);
             editorToMerge.merged = true;
-            $serialEditors = $serialEditors;
-            $statusMessage = `✅ Merged serial from Editor #${editorToMerge.id} into new backpack.`;
+            statusMessage = `✅ Merged serial from Editor #${editorToMerge.id} into new backpack.`;
         } else if (currentYaml.includes('backpack:')) {
             let lines = currentYaml.split('\n');
             let backpackIndex = -1;
@@ -390,10 +388,9 @@
             ];
 
             lines.splice(endOfBackpackIndex, 0, ...newSlotLines);
-            $outputYaml = lines.join('\n');
+            outputYaml = lines.join('\n');
             editorToMerge.merged = true;
-            $serialEditors = $serialEditors;
-            $statusMessage = `✅ Merged serial from Editor #${editorToMerge.id} into slot_${nextSlotNum}.`;
+            statusMessage = `✅ Merged serial from Editor #${editorToMerge.id} into slot_${nextSlotNum}.`;
         } else {
             const newStructure = [
                 'state:',
@@ -403,10 +400,9 @@
                 '        slot_0:',
                 `          serial: '${serialToInsert}'`
             ];
-            $outputYaml = (currentYaml.trim() === '' ? '' : currentYaml + '\n') + newStructure.join('\n');
+            outputYaml = (currentYaml.trim() === '' ? '' : currentYaml + '\n') + newStructure.join('\n');
             editorToMerge.merged = true;
-            $serialEditors = $serialEditors;
-            $statusMessage = '✅ Created new backpack structure and merged serial.';
+            statusMessage = '✅ Created new backpack structure and merged serial.';
         }
     }
 
@@ -429,7 +425,7 @@
                 <FormGroup label="Repository">
                     <textarea
                         class="{inputClasses} min-h-[120px]"
-                        bind:value={$appState.repository}
+                        bind:value={appState.repository}
                         placeholder="Paste serials here..."
                         
                     ></textarea>
@@ -441,14 +437,14 @@
                             name="searchTerm"
                             class={inputClasses}
                             placeholder="Enter search term..."
-                            bind:value={$searchTerm}
+                            bind:value={searchTerm}
                             
                         />
                         <button onclick={searchSerials} class={btnClasses.secondary} >Search</button>
                     </div>
                 </FormGroup>
                 <FormGroup label="Base Serial Seed">
-                    <textarea class="{inputClasses} h-24" bind:value={$appState.seed} ></textarea>
+                    <textarea class="{inputClasses} h-24" bind:value={appState.seed} ></textarea>
                 </FormGroup>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -461,7 +457,7 @@
             </Accordion>
             <Accordion title="🧬 Mutation Rules" open={true}>
                 <FormGroup label="Item Type">
-                    <select name="itemType" bind:value={$appState.itemType} class={inputClasses} >
+                    <select name="itemType" bind:value={appState.itemType} class={inputClasses} >
                         <option value="GUN">Gun</option>
                         <option value="SHIELD">Shield</option>
                         <option value="CLASS_MOD">Class Mod</option>
@@ -472,18 +468,18 @@
                     </select>
                 </FormGroup>
                 <MutableRangeSelector
-                    bind:seed={$appState.seed}
-                    bind:start={$appState.rules.mutableStart}
-                    bind:end={$appState.rules.mutableEnd}
+                    bind:seed={appState.seed}
+                    bind:start={appState.rules.mutableStart}
+                    bind:end={appState.rules.mutableEnd}
                     inputClasses={inputClasses}
-                    isMerging={$isGenerating}
+                    isMerging={isGenerating}
                 />
                 <FormGroup label="Crossover Chunk Size">
                     <div class="grid grid-cols-3 gap-4">
                         <input
                             type="number"
                             name="rules.minChunk"
-                            bind:value={$appState.rules.minChunk}
+                            bind:value={appState.rules.minChunk}
                             class={inputClasses}
                             title="The smallest crossover segment size."
                             
@@ -491,7 +487,7 @@
                         <input
                             type="number"
                             name="rules.maxChunk"
-                            bind:value={$appState.rules.maxChunk}
+                            bind:value={appState.rules.maxChunk}
                             class={inputClasses}
                             title="The largest crossover segment size."
                             
@@ -499,20 +495,20 @@
                         <input
                             type="number"
                             name="rules.targetChunk"
-                            bind:value={$appState.rules.targetChunk}
+                            bind:value={appState.rules.targetChunk}
                             class={inputClasses}
                             title="The preferred crossover segment size."
                             
                         />
                     </div>
                 </FormGroup>
-                <FormGroup label="Legendary Part Chance ({$appState.rules.legendaryChance}%)">
+                <FormGroup label="Legendary Part Chance ({appState.rules.legendaryChance}%)">
                     <input
                         type="range"
                         name="rules.legendaryChance"
                         min="0"
                         max="100"
-                        bind:value={$appState.rules.legendaryChance}
+                        bind:value={appState.rules.legendaryChance}
                         class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                         
                     />
@@ -522,14 +518,14 @@
                         <input
                             type="number"
                             name="rules.minPart"
-                            bind:value={$appState.rules.minPart}
+                            bind:value={appState.rules.minPart}
                             class={inputClasses}
                             
                         />
                         <input
                             type="number"
                             name="rules.maxPart"
-                            bind:value={$appState.rules.maxPart}
+                            bind:value={appState.rules.maxPart}
                             class={inputClasses}
                             
                         />
@@ -539,7 +535,7 @@
                     <input
                         type="number"
                         name="rules.targetOffset"
-                        bind:value={$appState.rules.targetOffset}
+                        bind:value={appState.rules.targetOffset}
                         class={inputClasses}
                         
                     />
@@ -551,7 +547,7 @@
                         <input
                             type="number"
                             name="counts.new"
-                            bind:value={$appState.counts.new}
+                            bind:value={appState.counts.new}
                             class={inputClasses}
                             
                         />
@@ -561,7 +557,7 @@
                         <input
                             type="number"
                             name="counts.newV1"
-                            bind:value={$appState.counts.newV1}
+                            bind:value={appState.counts.newV1}
                             class={inputClasses}
                             
                         />
@@ -571,7 +567,7 @@
                         <input
                             type="number"
                             name="counts.newV2"
-                            bind:value={$appState.counts.newV2}
+                            bind:value={appState.counts.newV2}
                             class={inputClasses}
                             
                         />
@@ -581,7 +577,7 @@
                         <input
                             type="number"
                             name="counts.newV3"
-                            bind:value={$appState.counts.newV3}
+                            bind:value={appState.counts.newV3}
                             class={inputClasses}
                             
                         />
@@ -591,7 +587,7 @@
                         <input
                             type="number"
                             name="counts.tg1"
-                            bind:value={$appState.counts.tg1}
+                            bind:value={appState.counts.tg1}
                             class={inputClasses}
                             
                         />
@@ -601,7 +597,7 @@
                         <input
                             type="number"
                             name="counts.tg2"
-                            bind:value={$appState.counts.tg2}
+                            bind:value={appState.counts.tg2}
                             class={inputClasses}
                             
                         />
@@ -611,7 +607,7 @@
                         <input
                             type="number"
                             name="counts.tg3"
-                            bind:value={$appState.counts.tg3}
+                            bind:value={appState.counts.tg3}
                             class={inputClasses}
                             
                         />
@@ -621,7 +617,7 @@
                         <input
                             type="number"
                             name="counts.tg4"
-                            bind:value={$appState.counts.tg4}
+                            bind:value={appState.counts.tg4}
                             class={inputClasses}
                             
                         />
@@ -644,7 +640,7 @@
                     <h3 class="text-lg font-semibold mb-2 md:mb-0">📝 YAML Output (Read-Only)</h3>
                     <div class="flex gap-2 flex-wrap">
                         <button onclick={copyToClipboard} class={btnClasses.tertiary} >
-                            {$copyText}
+                            {copyText}
                         </button>
                         <button onclick={downloadYAML} class={btnClasses.tertiary} >
                             Download
@@ -654,21 +650,21 @@
                                 Select Base YAML
                                 <input type="file" accept=".yaml,.yml" onchange={selectBaseYaml} class="hidden"  />
                         </label>
-                        <button onclick={() => { $outputYaml = ''; $fullYaml = ''; $filteredYaml = ''; }} class={btnClasses.tertiary} >
+                        <button onclick={() => { outputYaml = ''; fullYaml = ''; filteredYaml = ''; }} class={btnClasses.tertiary} >
                             Clear
                         </button>
                     </div>
                 </div>
                 <div class="p-5 flex-grow">
-                    <textarea class="{inputClasses} h-full w-full resize-none" readonly bind:value={$outputYaml}></textarea>
+                    <textarea class="{inputClasses} h-full w-full resize-none" readonly bind:value={outputYaml}></textarea>
                 </div>
             </div>
             <div class="bg-gray-800/50 p-5 rounded-lg border border-gray-700 flex flex-col gap-4">
                 <div class="grid grid-cols-2 gap-4">
-                    <button onclick={startGeneration} disabled={$isGenerating } class={btnClasses.primary}>
+                    <button onclick={startGeneration} disabled={isGenerating } class={btnClasses.primary}>
                         Generate Serials
                     </button>
-                    <button onclick={resetForm} disabled={$isGenerating } class={btnClasses.secondary}>
+                    <button onclick={resetForm} disabled={isGenerating } class={btnClasses.secondary}>
                         Reset All
                     </button>
                 </div>
@@ -678,7 +674,7 @@
                             type="checkbox"
                             id="genStats"
                             name="generateStats"
-                            bind:checked={$appState.generateStats}
+                            bind:checked={appState.generateStats}
                             class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
                             
                         />
@@ -691,7 +687,7 @@
                             type="checkbox"
                             id="debugMode"
                             name="debugMode"
-                            bind:checked={$appState.debugMode}
+                            bind:checked={appState.debugMode}
                             class="h-4 w-4 text-red-600 bg-gray-700 border-gray-600 rounded focus:ring-red-500"
                             
                         />
@@ -704,26 +700,26 @@
                     class="h-10 text-center text-sm text-gray-400 flex items-center justify-center"
                     style="white-space: pre-line"
                 >
-                    {#if $statusMessage.startsWith('✅')}
+                    {#if statusMessage.startsWith('✅')}
                         <div class="p-3 bg-green-500/10 border border-green-500/30 text-green-300 text-sm rounded-md text-center whitespace-pre-wrap">
-                            {$statusMessage}
+                            {statusMessage}
                         </div>
                     {:else}
-                        {$statusMessage}
+                        {statusMessage}
                     {/if}
                 </div>
-                {#if $isGenerating}
+                {#if isGenerating}
                     <div class="w-full bg-gray-700 rounded-full h-2.5">
-                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {$progress}%;"></div>
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {progress}%;"></div>
                     </div>
                 {/if}
             </div>
         </div>
         <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
-            {#each $serialEditors as editor (editor.id)}
+            {#each serialEditors as editor (editor.id)}
                 {@const title = `⚙️ Serial Editor #${editor.id}`}
                 <Accordion {title} open={true}>
-                    <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={$appState.rules} />
+                    <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={appState.rules} />
                     {#snippet actions()}
                         <button
                             onclick={() => removeSerialEditor(editor.id)}
