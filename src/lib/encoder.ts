@@ -1,4 +1,4 @@
-import { ELEMENT_FLAG, MANUFACTURER_PATTERNS } from './utils.ts';
+import { ELEMENT_FLAG_BITS, END_OF_ASSETS_MARKER_BITS } from './utils';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
@@ -35,93 +35,114 @@ function encodeBase85Bytes(bytes: number[]): string {
     return '@U' + encoded;
 }
 
-function writeVarInt(value: bigint): string {
-    if (value === 0n) {
-        return '00000000';
+function bitsToBytes(bits: number[]): number[] {
+    const bytes: number[] = [];
+    const bitsLength = bits.length;
+    for (let i = 0; i < bitsLength; i += 8) {
+        let byte = 0;
+        for (let j = 0; j < 8; j++) {
+            if (i + j < bitsLength) {
+                byte = (byte << 1) | bits[i + j];
+            }
+        }
+        bytes.push(byte);
     }
-    let bits = '';
+    return bytes;
+}
+
+function writeVarInt_bits(value: bigint): number[] {
+    if (value === 0n) {
+        return [0, 0, 0, 0, 0, 0];
+    }
+    const bits: number[] = [];
     while (value > 0n) {
-        const part = value & 0b01111111n;
-        value >>= 7n;
+        let part = Number(value & 0b011111n);
+        value >>= 5n;
         if (value > 0n) {
-            bits += (part | 0b10000000n).toString(2).padStart(8, '0');
+            part |= 0b100000n;
+        }
+        bits.push(...part.toString(2).padStart(6, '0').split('').map(Number));
+    }
+    return bits;
+}
+
+function encodeAssets(parsed: any): number[] {
+    let bits: number[] = [];
+    if (parsed.assets) {
+        if (parsed.isVarInt) {
+            for (const asset of parsed.assets) {
+                bits.push(...writeVarInt_bits(asset));
+            }
         } else {
-            bits += part.toString(2).padStart(8, '0');
+            for (const asset of parsed.assets) {
+                const assetBits = [];
+                let num = Number(asset);
+                for(let i=5; i>=0; i--) {
+                    assetBits.push((num >> i) & 1);
+                }
+                bits.push(...assetBits);
+            }
         }
     }
     return bits;
 }
 
-function encode(parsed: any): string {
-    let binary = '';
-    if (parsed.assets) {
-        for (const asset of parsed.assets) {
-            if (typeof asset === 'bigint') {
-                binary += writeVarInt(asset);
-            } else if (typeof asset === 'string') {
-                binary += asset;
-            }
-        }
-    }
-    return binary;
-}
-
 export function parsedToSerial(parsed: any): string {
-    let binary = '';
-    if (parsed.preamble) {
-        binary += parsed.preamble;
-    }
-    binary += encode(parsed);
+    const assets_bits = encodeAssets(parsed);
 
-    if (parsed.trailer) {
-        binary += parsed.trailer;
+        let all_bits;
+    if (parsed.isVarInt) {
+        all_bits = [...parsed.preamble_bits, ...assets_bits, ...END_OF_ASSETS_MARKER_BITS, ...parsed.trailer_bits];
+    } else {
+        all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
     }
 
     if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
-        const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
-        binary = binary.slice(0, parsed.manufacturer.position) + manufacturerPattern + binary.slice(parsed.manufacturer.position + 16);
+        const manufacturerPattern = parsed.manufacturer.pattern;
+        all_bits.splice(parsed.manufacturer.position, manufacturerPattern.length, ...manufacturerPattern);
     }
 
     if (parsed.element && parsed.element.position !== undefined) {
-        const elementPart = ELEMENT_FLAG + parsed.element.pattern;
-        binary = binary.slice(0, parsed.element.position) + elementPart + binary.slice(parsed.element.position + elementPart.length);
+        const elementPattern = parsed.element.pattern.split('').map(Number);
+        const elementPart = [...ELEMENT_FLAG_BITS, ...elementPattern];
+        all_bits.splice(parsed.element.position, elementPart.length, ...elementPart);
     }
 
     if (parsed.level && parsed.level.position !== undefined) {
-        const LEVEL_MARKER = '000000';
+        const LEVEL_MARKER_BITS = [0, 0, 0, 0, 0, 0];
         const newLevel = parseInt(parsed.level.value, 10);
         let levelValueToEncode;
 
         if (newLevel === 1) {
             levelValueToEncode = 49;
         } else if (newLevel === 2) {
-            levelValueToEncode = 2; // special case to avoid encoding to 50
+            levelValueToEncode = 2;
         } else if (newLevel >= 3 && newLevel <= 49) {
             levelValueToEncode = newLevel + 48;
         } else {
-            // This covers 0, 50, and any other edge cases.
-            // For 0, it's 0. For 50, it's 50. This is correct.
             levelValueToEncode = newLevel;
         }
         
-        const level_bits = levelValueToEncode.toString(2).padStart(8, '0');
+        const level_bits = levelValueToEncode.toString(2).padStart(8, '0').split('').map(Number);
         
-        if (binary.substring(parsed.level.position, parsed.level.position + 6) === LEVEL_MARKER) {
-            const level_part = LEVEL_MARKER + level_bits;
-            binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
+        const original_level_marker = all_bits.slice(parsed.level.position, parsed.level.position + 6);
+        let same = true;
+        for(let i=0; i<LEVEL_MARKER_BITS.length; i++) {
+            if(original_level_marker[i] !== LEVEL_MARKER_BITS[i]) {
+                same = false;
+                break;
+            }
+        }
+
+        if (same) {
+            const level_part = [...LEVEL_MARKER_BITS, ...level_bits];
+            all_bits.splice(parsed.level.position, level_part.length, ...level_part);
         } else {
-            binary = binary.slice(0, parsed.level.position) + level_bits + binary.slice(parsed.level.position + 8);
+            all_bits.splice(parsed.level.position, 8, ...level_bits);
         }
     }
 
-    const bytes: number[] = [];
-    for (let i = 0; i < binary.length; i += 8) {
-        let byteString = binary.substring(i, i + 8);
-        if (byteString.length < 8) {
-            byteString = byteString.padEnd(8, '0');
-        }
-        bytes.push(parseInt(byteString, 2));
-    }
+    const bytes = bitsToBytes(all_bits);
 
     const mirroredBytes = bytes.map(byte => {
         let mirrored = 0;

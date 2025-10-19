@@ -6,18 +6,18 @@
 		color?: string;
 	}>();
 
-	let localValue = $state(value.toString());
+	let localValue = $state(value.toString(16).toUpperCase());
     let snapshot = value;
 
 	$effect(() => {
         if (value !== snapshot) {
-            localValue = value.toString();
+            localValue = value.toString(16).toUpperCase();
             snapshot = value;
         }
 	});
 
 	function handleChange() {
-		let newValue = parseInt(localValue, 10);
+		let newValue = parseInt(localValue, 16);
 
         if (isNaN(newValue)) {
             newValue = 0;
@@ -29,7 +29,7 @@
             newValue = 63;
         }
 
-        localValue = newValue.toString();
+        localValue = newValue.toString(16).toUpperCase();
 
 		if (onUpdate) {
 			onUpdate(newValue);

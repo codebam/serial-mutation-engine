@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { serialToBinary } from '$lib/decode';
+    import { serialToBytes } from '$lib/decode';
     import { parse } from '$lib/parser';
     import { parsedToSerial } from '$lib/encoder';
     import { ELEMENTAL_PATTERNS_V2, MANUFACTURER_PATTERNS } from '$lib/utils';
@@ -102,15 +102,15 @@
             originalAssetsCount = 0;
             return;
         }
-        const binary = serialToBinary(serial);
-        const parsed = parse(binary);
+        const bytes = serialToBytes(serial);
+        const parsed = parse(bytes);
         parsedOutput = parsed;
 
         if (parsed) {
             originalAssetsCount = parsed.assets.length;
             assetIdCounter = 0;
             assetsWithIds = parsed.assets.map((asset: string) => {
-                const value = parseInt(asset, 2);
+                const value = parsed.isVarInt ? parseInt(asset, 10) : parseInt(asset, 2);
                 return { id: assetIdCounter++, value: isNaN(value) ? 0 : value };
             });
         } else {
@@ -121,18 +121,11 @@
 
     function updateSerialFromAssets() {
         if (parsedOutput) {
-            const newAssets = assetsWithIds.map(a => a.value.toString(2).padStart(6, '0'));
-            const lengthDifference = (newAssets.length - originalAssetsCount) * 6;
+            const newAssets = assetsWithIds.map(a => BigInt(a.value));
 
             const newParsed = JSON.parse(JSON.stringify(parsedOutput));
             newParsed.assets = newAssets;
-
-            if (newParsed.level && newParsed.level.position > newParsed.preamble.length) {
-                newParsed.level.position += lengthDifference;
-            }
-            if (newParsed.manufacturer && newParsed.manufacturer.position > newParsed.preamble.length) {
-                newParsed.manufacturer.position += lengthDifference;
-            }
+            newParsed.isVarInt = true;
 
             onSerialUpdate(parsedToSerial(newParsed));
         }

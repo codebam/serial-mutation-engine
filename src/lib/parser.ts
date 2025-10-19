@@ -1,110 +1,116 @@
-import { ELEMENT_FLAG, ELEMENTAL_PATTERNS_V2, detectItemLevel, MANUFACTURER_PATTERNS } from './utils.ts';
+import { Bitstream } from './bitstream';
+import {
+    detectItemLevel_byte,
+    MANUFACTURER_PATTERNS_BITS,
+    ELEMENT_FLAG_BITS,
+    ELEMENTAL_PATTERNS_V2_BITS,
+    END_OF_ASSETS_MARKER_BITS,
+    findBitPattern
+} from './utils';
 
-export interface Chunk {
-    chunk_type: string;
-    len_code?: number;
-    chunk_data: {
-        bits: string;
-    } | null;
-}
-
-export class Bitstream {
-    binary: string;
-    pos: number;
-
-    constructor(binaryString: string) {
-        this.binary = binaryString;
-        this.pos = 0;
-    }
-
-    read(length: number): string | null {
-        if (this.pos + length > this.binary.length) return null;
-        const bits = this.binary.substring(this.pos, this.pos + length);
-        this.pos += length;
-        return bits;
-    }
-}
-
-function readData(stream: Bitstream, length: number): { bits: string } | null {
-    const bits = stream.read(length);
-    if (bits === null) return null;
-    return { bits: bits };
-}
+const MARKER_BITS = '00100010'.split('').map(c => parseInt(c, 2));
 
 function readVarInt(stream: Bitstream): bigint {
     let result = 0n;
     let shift = 0n;
     let bytesRead = 0;
     while (true) {
-        const byte_str = stream.read(8);
-        if (byte_str === null) {
+        const chunk_val = stream.read(6);
+        if (chunk_val === null) {
             throw new Error("Not enough bits to read VarInt");
         }
         bytesRead++;
-        const byte = BigInt(parseInt(byte_str, 2));
-        const data = byte & 0b01111111n;
+        const chunk = BigInt(chunk_val);
+        const data = chunk & 0b011111n;
         result |= data << shift;
-        shift += 7n;
-        if ((byte & 0b10000000n) === 0n) {
+        shift += 5n;
+        if ((chunk & 0b100000n) === 0n) {
             return result;
         }
-        if (bytesRead > 10) {
+        if (bytesRead > 12) { 
             throw new Error("Varint is too long");
         }
     }
 }
 
-export function parse(binary: string): any {
-    const stream = new Bitstream(binary);
-
-    const type_bits = stream.read(10);
-
-    let preamble: string = '';
-    const assets: string[] = [];
-    let trailer: string = '';
-
-    const first12Bytes = binary.substring(10, 106);
-    const markerIndex = first12Bytes.indexOf('00100010');
-
-            if (markerIndex !== -1) {
-                const headerSizeInBits = parseInt(binary.substring(10 + markerIndex + 8, 10 + markerIndex + 16), 2);
-                preamble = binary.substring(0, 10 + markerIndex + 16 + headerSizeInBits);
-                stream.pos = 10 + markerIndex + 16 + headerSizeInBits;    } else {
-        preamble = binary.substring(0, 92);
-        stream.pos = 92;
+function bytesToBits(bytes: number[]): number[] {
+    const bits: number[] = [];
+    for (const byte of bytes) {
+        bits.push(...byte.toString(2).padStart(8, '0').split('').map(Number));
     }
+    return bits;
+}
 
-    while (stream.binary.length - stream.pos >= 6) {
-        const chunk = stream.read(6);
-        if (chunk) {
-            assets.push(chunk);
-        }
-    }
-    trailer = stream.binary.substring(stream.pos);
-    
+export function parse(bytes: number[]): any {
+    const stream = new Bitstream(bytes);
+    stream.read(10);
+
+    const bits = bytesToBits(bytes);
+
     const parsed: any = {
-        preamble: preamble,
-        assets: assets,
-        trailer: trailer
+        assets: [],
     };
 
-    // Detect level
-    const [level, level_pos] = detectItemLevel(binary);
+    const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
+
+    let assets_start_pos;
+    if (markerIndex !== -1 && markerIndex < 106) {
+        const headerSizeStream = new Bitstream(bytes);
+        headerSizeStream.bit_pos = markerIndex + MARKER_BITS.length;
+        const headerSizeInBits = headerSizeStream.read(8);
+        if (headerSizeInBits === null) throw new Error("Could not read header size");
+        assets_start_pos = markerIndex + MARKER_BITS.length + 8 + headerSizeInBits;
+    } else {
+        assets_start_pos = 92;
+    }
+
+    const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
+
+    stream.bit_pos = assets_start_pos;
+
+    if (endOfAssetsMarkerIndex !== -1) {
+        const assets_end_pos = endOfAssetsMarkerIndex;
+        while (stream.bit_pos < assets_end_pos) {
+            if (assets_end_pos - stream.bit_pos < 6) {
+                break;
+            }
+            try {
+                const chunk = readVarInt(stream);
+                parsed.assets.push(chunk);
+            } catch (e) {
+                break;
+            }
+        }
+        parsed.isVarInt = true;
+        parsed.preamble_bits = bits.slice(0, assets_start_pos);
+        parsed.trailer_bits = bits.slice(endOfAssetsMarkerIndex + END_OF_ASSETS_MARKER_BITS.length);
+    } else {
+        const totalBits = bytes.length * 8;
+        while (totalBits - stream.bit_pos >= 6) {
+            const chunk = stream.read(6);
+            if (chunk !== null) {
+                parsed.assets.push(BigInt(chunk));
+            }
+        }
+        parsed.isVarInt = false;
+        parsed.preamble_bits = bits.slice(0, assets_start_pos);
+        parsed.trailer_bits = bits.slice(stream.bit_pos);
+    }
+    
+    const [level, level_pos] = detectItemLevel_byte(bytes);
     if (level !== 'Unknown') {
         parsed.level = {
-            value: level,
+            value: level.toString(),
             position: level_pos
         };
     }
 
-    // Detect manufacturer
     const allOccurrences = [];
-    for (const [manufacturer, patterns] of Object.entries(MANUFACTURER_PATTERNS)) {
+    for (const [manufacturer, patterns] of Object.entries(MANUFACTURER_PATTERNS_BITS)) {
         for (const pattern of patterns) {
-            const pattern_binary = parseInt(pattern, 16).toString(2).padStart(16, '0');
             let fromIndex = 0;
             while (true) {
-                const index = binary.indexOf(pattern_binary, fromIndex);
+                const index = findBitPattern(bytes, pattern, fromIndex);
                 if (index === -1) {
                     break;
                 }
@@ -124,16 +130,20 @@ export function parse(binary: string): any {
         };
     }
 
-    // Detect element
-    const elementFlagIndex = binary.indexOf(ELEMENT_FLAG);
+    const elementFlagIndex = findBitPattern(bytes, ELEMENT_FLAG_BITS);
     if (elementFlagIndex !== -1) {
-        const elementPattern = binary.substring(elementFlagIndex + ELEMENT_FLAG.length, elementFlagIndex + ELEMENT_FLAG.length + 8);
-        if (elementPattern.length === 8) {
-            const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
+        const elementStream = new Bitstream(bytes);
+        elementStream.bit_pos = elementFlagIndex + ELEMENT_FLAG_BITS.length;
+        const elementPatternBits = elementStream.read(8);
+        if (elementPatternBits !== null) {
+            const elementPattern = elementPatternBits.toString(2).padStart(8, '0').split('').map(Number);
+            const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2_BITS).find(([, p]) => 
+                p.length === elementPattern.length && p.every((val, index) => val === elementPattern[index])
+            );
             if (foundElement) {
                 parsed.element = {
                     name: foundElement[0],
-                    pattern: elementPattern,
+                    pattern: elementPattern.join(''),
                     position: elementFlagIndex
                 };
             }

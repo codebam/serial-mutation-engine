@@ -38,7 +38,7 @@ function decodeBase85Bytes(encodedSerial: string): number[] {
     return decodedBytes;
 }
 
-export function serialToBinary(serial: string): string {
+export function serialToBytes(serial: string): number[] {
     const decodedBytes = decodeBase85Bytes(serial.trim());
     const mirroredBytes = decodedBytes.map(byte => {
         let mirrored = 0;
@@ -49,5 +49,5 @@ export function serialToBinary(serial: string): string {
         }
         return mirrored;
     });
-    return mirroredBytes.map(b => b.toString(2).padStart(8, '0')).join('');
+    return mirroredBytes;
 }

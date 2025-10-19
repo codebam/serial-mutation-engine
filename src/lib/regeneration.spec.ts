@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from './parser';
 import { parsedToSerial } from './encoder';
-import { serialToBinary } from './decode';
+import { serialToBytes } from './decode';
 import { MANUFACTURER_PATTERNS, ELEMENTAL_PATTERNS_V2 } from './utils';
 import * as fs from 'fs';
 
@@ -9,8 +9,8 @@ describe('serial regeneration', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
 
     it.each(serials)('should survive a round trip edit of all fields for serial %s', (originalSerial) => {
-        const originalBinary = serialToBinary(originalSerial);
-        const parsed = parse(originalBinary);
+        const originalBytes = serialToBytes(originalSerial);
+        const parsed = parse(originalBytes);
 
         // Modify Level
         if (parsed.level) {
@@ -30,8 +30,8 @@ describe('serial regeneration', () => {
         }
 
         const newSerial = parsedToSerial(parsed);
-        const newBinary = serialToBinary(newSerial);
-        const newParsed = parse(newBinary);
+        const newBytes = serialToBytes(newSerial);
+        const newParsed = parse(newBytes);
 
         if (parsed.level) {
             expect(newParsed.level.value).toBe(25);
@@ -48,8 +48,8 @@ describe('serial regeneration', () => {
 describe('level modification', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0).slice(0, 5);
     it.each(serials)('should survive a round trip edit of the level for serial %s', (originalSerial) => {
-        const originalBinary = serialToBinary(originalSerial);
-        const parsed = parse(originalBinary);
+        const originalBytes = serialToBytes(originalSerial);
+        const parsed = parse(originalBytes);
 
         if (!parsed.level) {
             return;
@@ -58,52 +58,52 @@ describe('level modification', () => {
         parsed.level.value = 2;
 
         const newSerial = parsedToSerial(parsed);
-        const newBinary = serialToBinary(newSerial);
-        const newParsed = parse(newBinary);
+        const newBytes = serialToBytes(newSerial);
+        const newParsed = parse(newBytes);
 
         expect(newParsed.level.value).toBe(2);
     });
 });
 
 describe('element modification', () => {
-    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0).slice(0, 5);
+    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
     it.each(serials)('should survive a round trip edit of the element for serial %s', (originalSerial) => {
-        const originalBinary = serialToBinary(originalSerial);
-        const parsed = parse(originalBinary);
+        const originalBytes = serialToBytes(originalSerial);
+        const parsed = parse(originalBytes);
 
-        if (!parsed.element) {
-            return;
+        if (parsed.element) {
+            const originalElementName = parsed.element.name;
+
+            const elements = Object.keys(ELEMENTAL_PATTERNS_V2);
+            const nextElement = elements[(elements.indexOf(originalElementName) + 1) % elements.length];
+            parsed.element.name = nextElement;
+            parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement];
+
+            const newSerial = parsedToSerial(parsed);
+            const newBytes = serialToBytes(newSerial);
+            const newParsed = parse(newBytes);
+
+            expect(newParsed.element).toBeDefined();
+            expect(newParsed.element.name).toBe(nextElement);
+        } else {
+            expect(parsed.element).toBeUndefined();
         }
-        
-        const originalElementName = parsed.element.name;
-
-        const elements = Object.keys(ELEMENTAL_PATTERNS_V2);
-        const nextElement = elements[(elements.indexOf(originalElementName) + 1) % elements.length];
-        parsed.element.name = nextElement;
-        parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement];
-
-        const newSerial = parsedToSerial(parsed);
-        const newBinary = serialToBinary(newSerial);
-        const newParsed = parse(newBinary);
-
-        expect(newParsed.element).toBeDefined();
-        expect(newParsed.element.name).toBe(nextElement);
     });
 });
 
 describe('asset modification', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0).slice(0, 5);
     it.each(serials)('should survive a round trip edit of assets for serial %s', (originalSerial) => {
-        const originalBinary = serialToBinary(originalSerial);
-        const parsed = parse(originalBinary);
+        const originalBytes = serialToBytes(originalSerial);
+        const parsed = parse(originalBytes);
         
         const originalAssetCount = parsed.assets.length;
 
         parsed.assets.push('111111');
 
         const newSerial = parsedToSerial(parsed);
-        const newBinary = serialToBinary(newSerial);
-        const newParsed = parse(newBinary);
+        const newBytes = serialToBytes(newSerial);
+        const newParsed = parse(newBytes);
 
         expect(newParsed.assets.length).toBe(originalAssetCount + 1);
     });

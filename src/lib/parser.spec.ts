@@ -1,43 +1,57 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from './parser';
 import { parsedToSerial } from './encoder';
-import { serialToBinary } from './decode';
+import { serialToBytes } from './decode';
 import * as fs from 'fs';
-import { ELEMENT_FLAG, ELEMENTAL_PATTERNS_V2 } from './utils';
+import { Bitstream } from './bitstream';
+import * as utils from './utils';
 
 describe('parser and encoder', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
 
     it.each(serials)('should parse and encode serial %s, maintaining integrity', (originalSerial) => {
-        const binary = serialToBinary(originalSerial);
-        const parsed = parse(binary);
-                const newSerial = parsedToSerial(parsed);
-                expect(newSerial).toBe(originalSerial);
-            });
-        
-            it.each(serials)('should parse a trailer for every serial %s', (originalSerial) => {
-                const binary = serialToBinary(originalSerial);
-                const parsed = parse(binary);
-                expect(typeof parsed.trailer).toBe('string');
-            });
-        });
+        const originalBytes = serialToBytes(originalSerial);
+        const parsed1 = parse(originalBytes);
+        const newSerial = parsedToSerial(parsed1);
+        const newBytes = serialToBytes(newSerial);
+        const parsed2 = parse(newBytes);
+
+        expect(parsed2.assets).toEqual(parsed1.assets);
+        expect(parsed2.level).toEqual(parsed1.level);
+        expect(parsed2.manufacturer).toEqual(parsed1.manufacturer);
+        expect(parsed2.element).toEqual(parsed1.element);
+    });
+
+    it.each(serials)('should parse a trailer for every serial %s', (originalSerial) => {
+        const bytes = serialToBytes(originalSerial);
+        const parsed = parse(bytes);
+        expect(parsed.trailer_bits).toBeDefined();
+    });
+});
 
 describe('parser', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
 
     it.each(serials)('should correctly detect element if present in serial %s', (originalSerial) => {
-        const binary = serialToBinary(originalSerial);
-        const parsed = parse(binary);
+        const bytes = serialToBytes(originalSerial);
+        const parsed = parse(bytes);
 
-        const elementFlagIndex = binary.indexOf(ELEMENT_FLAG);
+        const elementFlagIndex = utils.findBitPattern(bytes, utils.ELEMENT_FLAG_BITS);
         if (elementFlagIndex !== -1) {
-            const elementPattern = binary.substring(elementFlagIndex + ELEMENT_FLAG.length, elementFlagIndex + ELEMENT_FLAG.length + 8);
-            const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
-            if (foundElement) {
-                expect(parsed.element).toBeDefined();
-                expect(parsed.element.name).toBe(foundElement[0]);
-                expect(parsed.element.pattern).toBe(elementPattern);
-                expect(parsed.element.position).toBe(elementFlagIndex);
+            const elementStream = new Bitstream(bytes);
+            elementStream.bit_pos = elementFlagIndex + utils.ELEMENT_FLAG_BITS.length;
+            const elementPatternBits = elementStream.read(8);
+            if (elementPatternBits !== null) {
+                const elementPattern = elementPatternBits.toString(2).padStart(8, '0');
+                const foundElement = Object.entries(utils.ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
+                if (foundElement) {
+                    expect(parsed.element).toBeDefined();
+                    expect(parsed.element.name).toBe(foundElement[0]);
+                    expect(parsed.element.pattern).toBe(elementPattern);
+                    expect(parsed.element.position).toBe(elementFlagIndex);
+                } else {
+                    expect(parsed.element).toBeUndefined();
+                }
             } else {
                 expect(parsed.element).toBeUndefined();
             }

@@ -3,7 +3,7 @@ import type { ParsedSerial, State } from './types';
 import { ALPHABET } from './constants';
 import { BASE85_ALPHABET, getCharPoolForItemType, STABLE_MOTIFS } from './knowledge';
 import { parse } from './parser';
-import { serialToBinary } from './decode';
+import { serialToBytes } from './decode';
 
 export interface Mutation {
     (parsedSerial: ParsedSerial, state: State): ParsedSerial;
@@ -349,7 +349,7 @@ export const repositoryCrossoverMutation: Mutation = (parsedSerial, state) => {
 
         const otherSerial = randomChoice(repository);
 
-        const otherParsed = parse(serialToBinary(otherSerial)); // Assuming serialToBinary is available
+        const otherParsed = parse(serialToBytes(otherSerial)); // Assuming serialToBytes is available
 
         const otherAssets = otherParsed.assets;
 
