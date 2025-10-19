@@ -328,7 +328,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Manufacturer</h4>
             <FormGroup label="Manufacturer">
-                <select class={inputClasses} bind:value={parsedOutput.manufacturer.name} oninput={handleManufacturerChange} disabled>
+                <select class={inputClasses} bind:value={parsedOutput.manufacturer.name} oninput={handleManufacturerChange}>
                     {#each Object.keys(MANUFACTURER_PATTERNS) as manufacturer}
                         <option value={manufacturer}>{manufacturer}</option>
                     {/each}
@@ -339,7 +339,7 @@
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Level</h4>
             <FormGroup label="Level">
-                <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} oninput={debouncedReserialize} disabled />
+                <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} oninput={debouncedReserialize} />
             </FormGroup>
         </div>
 
