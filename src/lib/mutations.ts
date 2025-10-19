@@ -381,88 +381,115 @@ export const repositoryCrossoverMutation: Mutation = (parsedSerial, state) => {
 
 };
 
-// Helper function to find repeating parts
-function findRepeatingParts(assets: string[]): string[][] {
-    const parts = new Map<string, number>();
-    // This is O(n^3), might be slow for very long asset arrays.
-    // Let's consider a max part length to keep it reasonable.
-    const maxLength = Math.min(Math.floor(assets.length / 2), 10); // Max part length of 10 or half the array
-    for (let len = 2; len <= maxLength; len++) { // Part length from 2 to maxLength
-        for (let i = 0; i <= assets.length - len; i++) {
-            const part = assets.slice(i, i + len);
-            const partString = part.join(',');
-            parts.set(partString, (parts.get(partString) || 0) + 1);
-        }
-    }
-
-    const repeatingParts: string[][] = [];
-    for (const [partString, count] of parts.entries()) {
-        if (count > 1) {
-            repeatingParts.push(partString.split(','));
-        }
-    }
-    return repeatingParts;
-}
-
-// Helper function to find occurrences of a subarray.
-function findOccurrences(arr: string[], subArr: string[]): number[] {
-    const occurrences: number[] = [];
-    for (let i = 0; i <= arr.length - subArr.length; i++) {
-        let found = true;
-        for (let j = 0; j < subArr.length; j++) {
-            if (arr[i + j] !== subArr[j]) {
-                found = false;
-                break;
-            }
-        }
-        if (found) {
-            occurrences.push(i);
-            i += subArr.length - 1; // Move to the next possible position after this match
-        }
-    }
-    return occurrences;
-}
-
 export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
     const assets = parsedSerial.assets;
     const newAssets = [...assets];
 
-    // 1. Find all repeating parts (subarrays) in the assets array.
-    const parts = findRepeatingParts(assets);
-
-    // 2. Filter out parts containing only '0's and select a "high value" one.
-    const valuableParts = parts.filter(part => !part.every(p => parseInt(p, 2) === 0));
-    if (valuableParts.length === 0) {
-        return parsedSerial; // No valuable repeating parts found.
+    // 1. Count occurrences of each asset value.
+    const counts = new Map<string, number>();
+    for (const asset of assets) {
+        counts.set(asset, (counts.get(asset) || 0) + 1);
     }
 
-    // Let's define "high value" as the longest part.
-    valuableParts.sort((a, b) => b.length - a.length);
-    const partToRepeat = valuableParts[0];
+    // 2. Find repeating assets, ignoring '0'.
+    let repeatingAssets: { asset: string, count: number }[] = [];
+    for (const [asset, count] of counts.entries()) {
+        const assetValue = parseInt(asset, 2);
+        if (count > 1 && assetValue !== 0) {
+            repeatingAssets.push({ asset, count });
+        }
+    }
 
-    // 3. Find all occurrences of this part in the asset array.
-    const occurrences = findOccurrences(newAssets, partToRepeat);
-    if (occurrences.length === 0) {
+    if (repeatingAssets.length === 0) {
+        return parsedSerial; // No repeating non-zero assets found.
+    }
+
+    // 3. Select a "high value" one. Let's pick the most frequent one.
+    // If there's a tie in frequency, pick the one with the higher numeric value.
+    repeatingAssets.sort((a, b) => {
+        if (b.count !== a.count) {
+            return b.count - a.count;
+        }
+        return parseInt(b.asset, 2) - parseInt(a.asset, 2);
+    });
+    const assetToRepeat = repeatingAssets[0].asset;
+
+    // 4. Find all indices of this asset.
+    const indices = newAssets.map((a, i) => a === assetToRepeat ? i : -1).filter(i => i !== -1);
+    if (indices.length === 0) {
         return parsedSerial;
     }
 
-    // 4. Choose a random occurrence to modify.
-    const occurrenceIndex = randomChoice(occurrences);
+    // 5. Choose a random occurrence to modify.
+    const indexToModify = randomChoice(indices);
 
-    // 5. Decide whether to place it before or after.
+    // 6. Decide whether to place it before or after.
     const placeBefore = Math.random() < 0.5;
 
-    // 6. Decide how many times to repeat.
-    const repeatCount = randomInt(1, 3); // Repeat 1 to 3 times.
+    // 7. Decide how many times to repeat.
+    const repeatCount = randomInt(1, 3);
 
-    // 7. Insert the part.
-    const insertIndex = placeBefore ? occurrenceIndex : occurrenceIndex + partToRepeat.length;
-    
-    const repeatedPart: string[] = [];
+    // 8. Insert the asset.
+    const insertIndex = placeBefore ? indexToModify : indexToModify + 1;
     for (let i = 0; i < repeatCount; i++) {
-        repeatedPart.push(...partToRepeat);
+        newAssets.splice(insertIndex, 0, assetToRepeat);
     }
-    newAssets.splice(insertIndex, 0, ...repeatedPart);
+
+    return {
+        ...parsedSerial,
+        assets: newAssets,
+    };
+};
+
+export const appendHighValuePartMutation: Mutation = (parsedSerial, state) => {
+    const assets = parsedSerial.assets;
+    const newAssets = [...assets];
+
+    // 1. Find high value asset
+    const counts = new Map<string, { asset: string, count: number }>();
+    for (const asset of assets) {
+        const entry = counts.get(asset) || { asset, count: 0 };
+        entry.count++;
+        counts.set(asset, entry);
+    }
+
+    const allAssets = Array.from(counts.values());
+    const nonZeroAssets = allAssets.filter(a => parseInt(a.asset, 2) !== 0);
+
+    if (nonZeroAssets.length === 0) {
+        return parsedSerial; // No non-zero assets to append
+    }
+
+    // Sort by count (desc), then by value (desc)
+    nonZeroAssets.sort((a, b) => {
+        if (b.count !== a.count) {
+            return b.count - a.count;
+        }
+        return parseInt(b.asset, 2) - parseInt(a.asset, 2);
+    });
+
+    // Pick one from the top 5 (or fewer if there aren't that many)
+    const topN = Math.min(5, nonZeroAssets.length);
+    const selectedAssetInfo = nonZeroAssets[randomInt(0, topN - 1)];
+    const assetToAppend = selectedAssetInfo.asset;
+
+    // 2. Determine number of appends.
+    const maxNumberOfAppends = Math.floor((state.rules.targetOffset || 0) / 6);
+    const numberOfAppends = randomInt(1, Math.max(1, maxNumberOfAppends));
+
+    // 3. Append the asset.
+    const assetsToAppend = [];
+    for (let i = 0; i < numberOfAppends; i++) {
+        assetsToAppend.push(assetToAppend);
+    }
+
+    if (newAssets.length > 0 && parseInt(newAssets[newAssets.length - 1], 2) === 0) {
+        // If last asset is 0, insert before it
+        newAssets.splice(newAssets.length - 1, 0, ...assetsToAppend);
+    } else {
+        // Otherwise, append to the end
+        newAssets.push(...assetsToAppend);
+    }
 
     return {
         ...parsedSerial,

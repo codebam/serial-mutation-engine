@@ -710,7 +710,7 @@
             {#each $serialEditors as editor (editor.id)}
                 {@const title = `⚙️ Serial Editor #${editor.id}`}
                 <Accordion {title} open={true}>
-                    <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} />
+                    <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={$appState.rules} />
                     {#snippet actions()}
                         <button
                             onclick={() => removeSerialEditor(editor.id)}

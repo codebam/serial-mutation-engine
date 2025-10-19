@@ -93,13 +93,23 @@ export function parsedToSerial(parsed: any): string {
         }
         
         const level_bits = levelValueToEncode.toString(2).padStart(8, '0');
-        const level_part = LEVEL_MARKER + level_bits;
-        binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
+        
+        if (binary.substring(parsed.level.position, parsed.level.position + 6) === LEVEL_MARKER) {
+            const level_part = LEVEL_MARKER + level_bits;
+            binary = binary.slice(0, parsed.level.position) + level_part + binary.slice(parsed.level.position + level_part.length);
+        } else {
+            binary = binary.slice(0, parsed.level.position) + level_bits + binary.slice(parsed.level.position + 8);
+        }
     }
 
     if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
         const manufacturerPattern = parseInt(parsed.manufacturer.pattern, 16).toString(2).padStart(16, '0');
         binary = binary.slice(0, parsed.manufacturer.position) + manufacturerPattern + binary.slice(parsed.manufacturer.position + 16);
+    }
+
+    if (parsed.element && parsed.element.position !== undefined) {
+        const elementPart = ELEMENT_FLAG + parsed.element.pattern;
+        binary = binary.slice(0, parsed.element.position) + elementPart + binary.slice(parsed.element.position + elementPart.length);
     }
 
     const bytes: number[] = [];

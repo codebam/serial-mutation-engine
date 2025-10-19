@@ -124,5 +124,21 @@ export function parse(binary: string): any {
         };
     }
 
+    // Detect element
+    const elementFlagIndex = binary.indexOf(ELEMENT_FLAG);
+    if (elementFlagIndex !== -1) {
+        const elementPattern = binary.substring(elementFlagIndex + ELEMENT_FLAG.length, elementFlagIndex + ELEMENT_FLAG.length + 8);
+        if (elementPattern.length === 8) {
+            const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2).find(([, p]) => p === elementPattern);
+            if (foundElement) {
+                parsed.element = {
+                    name: foundElement[0],
+                    pattern: elementPattern,
+                    position: elementFlagIndex
+                };
+            }
+        }
+    }
+
     return parsed;
 }

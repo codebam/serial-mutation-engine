@@ -5,18 +5,20 @@
     import { ELEMENTAL_PATTERNS_V2, MANUFACTURER_PATTERNS } from '$lib/utils';
     import FormGroup from './FormGroup.svelte';
     import Asset from './Asset.svelte';
-    import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation } from '$lib/mutations';
+    import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation, appendHighValuePartMutation } from '$lib/mutations';
     import type { ParsedSerial, State } from '$lib/types';
 
-    let { serial, onSerialUpdate } = $props<{
+    let { serial, onSerialUpdate, rules } = $props<{
         serial: string;
         onSerialUpdate: (newSerial: string) => void;
+        rules: State['rules'];
     }>();
 
     let parsedOutput = $state<ParsedSerial | null>(null);
     let assetsWithIds = $state<{ id: number; value: number }[]>([]);
     let assetIdCounter = 0;
     let copyJsonText = $state('Copy JSON');
+    let originalAssetsCount = $state(0);
 
     const inputClasses = 'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
     const assetColors = [
@@ -76,6 +78,7 @@
         if (!serial) {
             parsedOutput = null;
             assetsWithIds = [];
+            originalAssetsCount = 0;
             return;
         }
         const binary = serialToBinary(serial);
@@ -83,6 +86,7 @@
         parsedOutput = parsed;
 
         if (parsed) {
+            originalAssetsCount = parsed.assets.length;
             assetIdCounter = 0;
             assetsWithIds = parsed.assets.map((asset: string) => {
                 const value = parseInt(asset, 2);
@@ -90,13 +94,26 @@
             });
         } else {
             assetsWithIds = [];
+            originalAssetsCount = 0;
         }
     }
 
     function updateSerialFromAssets() {
         if (parsedOutput) {
-            parsedOutput.assets = assetsWithIds.map(a => a.value.toString(2).padStart(6, '0'));
-            onSerialUpdate(parsedToSerial(parsedOutput));
+            const newAssets = assetsWithIds.map(a => a.value.toString(2).padStart(6, '0'));
+            const lengthDifference = (newAssets.length - originalAssetsCount) * 6;
+
+            const newParsed = JSON.parse(JSON.stringify(parsedOutput));
+            newParsed.assets = newAssets;
+
+            if (newParsed.level && newParsed.level.position > newParsed.preamble.length) {
+                newParsed.level.position += lengthDifference;
+            }
+            if (newParsed.manufacturer && newParsed.manufacturer.position > newParsed.preamble.length) {
+                newParsed.manufacturer.position += lengthDifference;
+            }
+
+            onSerialUpdate(parsedToSerial(newParsed));
         }
     }
 
@@ -197,37 +214,52 @@
 
     let generationCount = $state(10);
     let generatedSerials = $state('');
+    let isGenerating = $state(false);
+    let generationProgress = $state(0);
 
-    function generateSerials(mutation: (parsed: ParsedSerial, state: State) => ParsedSerial) {
-        if (parsedOutput) {
-            const newSerials: string[] = [];
-            const dummyState: State = {
-                repository: '',
-                seed: '',
-                itemType: 'GUN',
-                counts: { new: 0, newV1: 0, newV2: 0, newV3: 0, tg1: 0, tg2: 0, tg3: 0, tg4: 0 },
-                rules: {
-                    targetOffset: 0,
-                    mutableStart: 0,
-                    mutableEnd: 0,
-                    minChunk: 0,
-                    maxChunk: 0,
-                    targetChunk: 0,
-                    minPart: 0,
-                    maxPart: 0,
-                    legendaryChance: 0,
-                },
-                generateStats: false,
-                debugMode: false,
+    let worker: Worker | undefined;
+    $effect(() => {
+        async function setupWorker() {
+            const MyWorker = await import('$lib/worker/worker.js?worker');
+            worker = new MyWorker.default();
+
+            worker.onmessage = (e) => {
+                const { type, payload } = e.data;
+                if (type === 'generate_from_editor_progress') {
+                    generationProgress = (payload.generated / payload.total) * 100;
+                } else if (type === 'generate_from_editor_complete') {
+                    generatedSerials = payload.serials.join('\n');
+                    isGenerating = false;
+                    generationProgress = 0;
+                } else if (type === 'error') {
+                    console.error('Worker error:', payload.message);
+                    isGenerating = false;
+                    generationProgress = 0;
+                }
             };
+        }
+        setupWorker();
 
-            for (let i = 0; i < generationCount; i++) {
-                // Deep copy parsedOutput for each iteration to avoid mutating the original object
-                const newParsedOutput = mutation(JSON.parse(JSON.stringify(parsedOutput)), dummyState);
-                const newSerial = parsedToSerial(newParsedOutput);
-                newSerials.push(newSerial);
-            }
-            generatedSerials = newSerials.join('\n');
+        return () => {
+            worker?.terminate();
+        };
+    });
+
+    function startWorkerGeneration(mutationName: string) {
+        if (worker && parsedOutput) {
+            isGenerating = true;
+            generationProgress = 0;
+            generatedSerials = '';
+            worker.postMessage({
+                type: 'generate_from_editor',
+                payload: {
+                    parsedSerial: JSON.parse(JSON.stringify(parsedOutput)),
+                    originalAssetsCount: originalAssetsCount,
+                    generationCount: generationCount,
+                    mutationName: mutationName,
+                    rules: rules
+                }
+            });
         }
     }
 
@@ -320,14 +352,20 @@
                 <input type="number" class={inputClasses} bind:value={generationCount} />
             </FormGroup>
             <div class="flex gap-2 mt-4">
-                <button onclick={() => generateSerials(shuffleAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Generate Shuffled</button>
-                <button onclick={() => generateSerials(randomizeAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Generate Randomized</button>
+                <button onclick={() => startWorkerGeneration('shuffleAssetsMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating}>Generate Shuffled</button>
+                <button onclick={() => startWorkerGeneration('randomizeAssetsMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating}>Generate Randomized</button>
             </div>
             <div class="flex gap-2 mt-2">
-                <button onclick={() => generateSerials(repeatHighValuePartMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Generate Repeating</button>
+                <button onclick={() => startWorkerGeneration('repeatHighValuePartMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating}>Generate Repeating</button>
+                <button onclick={() => startWorkerGeneration('appendHighValuePartMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating}>Generate Appended</button>
             </div>
+            {#if isGenerating}
+                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-4">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {generationProgress}%;"></div>
+                </div>
+            {/if}
             {#if generatedSerials}
-                <FormGroup label="Generated Serials" extraClasses="mt-4">
+                <FormGroup label={`Generated Serials (${generatedSerials.split('\n').filter(s => s).length})`} extraClasses="mt-4">
                     <textarea
                         class={`${inputClasses} min-h-[160px]`}
                         readonly
