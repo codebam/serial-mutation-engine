@@ -55,20 +55,16 @@ function writeVarInt_bits(value: bigint): number[] {
     if (value === 0n) {
         return [0, 0, 0, 0, 0, 0];
     }
-    let val = value;
-    const bits: number[] = [];
-    while (true) {
-        let part = Number(val & 0b011111n);
-        val >>= 5n;
-        if (val > 0n) {
+    const chunks: number[][] = [];
+    while (value > 0n) {
+        let part = Number(value & 0b011111n);
+        value >>= 5n;
+        if (value > 0n) {
             part |= 0b100000;
         }
-        bits.push(...part.toString(2).padStart(6, '0').split('').map(Number));
-        if (val === 0n) {
-            break;
-        }
+        chunks.push(part.toString(2).padStart(6, '0').split('').map(Number));
     }
-    return bits;
+    return chunks.flat();
 }
 
 function encodeAssets(parsed: any): number[] {
