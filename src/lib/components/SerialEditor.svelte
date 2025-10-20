@@ -73,7 +73,6 @@
             });
 
             parsedOutput = newParsed;
-            parsingMode = newParsed.isVarInt ? 'varint' : 'fixed';
             varintFailed = false;
 
             assetIdCounter = 0; // Reset counter
@@ -125,19 +124,18 @@
             parsedOutput = null;
             assetsWithIds = [];
             originalAssetsCount = 0;
-            varintFailed = false;
             return;
         }
         try {
             const parsed = parse(serial);
 
             parsedOutput = parsed;
-            originalAssets = [...parsed.assets_fixed];
+            originalAssets = [...(parsed.isVarInt ? parsed.assets : parsed.assets_fixed)];
 
             if (parsed) {
                 originalAssetsCount = parsed.assets.length;
                 assetIdCounter = 0;
-                const assetsToDisplay = parsed.assets_fixed;
+                const assetsToDisplay = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
                 assetsWithIds = assetsToDisplay.map((asset: AssetToken) => {
                     return { id: assetIdCounter++, asset: asset };
                 });
@@ -196,13 +194,6 @@
         };
     }
 
-    function debounce<T extends (...args: any[]) => any>(func: T, timeout = 1000) {
-        let timer: NodeJS.Timeout;
-        return (...args: Parameters<T>) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => func(...args), timeout);
-        };
-    }
 
     const debouncedAnalyzeSerial = debounce(analyzeSerial, 0);
     const debouncedUpdateSerialFromAssets = debounce(updateSerialFromAssets, 5000);
