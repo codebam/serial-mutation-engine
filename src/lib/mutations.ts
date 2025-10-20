@@ -468,10 +468,7 @@ export const appendHighValuePartMutation: Mutation = (parsedSerial, state) => {
         return parseInt(b.asset, 2) - parseInt(a.asset, 2);
     });
 
-    // Pick one from the top 5 (or fewer if there aren't that many)
-    const topN = Math.min(5, nonZeroAssets.length);
-    const selectedAssetInfo = nonZeroAssets[randomInt(0, topN - 1)];
-    const assetToAppend = selectedAssetInfo.asset;
+    const assetToAppend = nonZeroAssets[0].asset;
 
     // 2. Determine number of appends.
     const bitsPerCharacter = 8; // Approximate bits per character in the final encoded string
