@@ -151,7 +151,8 @@
             if (parsed) {
                 originalAssetsCount = parsed.assets.length;
                 assetIdCounter = 0;
-                assetsWithIds = parsed.assets.map((asset: AssetToken) => {
+                const assetsToDisplay = parsingMode === 'varint' ? parsed.assets : parsed.assets_fixed;
+                assetsWithIds = assetsToDisplay.map((asset: AssetToken) => {
                     return { id: assetIdCounter++, asset: asset };
                 });
             } else {
