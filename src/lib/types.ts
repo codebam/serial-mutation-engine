@@ -4,6 +4,7 @@ export interface AssetToken {
     bitLength: number;
     bits: number[];
     position: number;
+    perkValue?: bigint;
 }
 
 export interface ParsedSerial {

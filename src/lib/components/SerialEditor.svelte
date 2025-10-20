@@ -20,8 +20,7 @@
     let copyJsonText = $state('Copy JSON');
     let copyUrlText = $state('Copy URL');
     let originalAssetsCount = $state(0);
-    let parsingMode = $state('varint');
-    let varintFailed = $state(false);
+
     let originalAssets = $state<AssetToken[]>([]);
 
     async function copyUrl() {
@@ -130,30 +129,15 @@
             return;
         }
         try {
-            const bytes = serialToBytes(serial);
-            let parsed: any;
-
-            if (parsingMode === 'varint') {
-                parsed = parse(bytes, 'varint');
-                const newSerial = parsedToSerial(parsed);
-                if (newSerial !== serial) {
-                    varintFailed = true;
-                    parsingMode = 'fixed';
-                    parsed = parse(bytes, 'fixed');
-                } else {
-                    varintFailed = false;
-                }
-            } else {
-                parsed = parse(bytes, 'fixed');
-            }
+            const parsed = parse(serial);
 
             parsedOutput = parsed;
-            originalAssets = [...(parsingMode === 'varint' ? parsed.assets : parsed.assets_fixed)];
+            originalAssets = [...parsed.assets_fixed];
 
             if (parsed) {
                 originalAssetsCount = parsed.assets.length;
                 assetIdCounter = 0;
-                const assetsToDisplay = parsingMode === 'varint' ? parsed.assets : parsed.assets_fixed;
+                const assetsToDisplay = parsed.assets_fixed;
                 assetsWithIds = assetsToDisplay.map((asset: AssetToken) => {
                     return { id: assetIdCounter++, asset: asset };
                 });
@@ -212,21 +196,29 @@
         };
     }
 
+    function debounce<T extends (...args: any[]) => any>(func: T, timeout = 1000) {
+        let timer: NodeJS.Timeout;
+        return (...args: Parameters<T>) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => func(...args), timeout);
+        };
+    }
+
     const debouncedAnalyzeSerial = debounce(analyzeSerial, 0);
     const debouncedUpdateSerialFromAssets = debounce(updateSerialFromAssets, 5000);
     const debouncedReserialize = debounce(reserialize, 1000);
 
-    
-
     $effect(() => {
-        parsingMode = 'varint';
-        varintFailed = false;
         if (serial) {
             debouncedAnalyzeSerial();
         } else {
             analyzeSerial();
         }
     });
+
+    
+
+
 
     
 
@@ -382,12 +374,7 @@
     <div class="mt-4 space-y-4">
         <div class="flex justify-between items-center">
             <h3 class="text-lg font-semibold">Parsed Parts</h3>
-            <div>
-                <select class="p-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" bind:value={parsingMode} onchange={analyzeSerial} disabled={varintFailed}>
-                    <option value="varint">VarInt</option>
-                    <option value="fixed">Fixed-Width</option>
-                </select>
-            </div>
+
             <button onclick={copyJson} class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">{copyJsonText}</button>
         </div>
 

@@ -11,8 +11,7 @@ describe('VarInt Round-trip Check', () => {
         let fixedCount = 0;
 
         for (const serial of serials) {
-            const bytes = serialToBytes(serial);
-            const parsed = parse(bytes);
+            const parsed = parse(serial);
             if (parsed.isVarInt) {
                 varintCount++;
             } else {

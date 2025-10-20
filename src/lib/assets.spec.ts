@@ -7,8 +7,7 @@ describe('Assets', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
 
     it.each(serials)('serial %s should have assets', (serial) => {
-        const bytes = serialToBytes(serial);
-        const parsed = parse(bytes);
+        const parsed = parse(serial);
         expect(parsed.assets).toBeDefined();
     });
 });

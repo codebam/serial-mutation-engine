@@ -1,3 +1,4 @@
+
 import { Bitstream } from './bitstream';
 import type { AssetToken } from './types';
 import {
@@ -9,7 +10,7 @@ import {
     findBitPattern
 } from './utils';
 import { parsedToSerial } from './encoder';
-import { serialToBytes } from './decode';
+import { serialToBytes, decodeSerialStandalone } from './decode';
 
 const MARKER_BITS = '00100010'.split('').map(c => parseInt(c, 2));
 
@@ -103,79 +104,6 @@ function parseMetadata(bytes: number[], parsed: any, bits: number[]) {
     }
 }
 
-function parseAsVarInt(bytes: number[]): any {
-    const stream = new Bitstream(bytes);
-    stream.read(10);
-
-    const bits = bytesToBits(bytes);
-
-    const parsed: any = {
-        assets: [],
-    };
-
-    parseMetadata(bytes, parsed, bits);
-
-    const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
-
-    let assets_start_pos;
-    if (markerIndex !== -1 && markerIndex < 106) {
-        const headerSizeStream = new Bitstream(bytes);
-        headerSizeStream.bit_pos = markerIndex + MARKER_BITS.length;
-        const headerSizeInBits = headerSizeStream.read(8);
-        if (headerSizeInBits === null) throw new Error("Could not read header size");
-        assets_start_pos = markerIndex + MARKER_BITS.length + 8 + headerSizeInBits;
-    } else {
-        assets_start_pos = 92;
-    }
-
-    const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
-    parsed.hasEndOfAssetsMarker = endOfAssetsMarkerIndex !== -1;
-
-    stream.bit_pos = assets_start_pos;
-
-    const assets_end_pos = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex : bytes.length * 8;
-    while (stream.bit_pos < assets_end_pos) {
-        if (assets_end_pos - stream.bit_pos < 6) {
-            break;
-        }
-        try {
-            const start_pos = stream.bit_pos;
-            const { value, bitLength } = readVarInt(stream);
-            const end_pos = stream.bit_pos;
-            const asset_bits = bits.slice(start_pos, end_pos);
-            const token: AssetToken = { value, bitLength, bits: asset_bits, position: start_pos };
-            parsed.assets.push(token);
-        } catch (e) {
-            break;
-        }
-    }
-    
-    parsed.isVarInt = true;
-    parsed.preamble_bits = bits.slice(0, assets_start_pos);
-    const trailer_start = stream.bit_pos;
-    parsed.trailer_bits = bits.slice(trailer_start);
-    parsed.assets_start_pos = assets_start_pos;
-    parsed.trailer_start = trailer_start;
-    parsed.original_bits = bits;
-
-
-    const tempStream = new Bitstream(bytes);
-    tempStream.bit_pos = assets_start_pos;
-    const assets_fixed = [];
-    const totalBits = bytes.length * 8;
-    while (totalBits - tempStream.bit_pos >= 6) {
-        const chunk = tempStream.read(6);
-        if (chunk !== null) {
-            const asset_bits = bits.slice(tempStream.bit_pos - 6, tempStream.bit_pos);
-            const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits, position: tempStream.bit_pos - 6 };
-            assets_fixed.push(token);
-        }
-    }
-    parsed.assets_fixed = assets_fixed;
-    
-    return parsed;
-}
-
 function parseAsFixedWidth(bytes: number[]): any {
     const stream = new Bitstream(bytes);
     stream.read(10);
@@ -247,31 +175,32 @@ function parseAsFixedWidth(bytes: number[]): any {
     return parsed;
 }
 
-export function parse(bytes: number[]): any {
-    const parsedAsVarInt = parseAsVarInt(bytes);
-    const newSerialVarInt = parsedToSerial(parsedAsVarInt);
-    const newBytesVarInt = serialToBytes(newSerialVarInt);
-    const isVarIntStable = bytes.length === newBytesVarInt.length && bytes.every((b, i) => b === newBytesVarInt[i]);
+export function parse(serial: string): any {
+    const bytes = serialToBytes(serial);
+    const parsed = parseAsFixedWidth(bytes);
 
-    const parsedAsFixed = parseAsFixedWidth(bytes);
-    const newSerialFixed = parsedToSerial(parsedAsFixed);
-    const newBytesFixed = serialToBytes(newSerialFixed);
-    const isFixedStable = bytes.length === newBytesFixed.length && bytes.every((b, i) => b === newBytesFixed[i]);
+    const decodedData = decodeSerialStandalone(serial);
+    if (decodedData.error) {
+        throw new Error(decodedData.error);
+    }
 
-    if (isVarIntStable && !isFixedStable) {
-        return parsedAsVarInt;
-    }
-    if (isFixedStable && !isVarIntStable) {
-        return parsedAsFixed;
-    }
-    if (isVarIntStable && isFixedStable) {
-        const allVarIntAssetsAre6Bits = parsedAsVarInt.assets.every(a => a.bitLength === 6);
-        if (parsedAsVarInt.assets.length > 0 && allVarIntAssetsAre6Bits) {
-            return parsedAsFixed;
-        } else {
-            return parsedAsVarInt;
+    const perks = decodedData.perks as AssetToken[];
+    const oldAssets = parsed.assets_fixed as AssetToken[];
+
+    const perksByPosition = new Map(perks.map(p => [p.position, p]));
+
+    for (const oldAsset of oldAssets) {
+        if (perksByPosition.has(oldAsset.position)) {
+            const perk = perksByPosition.get(oldAsset.position)!;
+            if (perk.perkValue) {
+                (oldAsset as any).perkValue = perk.perkValue;
+            }
         }
     }
 
-    return parseAsFixedWidth(bytes);
+    parsed.assets = oldAssets;
+    parsed.assets_fixed = oldAssets;
+    parsed.isVarInt = false;
+
+    return parsed;
 }

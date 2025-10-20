@@ -349,7 +349,7 @@ export const repositoryCrossoverMutation: Mutation = (parsedSerial, state) => {
 
         const otherSerial = randomChoice(repository);
 
-        const otherParsed = parse(serialToBytes(otherSerial)); // Assuming serialToBytes is available
+        const otherParsed = parse(otherSerial);
 
         const otherAssets = otherParsed.assets;
 

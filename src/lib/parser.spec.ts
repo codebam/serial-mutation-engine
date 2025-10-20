@@ -10,15 +10,13 @@ describe('parser and encoder', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
 
     it.each(serials)('should parse and encode serial %s, maintaining integrity', (originalSerial) => {
-        const originalBytes = serialToBytes(originalSerial);
-        const parsed1 = parse(originalBytes);
+        const parsed1 = parse(originalSerial);
         const newSerial = parsedToSerial(parsed1);
         expect(newSerial).toEqual(originalSerial);
     });
 
     it.each(serials)('should parse a trailer for every serial %s', (originalSerial) => {
-        const bytes = serialToBytes(originalSerial);
-        const parsed = parse(bytes);
+        const parsed = parse(originalSerial);
         expect(parsed.trailer_bits).toBeDefined();
     });
 });
@@ -28,7 +26,7 @@ describe('parser', () => {
 
     it.each(serials)('should correctly detect element if present in serial %s', (originalSerial) => {
         const bytes = serialToBytes(originalSerial);
-        const parsed = parse(bytes);
+        const parsed = parse(originalSerial);
 
         const elementFlagIndex = utils.findBitPattern(bytes, utils.ELEMENT_FLAG_BITS);
         if (elementFlagIndex !== -1) {
