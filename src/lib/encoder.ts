@@ -57,10 +57,7 @@ function bitsToBytes(bits: number[]): number[] {
 }
 
 export function parsedToSerial(parsed: any): string {
-    console.log('\n--- TRACE: parsedToSerial start ---');
     const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
-    console.log(`--- TRACE: Encoder received ${assetsToEncode.length} assets.`);
-
     const asset_parts: { position: number, bits: number[], bitLength: number }[] = [];
     if (assetsToEncode) {
         for (const asset of assetsToEncode) {
@@ -69,7 +66,6 @@ export function parsedToSerial(parsed: any): string {
                 current_asset.bitLength = current_asset.bitLength || 6;
                 const val_str = current_asset.value.toString(2).padStart(current_asset.bitLength, '0');
                 current_asset.bits = val_str.split('').map(Number);
-                console.log(`--- TRACE: Generated bits for new asset with value ${current_asset.value}`);
             }
             asset_parts.push(current_asset);
         }
@@ -134,7 +130,15 @@ export function parsedToSerial(parsed: any): string {
 
     let assets_bits = parsed.original_bits.slice(parsed.assets_start_pos, parsed.trailer_start);
 
-    for (const part of parts) {
+    // Create a map for faster lookups of original asset bitLengths
+    const original_asset_lengths = new Map();
+    const original_assets = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+    for (const asset of original_assets) {
+        original_asset_lengths.set(asset.position, asset.bitLength);
+    }
+
+    // Iterate backwards to avoid index shifting issues with splice
+    for (const part of [...parts].reverse()) {
         if (part.position === undefined) continue;
 
         const relative_pos = part.position - parsed.assets_start_pos;
@@ -142,17 +146,12 @@ export function parsedToSerial(parsed: any): string {
 
         if (!part.bits) continue;
 
-        for (let i = 0; i < part.bits.length; i++) {
-            if (relative_pos + i < assets_bits.length) {
-                assets_bits[relative_pos + i] = part.bits[i];
-            }
-        }
+        const original_length = original_asset_lengths.get(part.position) || part.bitLength;
+        
+        assets_bits.splice(relative_pos, original_length, ...part.bits);
     }
-    console.log(`--- TRACE: Final assets_bits length: ${assets_bits.length}`);
 
     const all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
-    console.log(`--- TRACE: Final all_bits length: ${all_bits.length}`);
-    console.log('--- TRACE: parsedToSerial end ---\n');
 
     const bytes = bitsToBytes(all_bits);
 
