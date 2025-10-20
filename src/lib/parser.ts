@@ -250,16 +250,6 @@ function parseAsFixedWidth(bytes: number[]): any {
 export function parse(serial: string): any {
     const bytes = serialToBytes(serial);
 
-    let parsedAsVarInt: any = null;
-    let isVarIntStable = false;
-    try {
-        parsedAsVarInt = parseAsVarInt(bytes);
-        const newSerialVarInt = parsedToSerial(parsedAsVarInt);
-        isVarIntStable = newSerialVarInt === serial;
-    } catch (e) {
-        // console.error("VarInt parsing failed:", e);
-    }
-
     let parsedAsFixed: any = null;
     let isFixedStable = false;
     try {
@@ -270,23 +260,22 @@ export function parse(serial: string): any {
         // console.error("Fixed-width parsing failed:", e);
     }
 
+    let parsedAsVarInt: any = null;
+    let isVarIntStable = false;
+    try {
+        parsedAsVarInt = parseAsVarInt(bytes);
+        const newSerialVarInt = parsedToSerial(parsedAsVarInt);
+        isVarIntStable = newSerialVarInt === serial;
+    } catch (e) {
+        // console.error("VarInt parsing failed:", e);
+    }
+
     let parsed: any;
-    if (isVarIntStable && !isFixedStable) {
-        parsed = parsedAsVarInt;
-    } else if (isFixedStable && !isVarIntStable) {
+    if (isFixedStable) {
         parsed = parsedAsFixed;
-    } else if (isVarIntStable && isFixedStable) {
-        const allVarIntAssetsAre6Bits = parsedAsVarInt.assets.every((a: AssetToken) => a.bitLength === 6);
-        if (parsedAsVarInt.assets.length > 0 && !allVarIntAssetsAre6Bits) {
-            parsed = parsedAsVarInt;
-        } else {
-            parsed = parsedAsFixed;
-        }
-    } else if (isVarIntStable) { // If only VarInt is stable
+    } else if (isVarIntStable) {
         parsed = parsedAsVarInt;
-    } else if (isFixedStable) { // If only Fixed-width is stable
-        parsed = parsedAsFixed;
-    } else { // Neither is stable, default to fixed-width (this might still throw if fixed-width fails)
+    } else { // Neither is stable, default to fixed-width
         parsed = parseAsFixedWidth(bytes);
     }    const decodedData = decodeSerialStandalone(serial);
     if (decodedData.error) {
