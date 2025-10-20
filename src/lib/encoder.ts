@@ -41,10 +41,15 @@ function bitsToBytes(bits: number[]): number[] {
     const bitsLength = bits.length;
     for (let i = 0; i < bitsLength; i += 8) {
         let byte = 0;
+        let bitsInByte = 0;
         for (let j = 0; j < 8; j++) {
             if (i + j < bitsLength) {
                 byte = (byte << 1) | bits[i + j];
+                bitsInByte++;
             }
+        }
+        if (bitsInByte > 0 && bitsInByte < 8) {
+            byte <<= (8 - bitsInByte);
         }
         bytes.push(byte);
     }

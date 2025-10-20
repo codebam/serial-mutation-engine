@@ -47,7 +47,7 @@ describe('serial regeneration', () => {
 });
 
 describe('level modification', () => {
-    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0).slice(0, 5);
+    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
     it.each(serials)('should survive a round trip edit of the level for serial %s', (originalSerial) => {
         const originalBytes = serialToBytes(originalSerial);
         const parsed = parse(originalBytes);
@@ -94,7 +94,7 @@ describe('element modification', () => {
 });
 
 describe('asset modification', () => {
-    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0).slice(0, 5);
+    const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
     it.each(serials)('should survive a round trip edit of assets for serial %s', (originalSerial) => {
         const originalBytes = serialToBytes(originalSerial);
         const parsed = parse(originalBytes);
