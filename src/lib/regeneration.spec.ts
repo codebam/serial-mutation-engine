@@ -41,7 +41,7 @@ describe('serial regeneration', () => {
         if (parsed.element) {
             expect(newParsed.element).toBeDefined();
             expect(newParsed.element.name).toBe(parsed.element.name);
-            expect(newParsed.element.pattern).toBe(parsed.element.pattern);
+            expect(newParsed.element.pattern).toEqual(parsed.element.pattern);
         }
     });
 });
