@@ -474,7 +474,9 @@ export const appendHighValuePartMutation: Mutation = (parsedSerial, state) => {
     const assetToAppend = selectedAssetInfo.asset;
 
     // 2. Determine number of appends.
-    const maxNumberOfAppends = Math.floor((state.rules.targetOffset || 0) / 6);
+    const bitsPerCharacter = 8; // Approximate bits per character in the final encoded string
+    const bitsPerAsset = 6;
+    const maxNumberOfAppends = Math.floor(((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset);
     const numberOfAppends = randomInt(1, Math.max(1, maxNumberOfAppends));
 
     // 3. Append the asset.
