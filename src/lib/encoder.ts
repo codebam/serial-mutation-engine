@@ -132,9 +132,10 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[]): str
         return true;
     });
 
-    const parts = [...filtered_asset_parts, ...metadata_parts];
-    parts.sort((a, b) => a.position - b.position);
+    const all_parts = [...filtered_asset_parts, ...metadata_parts];
+    all_parts.sort((a, b) => a.position - b.position);
 
+    let preamble_bits = [...parsed.preamble_bits];
     let assets_bits = parsed.original_bits.slice(parsed.assets_start_pos, parsed.trailer_start);
 
     if (original_assets) {
@@ -158,20 +159,25 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[]): str
     }
 
     // Iterate backwards to avoid index shifting issues with splice
-    for (const part of [...parts].reverse()) {
+    for (const part of all_parts.reverse()) {
         if (part.position === undefined) continue;
 
-        const relative_pos = part.position - parsed.assets_start_pos;
-        if (relative_pos < 0) continue;
+        if (part.position < parsed.assets_start_pos) {
+            const original_length = part.bitLength;
+            preamble_bits.splice(part.position, original_length, ...part.bits);
+        } else {
+            const relative_pos = part.position - parsed.assets_start_pos;
+            if (relative_pos < 0) continue;
 
-        if (!part.bits) continue;
+            if (!part.bits) continue;
 
-        const original_length = original_asset_lengths.get(part.position) || (part.isMetadata ? part.bitLength : 0);
-        
-        assets_bits.splice(relative_pos, original_length, ...part.bits);
+            const original_length = original_asset_lengths.get(part.position) || (part.isMetadata ? part.bitLength : 0);
+            
+            assets_bits.splice(relative_pos, original_length, ...part.bits);
+        }
     }
 
-    const all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
+    const all_bits = [...preamble_bits, ...assets_bits, ...parsed.trailer_bits];
 
     const bytes = bitsToBytes(all_bits);
 
