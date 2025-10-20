@@ -250,6 +250,7 @@ function parseAsFixedWidth(bytes: number[]): any {
 export function parse(serial: string): any {
     const bytes = serialToBytes(serial);
 
+    let parsed: any;
     const parsedAsVarInt = parseAsVarInt(bytes);
     const newSerialVarInt = parsedToSerial(parsedAsVarInt);
     const isVarIntStable = newSerialVarInt === serial;
@@ -258,7 +259,6 @@ export function parse(serial: string): any {
     const newSerialFixed = parsedToSerial(parsedAsFixed);
     const isFixedStable = newSerialFixed === serial;
 
-    let parsed: any;
     if (isVarIntStable && !isFixedStable) {
         parsed = parsedAsVarInt;
     } else if (isFixedStable && !isVarIntStable) {
@@ -272,9 +272,7 @@ export function parse(serial: string): any {
         }
     } else {
         parsed = parsedAsFixed;
-    }
-
-    const decodedData = decodeSerialStandalone(serial);
+    }    const decodedData = decodeSerialStandalone(serial);
     if (decodedData.error) {
         throw new Error(decodedData.error);
     }
