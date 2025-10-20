@@ -244,6 +244,10 @@
         const newAsset: AssetToken = { value: 1n, bits: undefined };
         if (!parsedOutput.isVarInt) {
             newAsset.bitLength = 6;
+        } else {
+            const assets = parsedOutput.isVarInt ? parsedOutput.assets : parsedOutput.assets_fixed;
+            const lastAsset = assets[assets.length - 1];
+            newAsset.position = lastAsset ? lastAsset.position + lastAsset.bitLength : parsedOutput.assets_start_pos;
         }
         assetsWithIds.push({ id: assetIdCounter++, asset: newAsset });
         debouncedUpdateSerialFromAssets();

@@ -1,5 +1,5 @@
 import type { AssetToken } from './types';
-import { ELEMENT_FLAG_BITS, END_OF_ASSETS_MARKER_BITS } from './utils';
+import { ELEMENT_FLAG_BITS, END_OF_ASSETS_MARKER_BITS, valueToVarIntBits } from './utils';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
@@ -63,9 +63,14 @@ export function parsedToSerial(parsed: any): string {
         for (const asset of assetsToEncode) {
             const current_asset = {...asset};
             if (!current_asset.bits && current_asset.value !== undefined) {
-                current_asset.bitLength = current_asset.bitLength || 6;
-                const val_str = current_asset.value.toString(2).padStart(current_asset.bitLength, '0');
-                current_asset.bits = val_str.split('').map(Number);
+                if (parsed.isVarInt) {
+                    current_asset.bits = valueToVarIntBits(current_asset.value);
+                    current_asset.bitLength = current_asset.bits.length;
+                } else {
+                    current_asset.bitLength = current_asset.bitLength || 6;
+                    const val_str = current_asset.value.toString(2).padStart(current_asset.bitLength, '0');
+                    current_asset.bits = val_str.split('').map(Number);
+                }
             }
             asset_parts.push(current_asset);
         }
@@ -73,13 +78,13 @@ export function parsedToSerial(parsed: any): string {
 
     const metadata_parts: { position: number, bits: number[], bitLength: number }[] = [];
     if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
-        const part = { position: parsed.manufacturer.position, bits: parsed.manufacturer.pattern, bitLength: parsed.manufacturer.pattern.length };
+        const part = { position: parsed.manufacturer.position, bits: parsed.manufacturer.pattern, bitLength: parsed.manufacturer.pattern.length, isMetadata: true };
         metadata_parts.push(part);
     }
 
     if (parsed.element && parsed.element.position !== undefined) {
         const elementPart = [...ELEMENT_FLAG_BITS, ...parsed.element.pattern];
-        const part = { position: parsed.element.position, bits: elementPart, bitLength: elementPart.length };
+        const part = { position: parsed.element.position, bits: elementPart, bitLength: elementPart.length, isMetadata: true };
         metadata_parts.push(part);
     }
 
@@ -108,9 +113,9 @@ export function parsedToSerial(parsed: any): string {
         if (parsed.level.method === 'standard') {
             const LEVEL_MARKER_BITS = [0, 0, 0, 0, 0, 0];
             const level_part = [...LEVEL_MARKER_BITS, ...level_bits_to_encode];
-            metadata_parts.push({ position: parsed.level.position, bits: level_part, bitLength: level_part.length });
+            metadata_parts.push({ position: parsed.level.position, bits: level_part, bitLength: level_part.length, isMetadata: true });
         } else {
-            metadata_parts.push({ position: parsed.level.position, bits: level_bits_to_encode, bitLength: level_bits_to_encode.length });
+            metadata_parts.push({ position: parsed.level.position, bits: level_bits_to_encode, bitLength: level_bits_to_encode.length, isMetadata: true });
         }
     }
 
@@ -148,7 +153,7 @@ export function parsedToSerial(parsed: any): string {
 
         if (!part.bits) continue;
 
-        const original_length = original_asset_lengths.get(part.position) || part.bitLength;
+        const original_length = original_asset_lengths.get(part.position) || (part.isMetadata ? part.bitLength : 0);
         
         assets_bits.splice(relative_pos, original_length, ...part.bits);
     }

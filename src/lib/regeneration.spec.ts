@@ -138,3 +138,26 @@ describe('asset modification', () => {
         expect(newAssets[0].value).toBe(newValue);
     });
 });
+
+describe('asset appending', () => {
+    it('should correctly append an asset to a serial', () => {
+        const originalSerial = '@Ugydj=2}TYg41n&T3U#PNHEPIE8dOQtNYqSJ7*r @!7}Pn`NYqT!NYqT!NYqT!NYqSJE>xm!p;DqoqDrE/pzfglphBT?q1vGmm8e{(Kd3mUbf{aXTc}&8Tc}&8Tc}&8Tc}&8Tc}&8Td1QRXi<w=)S?!(s6{PmQHMIzp$>JZLq#+$E-o%EA}%g2E-o%6A}%g2E-nrL';
+        const assetToAppend = 10894n; // 2A8E in hex
+
+        const originalBytes = serialToBytes(originalSerial);
+        const parsed = parse(originalBytes);
+
+        const assets = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+        const lastAsset = assets[assets.length - 1];
+        const newPosition = lastAsset ? lastAsset.position + lastAsset.bitLength : parsed.assets_start_pos;
+        assets.push({ value: assetToAppend, bits: undefined, position: newPosition });
+
+        const newSerial = parsedToSerial(parsed);
+        const newBytes = serialToBytes(newSerial);
+        const newParsed = parse(newBytes);
+
+        const newAssets = newParsed.isVarInt ? newParsed.assets : newParsed.assets_fixed;
+        expect(newAssets.length).toBe(assets.length);
+        expect(newAssets[newAssets.length - 1].value).toBe(assetToAppend);
+    });
+});
