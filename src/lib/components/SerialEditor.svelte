@@ -6,7 +6,7 @@
     import FormGroup from './FormGroup.svelte';
     import Asset from './Asset.svelte';
     import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation, appendHighValuePartMutation } from '$lib/mutations';
-    import type { ParsedSerial, State } from '$lib/types';
+    import type { ParsedSerial, State, AssetToken } from '$lib/types';
 
     let { serial, onSerialUpdate, rules } = $props<{
         serial: string;
@@ -15,7 +15,7 @@
     }>();
 
     let parsedOutput = $state<any | null>(null);
-    let assetsWithIds = $state<{ id: number; value: number }[]>([]);
+    let assetsWithIds = $state<{ id: number; asset: AssetToken }[]>([]);
     let assetIdCounter = 0;
     let copyJsonText = $state('Copy JSON');
     let copyUrlText = $state('Copy URL');
@@ -66,11 +66,15 @@
             const clipboardText = await navigator.clipboard.readText();
             const newParsed = JSON.parse(clipboardText);
 
+            newParsed.assets.forEach((asset: any) => {
+                asset.value = BigInt(asset.value);
+            });
+
             parsedOutput = newParsed;
 
             assetIdCounter = 0; // Reset counter
-            assetsWithIds = newParsed.assets.map((asset: bigint) => {
-                return { id: assetIdCounter++, value: Number(asset) };
+            assetsWithIds = newParsed.assets.map((asset: AssetToken) => {
+                return { id: assetIdCounter++, asset: asset };
             });
             originalAssetsCount = newParsed.assets.length;
 
@@ -127,8 +131,8 @@
             if (parsed) {
                 originalAssetsCount = parsed.assets.length;
                 assetIdCounter = 0;
-                assetsWithIds = parsed.assets.map((asset: bigint) => {
-                    return { id: assetIdCounter++, value: Number(asset) };
+                assetsWithIds = parsed.assets.map((asset: AssetToken) => {
+                    return { id: assetIdCounter++, asset: asset };
                 });
             } else {
                 assetsWithIds = [];
@@ -144,7 +148,7 @@
 
     function updateSerialFromAssets() {
         if (parsedOutput) {
-            const newAssets = assetsWithIds.map(a => BigInt(a.value));
+            const newAssets = assetsWithIds.map(a => a.asset);
 
             const newParsed = { ...parsedOutput };
             newParsed.assets = newAssets;
@@ -214,14 +218,15 @@
     }
 
     function addAsset() {
-        assetsWithIds.push({ id: assetIdCounter++, value: 1 });
+        assetsWithIds.push({ id: assetIdCounter++, asset: { value: 1n, bitLength: 6, bits: undefined } });
         debouncedUpdateSerialFromAssets();
     }
 
     function updateAsset(id: number, newValue: number) {
-        const asset = assetsWithIds.find((a) => a.id === id);
-        if (asset) {
-            asset.value = newValue;
+        const item = assetsWithIds.find((a) => a.id === id);
+        if (item) {
+            item.asset.value = BigInt(newValue);
+            item.asset.bits = undefined;
             debouncedUpdateSerialFromAssets();
         }
     }
@@ -260,8 +265,8 @@
             };
             const newParsedOutput = mutation(parsedOutput, dummyState);
             parsedOutput = newParsedOutput;
-            assetsWithIds = newParsedOutput.assets.map((asset: bigint) => {
-                return { id: assetIdCounter++, value: Number(asset) };
+            assetsWithIds = newParsedOutput.assets.map((asset: AssetToken) => {
+                return { id: assetIdCounter++, asset: asset };
             });
             updateSerialFromAssets();
         }
@@ -344,6 +349,7 @@
     <div class="mt-4 space-y-4">
         <div class="flex justify-between items-center">
             <h3 class="text-lg font-semibold">Parsed Parts</h3>
+            <span class="text-sm font-medium text-gray-400">{parsedOutput.isVarInt ? 'VarInt' : 'Fixed-Width'}</span>
             <button onclick={copyJson} class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">{copyJsonText}</button>
         </div>
 
@@ -402,10 +408,10 @@
                         }}
                     >
                         <Asset 
-                            value={asset.value} 
+                            value={Number(asset.asset.value)} 
                             onUpdate={(newValue) => updateAsset(asset.id, newValue)} 
                             onDelete={() => deleteAsset(asset.id)}
-                            color={getColorForAsset(asset.value)}
+                            color={getColorForAsset(Number(asset.asset.value))}
                         />
                     </div>
                 {/each}
