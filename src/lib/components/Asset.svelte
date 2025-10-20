@@ -1,9 +1,10 @@
 <script lang="ts">
-	let { value, onUpdate, onDelete, color = 'bg-gray-100' } = $props<{
+	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false } = $props<{
 		value: number;
 		onUpdate: (newValue: number) => void;
         onDelete?: () => void;
 		color?: string;
+        isVarInt?: boolean;
 	}>();
 
 	let localValue = $state(value.toString(16).toUpperCase());
@@ -25,7 +26,7 @@
 
         if (newValue < 0) {
             newValue = 0;
-        } else if (newValue > 63) {
+        } else if (!isVarInt && newValue > 63) {
             newValue = 63;
         }
 

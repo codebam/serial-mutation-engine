@@ -412,6 +412,7 @@
                             onUpdate={(newValue) => updateAsset(asset.id, newValue)} 
                             onDelete={() => deleteAsset(asset.id)}
                             color={getColorForAsset(Number(asset.asset.value))}
+                            isVarInt={parsedOutput.isVarInt}
                         />
                     </div>
                 {/each}
