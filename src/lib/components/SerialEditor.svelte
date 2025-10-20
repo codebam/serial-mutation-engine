@@ -371,7 +371,7 @@
         <div class="flex justify-between items-center">
             <h3 class="text-lg font-semibold">Parsed Parts</h3>
             <div>
-                <select class="text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" bind:value={parsingMode} onchange={analyzeSerial} disabled={varintFailed}>
+                <select class="p-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" bind:value={parsingMode} onchange={analyzeSerial} disabled={varintFailed}>
                     <option value="varint">VarInt</option>
                     <option value="fixed">Fixed-Width</option>
                 </select>
