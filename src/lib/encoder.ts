@@ -56,66 +56,25 @@ function bitsToBytes(bits: number[]): number[] {
     return bytes;
 }
 
-function writeVarInt_bits(value: bigint): number[] {
-    if (value === 0n) {
-        return [0, 0, 0, 0, 0, 0];
-    }
-    const chunks: number[][] = [];
-    while (value > 0n) {
-        let part = Number(value & 0b011111n);
-        value >>= 5n;
-        if (value > 0n) {
-            part |= 0b100000;
-        }
-        chunks.push(part.toString(2).padStart(6, '0').split('').map(Number));
-    }
-    return chunks.flat();
-}
-
-function encodeAssets(parsed: any): number[] {
-    let bits: number[] = [];
+export function parsedToSerial(parsed: any): string {
+    const asset_parts: { position: number, bits: number[], bitLength: number }[] = [];
     const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
-
     if (assetsToEncode) {
         for (const asset of assetsToEncode) {
-            if (asset.bits) {
-                bits.push(...asset.bits);
-            } else {
-                if (parsed.isVarInt) {
-                    bits.push(...writeVarInt_bits(asset.value));
-                } else {
-                    const assetBits = [];
-                    let num = Number(asset.value);
-                    for(let i=5; i>=0; i--) {
-                        assetBits.push((num >> i) & 1);
-                    }
-                    bits.push(...assetBits);
-                }
-            }
+            asset_parts.push({ position: asset.position, bits: asset.bits, bitLength: asset.bitLength });
         }
     }
-    return bits;
-}
 
-export function parsedToSerial(parsed: any): string {
-    const assets_bits = encodeAssets(parsed);
-
-    let all_bits;
-    if (parsed.hasEndOfAssetsMarker) {
-        all_bits = [...parsed.preamble_bits, ...assets_bits, ...END_OF_ASSETS_MARKER_BITS, ...parsed.trailer_bits];
-    } else {
-        all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
-    }
-
+    const metadata_parts: { position: number, bits: number[], bitLength: number }[] = [];
     if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
-        const manufacturerPattern = parsed.manufacturer.pattern;
-        all_bits.splice(parsed.manufacturer.position, manufacturerPattern.length, ...manufacturerPattern);
+        const part = { position: parsed.manufacturer.position, bits: parsed.manufacturer.pattern, bitLength: parsed.manufacturer.pattern.length };
+        metadata_parts.push(part);
     }
 
     if (parsed.element && parsed.element.position !== undefined) {
-        const elementPattern = parsed.element.pattern;
-        const elementPart = [...ELEMENT_FLAG_BITS, ...elementPattern];
-        all_bits.splice(parsed.element.position, elementPart.length, ...elementPart);
+        const elementPart = [...ELEMENT_FLAG_BITS, ...parsed.element.pattern];
+        const part = { position: parsed.element.position, bits: elementPart, bitLength: elementPart.length };
+        metadata_parts.push(part);
     }
 
     if (parsed.level && parsed.level.position !== undefined) {
@@ -141,11 +100,42 @@ export function parsedToSerial(parsed: any): string {
         if (parsed.level.method === 'standard') {
             const LEVEL_MARKER_BITS = [0, 0, 0, 0, 0, 0];
             const level_part = [...LEVEL_MARKER_BITS, ...level_bits_to_encode];
-            all_bits.splice(parsed.level.position, level_part.length, ...level_part);
+            metadata_parts.push({ position: parsed.level.position, bits: level_part, bitLength: level_part.length });
         } else {
-            all_bits.splice(parsed.level.position, level_bits_to_encode.length, ...level_bits_to_encode);
+            metadata_parts.push({ position: parsed.level.position, bits: level_bits_to_encode, bitLength: level_bits_to_encode.length });
         }
     }
+
+    const filtered_asset_parts = asset_parts.filter(asset => {
+        for (const meta of metadata_parts) {
+            const asset_start = asset.position;
+            const asset_end = asset.position + asset.bitLength;
+            const meta_start = meta.position;
+            const meta_end = meta.position + meta.bitLength;
+            if (asset_start < meta_end && asset_end > meta_start) {
+                return false; // Overlap, filter out this asset
+            }
+        }
+        return true;
+    });
+
+    const parts = [...filtered_asset_parts, ...metadata_parts];
+    parts.sort((a, b) => a.position - b.position);
+
+    let assets_bits = parsed.original_bits.slice(parsed.assets_start_pos, parsed.trailer_start);
+
+    for (const part of parts) {
+        const relative_pos = part.position - parsed.assets_start_pos;
+        if (relative_pos < 0) continue;
+
+        for (let i = 0; i < part.bits.length; i++) {
+            if (relative_pos + i < assets_bits.length) {
+                assets_bits[relative_pos + i] = part.bits[i];
+            }
+        }
+    }
+
+    const all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
 
     const bytes = bitsToBytes(all_bits);
 

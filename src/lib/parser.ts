@@ -113,6 +113,8 @@ function parseAsVarInt(bytes: number[]): any {
         assets: [],
     };
 
+    parseMetadata(bytes, parsed, bits);
+
     const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
 
     let assets_start_pos;
@@ -141,16 +143,21 @@ function parseAsVarInt(bytes: number[]): any {
             const { value, bitLength } = readVarInt(stream);
             const end_pos = stream.bit_pos;
             const asset_bits = bits.slice(start_pos, end_pos);
-            const token: AssetToken = { value, bitLength, bits: asset_bits };
+            const token: AssetToken = { value, bitLength, bits: asset_bits, position: start_pos };
             parsed.assets.push(token);
         } catch (e) {
             break;
         }
     }
+    
     parsed.isVarInt = true;
     parsed.preamble_bits = bits.slice(0, assets_start_pos);
-    const trailer_start = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex + END_OF_ASSETS_MARKER_BITS.length : stream.bit_pos;
+    const trailer_start = stream.bit_pos;
     parsed.trailer_bits = bits.slice(trailer_start);
+    parsed.assets_start_pos = assets_start_pos;
+    parsed.trailer_start = trailer_start;
+    parsed.original_bits = bits;
+
 
     const tempStream = new Bitstream(bytes);
     tempStream.bit_pos = assets_start_pos;
@@ -160,14 +167,12 @@ function parseAsVarInt(bytes: number[]): any {
         const chunk = tempStream.read(6);
         if (chunk !== null) {
             const asset_bits = bits.slice(tempStream.bit_pos - 6, tempStream.bit_pos);
-            const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits };
+            const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits, position: tempStream.bit_pos - 6 };
             assets_fixed.push(token);
         }
     }
     parsed.assets_fixed = assets_fixed;
     
-    parseMetadata(bytes, parsed, bits);
-
     return parsed;
 }
 
@@ -181,6 +186,8 @@ function parseAsFixedWidth(bytes: number[]): any {
         assets: [],
         assets_fixed: [],
     };
+
+    parseMetadata(bytes, parsed, bits);
 
     const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
 
@@ -200,36 +207,43 @@ function parseAsFixedWidth(bytes: number[]): any {
 
     stream.bit_pos = assets_start_pos;
 
-    const totalBits = bytes.length * 8;
-    while (totalBits - stream.bit_pos >= 6) {
+    const assets_end_pos = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex : bytes.length * 8;
+    while (stream.bit_pos < assets_end_pos) {
+        if (assets_end_pos - stream.bit_pos < 6) {
+            break;
+        }
         const chunk = stream.read(6);
         if (chunk !== null) {
             const asset_bits = bits.slice(stream.bit_pos - 6, stream.bit_pos);
-            const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits };
+            const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits, position: stream.bit_pos - 6 };
             parsed.assets_fixed.push(token);
         }
     }
+    
     parsed.isVarInt = false;
     parsed.preamble_bits = bits.slice(0, assets_start_pos);
-    parsed.trailer_bits = bits.slice(stream.bit_pos);
+    const trailer_start = stream.bit_pos;
+    parsed.trailer_bits = bits.slice(trailer_start);
+    parsed.assets_start_pos = assets_start_pos;
+    parsed.trailer_start = trailer_start;
+    parsed.original_bits = bits;
 
     const tempStream = new Bitstream(bytes);
     tempStream.bit_pos = assets_start_pos;
+    const totalBits = bytes.length * 8;
     while (totalBits - tempStream.bit_pos >= 6) {
         try {
             const start_pos = tempStream.bit_pos;
             const { value, bitLength } = readVarInt(tempStream);
             const end_pos = tempStream.bit_pos;
             const asset_bits = bits.slice(start_pos, end_pos);
-            const token: AssetToken = { value, bitLength, bits: asset_bits };
+            const token: AssetToken = { value, bitLength, bits: asset_bits, position: start_pos };
             parsed.assets.push(token);
         } catch (e) {
             break;
         }
     }
     
-    parseMetadata(bytes, parsed, bits);
-
     return parsed;
 }
 

@@ -3,6 +3,7 @@ export interface AssetToken {
     value: bigint;
     bitLength: number;
     bits: number[];
+    position: number;
 }
 
 export interface ParsedSerial {
