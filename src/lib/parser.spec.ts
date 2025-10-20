@@ -41,7 +41,7 @@ describe('parser', () => {
                 if (foundElement) {
                     expect(parsed.element).toBeDefined();
                     expect(parsed.element.name).toBe(foundElement[0]);
-                    expect(parsed.element.pattern).toBe(elementPattern);
+                    expect(parsed.element.pattern.join('')).toBe(elementPattern);
                     expect(parsed.element.position).toBe(elementFlagIndex);
                 } else {
                     expect(parsed.element).toBeUndefined();

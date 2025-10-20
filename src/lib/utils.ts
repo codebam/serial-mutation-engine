@@ -75,9 +75,9 @@ export function findBitPattern(bytes: number[], pattern: number[], startBit: num
     return -1;
 }
 
-export const standardLevelDetection_byte = (bytes: number[]): [number | string, number] => {
+export const standardLevelDetection_byte = (bytes: number[]): [number | string, number, number[]] => {
     const LEVEL_MARKER_BITS = stringToBits('000000');
-    const valid_markers: [number, number, number][] = [];
+    const valid_markers: [number, number, number, number[]][] = [];
     let search_pos = 0;
     while (search_pos < bytes.length * 8) {
         const marker_pos = findBitPattern(bytes, LEVEL_MARKER_BITS, search_pos);
@@ -105,7 +105,8 @@ export const standardLevelDetection_byte = (bytes: number[]): [number | string, 
             }
 
             if (decoded_level !== null) {
-                valid_markers.push([marker_pos, decoded_level, level_value]);
+                const level_bits = level_value.toString(2).padStart(8, '0').split('').map(Number);
+                valid_markers.push([marker_pos, decoded_level, level_value, level_bits]);
             }
         }
         search_pos = marker_pos + 1;
@@ -114,13 +115,13 @@ export const standardLevelDetection_byte = (bytes: number[]): [number | string, 
 
     valid_markers.sort((a, b) => a[0] - b[0]);
 
-    if (valid_markers.length > 0) return [valid_markers[0][1], valid_markers[0][0]];
+    if (valid_markers.length > 0) return [valid_markers[0][1], valid_markers[0][0], valid_markers[0][3]];
 
-    return ['Unknown', -1];
+    return ['Unknown', -1, []];
 };
 
-export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, number] => {
-    type Candidate = [number, number, number, string];
+export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, number, number[]] => {
+    type Candidate = [number, number, number, string, number[]];
     const all_candidates: Candidate[] = [];
 
     for (let level = 0; level <= 50; level++) {
@@ -130,7 +131,7 @@ export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, 
             const pos = findBitPattern(bytes, pattern, search_pos);
             if (pos === -1) break;
             const score = 100 - Math.floor(pos / 10);
-            all_candidates.push([level, pos, score, 'direct']);
+            all_candidates.push([level, pos, score, 'direct', pattern]);
             search_pos = pos + 1;
         }
     }
@@ -143,7 +144,7 @@ export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, 
             const pos = findBitPattern(bytes, pattern, search_pos);
             if (pos === -1) break;
             const score = 90 - Math.floor(pos / 10);
-            all_candidates.push([level, pos, score, 'offset']);
+            all_candidates.push([level, pos, score, 'offset', pattern]);
             search_pos = pos + 1;
         }
     }
@@ -151,22 +152,22 @@ export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, 
     all_candidates.sort((a, b) => b[2] - a[2]);
 
     const level_0_candidates = all_candidates.filter(c => c[0] === 0);
-    if (level_0_candidates.length > 0 && level_0_candidates[0][2] >= 20) return [0, level_0_candidates[0][1]];
+    if (level_0_candidates.length > 0 && level_0_candidates[0][2] >= 20) return [0, level_0_candidates[0][1], level_0_candidates[0][4]];
 
     const level_10_candidates = all_candidates.filter(c => c[0] === 10);
-    if (level_10_candidates.length >= 3) return [10, level_10_candidates[0][1]];
+    if (level_10_candidates.length >= 3) return [10, level_10_candidates[0][1], level_10_candidates[0][4]];
 
-    if (all_candidates.length > 0) return [all_candidates[0][0], all_candidates[0][1]];
+    if (all_candidates.length > 0) return [all_candidates[0][0], all_candidates[0][1], all_candidates[0][4]];
 
-    return ['Unknown', -1];
+    return ['Unknown', -1, []];
 };
 
-export const detectItemLevel_byte = (bytes: number[]): [number | string, number] => {
-    const [standard_result, standard_pos] = standardLevelDetection_byte(bytes);
+export const detectItemLevel_byte = (bytes: number[]): [number | string, number, number[], string] => {
+    const [standard_result, standard_pos, standard_bits] = standardLevelDetection_byte(bytes);
 
-    const [enhanced_result, enhanced_pos] = enhancedLevelDetection_byte(bytes);
+    if (standard_result !== 'Unknown') return [standard_result, standard_pos, standard_bits, 'standard'];
 
-    if (standard_result !== 'Unknown') return [standard_result, standard_pos];
+    const [enhanced_result, enhanced_pos, enhanced_bits] = enhancedLevelDetection_byte(bytes);
 
-    return [enhanced_result, enhanced_pos];
+    return [enhanced_result, enhanced_pos, enhanced_bits, 'enhanced'];
 };

@@ -107,42 +107,18 @@ export function parsedToSerial(parsed: any): string {
     }
 
     if (parsed.element && parsed.element.position !== undefined) {
-        const elementPattern = parsed.element.pattern.split('').map(Number);
+        const elementPattern = parsed.element.pattern;
         const elementPart = [...ELEMENT_FLAG_BITS, ...elementPattern];
         all_bits.splice(parsed.element.position, elementPart.length, ...elementPart);
     }
 
     if (parsed.level && parsed.level.position !== undefined) {
-        const LEVEL_MARKER_BITS = [0, 0, 0, 0, 0, 0];
-        const newLevel = parseInt(parsed.level.value, 10);
-        let levelValueToEncode;
-
-        if (newLevel === 1) {
-            levelValueToEncode = 49;
-        } else if (newLevel === 2) {
-            levelValueToEncode = 2;
-        } else if (newLevel >= 3 && newLevel <= 49) {
-            levelValueToEncode = newLevel + 48;
-        } else {
-            levelValueToEncode = newLevel;
-        }
-        
-        const level_bits = levelValueToEncode.toString(2).padStart(8, '0').split('').map(Number);
-        
-        const original_level_marker = all_bits.slice(parsed.level.position, parsed.level.position + 6);
-        let same = true;
-        for(let i=0; i<LEVEL_MARKER_BITS.length; i++) {
-            if(original_level_marker[i] !== LEVEL_MARKER_BITS[i]) {
-                same = false;
-                break;
-            }
-        }
-
-        if (same) {
-            const level_part = [...LEVEL_MARKER_BITS, ...level_bits];
+        if (parsed.level.method === 'standard') {
+            const LEVEL_MARKER_BITS = [0, 0, 0, 0, 0, 0];
+            const level_part = [...LEVEL_MARKER_BITS, ...parsed.level.bits];
             all_bits.splice(parsed.level.position, level_part.length, ...level_part);
         } else {
-            all_bits.splice(parsed.level.position, 8, ...level_bits);
+            all_bits.splice(parsed.level.position, parsed.level.bits.length, ...parsed.level.bits);
         }
     }
 

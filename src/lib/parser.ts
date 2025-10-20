@@ -123,11 +123,13 @@ export function parse(bytes: number[]): any {
         parsed.trailer_bits = bits.slice(stream.bit_pos);
     }
     
-    const [level, level_pos] = detectItemLevel_byte(bytes);
+    const [level, level_pos, level_bits, level_method] = detectItemLevel_byte(bytes);
     if (level !== 'Unknown') {
         parsed.level = {
             value: level,
-            position: level_pos
+            position: level_pos,
+            bits: level_bits,
+            method: level_method
         };
     }
 
@@ -149,9 +151,10 @@ export function parse(bytes: number[]): any {
 
     if (allOccurrences.length > 0) {
         const bestMatch = allOccurrences.reduce((best, current) => (current.score > best.score ? current : best));
+        const actualPattern = bits.slice(bestMatch.position, bestMatch.position + bestMatch.pattern.length);
         parsed.manufacturer = {
             name: bestMatch.name,
-            pattern: bestMatch.pattern,
+            pattern: actualPattern,
             position: bestMatch.position
         };
     }
@@ -169,7 +172,7 @@ export function parse(bytes: number[]): any {
             if (foundElement) {
                 parsed.element = {
                     name: foundElement[0],
-                    pattern: elementPattern.join(''),
+                    pattern: elementPattern,
                     position: elementFlagIndex
                 };
             }
