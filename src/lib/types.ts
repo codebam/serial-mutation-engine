@@ -39,3 +39,5 @@ export interface State {
     generateStats: boolean;
     debugMode: boolean;
 }
+
+export {};

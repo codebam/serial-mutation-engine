@@ -1,5 +1,5 @@
 import { Bitstream } from './bitstream';
-import { AssetToken } from './types';
+import type { AssetToken } from './types';
 import {
     detectItemLevel_byte,
     MANUFACTURER_PATTERNS_BITS,

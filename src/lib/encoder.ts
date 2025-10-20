@@ -1,4 +1,4 @@
-import { AssetToken } from './types';
+import type { AssetToken } from './types';
 import { ELEMENT_FLAG_BITS, END_OF_ASSETS_MARKER_BITS } from './utils';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
