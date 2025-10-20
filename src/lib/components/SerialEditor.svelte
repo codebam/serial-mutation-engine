@@ -20,6 +20,8 @@
     let copyJsonText = $state('Copy JSON');
     let copyUrlText = $state('Copy URL');
     let originalAssetsCount = $state(0);
+    let parsingMode = $state('varint');
+    let varintFailed = $state(false);
 
     async function copyUrl() {
         try {
@@ -71,6 +73,8 @@
             });
 
             parsedOutput = newParsed;
+            parsingMode = newParsed.isVarInt ? 'varint' : 'fixed';
+            varintFailed = false;
 
             assetIdCounter = 0; // Reset counter
             assetsWithIds = newParsed.assets.map((asset: AssetToken) => {
@@ -121,11 +125,27 @@
             parsedOutput = null;
             assetsWithIds = [];
             originalAssetsCount = 0;
+            varintFailed = false;
             return;
         }
         try {
             const bytes = serialToBytes(serial);
-            const parsed = parse(bytes);
+            let parsed: any;
+
+            if (parsingMode === 'varint') {
+                parsed = parse(bytes, 'varint');
+                const newSerial = parsedToSerial(parsed);
+                if (newSerial !== serial) {
+                    varintFailed = true;
+                    parsingMode = 'fixed';
+                    parsed = parse(bytes, 'fixed');
+                } else {
+                    varintFailed = false;
+                }
+            } else {
+                parsed = parse(bytes, 'fixed');
+            }
+
             parsedOutput = parsed;
 
             if (parsed) {
@@ -349,7 +369,12 @@
     <div class="mt-4 space-y-4">
         <div class="flex justify-between items-center">
             <h3 class="text-lg font-semibold">Parsed Parts</h3>
-            <span class="text-sm font-medium text-gray-400">{parsedOutput.isVarInt ? 'VarInt' : 'Fixed-Width'}</span>
+            <div>
+                <select class="text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" bind:value={parsingMode} onchange={analyzeSerial} disabled={varintFailed}>
+                    <option value="varint">VarInt</option>
+                    <option value="fixed">Fixed-Width</option>
+                </select>
+            </div>
             <button onclick={copyJson} class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">{copyJsonText}</button>
         </div>
 
