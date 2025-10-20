@@ -248,13 +248,41 @@ function parseAsFixedWidth(bytes: number[]): any {
 }
 
 export function parse(bytes: number[]): any {
-    const parsedAsVarInt = parseAsVarInt(bytes);
-    const newSerial = parsedToSerial(parsedAsVarInt);
-    const newBytes = serialToBytes(newSerial);
+    console.log('--- TRACE: parse function start ---');
 
-    if (bytes.length === newBytes.length && bytes.every((b, i) => b === newBytes[i])) {
+    const parsedAsVarInt = parseAsVarInt(bytes);
+    const newSerialVarInt = parsedToSerial(parsedAsVarInt);
+    const newBytesVarInt = serialToBytes(newSerialVarInt);
+    const isVarIntStable = bytes.length === newBytesVarInt.length && bytes.every((b, i) => b === newBytesVarInt[i]);
+    console.log(`--- TRACE: isVarIntStable: ${isVarIntStable}`);
+
+    const parsedAsFixed = parseAsFixedWidth(bytes);
+    const newSerialFixed = parsedToSerial(parsedAsFixed);
+    const newBytesFixed = serialToBytes(newSerialFixed);
+    const isFixedStable = bytes.length === newBytesFixed.length && bytes.every((b, i) => b === newBytesFixed[i]);
+    console.log(`--- TRACE: isFixedStable: ${isFixedStable}`);
+
+    if (isVarIntStable && !isFixedStable) {
+        console.log('--- TRACE: Choosing VarInt path ---');
         return parsedAsVarInt;
-    } else {
-        return parseAsFixedWidth(bytes);
     }
+    if (isFixedStable && !isVarIntStable) {
+        console.log('--- TRACE: Choosing FixedWidth path ---');
+        return parsedAsFixed;
+    }
+    if (isVarIntStable && isFixedStable) {
+        console.log('--- TRACE: Ambiguous: both are stable ---');
+        const allVarIntAssetsAre6Bits = parsedAsVarInt.assets.every(a => a.bitLength === 6);
+        console.log(`--- TRACE: Heuristic - allVarIntAssetsAre6Bits: ${allVarIntAssetsAre6Bits}`);
+        if (parsedAsVarInt.assets.length > 0 && allVarIntAssetsAre6Bits) {
+            console.log('--- TRACE: Heuristic chooses FixedWidth ---');
+            return parsedAsFixed;
+        } else {
+            console.log('--- TRACE: Heuristic chooses VarInt ---');
+            return parsedAsVarInt;
+        }
+    }
+
+    console.log('--- TRACE: Fallback to FixedWidth ---');
+    return parseAsFixedWidth(bytes);
 }
