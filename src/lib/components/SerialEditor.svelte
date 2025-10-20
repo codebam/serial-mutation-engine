@@ -241,7 +241,11 @@
     }
 
     function addAsset() {
-        assetsWithIds.push({ id: assetIdCounter++, asset: { value: 1n, bitLength: 6, bits: undefined } });
+        const newAsset: AssetToken = { value: 1n, bits: undefined };
+        if (!parsedOutput.isVarInt) {
+            newAsset.bitLength = 6;
+        }
+        assetsWithIds.push({ id: assetIdCounter++, asset: newAsset });
         debouncedUpdateSerialFromAssets();
     }
 
