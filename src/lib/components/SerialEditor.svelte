@@ -398,12 +398,12 @@
         </div>
         {/if}
 
-        <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+        <!-- <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
             <h4 class="font-semibold">Level</h4>
             <FormGroup label="Level">
                 <input type="number" class={inputClasses} bind:value={parsedOutput.level.value} oninput={debouncedReserialize} />
             </FormGroup>
-        </div>
+        </div> -->
 
         {#if parsedOutput.element}
         <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">

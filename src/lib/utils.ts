@@ -127,7 +127,6 @@ export const standardLevelDetection_byte = (bytes: number[]): [number | string, 
 };
 
 export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, number, number[], number] => { // Added score to return
-    console.log('--- TRACE: enhancedLevelDetection_byte start ---');
     type Candidate = [number, number, number, string, number[]];
     const all_candidates: Candidate[] = [];
 
@@ -156,38 +155,28 @@ export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, 
         }
     }
 
-    console.log(`--- TRACE: Found ${all_candidates.length} candidates`);
     all_candidates.sort((a, b) => b[2] - a[2]);
 
     if (all_candidates.length > 0) {
-        console.log(`--- TRACE: Best candidate: level ${all_candidates[0][0]}, score ${all_candidates[0][2]}`);
         const best_candidate = all_candidates[0];
         return [best_candidate[0], best_candidate[1], best_candidate[4], best_candidate[2]];
     }
 
-    console.log('--- TRACE: No candidate found');
     return ['Unknown', -1, [], 0];
 };
 
 export const detectItemLevel_byte = (bytes: number[]): [number | string, number, number[], string] => {
-    console.log('\n--- TRACE: detectItemLevel_byte start ---');
     const [standard_result, standard_pos, standard_bits, standard_score] = standardLevelDetection_byte(bytes);
-    console.log(`--- TRACE: Standard detection found level ${standard_result} at position ${standard_pos} with score ${standard_score}`);
 
     const [enhanced_result, enhanced_pos, enhanced_bits, enhanced_score] = enhancedLevelDetection_byte(bytes);
-    console.log(`--- TRACE: Enhanced detection found level ${enhanced_result} at position ${enhanced_pos} with score ${enhanced_score}`);
 
     if (standard_score >= enhanced_score && standard_result !== 'Unknown') {
-        console.log('--- TRACE: Choosing standard detection result ---');
         return [standard_result, standard_pos, standard_bits, 'standard'];
     } else if (enhanced_score > standard_score && enhanced_result !== 'Unknown') {
-        console.log('--- TRACE: Choosing enhanced detection result ---');
         return [enhanced_result, enhanced_pos, enhanced_bits, 'enhanced'];
     } else if (standard_result !== 'Unknown') {
-        console.log('--- TRACE: Choosing standard detection result as fallback ---');
         return [standard_result, standard_pos, standard_bits, 'standard'];
     } else {
-        console.log('--- TRACE: Choosing enhanced detection result as fallback ---');
         return [enhanced_result, enhanced_pos, enhanced_bits, 'enhanced'];
     }
 };

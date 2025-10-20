@@ -102,7 +102,6 @@ export function parsedToSerial(parsed: any): string {
             } else {
                 levelValueToEncode = newLevel;
             }
-            console.log(`--- TRACE: Encoding level ${newLevel} as ${levelValueToEncode}`);
             level_bits_to_encode = levelValueToEncode.toString(2).padStart(8, '0').split('').map(Number);
         }
 
