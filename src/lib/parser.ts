@@ -180,6 +180,9 @@ function parseAsFixedWidth(bytes: number[]): any {
         assets_start_pos = 92;
     }
 
+    const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
+    parsed.hasEndOfAssetsMarker = endOfAssetsMarkerIndex !== -1;
+
     stream.bit_pos = assets_start_pos;
 
     const totalBits = bytes.length * 8;
