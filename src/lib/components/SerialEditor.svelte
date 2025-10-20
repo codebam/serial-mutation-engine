@@ -217,6 +217,8 @@
     
 
     $effect(() => {
+        parsingMode = 'varint';
+        varintFailed = false;
         if (serial) {
             debouncedAnalyzeSerial();
         } else {
