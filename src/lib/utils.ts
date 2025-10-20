@@ -171,3 +171,41 @@ export const detectItemLevel_byte = (bytes: number[]): [number | string, number,
 
     return [enhanced_result, enhanced_pos, enhanced_bits, 'enhanced'];
 };
+
+export function valueToVarIntBits(value: bigint, padToLength?: number): number[] {
+    if (value === 0n) {
+        let bits = [0, 0, 0, 0, 0, 0];
+        if (padToLength) {
+            while (bits.length < padToLength) {
+                bits.push(1, 0, 0, 0, 0, 0); // padding with 0-value chunks
+            }
+            bits[bits.length - 6] = 0; // Ensure last chunk is terminator
+        }
+        return bits.slice(0, padToLength || bits.length);
+    }
+
+    let bits: number[] = [];
+    let val = value;
+
+    while (val > 0n) {
+        const chunk_data = Number(val & 0b11111n);
+        val >>= 5n;
+        const continuation_bit = val > 0n ? 1 : 0;
+        
+        const chunk_bits = chunk_data.toString(2).padStart(5, '0').split('').map(Number);
+        bits.push(continuation_bit, ...chunk_bits);
+    }
+
+    if (padToLength && bits.length < padToLength) {
+        // remove terminator from last chunk
+        bits[bits.length - 6] = 1;
+        while (bits.length < padToLength) {
+            bits.push(1, 0, 0, 0, 0, 0); // padding with 0-value chunks
+        }
+        // Ensure last chunk is terminator
+        bits[bits.length - 6] = 0;
+        bits = bits.slice(0, padToLength);
+    }
+
+    return bits;
+}

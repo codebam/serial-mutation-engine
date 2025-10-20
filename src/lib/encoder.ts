@@ -59,6 +59,8 @@ function bitsToBytes(bits: number[]): number[] {
 export function parsedToSerial(parsed: any): string {
     console.log('\n--- TRACE: parsedToSerial start ---');
     const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+    console.log(`--- TRACE: Encoder received ${assetsToEncode.length} assets.`);
+
     const asset_parts: { position: number, bits: number[], bitLength: number }[] = [];
     if (assetsToEncode) {
         for (const asset of assetsToEncode) {
@@ -67,6 +69,7 @@ export function parsedToSerial(parsed: any): string {
                 current_asset.bitLength = current_asset.bitLength || 6;
                 const val_str = current_asset.value.toString(2).padStart(current_asset.bitLength, '0');
                 current_asset.bits = val_str.split('').map(Number);
+                console.log(`--- TRACE: Generated bits for new asset with value ${current_asset.value}`);
             }
             asset_parts.push(current_asset);
         }
@@ -128,15 +131,16 @@ export function parsedToSerial(parsed: any): string {
 
     const parts = [...filtered_asset_parts, ...metadata_parts];
     parts.sort((a, b) => a.position - b.position);
-    
-    const unpositioned_assets = parts.filter(p => p.position === undefined);
-    console.log(`--- TRACE: Found ${unpositioned_assets.length} unpositioned asset(s).`);
 
     let assets_bits = parsed.original_bits.slice(parsed.assets_start_pos, parsed.trailer_start);
 
     for (const part of parts) {
+        if (part.position === undefined) continue;
+
         const relative_pos = part.position - parsed.assets_start_pos;
         if (relative_pos < 0) continue;
+
+        if (!part.bits) continue;
 
         for (let i = 0; i < part.bits.length; i++) {
             if (relative_pos + i < assets_bits.length) {
@@ -144,6 +148,7 @@ export function parsedToSerial(parsed: any): string {
             }
         }
     }
+    console.log(`--- TRACE: Final assets_bits length: ${assets_bits.length}`);
 
     const all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
     console.log(`--- TRACE: Final all_bits length: ${all_bits.length}`);

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { parse } from './parser';
 import { parsedToSerial } from './encoder';
 import { serialToBytes } from './decode';
-import { MANUFACTURER_PATTERNS, ELEMENTAL_PATTERNS_V2 } from './utils';
+import { MANUFACTURER_PATTERNS, ELEMENTAL_PATTERNS_V2, valueToVarIntBits } from './utils';
 import * as fs from 'fs';
 
 describe('serial regeneration', () => {
@@ -21,7 +21,15 @@ describe('serial regeneration', () => {
         // Modify Assets - modify an existing asset
         const assets = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
         if (assets.length > 0) {
-            assets[0].bits = [...assets[0].bits].reverse();
+            const newValue = 11n; // Use a different value
+            const first_asset = assets[0];
+            const original_bitLength = first_asset.bitLength;
+            first_asset.value = newValue;
+            if (parsed.isVarInt) {
+                first_asset.bits = valueToVarIntBits(newValue, original_bitLength);
+            } else {
+                first_asset.bits = newValue.toString(2).padStart(original_bitLength, '0').split('').map(Number);
+            }
         }
 
         // Modify Element
@@ -106,11 +114,17 @@ describe('asset modification', () => {
             return; // Skip test if there are no assets to modify
         }
         const originalAssetCount = assets.length;
+        const newValue = 10n;
 
-        // Modify the bits of the first asset in a simple, length-preserving way
         const first_asset = assets[0];
-        const original_bits = [...first_asset.bits];
-        first_asset.bits = [...first_asset.bits].reverse();
+        const original_bitLength = first_asset.bitLength;
+        
+        first_asset.value = newValue;
+        if (parsed.isVarInt) {
+            first_asset.bits = valueToVarIntBits(newValue, original_bitLength);
+        } else {
+            first_asset.bits = newValue.toString(2).padStart(original_bitLength, '0').split('').map(Number);
+        }
 
         const newSerial = parsedToSerial(parsed);
         const newBytes = serialToBytes(newSerial);
@@ -118,7 +132,6 @@ describe('asset modification', () => {
 
         const newAssets = newParsed.isVarInt ? newParsed.assets : newParsed.assets_fixed;
         expect(newAssets.length).toBe(originalAssetCount);
-        // Check that the bits have indeed been modified
-        expect(newAssets[0].bits).not.toEqual(original_bits);
+        expect(newAssets[0].value).toBe(newValue);
     });
 });
