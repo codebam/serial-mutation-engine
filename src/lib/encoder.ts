@@ -113,12 +113,31 @@ export function parsedToSerial(parsed: any): string {
     }
 
     if (parsed.level && parsed.level.position !== undefined) {
+        let level_bits_to_encode;
+        if (parsed.level.bits) {
+            level_bits_to_encode = parsed.level.bits;
+        } else {
+            const newLevel = parseInt(parsed.level.value, 10);
+            let levelValueToEncode;
+
+            if (newLevel === 1) {
+                levelValueToEncode = 49;
+            } else if (newLevel === 2) {
+                levelValueToEncode = 2;
+            } else if (newLevel >= 3 && newLevel <= 49) {
+                levelValueToEncode = newLevel + 48;
+            } else {
+                levelValueToEncode = newLevel;
+            }
+            level_bits_to_encode = levelValueToEncode.toString(2).padStart(8, '0').split('').map(Number);
+        }
+
         if (parsed.level.method === 'standard') {
             const LEVEL_MARKER_BITS = [0, 0, 0, 0, 0, 0];
-            const level_part = [...LEVEL_MARKER_BITS, ...parsed.level.bits];
+            const level_part = [...LEVEL_MARKER_BITS, ...level_bits_to_encode];
             all_bits.splice(parsed.level.position, level_part.length, ...level_part);
         } else {
-            all_bits.splice(parsed.level.position, parsed.level.bits.length, ...parsed.level.bits);
+            all_bits.splice(parsed.level.position, level_bits_to_encode.length, ...level_bits_to_encode);
         }
     }
 

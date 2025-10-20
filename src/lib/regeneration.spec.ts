@@ -15,18 +15,19 @@ describe('serial regeneration', () => {
         // Modify Level
         if (parsed.level) {
             parsed.level.value = '25';
+            parsed.level.bits = undefined;
         }
 
         // Modify Assets - add a new asset
         const originalAssetCount = parsed.assets.length;
-        parsed.assets.push('111111');
+        parsed.assets.push({ value: 63n, bitLength: 6, bits: [1, 1, 1, 1, 1, 1] });
 
         // Modify Element
         if (parsed.element) {
             const elements = Object.keys(ELEMENTAL_PATTERNS_V2);
             const nextElement = elements[(elements.indexOf(parsed.element.name) + 1) % elements.length];
             parsed.element.name = nextElement;
-            parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement];
+            parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement].split('').map(Number);
         }
 
         const newSerial = parsedToSerial(parsed);
@@ -56,6 +57,7 @@ describe('level modification', () => {
         }
 
         parsed.level.value = 2;
+        parsed.level.bits = undefined;
 
         const newSerial = parsedToSerial(parsed);
         const newBytes = serialToBytes(newSerial);
@@ -99,7 +101,7 @@ describe('asset modification', () => {
         
         const originalAssetCount = parsed.assets.length;
 
-        parsed.assets.push('111111');
+        parsed.assets.push({ value: 63n, bitLength: 6 });
 
         const newSerial = parsedToSerial(parsed);
         const newBytes = serialToBytes(newSerial);
