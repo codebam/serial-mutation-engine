@@ -13,13 +13,7 @@ describe('parser and encoder', () => {
         const originalBytes = serialToBytes(originalSerial);
         const parsed1 = parse(originalBytes);
         const newSerial = parsedToSerial(parsed1);
-        const newBytes = serialToBytes(newSerial);
-        const parsed2 = parse(newBytes);
-
-        expect(parsed2.assets).toEqual(parsed1.assets);
-        expect(parsed2.level).toEqual(parsed1.level);
-        expect(parsed2.manufacturer).toEqual(parsed1.manufacturer);
-        expect(parsed2.element).toEqual(parsed1.element);
+        expect(newSerial).toEqual(originalSerial);
     });
 
     it.each(serials)('should parse a trailer for every serial %s', (originalSerial) => {

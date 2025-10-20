@@ -67,14 +67,24 @@ function writeVarInt_bits(value: bigint): number[] {
     return bits;
 }
 
-function encodeAssets(parsed: { assets?: AssetToken[] }): number[] {
+function encodeAssets(parsed: any): number[] {
     let bits: number[] = [];
     if (parsed.assets) {
         for (const asset of parsed.assets) {
             if (asset.bits) {
                 bits.push(...asset.bits);
             } else {
-                bits.push(...writeVarInt_bits(asset.value));
+                // Fallback for assets that don't have bits stored (e.g. newly created assets)
+                if (parsed.isVarInt) {
+                    bits.push(...writeVarInt_bits(asset.value));
+                } else {
+                    const assetBits = [];
+                    let num = Number(asset.value);
+                    for(let i=5; i>=0; i--) {
+                        assetBits.push((num >> i) & 1);
+                    }
+                    bits.push(...assetBits);
+                }
             }
         }
     }
@@ -85,7 +95,7 @@ export function parsedToSerial(parsed: any): string {
     const assets_bits = encodeAssets(parsed);
 
     let all_bits;
-    if (parsed.hasEndOfAssetsMarker) {
+    if (parsed.isVarInt) {
         all_bits = [...parsed.preamble_bits, ...assets_bits, ...END_OF_ASSETS_MARKER_BITS, ...parsed.trailer_bits];
     } else {
         all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];

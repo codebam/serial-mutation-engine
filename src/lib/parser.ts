@@ -11,7 +11,7 @@ import {
 
 const MARKER_BITS = '00100010'.split('').map(c => parseInt(c, 2));
 
-function readVarInt(stream: Bitstream): AssetToken {
+function readVarInt(stream: Bitstream): { value: bigint, bitLength: number } {
     let result = 0n;
     let shift = 0n;
     let bytesRead = 0;
@@ -71,24 +71,57 @@ export function parse(bytes: number[]): any {
 
     stream.bit_pos = assets_start_pos;
 
-    const assets_end_pos = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex : bytes.length * 8;
-    while (stream.bit_pos < assets_end_pos) {
-        if (assets_end_pos - stream.bit_pos < 6) {
-            break;
+    if (endOfAssetsMarkerIndex !== -1) {
+        const assets_end_pos = endOfAssetsMarkerIndex;
+        while (stream.bit_pos < assets_end_pos) {
+            if (assets_end_pos - stream.bit_pos < 6) {
+                break;
+            }
+            try {
+                const start_pos = stream.bit_pos;
+                const { value, bitLength } = readVarInt(stream);
+                const end_pos = stream.bit_pos;
+                const asset_bits = bits.slice(start_pos, end_pos);
+                const token: AssetToken = { value, bitLength, bits: asset_bits };
+                parsed.assets.push(token);
+            } catch (e) {
+                break;
+            }
         }
-        try {
-            const start_pos = stream.bit_pos;
-            const chunk = readVarInt(stream);
-            const end_pos = stream.bit_pos;
-            chunk.bits = bits.slice(start_pos, end_pos);
-            parsed.assets.push(chunk);
-        } catch (e) {
-            break;
+        parsed.isVarInt = true;
+        parsed.preamble_bits = bits.slice(0, assets_start_pos);
+        parsed.trailer_bits = bits.slice(endOfAssetsMarkerIndex + END_OF_ASSETS_MARKER_BITS.length);
+    } else {
+        const totalBits = bytes.length * 8;
+        const tempStream = new Bitstream(bytes);
+        tempStream.bit_pos = assets_start_pos;
+        const assets_varint = [];
+        while (totalBits - tempStream.bit_pos >= 6) {
+            try {
+                const start_pos = tempStream.bit_pos;
+                const { value, bitLength } = readVarInt(tempStream);
+                const end_pos = tempStream.bit_pos;
+                const asset_bits = bits.slice(start_pos, end_pos);
+                const token: AssetToken = { value, bitLength, bits: asset_bits };
+                assets_varint.push(token);
+            } catch (e) {
+                break;
+            }
         }
+        parsed.assets_varint = assets_varint;
+
+        while (totalBits - stream.bit_pos >= 6) {
+            const chunk = stream.read(6);
+            if (chunk !== null) {
+                const asset_bits = bits.slice(stream.bit_pos - 6, stream.bit_pos);
+                const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits };
+                parsed.assets.push(token);
+            }
+        }
+        parsed.isVarInt = false;
+        parsed.preamble_bits = bits.slice(0, assets_start_pos);
+        parsed.trailer_bits = bits.slice(stream.bit_pos);
     }
-    parsed.preamble_bits = bits.slice(0, assets_start_pos);
-    const trailer_start = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex + END_OF_ASSETS_MARKER_BITS.length : stream.bit_pos;
-    parsed.trailer_bits = bits.slice(trailer_start);
     
     const [level, level_pos] = detectItemLevel_byte(bytes);
     if (level !== 'Unknown') {
