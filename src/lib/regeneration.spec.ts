@@ -99,14 +99,16 @@ describe('asset modification', () => {
         const originalBytes = serialToBytes(originalSerial);
         const parsed = parse(originalBytes);
         
-        const originalAssetCount = parsed.assets.length;
+        const assets = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+        const originalAssetCount = assets.length;
 
-        parsed.assets.push({ value: 63n, bitLength: 6 });
+        assets.push({ value: 63n, bitLength: 6 });
 
         const newSerial = parsedToSerial(parsed);
         const newBytes = serialToBytes(newSerial);
         const newParsed = parse(newBytes);
 
-        expect(newParsed.assets.length).toBe(originalAssetCount + 1);
+        const newAssets = newParsed.isVarInt ? newParsed.assets : newParsed.assets_fixed;
+        expect(newAssets.length).toBe(originalAssetCount + 1);
     });
 });

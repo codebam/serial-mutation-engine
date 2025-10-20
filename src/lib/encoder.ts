@@ -69,8 +69,10 @@ function writeVarInt_bits(value: bigint): number[] {
 
 function encodeAssets(parsed: any): number[] {
     let bits: number[] = [];
-    if (parsed.assets) {
-        for (const asset of parsed.assets) {
+    const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+
+    if (assetsToEncode) {
+        for (const asset of assetsToEncode) {
             if (asset.bits) {
                 bits.push(...asset.bits);
             } else {
