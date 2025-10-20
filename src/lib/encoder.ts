@@ -97,9 +97,12 @@ export function parsedToSerial(parsed: any): string {
                 levelValueToEncode = 2;
             } else if (newLevel >= 3 && newLevel <= 49) {
                 levelValueToEncode = newLevel + 48;
+            } else if (newLevel === 50) {
+                levelValueToEncode = 98;
             } else {
                 levelValueToEncode = newLevel;
             }
+            console.log(`--- TRACE: Encoding level ${newLevel} as ${levelValueToEncode}`);
             level_bits_to_encode = levelValueToEncode.toString(2).padStart(8, '0').split('').map(Number);
         }
 

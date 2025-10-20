@@ -75,9 +75,9 @@ export function findBitPattern(bytes: number[], pattern: number[], startBit: num
     return -1;
 }
 
-export const standardLevelDetection_byte = (bytes: number[]): [number | string, number, number[]] => {
+export const standardLevelDetection_byte = (bytes: number[]): [number | string, number, number[], number] => { // Added score to return
     const LEVEL_MARKER_BITS = stringToBits('000000');
-    const valid_markers: [number, number, number, number[]][] = [];
+    const valid_markers: [number, number, number, number[], number][] = []; // Added score
     let search_pos = 0;
     while (search_pos < bytes.length * 8) {
         const marker_pos = findBitPattern(bytes, LEVEL_MARKER_BITS, search_pos);
@@ -93,34 +93,41 @@ export const standardLevelDetection_byte = (bytes: number[]): [number | string, 
             let decoded_level: number | null = null;
             if (level_value === 49) {
                 decoded_level = 1;
+            } else if (level_value === 2) {
+                decoded_level = 2;
             } else if (level_value === 50) {
                 decoded_level = 50;
-            } else if (level_value >= 1 && level_value <= 50) {
-                decoded_level = level_value;
-            } else if (level_value >= 49 && level_value <= 98) {
-                const actual_level = level_value - 48;
-                if (actual_level >= 1 && actual_level <= 50) {
-                    decoded_level = actual_level;
-                }
+            } else if (level_value >= 51 && level_value <= 97) {
+                decoded_level = level_value - 48;
             }
 
             if (decoded_level !== null) {
                 const level_bits = level_value.toString(2).padStart(8, '0').split('').map(Number);
-                valid_markers.push([marker_pos, decoded_level, level_value, level_bits]);
+                const score = (marker_pos % 8 === 0) ? 100 : 50; // Prioritize byte-aligned
+                valid_markers.push([marker_pos, decoded_level, level_value, level_bits, score]);
             }
         }
         search_pos = marker_pos + 1;
     }
 
 
-    valid_markers.sort((a, b) => a[0] - b[0]);
+    valid_markers.sort((a, b) => {
+        if (a[4] !== b[4]) {
+            return b[4] - a[4]; // Higher score first
+        }
+        return a[0] - b[0]; // Then by position
+    });
 
-    if (valid_markers.length > 0) return [valid_markers[0][1], valid_markers[0][0], valid_markers[0][3]];
+    if (valid_markers.length > 0) {
+        const best_marker = valid_markers[0];
+        return [best_marker[1], best_marker[0], best_marker[3], best_marker[4]];
+    }
 
-    return ['Unknown', -1, []];
+    return ['Unknown', -1, [], 0];
 };
 
-export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, number, number[]] => {
+export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, number, number[], number] => { // Added score to return
+    console.log('--- TRACE: enhancedLevelDetection_byte start ---');
     type Candidate = [number, number, number, string, number[]];
     const all_candidates: Candidate[] = [];
 
@@ -149,27 +156,40 @@ export const enhancedLevelDetection_byte = (bytes: number[]): [number | string, 
         }
     }
 
+    console.log(`--- TRACE: Found ${all_candidates.length} candidates`);
     all_candidates.sort((a, b) => b[2] - a[2]);
 
-    const level_0_candidates = all_candidates.filter(c => c[0] === 0);
-    if (level_0_candidates.length > 0 && level_0_candidates[0][2] >= 20) return [0, level_0_candidates[0][1], level_0_candidates[0][4]];
+    if (all_candidates.length > 0) {
+        console.log(`--- TRACE: Best candidate: level ${all_candidates[0][0]}, score ${all_candidates[0][2]}`);
+        const best_candidate = all_candidates[0];
+        return [best_candidate[0], best_candidate[1], best_candidate[4], best_candidate[2]];
+    }
 
-    const level_10_candidates = all_candidates.filter(c => c[0] === 10);
-    if (level_10_candidates.length >= 3) return [10, level_10_candidates[0][1], level_10_candidates[0][4]];
-
-    if (all_candidates.length > 0) return [all_candidates[0][0], all_candidates[0][1], all_candidates[0][4]];
-
-    return ['Unknown', -1, []];
+    console.log('--- TRACE: No candidate found');
+    return ['Unknown', -1, [], 0];
 };
 
 export const detectItemLevel_byte = (bytes: number[]): [number | string, number, number[], string] => {
-    const [standard_result, standard_pos, standard_bits] = standardLevelDetection_byte(bytes);
+    console.log('\n--- TRACE: detectItemLevel_byte start ---');
+    const [standard_result, standard_pos, standard_bits, standard_score] = standardLevelDetection_byte(bytes);
+    console.log(`--- TRACE: Standard detection found level ${standard_result} at position ${standard_pos} with score ${standard_score}`);
 
-    if (standard_result !== 'Unknown') return [standard_result, standard_pos, standard_bits, 'standard'];
+    const [enhanced_result, enhanced_pos, enhanced_bits, enhanced_score] = enhancedLevelDetection_byte(bytes);
+    console.log(`--- TRACE: Enhanced detection found level ${enhanced_result} at position ${enhanced_pos} with score ${enhanced_score}`);
 
-    const [enhanced_result, enhanced_pos, enhanced_bits] = enhancedLevelDetection_byte(bytes);
-
-    return [enhanced_result, enhanced_pos, enhanced_bits, 'enhanced'];
+    if (standard_score >= enhanced_score && standard_result !== 'Unknown') {
+        console.log('--- TRACE: Choosing standard detection result ---');
+        return [standard_result, standard_pos, standard_bits, 'standard'];
+    } else if (enhanced_score > standard_score && enhanced_result !== 'Unknown') {
+        console.log('--- TRACE: Choosing enhanced detection result ---');
+        return [enhanced_result, enhanced_pos, enhanced_bits, 'enhanced'];
+    } else if (standard_result !== 'Unknown') {
+        console.log('--- TRACE: Choosing standard detection result as fallback ---');
+        return [standard_result, standard_pos, standard_bits, 'standard'];
+    } else {
+        console.log('--- TRACE: Choosing enhanced detection result as fallback ---');
+        return [enhanced_result, enhanced_pos, enhanced_bits, 'enhanced'];
+    }
 };
 
 export function valueToVarIntBits(value: bigint, padToLength?: number): number[] {
