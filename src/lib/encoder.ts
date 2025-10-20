@@ -56,7 +56,7 @@ function bitsToBytes(bits: number[]): number[] {
     return bytes;
 }
 
-export function parsedToSerial(parsed: any): string {
+export function parsedToSerial(parsed: any, original_assets?: AssetToken[]): string {
     const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
     const asset_parts: { position: number, bits: number[], bitLength: number }[] = [];
     if (assetsToEncode) {
@@ -137,10 +137,23 @@ export function parsedToSerial(parsed: any): string {
 
     let assets_bits = parsed.original_bits.slice(parsed.assets_start_pos, parsed.trailer_start);
 
+    if (original_assets) {
+        const current_asset_positions = new Set(assetsToEncode.map(a => a.position));
+        const deleted_assets = original_assets.filter(a => !current_asset_positions.has(a.position));
+
+        // remove bits of deleted assets from assets_bits
+        for (const deleted of deleted_assets.reverse()) { // reverse to avoid index shifting
+            if (deleted.position === undefined) continue;
+            const relative_pos = deleted.position - parsed.assets_start_pos;
+            if (relative_pos >= 0 && deleted.bitLength > 0) {
+                assets_bits.splice(relative_pos, deleted.bitLength);
+            }
+        }
+    }
+
     // Create a map for faster lookups of original asset bitLengths
     const original_asset_lengths = new Map();
-    const original_assets = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
-    for (const asset of original_assets) {
+    for (const asset of assetsToEncode) {
         original_asset_lengths.set(asset.position, asset.bitLength);
     }
 

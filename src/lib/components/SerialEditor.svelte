@@ -22,6 +22,7 @@
     let originalAssetsCount = $state(0);
     let parsingMode = $state('varint');
     let varintFailed = $state(false);
+    let originalAssets = $state<AssetToken[]>([]);
 
     async function copyUrl() {
         try {
@@ -147,6 +148,7 @@
             }
 
             parsedOutput = parsed;
+            originalAssets = [...(parsingMode === 'varint' ? parsed.assets : parsed.assets_fixed)];
 
             if (parsed) {
                 originalAssetsCount = parsed.assets.length;
@@ -174,7 +176,7 @@
             const newParsed = { ...parsedOutput };
             newParsed.assets = newAssets;
 
-            onSerialUpdate(parsedToSerial(newParsed));
+            onSerialUpdate(parsedToSerial(newParsed, originalAssets));
         }
     }
 
