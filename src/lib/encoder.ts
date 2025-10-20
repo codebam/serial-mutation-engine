@@ -74,7 +74,6 @@ function encodeAssets(parsed: any): number[] {
             if (asset.bits) {
                 bits.push(...asset.bits);
             } else {
-                // Fallback for assets that don't have bits stored (e.g. newly created assets)
                 if (parsed.isVarInt) {
                     bits.push(...writeVarInt_bits(asset.value));
                 } else {
@@ -95,7 +94,7 @@ export function parsedToSerial(parsed: any): string {
     const assets_bits = encodeAssets(parsed);
 
     let all_bits;
-    if (parsed.isVarInt) {
+    if (parsed.hasEndOfAssetsMarker) {
         all_bits = [...parsed.preamble_bits, ...assets_bits, ...END_OF_ASSETS_MARKER_BITS, ...parsed.trailer_bits];
     } else {
         all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];

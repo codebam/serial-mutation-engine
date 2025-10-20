@@ -8,6 +8,8 @@ import {
     END_OF_ASSETS_MARKER_BITS,
     findBitPattern
 } from './utils';
+import { parsedToSerial } from './encoder';
+import { serialToBytes } from './decode';
 
 const MARKER_BITS = '00100010'.split('').map(c => parseInt(c, 2));
 
@@ -43,86 +45,7 @@ function bytesToBits(bytes: number[]): number[] {
     return bits;
 }
 
-export function parse(bytes: number[]): any {
-    const stream = new Bitstream(bytes);
-    stream.read(10);
-
-    const bits = bytesToBits(bytes);
-
-    const parsed: any = {
-        assets: [],
-    };
-
-    const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
-
-    let assets_start_pos;
-    if (markerIndex !== -1 && markerIndex < 106) {
-        const headerSizeStream = new Bitstream(bytes);
-        headerSizeStream.bit_pos = markerIndex + MARKER_BITS.length;
-        const headerSizeInBits = headerSizeStream.read(8);
-        if (headerSizeInBits === null) throw new Error("Could not read header size");
-        assets_start_pos = markerIndex + MARKER_BITS.length + 8 + headerSizeInBits;
-    } else {
-        assets_start_pos = 92;
-    }
-
-    const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
-    parsed.hasEndOfAssetsMarker = endOfAssetsMarkerIndex !== -1;
-
-    stream.bit_pos = assets_start_pos;
-
-    if (endOfAssetsMarkerIndex !== -1) {
-        const assets_end_pos = endOfAssetsMarkerIndex;
-        while (stream.bit_pos < assets_end_pos) {
-            if (assets_end_pos - stream.bit_pos < 6) {
-                break;
-            }
-            try {
-                const start_pos = stream.bit_pos;
-                const { value, bitLength } = readVarInt(stream);
-                const end_pos = stream.bit_pos;
-                const asset_bits = bits.slice(start_pos, end_pos);
-                const token: AssetToken = { value, bitLength, bits: asset_bits };
-                parsed.assets.push(token);
-            } catch (e) {
-                break;
-            }
-        }
-        parsed.isVarInt = true;
-        parsed.preamble_bits = bits.slice(0, assets_start_pos);
-        parsed.trailer_bits = bits.slice(endOfAssetsMarkerIndex + END_OF_ASSETS_MARKER_BITS.length);
-    } else {
-        const totalBits = bytes.length * 8;
-        const tempStream = new Bitstream(bytes);
-        tempStream.bit_pos = assets_start_pos;
-        const assets_varint = [];
-        while (totalBits - tempStream.bit_pos >= 6) {
-            try {
-                const start_pos = tempStream.bit_pos;
-                const { value, bitLength } = readVarInt(tempStream);
-                const end_pos = tempStream.bit_pos;
-                const asset_bits = bits.slice(start_pos, end_pos);
-                const token: AssetToken = { value, bitLength, bits: asset_bits };
-                assets_varint.push(token);
-            } catch (e) {
-                break;
-            }
-        }
-        parsed.assets_varint = assets_varint;
-
-        while (totalBits - stream.bit_pos >= 6) {
-            const chunk = stream.read(6);
-            if (chunk !== null) {
-                const asset_bits = bits.slice(stream.bit_pos - 6, stream.bit_pos);
-                const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits };
-                parsed.assets.push(token);
-            }
-        }
-        parsed.isVarInt = false;
-        parsed.preamble_bits = bits.slice(0, assets_start_pos);
-        parsed.trailer_bits = bits.slice(stream.bit_pos);
-    }
-    
+function parseMetadata(bytes: number[], parsed: any, bits: number[]) {
     const [level, level_pos, level_bits, level_method] = detectItemLevel_byte(bytes);
     if (level !== 'Unknown') {
         parsed.level = {
@@ -178,6 +101,113 @@ export function parse(bytes: number[]): any {
             }
         }
     }
+}
+
+function parseAsVarInt(bytes: number[]): any {
+    const stream = new Bitstream(bytes);
+    stream.read(10);
+
+    const bits = bytesToBits(bytes);
+
+    const parsed: any = {
+        assets: [],
+    };
+
+    const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
+
+    let assets_start_pos;
+    if (markerIndex !== -1 && markerIndex < 106) {
+        const headerSizeStream = new Bitstream(bytes);
+        headerSizeStream.bit_pos = markerIndex + MARKER_BITS.length;
+        const headerSizeInBits = headerSizeStream.read(8);
+        if (headerSizeInBits === null) throw new Error("Could not read header size");
+        assets_start_pos = markerIndex + MARKER_BITS.length + 8 + headerSizeInBits;
+    } else {
+        assets_start_pos = 92;
+    }
+
+    const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
+    parsed.hasEndOfAssetsMarker = endOfAssetsMarkerIndex !== -1;
+
+    stream.bit_pos = assets_start_pos;
+
+    const assets_end_pos = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex : bytes.length * 8;
+    while (stream.bit_pos < assets_end_pos) {
+        if (assets_end_pos - stream.bit_pos < 6) {
+            break;
+        }
+        try {
+            const start_pos = stream.bit_pos;
+            const { value, bitLength } = readVarInt(stream);
+            const end_pos = stream.bit_pos;
+            const asset_bits = bits.slice(start_pos, end_pos);
+            const token: AssetToken = { value, bitLength, bits: asset_bits };
+            parsed.assets.push(token);
+        } catch (e) {
+            break;
+        }
+    }
+    parsed.isVarInt = true;
+    parsed.preamble_bits = bits.slice(0, assets_start_pos);
+    const trailer_start = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex + END_OF_ASSETS_MARKER_BITS.length : stream.bit_pos;
+    parsed.trailer_bits = bits.slice(trailer_start);
+    
+    parseMetadata(bytes, parsed, bits);
 
     return parsed;
+}
+
+function parseAsFixedWidth(bytes: number[]): any {
+    const stream = new Bitstream(bytes);
+    stream.read(10);
+
+    const bits = bytesToBits(bytes);
+
+    const parsed: any = {
+        assets: [],
+    };
+
+    const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
+
+    let assets_start_pos;
+    if (markerIndex !== -1 && markerIndex < 106) {
+        const headerSizeStream = new Bitstream(bytes);
+        headerSizeStream.bit_pos = markerIndex + MARKER_BITS.length;
+        const headerSizeInBits = headerSizeStream.read(8);
+        if (headerSizeInBits === null) throw new Error("Could not read header size");
+        assets_start_pos = markerIndex + MARKER_BITS.length + 8 + headerSizeInBits;
+    } else {
+        assets_start_pos = 92;
+    }
+
+    stream.bit_pos = assets_start_pos;
+
+    const totalBits = bytes.length * 8;
+    while (totalBits - stream.bit_pos >= 6) {
+        const chunk = stream.read(6);
+        if (chunk !== null) {
+            const asset_bits = bits.slice(stream.bit_pos - 6, stream.bit_pos);
+            const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits };
+            parsed.assets.push(token);
+        }
+    }
+    parsed.isVarInt = false;
+    parsed.preamble_bits = bits.slice(0, assets_start_pos);
+    parsed.trailer_bits = bits.slice(stream.bit_pos);
+    
+    parseMetadata(bytes, parsed, bits);
+
+    return parsed;
+}
+
+export function parse(bytes: number[]): any {
+    const parsedAsVarInt = parseAsVarInt(bytes);
+    const newSerial = parsedToSerial(parsedAsVarInt);
+    const newBytes = serialToBytes(newSerial);
+
+    if (bytes.length === newBytes.length && bytes.every((b, i) => b === newBytes[i])) {
+        return parsedAsVarInt;
+    } else {
+        return parseAsFixedWidth(bytes);
+    }
 }
