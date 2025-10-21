@@ -4,6 +4,12 @@ import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE } from './types';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
+// Powers of 85
+const _85_1 = 85;
+const _85_2 = 85 * 85;
+const _85_3 = 85 * 85 * 85;
+const _85_4 = 85 * 85 * 85 * 85;
+
 function encodeBase85(bytes: Uint8Array): string {
     let encoded = '';
     let i = 0;
@@ -20,16 +26,44 @@ function encodeBase85(bytes: Uint8Array): string {
 
     if (i < bytes.length) {
         const remaining = bytes.length - i;
-        const lastChunk = new Uint8Array(4);
-        lastChunk.set(bytes.slice(i));
-        let value = (((lastChunk[0] << 24) | (lastChunk[1] << 16) | (lastChunk[2] << 8) | lastChunk[3]) >>> 0);
+        let value = 0;
+
+        if (remaining >= 1) {
+            value |= bytes[i] << 24;
+        }
+        if (remaining >= 2) {
+            value |= bytes[i + 1] << 16;
+        }
+        if (remaining >= 3) {
+            value |= bytes[i + 2] << 8;
+        }
+
+        // Shift to appropriate position
+        if (remaining === 3) {
+            value <<= 8;
+        } else if (remaining === 2) {
+            value <<= 16;
+        } else if (remaining === 1) {
+            value <<= 24;
+        }
+
+        value >>>= 0; // Ensure unsigned 32-bit
 
         let block = '';
-        for (let j = 0; j < 5; j++) {
-            block = BASE85_ALPHABET[value % 85] + block;
-            value = Math.floor(value / 85);
+        block += BASE85_ALPHABET[Math.floor(value / _85_4)];
+        value %= _85_4;
+        block += BASE85_ALPHABET[Math.floor(value / _85_3)];
+        value %= _85_3;
+
+        if (remaining >= 2) {
+            block += BASE85_ALPHABET[Math.floor(value / _85_2)];
+            value %= _85_2;
+
+            if (remaining === 3) {
+                block += BASE85_ALPHABET[Math.floor(value / _85_1)];
+            }
         }
-        encoded += block.substring(0, remaining + 1);
+        encoded += block;
     }
 
     return '@U' + encoded;
@@ -171,69 +205,51 @@ const TOK_SEP2 = [0, 1];
 const TOK_VARINT = [1, 0, 0];
 const TOK_VARBIT = [1, 1, 0];
 const TOK_PART = [1, 0, 1];
+const TOK_UNSUPPORTED_111 = [1, 1, 1];
 
 export function encodeSerial(serial: Serial): string {
-
     const stream = new Bitstream(new Uint8Array(250));
-
-
+    console.log(`Encode: Initial bit_pos: ${stream.bit_pos}`);
 
     // Magic header
-
     stream.write(0b0010000, 7);
-
-
+    console.log(`Encode: After magic header. bit_pos: ${stream.bit_pos}`);
 
     for (const block of serial) {
-
+        console.log(`Encode: Processing block: ${JSON.stringify(block)}. bit_pos: ${stream.bit_pos}`);
         switch (block.token) {
-
             case 0: // TOK_SEP1
-
                 stream.writeBits(TOK_SEP1);
-
+                console.log(`Encode: Wrote TOK_SEP1. bit_pos: ${stream.bit_pos}`);
                 break;
-
             case 1: // TOK_SEP2
-
                 stream.writeBits(TOK_SEP2);
-
+                console.log(`Encode: Wrote TOK_SEP2. bit_pos: ${stream.bit_pos}`);
                 break;
-
-            case 4: // TOK_VARINT
-
+            case 2: // TOK_VARINT
                 stream.writeBits(TOK_VARINT);
-
+                console.log(`Encode: Wrote TOK_VARINT bits. bit_pos: ${stream.bit_pos}`);
                 writeVarint(stream, block.value!);
-
+                console.log(`Encode: Wrote VARINT value. bit_pos: ${stream.bit_pos}`);
                 break;
-
-            case 6: // TOK_VARBIT
-
+            case 3: // TOK_VARBIT
                 stream.writeBits(TOK_VARBIT);
-
+                console.log(`Encode: Wrote TOK_VARBIT bits. bit_pos: ${stream.bit_pos}`);
                 writeVarbit(stream, block.value!);
-
+                console.log(`Encode: Wrote VARBIT value. bit_pos: ${stream.bit_pos}`);
                 break;
-
-            case 5: // TOK_PART
-
+            case 4: // TOK_PART
                 stream.writeBits(TOK_PART);
-
+                console.log(`Encode: Wrote TOK_PART bits. bit_pos: ${stream.bit_pos}`);
                 writePart(stream, block.part!);
-
+                console.log(`Encode: Wrote PART. bit_pos: ${stream.bit_pos}`);
                 break;
-
         }
-
     }
 
-
-
+    console.log(`Encode: Final bit_pos before slicing: ${stream.bit_pos}`);
     const bytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
-
+    console.log(`Encode: Sliced bytes length: ${bytes.length}`);
     const mirrored = mirrorBytes(bytes);
-
-    return encodeBase85(mirrored);
-
+    return '@U' + encodeBase85(mirrored);
 }
