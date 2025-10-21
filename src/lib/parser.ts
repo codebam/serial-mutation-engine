@@ -150,7 +150,7 @@ function parseAsVarInt(bytes: number[], bitSize: number): any {
         }
     }
     
-    parsed.isVarInt = true;
+    parsed.parsingMode = 'varint';
     parsed.preamble_bits = bits.slice(0, assets_start_pos);
     const trailer_start = stream.bit_pos;
     parsed.trailer_bits = bits.slice(trailer_start);
@@ -220,7 +220,7 @@ function parseAsFixedWidth(bytes: number[], bitSize: number): any {
         }
     }
     
-    parsed.isVarInt = false;
+    parsed.parsingMode = 'fixed';
     parsed.preamble_bits = bits.slice(0, assets_start_pos);
     const trailer_start = stream.bit_pos;
     parsed.trailer_bits = bits.slice(trailer_start);

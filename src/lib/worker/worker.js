@@ -13,7 +13,7 @@ import { calculateHighValuePartsStats } from './stats.js';
 
 import { parse } from '../parser';
 import { parsedToSerial } from '../encoder';
-import * as stringMutations from '../string_mutations';
+import { serialToBytes } from '../decode';
 import * as coreMutations from '../mutations';
 
 let debugMode = false; // Global debug flag
@@ -93,25 +93,6 @@ self.onmessage = async function (e) {
 			const generatedSerials = [];
 			console.log('[DEBUG] Starting generation loop...');
 
-			const mutationMap = {
-				appendMutation: stringMutations.appendMutation,
-				stackedPartMutationV1: stringMutations.stackedPartMutationV1,
-				stackedPartMutationV2: stringMutations.stackedPartMutationV2,
-				evolvingMutation: stringMutations.evolvingMutation,
-				characterFlipMutation: stringMutations.characterFlipMutation,
-				segmentReversalMutation: stringMutations.segmentReversalMutation,
-				partManipulationMutation: stringMutations.partManipulationMutation,
-				repositoryCrossoverMutation: stringMutations.repositoryCrossoverMutation,
-				shuffleAssetsMutation: stringMutations.shuffleAssetsMutation,
-				randomizeAssetsMutation: stringMutations.randomizeAssetsMutation,
-				repeatHighValuePartMutation: stringMutations.repeatHighValuePartMutation,
-				appendHighValuePartMutation: stringMutations.appendHighValuePartMutation
-			};
-
-			const headerLength = baseHeader.length;
-			const adjustedMutableStart = Math.max(0, config.mutableStart - headerLength);
-			const adjustedMutableEnd = Math.max(0, config.mutableEnd - headerLength);
-
 			const debug_logs = [];
 
 			for (let i = 0; i < totalRequested; i++) {
@@ -128,14 +109,18 @@ self.onmessage = async function (e) {
 					const parentTail = randomChoice(selectedRepoTails);
 					const parentSerial = baseHeader + parentTail;
 
-					const mutation = mutationMap[item.tg];
-					if (!mutation) {
+					const mutationFunc = coreMutations[item.tg];
+					if (!mutationFunc) {
 						if (debugMode) debug_logs.push(`Unknown mutation type: ${item.tg}. Skipping.`);
 						serial = parentSerial;
 						break;
 					}
 
-					const mutatedSerial = mutation(parentSerial, config, undefined, debug_logs);
+					const bytes = serialToBytes(parentSerial);
+                    const parsedSerial = parse(bytes, 'fixed', config.bitSize);
+					const newParsedSerial = mutationFunc(parsedSerial, config, undefined, debug_logs);
+					const mutatedSerial = parsedToSerial(newParsedSerial, undefined, config.bitSize, debug_logs);
+
 					serial = ensureCharset(mutatedSerial);
 
 					innerAttempts++;
@@ -152,6 +137,7 @@ self.onmessage = async function (e) {
 						state_flag: flagValue,
 						slot: generatedSerials.length
 					});
+					selectedRepoTails.push(splitHeaderTail(serial)[1]);
 				}
 				if (i > 0 && i % 500 === 0)
 					self.postMessage({

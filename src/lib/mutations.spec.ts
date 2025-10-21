@@ -37,6 +37,7 @@ describe('mutations', () => {
             assets_fixed: [],
             assets_varint: [],
             trailer: '',
+            parsingMode: 'varint',
         };
         const newParsed = appendMutation(parsed, dummyState);
         expect(newParsed.assets.length).toBe(2);
