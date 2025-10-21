@@ -11,8 +11,6 @@ import {
 import { parsedToSerial } from './encoder';
 import { serialToBytes } from './decode';
 
-const MARKER_BITS = '00100010'.split('').map(c => parseInt(c, 2));
-
 function readVarInt(stream: Bitstream, bitSize: number): { value: bigint, bitLength: number } {
     let result = 0n;
     let shift = 0n;
@@ -115,18 +113,7 @@ function parseAsVarInt(bytes: number[], bitSize: number): any {
 
     parseMetadata(bytes, parsed, bits);
 
-    const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
-
-    let assets_start_pos;
-    if (markerIndex !== -1 && markerIndex < 106) {
-        const headerSizeStream = new Bitstream(bytes);
-        headerSizeStream.bit_pos = markerIndex + MARKER_BITS.length;
-        const headerSizeInBits = headerSizeStream.read(8);
-        if (headerSizeInBits === null) throw new Error("Could not read header size");
-        assets_start_pos = markerIndex + MARKER_BITS.length + 8 + headerSizeInBits;
-    } else {
-        assets_start_pos = 92;
-    }
+    const assets_start_pos = 13 * 8;
 
     const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
     parsed.hasEndOfAssetsMarker = endOfAssetsMarkerIndex !== -1;
@@ -189,18 +176,7 @@ function parseAsFixedWidth(bytes: number[], bitSize: number): any {
 
     parseMetadata(bytes, parsed, bits);
 
-    const markerIndex = findBitPattern(bytes, MARKER_BITS, 10);
-
-    let assets_start_pos;
-    if (markerIndex !== -1 && markerIndex < 106) {
-        const headerSizeStream = new Bitstream(bytes);
-        headerSizeStream.bit_pos = markerIndex + MARKER_BITS.length;
-        const headerSizeInBits = headerSizeStream.read(8);
-        if (headerSizeInBits === null) throw new Error("Could not read header size");
-        assets_start_pos = markerIndex + MARKER_BITS.length + 8 + headerSizeInBits;
-    } else {
-        assets_start_pos = 92;
-    }
+    const assets_start_pos = 13 * 8;
 
     const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
     parsed.hasEndOfAssetsMarker = endOfAssetsMarkerIndex !== -1;
@@ -243,7 +219,7 @@ function parseAsFixedWidth(bytes: number[], bitSize: number): any {
             break;
         }
     }
-    
+
     return parsed;
 }
 

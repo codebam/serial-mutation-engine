@@ -6,6 +6,8 @@ import {
     repeatHighValuePartMutation,
     appendHighValuePartMutation,
 } from './mutations';
+import { decode } from './decode.ts';
+import { parse } from './parser.ts';
 import type { ParsedSerial, State } from './types';
 
 const dummyState: State = {
@@ -31,6 +33,7 @@ const dummyState: State = {
 
 describe('mutations', () => {
     it('appendMutation should add one asset', () => {
+        const parsed = parse(decode("@Ugydj=2}TYg41n&T3U#PNHEPIE8dOQtNYqSJ7*r@!7}Pn`NYqT!NYqT!NYqT!NYqSJE>xm!p;DqoqDrE/pzfglphBT?q1vGmm8e{(Kd3mUbf{aXTc}&8Tc}&8Tc}&8Tc}&8Tc}&8Td1QRXi<w=)S?!(s6{PmQHMIzp$>JZLq#+$E-o%EA}%g2E-o%6A}%g2E-nrL"));
         const parsed: ParsedSerial = {
             preamble: '',
             assets: [{ value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 0 }],
