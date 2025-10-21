@@ -1,11 +1,13 @@
 <script lang="ts">
-	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false, bitSize = 6 } = $props<{
+	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false, bitSize = 6, selected = false, onClick = () => {} } = $props<{
 		value: number;
 		onUpdate: (newValue: number) => void;
         onDelete?: () => void;
 		color?: string;
         isVarInt?: boolean;
         bitSize?: number;
+        selected?: boolean;
+        onClick?: () => void;
 	}>();
 
 	let localValue = $state(value.toString(16).toUpperCase());
@@ -52,5 +54,6 @@
 	bind:value={localValue}
 	onchange={handleChange}
     oncontextmenu={handleDelete}
-	class={`border border-gray-300 p-2.5 cursor-move min-w-[40px] text-center ${color} text-black w-16 rounded-md`}
+    onclick={onClick}
+	class={`border p-2.5 cursor-move min-w-[40px] text-center ${color} text-black w-16 rounded-md ${selected ? 'border-blue-500' : 'border-gray-300'}`}
 />

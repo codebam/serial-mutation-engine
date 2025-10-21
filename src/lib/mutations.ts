@@ -1,12 +1,12 @@
 
-import type { ParsedSerial, State } from './types';
+import type { AssetToken, ParsedSerial, State } from './types';
 import { ALPHABET } from './constants';
 import { BASE85_ALPHABET, getCharPoolForItemType, STABLE_MOTIFS } from './knowledge';
 import { parse } from './parser';
 import { serialToBytes } from './decode';
 
 export interface Mutation {
-    (parsedSerial: ParsedSerial, state: State): ParsedSerial;
+    (parsedSerial: ParsedSerial, state: State, selectedAsset?: AssetToken): ParsedSerial;
 }
 
 function randomChoice<T>(arr: T[]): T {
@@ -499,3 +499,49 @@ export const appendHighValuePartMutation: Mutation = (parsedSerial, state) => {
         assets: newAssets,
     };
 };
+
+
+
+
+
+export const appendSelectedAssetMutation: Mutation = (parsedSerial, state, selectedAsset) => {
+    if (!selectedAsset) {
+        return parsedSerial;
+    }
+
+    const newAssets = [...parsedSerial.assets];
+    newAssets.push({ ...selectedAsset, bits: [] });
+
+    return {
+        ...parsedSerial,
+        assets: newAssets,
+    };
+};
+
+export const repeatSelectedAssetMutation: Mutation = (parsedSerial, state, selectedAsset) => {
+    if (!selectedAsset) {
+        return parsedSerial;
+    }
+
+    const newAssets = [...parsedSerial.assets];
+    const indices = newAssets.map((a, i) => a.value === selectedAsset.value ? i : -1).filter(i => i !== -1);
+
+    if (indices.length === 0) {
+        return parsedSerial; // Should not happen if the asset was selected from the list
+    }
+
+    const indexToModify = randomChoice(indices);
+    const placeBefore = Math.random() < 0.5;
+    const repeatCount = randomInt(1, 3);
+    const insertIndex = placeBefore ? indexToModify : indexToModify + 1;
+
+    for (let i = 0; i < repeatCount; i++) {
+        newAssets.splice(insertIndex, 0, { ...selectedAsset, bits: [] });
+    }
+
+    return {
+        ...parsedSerial,
+        assets: newAssets,
+    };
+};
+

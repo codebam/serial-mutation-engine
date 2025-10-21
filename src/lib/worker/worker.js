@@ -204,7 +204,7 @@ uniqueCount: generatedSerials.length,
     } else if (type === 'generate_from_editor') {
         console.log('[DEBUG] Entering generate_from_editor handler.');
         try {
-            const { parsedSerial, originalAssetsCount, generationCount, mutationName, rules } = payload;
+            const { parsedSerial, originalAssetsCount, generationCount, mutationName, rules, selectedAsset } = payload;
             console.log(`[DEBUG] generationCount: ${generationCount}, mutationName: ${mutationName}`);
             const mutation = mutations[mutationName];
 
@@ -231,6 +231,7 @@ uniqueCount: generatedSerials.length,
                 },
                 generateStats: false,
                 debugMode: false,
+                selectedAsset: selectedAsset
             };
             
             const maxAttempts = generationCount * 5;

@@ -5,7 +5,7 @@
     import { ELEMENTAL_PATTERNS_V2, MANUFACTURER_PATTERNS, valueToVarIntBits } from '$lib/utils';
     import FormGroup from './FormGroup.svelte';
     import Asset from './Asset.svelte';
-    import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation, appendHighValuePartMutation } from '$lib/mutations';
+    import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation, appendHighValuePartMutation, appendSelectedAssetMutation, repeatSelectedAssetMutation } from '$lib/mutations';
     import type { ParsedSerial, State, AssetToken } from '$lib/types';
 
     import BitSizeSlider from './BitSizeSlider.svelte';
@@ -296,7 +296,7 @@
         }
     }
 
-    function applyMutation(mutation: (parsed: any, state: State) => any) {
+    function applyMutation(mutation: (parsed: any, state: State, selectedAsset?: AssetToken) => any, selectedAsset?: AssetToken) {
         if (parsedOutput) {
             // A dummy state is created here because the mutations in the editor
             // don't rely on the full app state. This might need to be adjusted
@@ -320,7 +320,7 @@
                 generateStats: false,
                 debugMode: false,
             };
-            const newParsedOutput = mutation(parsedOutput, dummyState);
+            const newParsedOutput = mutation(parsedOutput, dummyState, selectedAsset);
             parsedOutput = newParsedOutput;
             assetsWithIds = newParsedOutput.assets.map((asset: AssetToken) => {
                 return { id: assetIdCounter++, asset: asset };
@@ -335,6 +335,12 @@
     let generationProgress = $state(0);
 
     let worker: Worker | undefined;
+    let selectedAssetId = $state<number | null>(null);
+
+    function selectAsset(id: number) {
+        selectedAssetId = selectedAssetId === id ? null : id;
+    }
+
     $effect(() => {
         async function setupWorker() {
             const MyWorker = await import('$lib/worker/worker.js?worker');
@@ -371,6 +377,8 @@
             const replacer = (key: any, value: any) =>
                 typeof value === 'bigint' ? value.toString() : value;
 
+            const selectedAsset = assetsWithIds.find(a => a.id === selectedAssetId)?.asset;
+
             worker.postMessage({
                 type: 'generate_from_editor',
                 payload: {
@@ -378,7 +386,8 @@
                     originalAssetsCount: originalAssetsCount,
                     generationCount: generationCount,
                     mutationName: mutationName,
-                    rules: JSON.parse(JSON.stringify(rules))
+                    rules: JSON.parse(JSON.stringify(rules)),
+                    selectedAsset: selectedAsset ? JSON.parse(JSON.stringify(selectedAsset, replacer)) : undefined
                 }
             });
         }
@@ -489,6 +498,8 @@
                             color={getColorForAsset(Number(asset.asset.value))}
                             isVarInt={parsedOutput.isVarInt}
                             bitSize={bitSize}
+                            selected={selectedAssetId === asset.id}
+                            onClick={() => selectAsset(asset.id)}
                         />
                     </div>
                 {/each}
@@ -505,7 +516,9 @@
             </div>
             <div class="flex gap-2 mt-2">
                 <button onclick={() => applyMutation(randomizeAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Randomize Assets</button>
-                <button onclick={() => applyMutation(repeatHighValuePartMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Repeat High Value Part</button>
+                <button onclick={() => startWorkerGeneration('repeatHighValuePartMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={!selectedAssetId}>Repeat High Value Part</button>
+                <button onclick={() => applyMutation(repeatSelectedAssetMutation, assetsWithIds.find(a => a.id === selectedAssetId)?.asset)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={!selectedAssetId}>Repeat Selected</button>
+                <button onclick={() => applyMutation(appendSelectedAssetMutation, assetsWithIds.find(a => a.id === selectedAssetId)?.asset)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={!selectedAssetId}>Append Selected</button>
             </div>
         </div>
 
@@ -519,8 +532,8 @@
                 <button onclick={() => startWorkerGeneration('randomizeAssetsMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating}>Generate Randomized</button>
             </div>
             <div class="flex gap-2 mt-2">
-                <button onclick={() => startWorkerGeneration('repeatHighValuePartMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating}>Generate Repeating</button>
-                <button onclick={() => startWorkerGeneration('appendHighValuePartMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating}>Generate Appended</button>
+                <button onclick={() => startWorkerGeneration('repeatHighValuePartMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating || !selectedAssetId}>Generate Repeating</button>
+                <button onclick={() => startWorkerGeneration('appendHighValuePartMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={isGenerating || !selectedAssetId}>Generate Appended</button>
             </div>
             {#if isGenerating}
                 <div class="w-full bg-gray-700 rounded-full h-2.5 mt-4">
