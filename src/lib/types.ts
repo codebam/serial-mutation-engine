@@ -8,7 +8,10 @@ export interface AssetToken {
 
 export interface ParsedSerial {
     preamble: string;
-    assets: string[];
+    assets: AssetToken[];
+    assets_fixed: AssetToken[];
+    assets_varint: AssetToken[];
+    parsingMode: 'fixed' | 'varint';
     trailer: string;
     level?: {
         value: string;
@@ -39,6 +42,7 @@ export interface State {
     };
     generateStats: boolean;
     debugMode: boolean;
+    bitSize: number;
 }
 
 export {};

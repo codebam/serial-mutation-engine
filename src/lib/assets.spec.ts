@@ -8,7 +8,7 @@ describe('Assets', () => {
 
     it.each(serials)('serial %s should have assets', (serial) => {
         const bytes = serialToBytes(serial);
-        const parsed = parse(bytes);
+        const parsed = parse(bytes, 'varint', 6);
         expect(parsed.assets).toBeDefined();
     });
 });

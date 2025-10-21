@@ -10,7 +10,7 @@ describe('serial regeneration', () => {
 
     it.each(serials)('should survive a round trip edit of all fields for serial %s', (originalSerial) => {
         const originalBytes = serialToBytes(originalSerial);
-        const parsed = parse(originalBytes);
+        const parsed = parse(originalBytes, 'varint', 6);
 
         // Modify Level
         if (parsed.level) {
@@ -19,13 +19,13 @@ describe('serial regeneration', () => {
         }
 
         // Modify Assets - modify an existing asset
-        const assets = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+        const assets = parsed.parsingMode === 'varint' ? parsed.assets : parsed.assets_fixed;
         if (assets.length > 0) {
             const newValue = 11n; // Use a different value
             const first_asset = assets[0];
             const original_bitLength = first_asset.bitLength;
             first_asset.value = newValue;
-            if (parsed.isVarInt) {
+            if (parsed.parsingMode === 'varint') {
                 first_asset.bits = valueToVarIntBits(newValue, original_bitLength);
             } else {
                 first_asset.bits = newValue.toString(2).padStart(original_bitLength, '0').split('').map(Number);
@@ -39,17 +39,13 @@ describe('serial regeneration', () => {
             const elements = Object.keys(ELEMENTAL_PATTERNS_V2);
             const nextElement = elements[(elements.indexOf(parsed.element.name) + 1) % elements.length];
             parsed.element.name = nextElement;
-            parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement].split('').map(Number);
+            const newSerial = parsedToSerial(parsed, undefined, 6);
+            const newBytes = serialToBytes(newSerial);
+            const newParsed = parse(newBytes, 'varint', 6);
         }
-
-        const newSerial = parsedToSerial(parsed);
-        const newBytes = serialToBytes(newSerial);
-        const newParsed = parse(newBytes);
-
         if (parsed.level) {
             expect(newParsed.level.value).toBe(25);
         }
-
         if (parsed.element) {
             expect(newParsed.element).toBeDefined();
             expect(newParsed.element.name).toBe(parsed.element.name);
@@ -62,18 +58,16 @@ describe('level modification', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
     it.each(serials)('should survive a round trip edit of the level for serial %s', (originalSerial) => {
         const originalBytes = serialToBytes(originalSerial);
-        const parsed = parse(originalBytes);
+        const parsed = parse(originalBytes, 'varint', 6);
 
         if (!parsed.level) {
             return;
         }
 
         parsed.level.value = 2;
-        parsed.level.bits = undefined;
-
-        const newSerial = parsedToSerial(parsed);
+        const newSerial = parsedToSerial(parsed, undefined, 6);
         const newBytes = serialToBytes(newSerial);
-        const newParsed = parse(newBytes);
+        const newParsed = parse(newBytes, 'varint', 6);
 
         expect(newParsed.level.value).toBe(2);
     });
@@ -83,7 +77,7 @@ describe('element modification', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
     it.each(serials)('should survive a round trip edit of the element for serial %s', (originalSerial) => {
         const originalBytes = serialToBytes(originalSerial);
-        const parsed = parse(originalBytes);
+        const parsed = parse(originalBytes, 'varint', 6);
 
         if (parsed.element) {
             const originalElementName = parsed.element.name;
@@ -93,9 +87,9 @@ describe('element modification', () => {
             parsed.element.name = nextElement;
             parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement].split('').map(Number);
 
-            const newSerial = parsedToSerial(parsed);
+            const newSerial = parsedToSerial(parsed, undefined, 6);
             const newBytes = serialToBytes(newSerial);
-            const newParsed = parse(newBytes);
+            const newParsed = parse(newBytes, 'varint', 6);
 
             expect(newParsed.element).toBeDefined();
             expect(newParsed.element.name).toBe(nextElement);
@@ -109,9 +103,9 @@ describe('asset modification', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
     it.each(serials)('should survive a round trip edit of assets for serial %s', (originalSerial) => {
         const originalBytes = serialToBytes(originalSerial);
-        const parsed = parse(originalBytes);
+        const parsed = parse(originalBytes, 'varint', 6);
 
-        const assets = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+        const assets = parsed.parsingMode === 'varint' ? parsed.assets : parsed.assets_fixed;
         if (assets.length === 0) {
             expect(true).toBe(true); // Satisfy the test runner for skipped tests
             return;
@@ -123,17 +117,16 @@ describe('asset modification', () => {
         const original_bitLength = first_asset.bitLength;
         
         first_asset.value = newValue;
-        if (parsed.isVarInt) {
+        if (parsed.parsingMode === 'varint') {
             first_asset.bits = valueToVarIntBits(newValue, original_bitLength);
         } else {
             first_asset.bits = newValue.toString(2).padStart(original_bitLength, '0').split('').map(Number);
         }
-
-        const newSerial = parsedToSerial(parsed);
+        const newSerial = parsedToSerial(parsed, undefined, 6);
         const newBytes = serialToBytes(newSerial);
-        const newParsed = parse(newBytes);
+        const newParsed = parse(newBytes, 'varint', 6);
 
-        const newAssets = newParsed.isVarInt ? newParsed.assets : newParsed.assets_fixed;
+        const newAssets = newParsed.parsingMode === 'varint' ? newParsed.assets : newParsed.assets_fixed;
         expect(newAssets.length).toBe(originalAssetCount);
         expect(newAssets[0].value).toBe(newValue);
     });
@@ -145,18 +138,18 @@ describe('asset appending', () => {
         const assetToAppend = 10894n; // 2A8E in hex
 
         const originalBytes = serialToBytes(originalSerial);
-        const parsed = parse(originalBytes);
+        const parsed = parse(originalBytes, 'varint', 6);
 
-        const assets = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+        const assets = parsed.parsingMode === 'varint' ? parsed.assets : parsed.assets_fixed;
         const lastAsset = assets[assets.length - 1];
         const newPosition = lastAsset ? lastAsset.position + lastAsset.bitLength : parsed.assets_start_pos;
         assets.push({ value: assetToAppend, bits: undefined, position: newPosition });
 
-        const newSerial = parsedToSerial(parsed);
+        const newSerial = parsedToSerial(parsed, undefined, 6);
         const newBytes = serialToBytes(newSerial);
-        const newParsed = parse(newBytes);
+        const newParsed = parse(newBytes, 'varint', 6);
 
-        const newAssets = newParsed.isVarInt ? newParsed.assets : newParsed.assets_fixed;
+        const newAssets = newParsed.parsingMode === 'varint' ? newParsed.assets : newParsed.assets_fixed;
         expect(newAssets.length).toBe(assets.length);
         expect(newAssets[newAssets.length - 1].value).toBe(assetToAppend);
     });

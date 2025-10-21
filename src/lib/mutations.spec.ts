@@ -26,13 +26,16 @@ const dummyState: State = {
     },
     generateStats: false,
     debugMode: false,
+    bitSize: 6,
 };
 
 describe('mutations', () => {
     it('appendMutation should add one asset', () => {
         const parsed: ParsedSerial = {
             preamble: '',
-            assets: ['000000'],
+            assets: [{ value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 0 }],
+            assets_fixed: [],
+            assets_varint: [],
             trailer: '',
         };
         const newParsed = appendMutation(parsed, dummyState);
@@ -40,22 +43,28 @@ describe('mutations', () => {
     });
 
     it('shuffleAssetsMutation should contain the same assets', () => {
-        const assets = ['000001', '000010', '000011', '000100'];
+        const assets = [{ value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 0 }, { value: 2n, bitLength: 6, bits: [0,0,0,0,1,0], position: 6 }, { value: 3n, bitLength: 6, bits: [0,0,0,0,1,1], position: 12 }, { value: 4n, bitLength: 6, bits: [0,0,0,1,0,0], position: 18 }];
         const parsed: ParsedSerial = {
             preamble: '',
             assets: [...assets],
+            assets_fixed: [...assets],
+            assets_varint: [...assets],
+            parsingMode: 'varint',
             trailer: '',
         };
         const newParsed = shuffleAssetsMutation(parsed, dummyState);
         expect(newParsed.assets.length).toBe(assets.length);
-        expect(newParsed.assets.sort()).toEqual(assets.sort());
+        expect(newParsed.assets.map(a => a.value).sort()).toEqual(assets.map(a => a.value).sort());
     });
 
     it('randomizeAssetsMutation should have the same number of assets', () => {
-        const assets = ['000001', '000010', '000011'];
+        const assets = [{ value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 0 }, { value: 2n, bitLength: 6, bits: [0,0,0,0,1,0], position: 6 }, { value: 3n, bitLength: 6, bits: [0,0,0,0,1,1], position: 12 }];
         const parsed: ParsedSerial = {
             preamble: '',
             assets: [...assets],
+            assets_fixed: [...assets],
+            assets_varint: [...assets],
+            parsingMode: 'varint',
             trailer: '',
         };
         const newParsed = randomizeAssetsMutation(parsed, dummyState);
@@ -63,24 +72,30 @@ describe('mutations', () => {
     });
 
     it('repeatHighValuePartMutation should add repeated assets', () => {
-        const assets = ['000001', '000010', '000001', '000011'];
+        const assets = [{ value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 0 }, { value: 2n, bitLength: 6, bits: [0,0,0,0,1,0], position: 6 }, { value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 12 }, { value: 3n, bitLength: 6, bits: [0,0,0,0,1,1], position: 18 }];
         const parsed: ParsedSerial = {
             preamble: '',
             assets: [...assets],
+            assets_fixed: [...assets],
+            assets_varint: [...assets],
+            parsingMode: 'varint',
             trailer: '',
         };
         const newParsed = repeatHighValuePartMutation(parsed, dummyState);
         // it repeats 1 to 3 times, so length should be > 4
         expect(newParsed.assets.length).toBeGreaterThan(4);
-        const count = newParsed.assets.filter(a => a === '000001').length;
+        const count = newParsed.assets.filter(a => a.value === 1n).length;
         expect(count).toBeGreaterThan(2);
     });
 
     it('appendHighValuePartMutation should append assets', () => {
-        const assets = ['000001', '000010', '000001'];
+        const assets = [{ value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 0 }, { value: 2n, bitLength: 6, bits: [0,0,0,0,1,0], position: 6 }, { value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 12 }];
         const parsed: ParsedSerial = {
             preamble: '',
             assets: [...assets],
+            assets_fixed: [...assets],
+            assets_varint: [...assets],
+            parsingMode: 'varint',
             trailer: '',
         };
         const newParsed = appendHighValuePartMutation(parsed, dummyState);
@@ -89,6 +104,6 @@ describe('mutations', () => {
         expect(newParsed.assets.length).toBeGreaterThan(assets.length);
         const lastAsset = newParsed.assets[newParsed.assets.length - 1];
         // The appended asset should be the most frequent one, which is '000001'
-        expect(lastAsset).toBe('000001');
+        expect(lastAsset.value).toBe(1n);
     });
 });

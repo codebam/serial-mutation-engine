@@ -20,7 +20,8 @@ function randomInt(min: number, max: number): number {
 
 export const appendMutation: Mutation = (parsedSerial, state) => {
     const newAssets = [...parsedSerial.assets];
-    const assetToAdd = randomInt(0, 63).toString(2).padStart(6, '0');
+    const maxValue = (1 << state.bitSize) - 1;
+    const assetToAdd: AssetToken = { value: BigInt(randomInt(0, maxValue)), bitLength: state.bitSize, bits: [], position: 0 };
     newAssets.push(assetToAdd);
 
     return {
@@ -56,8 +57,9 @@ export const shuffleAssetsMutation: Mutation = (parsedSerial, state) => {
 };
 
 export const randomizeAssetsMutation: Mutation = (parsedSerial, state) => {
+    const maxValue = (1 << state.bitSize) - 1;
     const newAssets = parsedSerial.assets.map(asset => {
-        return randomInt(0, 63).toString(2).padStart(6, '0');
+        return { value: BigInt(randomInt(0, maxValue)), bitLength: state.bitSize, bits: [], position: 0 };
     });
     return {
         ...parsedSerial,
@@ -65,17 +67,18 @@ export const randomizeAssetsMutation: Mutation = (parsedSerial, state) => {
     };
 };
 
-function createRandomRepeatingPart(minPartSize: number, maxPartSize: number, assetPool: number[]): string[] {
+function createRandomRepeatingPart(minPartSize: number, maxPartSize: number, assetPool: number[], bitSize: number): AssetToken[] {
     const totalLength = randomInt(minPartSize, maxPartSize);
     const maxBaseLength = Math.max(1, Math.floor(totalLength / 2));
     const baseLength = randomInt(1, maxBaseLength);
 
-    let basePart: string[] = [];
+    let basePart: AssetToken[] = [];
     for (let i = 0; i < baseLength; i++) {
-        basePart.push(randomChoice(assetPool).toString(2).padStart(6, '0'));
+        const value = BigInt(randomChoice(assetPool));
+        basePart.push({ value, bitLength: bitSize, bits: [], position: 0 });
     }
 
-    let repeatedPart: string[] = [];
+    let repeatedPart: AssetToken[] = [];
     while (repeatedPart.length < totalLength) {
         repeatedPart = repeatedPart.concat(basePart);
     }
@@ -89,7 +92,7 @@ export const stackedPartMutationV1: Mutation = (parsedSerial, state) => {
     const assetPool = Array.from(Array(64).keys()); // Full range of assets
 
     for (let i = 0; i < 2; i++) {
-        const part = createRandomRepeatingPart(minPart, maxPart, assetPool);
+        const part = createRandomRepeatingPart(minPart, maxPart, assetPool, state.bitSize);
         const injectPosition = randomInt(0, newAssets.length);
         newAssets.splice(injectPosition, 0, ...part);
     }
@@ -108,7 +111,7 @@ export const stackedPartMutationV2: Mutation = (parsedSerial, state) => {
     const assetPool = charPool.map(c => BASE85_ALPHABET.indexOf(c)).filter(i => i !== -1);
 
     for (let i = 0; i < 2; i++) {
-        const part = createRandomRepeatingPart(minPart, maxPart, assetPool);
+        const part = createRandomRepeatingPart(minPart, maxPart, assetPool, state.bitSize);
         const injectPosition = randomInt(0, newAssets.length);
         newAssets.splice(injectPosition, 0, ...part);
     }
@@ -119,8 +122,8 @@ export const stackedPartMutationV2: Mutation = (parsedSerial, state) => {
     };
 };
 
-function motifToAssets(motif: string): string[] {
-    return motif.split('').map(c => BASE85_ALPHABET.indexOf(c).toString(2).padStart(6, '0'));
+function motifToAssets(motif: string, bitSize: number): AssetToken[] {
+    return motif.split('').map(c => ({ value: BigInt(BASE85_ALPHABET.indexOf(c)), bitLength: bitSize, bits: [], position: 0 }));
 }
 
 export const evolvingMutation: Mutation = (parsedSerial, state) => {
@@ -132,7 +135,7 @@ export const evolvingMutation: Mutation = (parsedSerial, state) => {
         let motifChain: string[] = [];
         const chainCount = randomInt(2, 3);
         for (let i = 0; i < chainCount; i++) {
-            motifChain = motifChain.concat(motifToAssets(randomChoice(STABLE_MOTIFS)));
+            motifChain = motifChain.concat(motifToAssets(randomChoice(STABLE_MOTIFS), state.bitSize));
         }
         if (newAssets.length > motifChain.length) {
             const injectPosition = randomInt(0, newAssets.length - motifChain.length);
@@ -142,14 +145,12 @@ export const evolvingMutation: Mutation = (parsedSerial, state) => {
 
     // Motif Injection
     if (Math.random() < 0.4) {
-        const motif = motifToAssets(randomChoice(STABLE_MOTIFS));
+        const motif = motifToAssets(randomChoice(STABLE_MOTIFS), state.bitSize);
         if (newAssets.length > motif.length) {
             const injectPosition = randomInt(0, newAssets.length - motif.length);
             newAssets.splice(injectPosition, 0, ...motif);
         }
-    }
-
-    // Segment Scramble
+    }    // Segment Scramble
     const chunkSize = randomInt(minChunk, maxChunk);
     if (newAssets.length > chunkSize) {
         const start = randomInt(0, newAssets.length - chunkSize);
@@ -161,7 +162,8 @@ export const evolvingMutation: Mutation = (parsedSerial, state) => {
     // Asset Flips
     for (let i = 0; i < newAssets.length; i++) {
         if (Math.random() < 0.05) { // 5% chance
-            newAssets[i] = randomInt(0, 63).toString(2).padStart(6, '0');
+            const maxValue = (1 << state.bitSize) - 1;
+            newAssets[i] = { value: BigInt(randomInt(0, maxValue)), bitLength: state.bitSize, bits: [], position: 0 };
         }
     }
 
@@ -173,7 +175,7 @@ export const evolvingMutation: Mutation = (parsedSerial, state) => {
 
 export const characterFlipMutation: Mutation = (parsedSerial, state) => {
     const newAssets = [...parsedSerial.assets];
-    const motif = motifToAssets(randomChoice(STABLE_MOTIFS));
+    const motif = motifToAssets(randomChoice(STABLE_MOTIFS), state.bitSize);
     const injectPosition = randomInt(0, newAssets.length);
     newAssets.splice(injectPosition, 0, ...motif);
 
@@ -189,7 +191,7 @@ export const segmentReversalMutation: Mutation = (parsedSerial, state) => {
 
     for (let i = 0; i < 2; i++) {
 
-        const motif = motifToAssets(randomChoice(STABLE_MOTIFS));
+        const motif = motifToAssets(randomChoice(STABLE_MOTIFS), state.bitSize);
 
         const injectPosition = randomInt(0, newAssets.length);
 
@@ -211,7 +213,7 @@ export const segmentReversalMutation: Mutation = (parsedSerial, state) => {
 
 
 
-function extractHighValueParts(repoSerials: string[], minPartSize: number, maxPartSize: number): string[][] {
+function extractHighValueParts(repoSerials: string[], minPartSize: number, maxPartSize: number, bitSize: number): AssetToken[][] {
 
     const frequencyMap = new Map<string, number>();
 
@@ -291,7 +293,7 @@ function extractHighValueParts(repoSerials: string[], minPartSize: number, maxPa
 
 
 
-    return parts.sort((a, b) => b.length - a.length).map(motifToAssets);
+    return parts.sort((a, b) => b.length - a.length).map(motif => motifToAssets(motif, bitSize));
 
 }
 
@@ -309,7 +311,7 @@ export const partManipulationMutation: Mutation = (parsedSerial, state) => {
 
     if (Math.random() < legendaryChance / 100 && repository.length > 0) {
 
-        const highValueParts = extractHighValueParts(repository, minPart, maxPart);
+        const highValueParts = extractHighValueParts(repository, minPart, maxPart, state.bitSize);
 
         if (highValueParts.length > 0) {
 
@@ -349,7 +351,7 @@ export const repositoryCrossoverMutation: Mutation = (parsedSerial, state) => {
 
         const otherSerial = randomChoice(repository);
 
-        const otherParsed = parse(serialToBytes(otherSerial)); // Assuming serialToBytes is available
+        const otherParsed = parse(serialToBytes(otherSerial), parsedSerial.parsingMode, state.bitSize);
 
         const otherAssets = otherParsed.assets;
 
@@ -386,17 +388,19 @@ export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
     const newAssets = [...assets];
 
     // 1. Count occurrences of each asset value.
-    const counts = new Map<string, number>();
+    const counts = new Map<bigint, number>();
     for (const asset of assets) {
-        counts.set(asset, (counts.get(asset) || 0) + 1);
+        counts.set(asset.value, (counts.get(asset.value) || 0) + 1);
     }
 
     // 2. Find repeating assets, ignoring '0'.
-    let repeatingAssets: { asset: string, count: number }[] = [];
-    for (const [asset, count] of counts.entries()) {
-        const assetValue = parseInt(asset, 2);
-        if (count > 1 && assetValue !== 0) {
-            repeatingAssets.push({ asset, count });
+    let repeatingAssets: { asset: AssetToken, count: number }[] = [];
+    for (const [value, count] of counts.entries()) {
+        if (count > 1 && value !== 0n) {
+            const originalAsset = assets.find(a => a.value === value);
+            if (originalAsset) {
+                repeatingAssets.push({ asset: originalAsset, count });
+            }
         }
     }
 
@@ -410,12 +414,12 @@ export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
         if (b.count !== a.count) {
             return b.count - a.count;
         }
-        return parseInt(b.asset, 2) - parseInt(a.asset, 2);
+        return Number(b.asset.value - a.asset.value);
     });
     const assetToRepeat = repeatingAssets[0].asset;
 
     // 4. Find all indices of this asset.
-    const indices = newAssets.map((a, i) => a === assetToRepeat ? i : -1).filter(i => i !== -1);
+    const indices = newAssets.map((a, i) => a.value === assetToRepeat.value ? i : -1).filter(i => i !== -1);
     if (indices.length === 0) {
         return parsedSerial;
     }
@@ -432,7 +436,7 @@ export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
     // 8. Insert the asset.
     const insertIndex = placeBefore ? indexToModify : indexToModify + 1;
     for (let i = 0; i < repeatCount; i++) {
-        newAssets.splice(insertIndex, 0, assetToRepeat);
+        newAssets.splice(insertIndex, 0, { ...assetToRepeat, bits: [] });
     }
 
     return {
@@ -446,15 +450,15 @@ export const appendHighValuePartMutation: Mutation = (parsedSerial, state) => {
     const newAssets = [...assets];
 
     // 1. Find high value asset
-    const counts = new Map<string, { asset: string, count: number }>();
+    const counts = new Map<bigint, { asset: AssetToken, count: number }>();
     for (const asset of assets) {
-        const entry = counts.get(asset) || { asset, count: 0 };
+        const entry = counts.get(asset.value) || { asset, count: 0 };
         entry.count++;
-        counts.set(asset, entry);
+        counts.set(asset.value, entry);
     }
 
     const allAssets = Array.from(counts.values());
-    const nonZeroAssets = allAssets.filter(a => parseInt(a.asset, 2) !== 0);
+    const nonZeroAssets = allAssets.filter(a => a.asset.value !== 0n);
 
     if (nonZeroAssets.length === 0) {
         return parsedSerial; // No non-zero assets to append
@@ -465,24 +469,24 @@ export const appendHighValuePartMutation: Mutation = (parsedSerial, state) => {
         if (b.count !== a.count) {
             return b.count - a.count;
         }
-        return parseInt(b.asset, 2) - parseInt(a.asset, 2);
+        return Number(b.asset.value - a.asset.value);
     });
 
     const assetToAppend = nonZeroAssets[0].asset;
 
     // 2. Determine number of appends.
     const bitsPerCharacter = 8; // Approximate bits per character in the final encoded string
-    const bitsPerAsset = 6;
+    const bitsPerAsset = state.bitSize;
     const maxNumberOfAppends = Math.floor(((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset);
     const numberOfAppends = randomInt(1, Math.max(1, maxNumberOfAppends));
 
     // 3. Append the asset.
-    const assetsToAppend = [];
+    const assetsToAppend: AssetToken[] = [];
     for (let i = 0; i < numberOfAppends; i++) {
-        assetsToAppend.push(assetToAppend);
+        assetsToAppend.push({ ...assetToAppend, bits: [] });
     }
 
-    if (newAssets.length > 0 && parseInt(newAssets[newAssets.length - 1], 2) === 0) {
+    if (newAssets.length > 0 && newAssets[newAssets.length - 1].value === 0n) {
         // If last asset is 0, insert before it
         newAssets.splice(newAssets.length - 1, 0, ...assetsToAppend);
     } else {

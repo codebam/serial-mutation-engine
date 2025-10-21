@@ -11,14 +11,14 @@ describe('parser and encoder', () => {
 
     it.each(serials)('should parse and encode serial %s, maintaining integrity', (originalSerial) => {
         const originalBytes = serialToBytes(originalSerial);
-        const parsed1 = parse(originalBytes);
-        const newSerial = parsedToSerial(parsed1);
+        const parsed1 = parse(originalBytes, 'varint', 6);
+        const newSerial = parsedToSerial(parsed1, undefined, 6);
         expect(newSerial).toEqual(originalSerial);
     });
 
     it.each(serials)('should parse a trailer for every serial %s', (originalSerial) => {
         const bytes = serialToBytes(originalSerial);
-        const parsed = parse(bytes);
+        const parsed = parse(bytes, 'varint', 6);
         expect(parsed.trailer_bits).toBeDefined();
     });
 });
@@ -28,7 +28,7 @@ describe('parser', () => {
 
     it.each(serials)('should correctly detect element if present in serial %s', (originalSerial) => {
         const bytes = serialToBytes(originalSerial);
-        const parsed = parse(bytes);
+        const parsed = parse(bytes, 'varint', 6);
 
         const elementFlagIndex = utils.findBitPattern(bytes, utils.ELEMENT_FLAG_BITS);
         if (elementFlagIndex !== -1) {
