@@ -209,47 +209,34 @@ const TOK_UNSUPPORTED_111 = [1, 1, 1];
 
 export function encodeSerial(serial: Serial): string {
     const stream = new Bitstream(new Uint8Array(250));
-    console.log(`Encode: Initial bit_pos: ${stream.bit_pos}`);
 
     // Magic header
     stream.write(0b0010000, 7);
-    console.log(`Encode: After magic header. bit_pos: ${stream.bit_pos}`);
 
     for (const block of serial) {
-        console.log(`Encode: Processing block: ${JSON.stringify(block)}. bit_pos: ${stream.bit_pos}`);
         switch (block.token) {
             case 0: // TOK_SEP1
                 stream.writeBits(TOK_SEP1);
-                console.log(`Encode: Wrote TOK_SEP1. bit_pos: ${stream.bit_pos}`);
                 break;
             case 1: // TOK_SEP2
                 stream.writeBits(TOK_SEP2);
-                console.log(`Encode: Wrote TOK_SEP2. bit_pos: ${stream.bit_pos}`);
                 break;
             case 2: // TOK_VARINT
                 stream.writeBits(TOK_VARINT);
-                console.log(`Encode: Wrote TOK_VARINT bits. bit_pos: ${stream.bit_pos}`);
                 writeVarint(stream, block.value!);
-                console.log(`Encode: Wrote VARINT value. bit_pos: ${stream.bit_pos}`);
                 break;
             case 3: // TOK_VARBIT
                 stream.writeBits(TOK_VARBIT);
-                console.log(`Encode: Wrote TOK_VARBIT bits. bit_pos: ${stream.bit_pos}`);
                 writeVarbit(stream, block.value!);
-                console.log(`Encode: Wrote VARBIT value. bit_pos: ${stream.bit_pos}`);
                 break;
             case 4: // TOK_PART
                 stream.writeBits(TOK_PART);
-                console.log(`Encode: Wrote TOK_PART bits. bit_pos: ${stream.bit_pos}`);
                 writePart(stream, block.part!);
-                console.log(`Encode: Wrote PART. bit_pos: ${stream.bit_pos}`);
                 break;
         }
     }
 
-    console.log(`Encode: Final bit_pos before slicing: ${stream.bit_pos}`);
     const bytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
-    console.log(`Encode: Sliced bytes length: ${bytes.length}`);
     const mirrored = mirrorBytes(bytes);
     return '@U' + encodeBase85(mirrored);
 }
