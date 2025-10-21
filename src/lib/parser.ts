@@ -13,22 +13,22 @@ import { serialToBytes } from './decode';
 
 const MARKER_BITS = '00100010'.split('').map(c => parseInt(c, 2));
 
-function readVarInt(stream: Bitstream): { value: bigint, bitLength: number } {
+function readVarInt(stream: Bitstream, bitSize: number): { value: bigint, bitLength: number } {
     let result = 0n;
     let shift = 0n;
     let bytesRead = 0;
     const start_pos = stream.bit_pos;
     while (true) {
-        const chunk_val = stream.read(6);
+        const chunk_val = stream.read(bitSize);
         if (chunk_val === null) {
             throw new Error("Not enough bits to read VarInt");
         }
         bytesRead++;
         const chunk = BigInt(chunk_val);
-        const data = chunk & 0b011111n;
+        const data = chunk & ((1n << (BigInt(bitSize) - 1n)) - 1n);
         result |= data << shift;
-        shift += 5n;
-        if ((chunk & 0b100000n) === 0n) {
+        shift += BigInt(bitSize) - 1n;
+        if ((chunk & (1n << (BigInt(bitSize) - 1n))) === 0n) {
             return { value: result, bitLength: stream.bit_pos - start_pos };
         }
         if (bytesRead > 12) { 
@@ -103,7 +103,7 @@ function parseMetadata(bytes: number[], parsed: any, bits: number[]) {
     }
 }
 
-function parseAsVarInt(bytes: number[]): any {
+function parseAsVarInt(bytes: number[], bitSize: number): any {
     const stream = new Bitstream(bytes);
     stream.read(10);
 
@@ -140,7 +140,7 @@ function parseAsVarInt(bytes: number[]): any {
         }
         try {
             const start_pos = stream.bit_pos;
-            const { value, bitLength } = readVarInt(stream);
+            const { value, bitLength } = readVarInt(stream, bitSize);
             const end_pos = stream.bit_pos;
             const asset_bits = bits.slice(start_pos, end_pos);
             const token: AssetToken = { value, bitLength, bits: asset_bits, position: start_pos };
@@ -163,11 +163,11 @@ function parseAsVarInt(bytes: number[]): any {
     tempStream.bit_pos = assets_start_pos;
     const assets_fixed = [];
     const totalBits = bytes.length * 8;
-    while (totalBits - tempStream.bit_pos >= 6) {
-        const chunk = tempStream.read(6);
+    while (totalBits - tempStream.bit_pos >= bitSize) {
+        const chunk = tempStream.read(bitSize);
         if (chunk !== null) {
-            const asset_bits = bits.slice(tempStream.bit_pos - 6, tempStream.bit_pos);
-            const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits, position: tempStream.bit_pos - 6 };
+            const asset_bits = bits.slice(tempStream.bit_pos - bitSize, tempStream.bit_pos);
+            const token: AssetToken = { value: BigInt(chunk), bitLength: bitSize, bits: asset_bits, position: tempStream.bit_pos - bitSize };
             assets_fixed.push(token);
         }
     }
@@ -176,7 +176,7 @@ function parseAsVarInt(bytes: number[]): any {
     return parsed;
 }
 
-function parseAsFixedWidth(bytes: number[]): any {
+function parseAsFixedWidth(bytes: number[], bitSize: number): any {
     const stream = new Bitstream(bytes);
     stream.read(10);
 
@@ -209,13 +209,13 @@ function parseAsFixedWidth(bytes: number[]): any {
 
     const assets_end_pos = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex : bytes.length * 8;
     while (stream.bit_pos < assets_end_pos) {
-        if (assets_end_pos - stream.bit_pos < 6) {
+        if (assets_end_pos - stream.bit_pos < bitSize) {
             break;
         }
-        const chunk = stream.read(6);
+        const chunk = stream.read(bitSize);
         if (chunk !== null) {
-            const asset_bits = bits.slice(stream.bit_pos - 6, stream.bit_pos);
-            const token: AssetToken = { value: BigInt(chunk), bitLength: 6, bits: asset_bits, position: stream.bit_pos - 6 };
+            const asset_bits = bits.slice(stream.bit_pos - bitSize, stream.bit_pos);
+            const token: AssetToken = { value: BigInt(chunk), bitLength: bitSize, bits: asset_bits, position: stream.bit_pos - bitSize };
             parsed.assets_fixed.push(token);
         }
     }
@@ -231,10 +231,10 @@ function parseAsFixedWidth(bytes: number[]): any {
     const tempStream = new Bitstream(bytes);
     tempStream.bit_pos = assets_start_pos;
     const totalBits = bytes.length * 8;
-    while (totalBits - tempStream.bit_pos >= 6) {
+    while (totalBits - tempStream.bit_pos >= bitSize) {
         try {
             const start_pos = tempStream.bit_pos;
-            const { value, bitLength } = readVarInt(tempStream);
+            const { value, bitLength } = readVarInt(tempStream, bitSize);
             const end_pos = tempStream.bit_pos;
             const asset_bits = bits.slice(start_pos, end_pos);
             const token: AssetToken = { value, bitLength, bits: asset_bits, position: start_pos };
@@ -247,31 +247,31 @@ function parseAsFixedWidth(bytes: number[]): any {
     return parsed;
 }
 
-export function parse(bytes: number[]): any {
-    const parsedAsVarInt = parseAsVarInt(bytes);
-    const newSerialVarInt = parsedToSerial(parsedAsVarInt);
-    const newBytesVarInt = serialToBytes(newSerialVarInt);
-    const isVarIntStable = bytes.length === newBytesVarInt.length && bytes.every((b, i) => b === newBytesVarInt[i]);
+export function parse(bytes: number[], parsingMode: string, bitSize: number): any {
+    if (parsingMode === 'varint') {
+        const parsedAsVarInt = parseAsVarInt(bytes, bitSize);
+        const newSerialVarInt = parsedToSerial(parsedAsVarInt, undefined, bitSize);
+        const newBytesVarInt = serialToBytes(newSerialVarInt);
+        const isVarIntStable = bytes.length === newBytesVarInt.length && bytes.every((b, i) => b === newBytesVarInt[i]);
 
-    const parsedAsFixed = parseAsFixedWidth(bytes);
-    const newSerialFixed = parsedToSerial(parsedAsFixed);
-    const newBytesFixed = serialToBytes(newSerialFixed);
-    const isFixedStable = bytes.length === newBytesFixed.length && bytes.every((b, i) => b === newBytesFixed[i]);
-
-    if (isVarIntStable && !isFixedStable) {
-        return parsedAsVarInt;
-    }
-    if (isFixedStable && !isVarIntStable) {
-        return parsedAsFixed;
-    }
-    if (isVarIntStable && isFixedStable) {
-        const allVarIntAssetsAre6Bits = parsedAsVarInt.assets.every(a => a.bitLength === 6);
-        if (parsedAsVarInt.assets.length > 0 && allVarIntAssetsAre6Bits) {
-            return parsedAsFixed;
-        } else {
+        if (isVarIntStable) {
             return parsedAsVarInt;
         }
     }
 
-    return parseAsFixedWidth(bytes);
+    const parsedAsFixed = parseAsFixedWidth(bytes, bitSize);
+    const newSerialFixed = parsedToSerial(parsedAsFixed, undefined, bitSize);
+    const newBytesFixed = serialToBytes(newSerialFixed);
+    const isFixedStable = bytes.length === newBytesFixed.length && bytes.every((b, i) => b === newBytesFixed[i]);
+
+    if (isFixedStable) {
+        return parsedAsFixed;
+    }
+
+    // Fallback to varint if fixed is not stable
+    if (parsingMode === 'fixed') {
+        return parseAsVarInt(bytes, bitSize);
+    }
+
+    return parseAsFixedWidth(bytes, bitSize);
 }

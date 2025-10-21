@@ -56,7 +56,7 @@ function bitsToBytes(bits: number[]): number[] {
     return bytes;
 }
 
-export function parsedToSerial(parsed: any, original_assets?: AssetToken[]): string {
+export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitSize: number = 6): string {
     const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
     const asset_parts: { position: number, bits: number[], bitLength: number }[] = [];
     if (assetsToEncode) {
@@ -64,10 +64,10 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[]): str
             const current_asset = {...asset};
             if (!current_asset.bits && current_asset.value !== undefined) {
                 if (parsed.isVarInt) {
-                    current_asset.bits = valueToVarIntBits(current_asset.value);
+                    current_asset.bits = valueToVarIntBits(current_asset.value, bitSize);
                     current_asset.bitLength = current_asset.bits.length;
                 } else {
-                    current_asset.bitLength = current_asset.bitLength || 6;
+                    current_asset.bitLength = current_asset.bitLength || bitSize;
                     const val_str = current_asset.value.toString(2).padStart(current_asset.bitLength, '0');
                     current_asset.bits = val_str.split('').map(Number);
                 }

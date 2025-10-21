@@ -8,11 +8,20 @@
     import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation, appendHighValuePartMutation } from '$lib/mutations';
     import type { ParsedSerial, State, AssetToken } from '$lib/types';
 
+    import BitSizeSlider from './BitSizeSlider.svelte';
+
     let { serial, onSerialUpdate, rules } = $props<{
         serial: string;
         onSerialUpdate: (newSerial: string) => void;
         rules: State['rules'];
     }>();
+
+    let bitSize = $state(6);
+
+    function handleBitSizeChange(newBitSize: number) {
+        bitSize = newBitSize;
+        analyzeSerial();
+    }
 
     let parsedOutput = $state<any | null>(null);
     let assetsWithIds = $state<{ id: number; asset: AssetToken }[]>([]);
@@ -134,17 +143,17 @@
             let parsed: any;
 
             if (parsingMode === 'varint') {
-                parsed = parse(bytes, 'varint');
-                const newSerial = parsedToSerial(parsed);
+                parsed = parse(bytes, 'varint', bitSize);
+                const newSerial = parsedToSerial(parsed, undefined, bitSize);
                 if (newSerial !== serial) {
                     varintFailed = true;
                     parsingMode = 'fixed';
-                    parsed = parse(bytes, 'fixed');
+                    parsed = parse(bytes, 'fixed', bitSize);
                 } else {
                     varintFailed = false;
                 }
             } else {
-                parsed = parse(bytes, 'fixed');
+                parsed = parse(bytes, 'fixed', bitSize);
             }
 
             parsedOutput = parsed;
@@ -176,13 +185,13 @@
             const newParsed = { ...parsedOutput };
             newParsed.assets = newAssets;
 
-            onSerialUpdate(parsedToSerial(newParsed, originalAssets));
+            onSerialUpdate(parsedToSerial(newParsed, originalAssets, bitSize));
         }
     }
 
     function reserialize() {
         if (parsedOutput) {
-            onSerialUpdate(parsedToSerial(parsedOutput));
+            onSerialUpdate(parsedToSerial(parsedOutput, undefined, bitSize));
         }
     }
 
@@ -245,7 +254,7 @@
     function addAsset() {
         const newAsset: AssetToken = { value: 1n, bits: undefined };
         if (!parsedOutput.isVarInt) {
-            newAsset.bitLength = 6;
+            newAsset.bitLength = bitSize;
         } else {
             const assets = parsedOutput.isVarInt ? parsedOutput.assets : parsedOutput.assets_fixed;
             const lastAsset = assets[assets.length - 1];
@@ -383,11 +392,12 @@
         <div class="flex justify-between items-center">
             <h3 class="text-lg font-semibold">Parsed Parts</h3>
             <div>
-                <select class="p-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" bind:value={parsingMode} onchange={analyzeSerial} disabled={varintFailed}>
+                <select class="p-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" bind:value={parsingMode} onchange={analyzeSerial}>
                     <option value="varint">VarInt</option>
                     <option value="fixed">Fixed-Width</option>
                 </select>
             </div>
+            <BitSizeSlider {bitSize} onBitSizeChange={handleBitSizeChange} />
             <button onclick={copyJson} class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">{copyJsonText}</button>
         </div>
 
@@ -451,6 +461,7 @@
                             onDelete={() => deleteAsset(asset.id)}
                             color={getColorForAsset(Number(asset.asset.value))}
                             isVarInt={parsedOutput.isVarInt}
+                            bitSize={bitSize}
                         />
                     </div>
                 {/each}

@@ -181,39 +181,30 @@ export const detectItemLevel_byte = (bytes: number[]): [number | string, number,
     }
 };
 
-export function valueToVarIntBits(value: bigint, padToLength?: number): number[] {
+export function valueToVarIntBits(value: bigint, bitSize: number): number[] {
     if (value === 0n) {
-        let bits = [0, 0, 0, 0, 0, 0];
-        if (padToLength) {
-            while (bits.length < padToLength) {
-                bits.push(1, 0, 0, 0, 0, 0); // padding with 0-value chunks
-            }
-            bits[bits.length - 6] = 0; // Ensure last chunk is terminator
-        }
-        return bits.slice(0, padToLength || bits.length);
+        const zeros = new Array(bitSize).fill(0);
+        return zeros;
     }
 
-    let bits: number[] = [];
+    const bits: number[] = [];
     let val = value;
+    const dataBits = bitSize - 1;
+    const dataMask = (1 << dataBits) - 1;
 
-    while (val > 0n) {
-        const chunk_data = Number(val & 0b11111n);
-        val >>= 5n;
-        const continuation_bit = val > 0n ? 1 : 0;
-        
-        const chunk_bits = chunk_data.toString(2).padStart(5, '0').split('').map(Number);
-        bits.push(continuation_bit, ...chunk_bits);
-    }
+    while (val > 0) {
+        let chunk = Number(val & BigInt(dataMask));
+        val >>= BigInt(dataBits);
 
-    if (padToLength && bits.length < padToLength) {
-        // remove terminator from last chunk
-        bits[bits.length - 6] = 1;
-        while (bits.length < padToLength) {
-            bits.push(1, 0, 0, 0, 0, 0); // padding with 0-value chunks
+        if (val > 0) {
+            chunk |= (1 << dataBits);
         }
-        // Ensure last chunk is terminator
-        bits[bits.length - 6] = 0;
-        bits = bits.slice(0, padToLength);
+
+        const chunkBits = [];
+        for (let i = 0; i < bitSize; i++) {
+            chunkBits.unshift((chunk >> i) & 1);
+        }
+        bits.push(...chunkBits);
     }
 
     return bits;

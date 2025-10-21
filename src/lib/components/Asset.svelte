@@ -1,10 +1,11 @@
 <script lang="ts">
-	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false } = $props<{
+	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false, bitSize = 6 } = $props<{
 		value: number;
 		onUpdate: (newValue: number) => void;
         onDelete?: () => void;
 		color?: string;
         isVarInt?: boolean;
+        bitSize?: number;
 	}>();
 
 	let localValue = $state(value.toString(16).toUpperCase());
@@ -26,8 +27,8 @@
 
         if (newValue < 0) {
             newValue = 0;
-        } else if (!isVarInt && newValue > 63) {
-            newValue = 63;
+        } else if (!isVarInt && newValue >= (1 << bitSize)) {
+            newValue = (1 << bitSize) - 1;
         }
 
         localValue = newValue.toString(16).toUpperCase();
