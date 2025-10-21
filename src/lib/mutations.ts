@@ -1,5 +1,5 @@
 import type { Serial, Block } from './types';
-import { parseSerial } from './parser';
+import { parseSerial, TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, TOK_SEP2, TOK_UNSUPPORTED_111 } from './parser';
 
 export function getInitialState(): any {
     return {
@@ -55,7 +55,7 @@ function randomChoice<T>(arr: T[]): T {
 function blocksToValues(blocks: Block[]): number[] {
     const values: number[] = [];
     for (const block of blocks) {
-        if (block.token === 4 || block.token === 6) { // VARINT or VARBIT
+        if (block.token === TOK_VARINT || block.token === TOK_VARBIT) { // Use imported constants
             values.push(block.value!);
         }
     }
@@ -64,7 +64,7 @@ function blocksToValues(blocks: Block[]): number[] {
 
 function valuesToBlocks(values: number[]): Block[] {
     return values.map(value => ({
-        token: 4, // VARINT
+        token: TOK_VARINT, // Use imported constant
         value
     }));
 }
