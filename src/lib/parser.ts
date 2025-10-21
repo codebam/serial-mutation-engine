@@ -1,6 +1,6 @@
 import { Bitstream, UINT4_MIRROR, UINT5_MIRROR } from './bitstream';
 import type { Serial, Block, Part } from './types';
-import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE } from './types';
+import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_UNSUPPORTED_111 } from './types';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
@@ -61,12 +61,7 @@ function mirrorBytes(bytes: Uint8Array): Uint8Array {
 }
 
 
-export const TOK_SEP1 = 0; // 00
-export const TOK_SEP2 = 1; // 01
-export const TOK_VARINT = 4; // 100
-export const TOK_VARBIT = 6; // 110
-export const TOK_PART = 5; // 101
-export const TOK_UNSUPPORTED_111 = 7; // 111
+
 
 class Tokenizer {
     stream: Bitstream;

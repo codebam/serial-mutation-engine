@@ -1,6 +1,6 @@
 import { Bitstream } from './bitstream';
 import type { Serial, Block, Part } from './types';
-import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE } from './types';
+import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART } from './types';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
@@ -207,6 +207,14 @@ const TOK_VARBIT = [1, 1, 0];
 const TOK_PART = [1, 0, 1];
 const TOK_UNSUPPORTED_111 = [1, 1, 1];
 
+const TOKEN_BIT_PATTERNS = {
+    [TOK_SEP1]: [0, 0],
+    [TOK_SEP2]: [0, 1],
+    [TOK_VARINT]: [1, 0, 0],
+    [TOK_VARBIT]: [1, 1, 0],
+    [TOK_PART]: [1, 0, 1]
+};
+
 export function encodeSerial(serial: Serial): string {
     const stream = new Bitstream(new Uint8Array(250));
 
@@ -215,22 +223,25 @@ export function encodeSerial(serial: Serial): string {
 
     for (const block of serial) {
         switch (block.token) {
-            case 0: // TOK_SEP1
-                stream.writeBits(TOK_SEP1);
+            case TOK_SEP1:
+                stream.writeBits(TOKEN_BIT_PATTERNS[TOK_SEP1]);
                 break;
-            case 1: // TOK_SEP2
-                stream.writeBits(TOK_SEP2);
+            case TOK_SEP2:
+                stream.writeBits(TOKEN_BIT_PATTERNS[TOK_SEP2]);
                 break;
-            case 2: // TOK_VARINT
-                stream.writeBits(TOK_VARINT);
+            case TOK_VARINT:
+                stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARINT]);
                 writeVarint(stream, block.value!);
                 break;
-            case 3: // TOK_VARBIT
-                stream.writeBits(TOK_VARBIT);
+            case TOK_VARBIT:
+                stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARBIT]);
                 writeVarbit(stream, block.value!);
                 break;
-            case 4: // TOK_PART
-                stream.writeBits(TOK_PART);
+            case TOK_PART:
+                if (!block.part) {
+                    throw new Error('TOK_PART block is missing a part property');
+                }
+                stream.writeBits(TOKEN_BIT_PATTERNS[TOK_PART]);
                 writePart(stream, block.part!);
                 break;
         }
