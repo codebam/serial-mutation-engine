@@ -119,6 +119,33 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitS
         }
     }
 
+    // find any parts that were appended to the end without a position, and give them a position
+    const positioned_parts = [...asset_parts.filter(a => a.position !== undefined && a.position > 0), ...metadata_parts];
+    let last_position = parsed.assets_start_pos;
+    if (positioned_parts.length > 0) {
+        for (const part of positioned_parts) {
+            const end_pos = part.position + (part.bitLength || 0);
+            if (end_pos > last_position) {
+                last_position = end_pos;
+            }
+        }
+    }
+
+    for (const asset of asset_parts) {
+        if (asset.position === undefined || asset.position === 0) {
+            asset.position = last_position;
+            if (!asset.bitLength) {
+                 if (parsed.isVarInt) {
+                    const bits = valueToVarIntBits(asset.value, bitSize);
+                    asset.bitLength = bits.length;
+                } else {
+                    asset.bitLength = bitSize;
+                }
+            }
+            last_position += asset.bitLength;
+        }
+    }
+
     const filtered_asset_parts = asset_parts.filter(asset => {
         for (const meta of metadata_parts) {
             const asset_start = asset.position;
