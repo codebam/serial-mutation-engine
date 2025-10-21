@@ -45,15 +45,19 @@ export interface Mutation {
     (parsedSerial: ParsedSerial, state: State, selectedAsset?: AssetToken, debug_logs?: string[]): ParsedSerial;
 }
 
-function randomInt(min: number, max: number): number {
+function randomInt(min: number, max: number, state?: State): number {
+    if (state?.random) {
+        const range = max - min + 1;
+        return Math.floor(state.random() * range) + min;
+    }
     const range = max - min + 1;
     const random_array = new Uint32Array(1);
     crypto.getRandomValues(random_array);
     return Math.floor(random_array[0] / (0xFFFFFFFF + 1) * range) + min;
 }
 
-function randomChoice<T>(arr: T[]): T {
-    return arr[randomInt(0, arr.length - 1)];
+function randomChoice<T>(arr: T[], state?: State): T {
+    return arr[randomInt(0, arr.length - 1, state)];
 }
 
 function recalculateAssetPositions(assets: AssetToken[], startPosition: number, isVarInt: boolean, bitSize: number, debug_logs?: string[]): AssetToken[] {
@@ -395,13 +399,15 @@ export const repositoryCrossoverMutation: Mutation = (parsedSerial, state) => {
 
 };
 
+let appendMutationCounter = 0;
 export const appendMutation: Mutation = (parsedSerial, state) => {
+    console.log('appendMutation called, counter:', appendMutationCounter);
     const isVarInt = parsedSerial.parsingMode === 'varint';
     const assetList = isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
     let newAssets = [...assetList];
     const maxValue = (1 << state.bitSize) - 1;
     const randomAsset: AssetToken = {
-        value: BigInt(randomInt(0, maxValue)),
+        value: BigInt((randomInt(0, maxValue, state) + appendMutationCounter++) % (maxValue + 1)),
         bitLength: state.bitSize, // This is a placeholder for fixed size
         bits: [],
         position: 0 // This will be recalculated

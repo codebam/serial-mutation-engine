@@ -18,6 +18,13 @@ import * as coreMutations from '../mutations';
 
 let debugMode = false; // Global debug flag
 
+// Seeded random number generator for testing
+let seed = 0;
+function seededRandom() {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+}
+
 // --- ASYNC WORKER MESSAGE HANDLER ---
 self.onmessage = async function (e) {
 	const { type, payload } = e.data;
@@ -118,6 +125,11 @@ self.onmessage = async function (e) {
 
 					const bytes = serialToBytes(parentSerial);
                     const parsedSerial = parse(bytes, 'fixed', config.bitSize);
+                                        if (process.env.VITEST) {
+                                            config.random = seededRandom;
+                                        } else {
+                                            config.random = Math.random;
+                                        }
 					const newParsedSerial = mutationFunc(parsedSerial, config, undefined, debug_logs);
 					const mutatedSerial = parsedToSerial(newParsedSerial, undefined, config.bitSize, debug_logs);
 
@@ -275,7 +287,8 @@ self.onmessage = async function (e) {
 			},
 			generateStats: false,
 			debugMode: false,
-			selectedAsset: selectedAsset
+			selectedAsset: selectedAsset,
+                        random: process.env.VITEST ? seededRandom : Math.random
 		};
 
 		const maxAttempts = generationCount * 5;
