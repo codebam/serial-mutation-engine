@@ -56,14 +56,9 @@ function bitsToBytes(bits: number[]): number[] {
     return bytes;
 }
 
-export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitSize: number = 6, debug_logs?: string[]): string {
-    debug_logs?.push(`Encoding serial. isVarInt: ${parsed.isVarInt}`);
+export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitSize: number = 6): string {
     const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
-    debug_logs?.push(`Assets to encode count: ${assetsToEncode.length}`);
-    
-    const asset_parts_with_pos: { position: number, bits: number[], bitLength: number }[] = [];
-    const asset_parts_without_pos: { bits: number[], bitLength: number }[] = [];
-
+    const asset_parts: { position: number, bits: number[], bitLength: number }[] = [];
     if (assetsToEncode) {
         for (const asset of assetsToEncode) {
             const current_asset = {...asset};
@@ -77,12 +72,7 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitS
                     current_asset.bits = val_str.split('').map(Number);
                 }
             }
-            
-            if (current_asset.position === undefined || current_asset.position === null) {
-                asset_parts_without_pos.push(current_asset);
-            } else {
-                asset_parts_with_pos.push(current_asset);
-            }
+            asset_parts.push(current_asset);
         }
     }
 
@@ -129,7 +119,7 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitS
         }
     }
 
-    const filtered_asset_parts = asset_parts_with_pos.filter(asset => {
+    const filtered_asset_parts = asset_parts.filter(asset => {
         for (const meta of metadata_parts) {
             const asset_start = asset.position;
             const asset_end = asset.position + asset.bitLength;
@@ -163,7 +153,7 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitS
 
     // Create a map for faster lookups of original asset bitLengths
     const original_asset_lengths = new Map();
-    for (const asset of asset_parts_with_pos) {
+    for (const asset of assetsToEncode) {
         original_asset_lengths.set(asset.position, asset.bitLength);
     }
 
@@ -178,17 +168,7 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitS
 
         const original_length = original_asset_lengths.get(part.position) || (part.isMetadata ? part.bitLength : 0);
         
-        if (debug_logs) {
-            debug_logs.push(`splicing part at rel_pos=${relative_pos} (abs_pos=${part.position}), len=${part.bitLength}, orig_len=${original_length}, assets_bits_len=${assets_bits.length}`);
-        }
         assets_bits.splice(relative_pos, original_length, ...part.bits);
-    }
-
-    // Now, append the assets without position
-    for (const part of asset_parts_without_pos) {
-        if (part.bits) {
-            assets_bits.push(...part.bits);
-        }
     }
 
     const all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
@@ -205,7 +185,5 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitS
         return mirrored;
     });
 
-    const finalSerial = encodeBase85Bytes(mirroredBytes);
-    debug_logs?.push(`Final encoded serial length: ${finalSerial.length}`);
-    return finalSerial;
+    return encodeBase85Bytes(mirroredBytes);
 }
