@@ -1,8 +1,13 @@
+import { describe, it, expect, vi } from 'vitest';
 
-
-import { describe, it, expect } from 'vitest';
+vi.stubGlobal('crypto', {
+  getRandomValues: (arr) => {
+    for (let i = 0; i < arr.length; i++) {
+      arr[i] = Math.floor(Math.random() * 4294967295);
+    }
+  },
+});
 import Worker from './worker.js?worker';
-
 import type { State } from '../types';
 
 const dummyState: State = {
