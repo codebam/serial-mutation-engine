@@ -389,15 +389,19 @@
 
 {#if parsedOutput}
     <div class="mt-4 space-y-4">
-        <div class="flex justify-between items-center">
-            <h3 class="text-lg font-semibold">Parsed Parts</h3>
-            <div>
-                <select class="p-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" bind:value={parsingMode} onchange={analyzeSerial}>
-                    <option value="varint">VarInt</option>
-                    <option value="fixed">Fixed-Width</option>
-                </select>
+        <h3 class="text-lg font-semibold">Parsed Parts</h3>
+        <div class="flex flex-col gap-2 mt-2">
+            <div class="flex justify-between items-center">
+                <div>
+                    <select class="p-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" bind:value={parsingMode} onchange={analyzeSerial}>
+                        <option value="varint">VarInt</option>
+                        <option value="fixed">Fixed-Width</option>
+                    </select>
+                </div>
+                <BitSizeSlider {bitSize} onBitSizeChange={handleBitSizeChange} />
             </div>
-            <BitSizeSlider {bitSize} onBitSizeChange={handleBitSizeChange} />
+        </div>
+        <div class="flex justify-end items-center mt-2">
             <button onclick={copyJson} class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">{copyJsonText}</button>
         </div>
 
