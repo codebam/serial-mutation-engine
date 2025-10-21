@@ -39,10 +39,11 @@ describe('serial regeneration', () => {
             const elements = Object.keys(ELEMENTAL_PATTERNS_V2);
             const nextElement = elements[(elements.indexOf(parsed.element.name) + 1) % elements.length];
             parsed.element.name = nextElement;
-            const newSerial = parsedToSerial(parsed, undefined, 6);
-            const newBytes = serialToBytes(newSerial);
-            const newParsed = parse(newBytes, 'varint', 6);
+            parsed.element.pattern = ELEMENTAL_PATTERNS_V2[nextElement].split('').map(Number);
         }
+        const newSerial = parsedToSerial(parsed, undefined, 6);
+        const newBytes = serialToBytes(newSerial);
+        const newParsed = parse(newBytes, 'varint', 6);
         if (parsed.level) {
             expect(newParsed.level.value).toBe(25);
         }
@@ -125,7 +126,6 @@ describe('asset modification', () => {
         const newSerial = parsedToSerial(parsed, undefined, 6);
         const newBytes = serialToBytes(newSerial);
         const newParsed = parse(newBytes, 'varint', 6);
-
         const newAssets = newParsed.parsingMode === 'varint' ? newParsed.assets : newParsed.assets_fixed;
         expect(newAssets.length).toBe(originalAssetCount);
         expect(newAssets[0].value).toBe(newValue);
