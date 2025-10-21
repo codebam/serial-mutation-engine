@@ -35,9 +35,8 @@ describe('mutations', () => {
             preamble: '',
             assets: [{ value: 1n, bitLength: 6, bits: [0,0,0,0,0,1], position: 0 }],
             assets_fixed: [],
-            assets_varint: [],
             trailer: '',
-            parsingMode: 'varint',
+            isVarInt: true,
         };
         const newParsed = appendMutation(parsed, dummyState);
         expect(newParsed.assets.length).toBe(2);
@@ -49,8 +48,7 @@ describe('mutations', () => {
             preamble: '',
             assets: [...assets],
             assets_fixed: [...assets],
-            assets_varint: [...assets],
-            parsingMode: 'varint',
+            isVarInt: true,
             trailer: '',
         };
         const newParsed = shuffleAssetsMutation(parsed, dummyState);
@@ -64,8 +62,7 @@ describe('mutations', () => {
             preamble: '',
             assets: [...assets],
             assets_fixed: [...assets],
-            assets_varint: [...assets],
-            parsingMode: 'varint',
+            isVarInt: true,
             trailer: '',
         };
         const newParsed = randomizeAssetsMutation(parsed, dummyState);
@@ -78,8 +75,7 @@ describe('mutations', () => {
             preamble: '',
             assets: [...assets],
             assets_fixed: [...assets],
-            assets_varint: [...assets],
-            parsingMode: 'varint',
+            isVarInt: true,
             trailer: '',
         };
         const newParsed = repeatHighValuePartMutation(parsed, dummyState);
@@ -95,8 +91,7 @@ describe('mutations', () => {
             preamble: '',
             assets: [...assets],
             assets_fixed: [...assets],
-            assets_varint: [...assets],
-            parsingMode: 'varint',
+            isVarInt: true,
             trailer: '',
         };
         const newParsed = appendHighValuePartMutation(parsed, dummyState);

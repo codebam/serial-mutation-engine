@@ -11,7 +11,7 @@ export function getInitialState(): State {
         seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
         itemType: 'GUN',
         counts: {
-            appendMutation: 10000,
+            appendMutation: 0,
             stackedPartMutationV1: 0,
             stackedPartMutationV2: 0,
             evolvingMutation: 0,
