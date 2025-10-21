@@ -92,7 +92,8 @@ function createRandomRepeatingPart(minPartSize: number, maxPartSize: number, ass
 }
 
 export const stackedPartMutationV1: Mutation = (parsedSerial, state) => {
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
     const { minPart, maxPart } = state.rules;
     const assetPool = Array.from(Array(64).keys()); // Full range of assets
 
@@ -104,14 +105,16 @@ export const stackedPartMutationV1: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 export const stackedPartMutationV2: Mutation = (parsedSerial, state) => {
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
     const { minPart, maxPart } = state.rules;
 
     const charPool = getCharPoolForItemType(state.itemType);
@@ -125,10 +128,11 @@ export const stackedPartMutationV2: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 function motifToAssets(motif: string, bitSize: number): AssetToken[] {
@@ -136,7 +140,8 @@ function motifToAssets(motif: string, bitSize: number): AssetToken[] {
 }
 
 export const evolvingMutation: Mutation = (parsedSerial, state) => {
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
     const { minChunk, maxChunk } = state.rules;
 
     // Motif Chaining
@@ -178,29 +183,32 @@ export const evolvingMutation: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 export const characterFlipMutation: Mutation = (parsedSerial, state) => {
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
     const motif = motifToAssets(randomChoice(STABLE_MOTIFS), state.bitSize);
     const injectPosition = randomInt(0, newAssets.length);
     newAssets.splice(injectPosition, 0, ...motif);
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 export const segmentReversalMutation: Mutation = (parsedSerial, state) => {
-
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
 
     for (let i = 0; i < 2; i++) {
 
@@ -214,13 +222,11 @@ export const segmentReversalMutation: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-
-        ...parsedSerial,
-
-        assets: newAssets,
-
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 
 };
 
@@ -313,12 +319,12 @@ function extractHighValueParts(repoSerials: string[], minPartSize: number, maxPa
 
 
 export const partManipulationMutation: Mutation = (parsedSerial, state) => {
-
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
 
     const { legendaryChance, minPart, maxPart } = state.rules;
 
-        const repository = state.repository.split(/[\s\n]+/).filter(s => s.startsWith('@U'));
+    const repository = state.repository.split(/\s+/).filter(s => s.startsWith('@U'));
 
 
 
@@ -340,23 +346,21 @@ export const partManipulationMutation: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-
-        ...parsedSerial,
-
-        assets: newAssets,
-
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 
 };
 
 
 
 export const repositoryCrossoverMutation: Mutation = (parsedSerial, state) => {
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
 
-    let newAssets = [...parsedSerial.assets];
-
-        const repository = state.repository.split(/[\s\n]+/).filter(s => s.startsWith('@U'));
+    const repository = state.repository.split(/\s+/).filter(s => s.startsWith('@U'));
 
 
 
@@ -386,18 +390,17 @@ export const repositoryCrossoverMutation: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-
-        ...parsedSerial,
-
-        assets: newAssets,
-
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 
 };
 
 export const appendMutation: Mutation = (parsedSerial, state) => {
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
     const maxValue = (1 << state.bitSize) - 1;
     const randomAsset: AssetToken = {
         value: BigInt(randomInt(0, maxValue)),
@@ -409,24 +412,31 @@ export const appendMutation: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 export const shuffleAssetsMutation: Mutation = (parsedSerial, state) => {
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
     for (let i = newAssets.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [newAssets[i], newAssets[j]] = [newAssets[j], newAssets[i]];
     }
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
-    return { ...parsedSerial, assets: newAssets };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 export const randomizeAssetsMutation: Mutation = (parsedSerial, state) => {
-    let newAssets = parsedSerial.assets.map(() => {
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = assetList.map(() => {
         const maxValue = (1 << state.bitSize) - 1;
         return {
             value: BigInt(randomInt(0, maxValue)),
@@ -436,16 +446,20 @@ export const randomizeAssetsMutation: Mutation = (parsedSerial, state) => {
         };
     });
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
-    return { ...parsedSerial, assets: newAssets };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
-    const assets = parsedSerial.assets;
-    let newAssets = [...assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
 
     // 1. Count occurrences of each asset value.
     const counts = new Map<bigint, number>();
-    for (const asset of assets) {
+    for (const asset of newAssets) {
         counts.set(asset.value, (counts.get(asset.value) || 0) + 1);
     }
 
@@ -453,7 +467,7 @@ export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
     let repeatingAssets: { asset: AssetToken, count: number }[] = [];
     for (const [value, count] of counts.entries()) {
         if (count > 1 && value !== 0n) {
-            const originalAsset = assets.find(a => a.value === value);
+            const originalAsset = newAssets.find(a => a.value === value);
             if (originalAsset) {
                 repeatingAssets.push({ asset: originalAsset, count });
             }
@@ -497,19 +511,20 @@ export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 export const appendHighValuePartMutation: Mutation = (parsedSerial, state) => {
-    const assets = parsedSerial.assets;
-    let newAssets = [...assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
 
     // 1. Find high value asset
     const counts = new Map<bigint, { asset: AssetToken, count: number }>();
-    for (const asset of assets) {
+    for (const asset of newAssets) {
         const entry = counts.get(asset.value) || { asset, count: 0 };
         entry.count++;
         counts.set(asset.value, entry);
@@ -554,10 +569,11 @@ export const appendHighValuePartMutation: Mutation = (parsedSerial, state) => {
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 
@@ -567,16 +583,17 @@ export const appendSelectedAssetMutation: Mutation = (parsedSerial, state, selec
     if (!selectedAsset) {
         return parsedSerial;
     }
-
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
     newAssets.push({ ...selectedAsset, bits: [] });
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
 
 export function mergeSerial(currentYaml: string, baseYaml: string, serialToInsert: string): { newYaml: string, message: string } {
@@ -654,8 +671,8 @@ export const repeatSelectedAssetMutation: Mutation = (parsedSerial, state, selec
     if (!selectedAsset) {
         return parsedSerial;
     }
-
-    let newAssets = [...parsedSerial.assets];
+    const assetList = parsedSerial.isVarInt ? parsedSerial.assets : parsedSerial.assets_fixed;
+    let newAssets = [...assetList];
     const indices = newAssets.map((a, i) => a.value === selectedAsset.value ? i : -1).filter(i => i !== -1);
 
     if (indices.length === 0) {
@@ -673,8 +690,9 @@ export const repeatSelectedAssetMutation: Mutation = (parsedSerial, state, selec
 
     newAssets = recalculateAssetPositions(newAssets, parsedSerial.assets_start_pos, parsedSerial.isVarInt, state.bitSize);
 
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
+    if (parsedSerial.isVarInt) {
+        return { ...parsedSerial, assets: newAssets };
+    } else {
+        return { ...parsedSerial, assets_fixed: newAssets };
+    }
 };
