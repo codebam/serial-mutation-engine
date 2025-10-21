@@ -1,253 +1,234 @@
-import { Bitstream } from './bitstream';
-import type { AssetToken } from './types';
-import {
-    detectItemLevel_byte,
-    MANUFACTURER_PATTERNS_BITS,
-    ELEMENT_FLAG_BITS,
-    ELEMENTAL_PATTERNS_V2_BITS,
-    END_OF_ASSETS_MARKER_BITS,
-    findBitPattern
-} from './utils';
-import { parsedToSerial } from './encoder';
-import { serialToBytes } from './decode';
+import { Bitstream, UINT4_MIRROR, UINT5_MIRROR } from './bitstream';
+import type { Serial, Block, Part } from './types';
+import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE } from './types';
 
-function readVarInt(stream: Bitstream, bitSize: number): { value: bigint, bitLength: number } {
-    let result = 0n;
-    let shift = 0n;
-    let bytesRead = 0;
-    const start_pos = stream.bit_pos;
+const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
+
+function decodeBase85(encoded: string): Uint8Array {
+    if (encoded.startsWith('@U')) {
+        encoded = encoded.substring(2);
+    }
+
+    let decoded: number[] = [];
+    let buffer = 0;
+    let bufferSize = 0;
+
+    for (let i = 0; i < encoded.length; i++) {
+        const char = encoded.charAt(i);
+        const index = BASE85_ALPHABET.indexOf(char);
+        if (index === -1) {
+            throw new Error(`Invalid character in Base85 string: ${char}`);
+        }
+
+        buffer = buffer * 85 + index;
+        bufferSize++;
+
+        if (bufferSize === 5) {
+            decoded.push((buffer >> 24) & 0xFF);
+            decoded.push((buffer >> 16) & 0xFF);
+            decoded.push((buffer >> 8) & 0xFF);
+            decoded.push(buffer & 0xFF);
+            buffer = 0;
+            bufferSize = 0;
+        }
+    }
+
+    if (bufferSize > 0) {
+        const padding = 5 - bufferSize;
+        for (let i = 0; i < padding; i++) {
+            buffer = buffer * 85 + 84;
+        }
+        const bytesToPush = 4 - padding;
+        for (let i = 0; i < bytesToPush; i++) {
+            decoded.push((buffer >> (24 - i * 8)) & 0xFF);
+        }
+    }
+
+    return new Uint8Array(decoded);
+}
+
+function mirrorBytes(bytes: Uint8Array): Uint8Array {
+    const mirrored = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) {
+        let byte = bytes[i];
+        let mirroredByte = 0;
+        for (let j = 0; j < 8; j++) {
+            mirroredByte |= ((byte >> j) & 1) << (7 - j);
+        }
+        mirrored[i] = mirroredByte;
+    }
+    return mirrored;
+}
+
+
+const TOK_SEP1 = 0; // 00
+const TOK_SEP2 = 1; // 01
+const TOK_VARINT = 4; // 100
+const TOK_VARBIT = 6; // 110
+const TOK_PART = 5; // 101
+const TOK_UNSUPPORTED_111 = 7; // 111
+
+class Tokenizer {
+    stream: Bitstream;
+
+    constructor(stream: Bitstream) {
+        this.stream = stream;
+    }
+
+    nextToken(): number | null {
+        const b1 = this.stream.readBit();
+        if (b1 === null) return null;
+
+        if (b1 === 0) {
+            const b2 = this.stream.readBit();
+            if (b2 === null) return null;
+            return b2;
+        }
+
+        const b2 = this.stream.readBit();
+        if (b2 === null) return null;
+
+        const b3 = this.stream.readBit();
+        if (b3 === null) return null;
+
+        return (b1 << 2) | (b2 << 1) | b3;
+    }
+}
+
+function readVarint(stream: Bitstream): number {
+    let value = 0;
+    let shift = 0;
+
+    for (let i = 0; i < 4; i++) {
+        const chunk = stream.read(5);
+        if (chunk === null) throw new Error('Unexpected end of stream in varint');
+
+        const data = UINT4_MIRROR[chunk >> 1];
+        value |= data << shift;
+        shift += 4;
+
+        if ((chunk & 1) === 0) {
+            break;
+        }
+    }
+    return value;
+}
+
+function readVarbit(stream: Bitstream): number {
+    const length = stream.read(5);
+    if (length === null) throw new Error('Unexpected end of stream in varbit length');
+
+    const mirroredLength = UINT5_MIRROR[length];
+    if (mirroredLength === 0) return 0;
+
+    const value = stream.read(mirroredLength);
+    if (value === null) throw new Error('Unexpected end of stream in varbit value');
+
+    return value;
+}
+
+function readPart(tokenizer: Tokenizer): Part {
+    const stream = tokenizer.stream;
+    const index = readVarint(stream);
+
+    const flagType1 = stream.readBit();
+    if (flagType1 === null) throw new Error('Unexpected end of stream in part flag');
+
+    if (flagType1 === 1) {
+        const value = readVarint(stream);
+        stream.read(3); // terminator 000
+        return { subType: SUBTYPE_INT, index, value };
+    }
+
+    const flagType2 = stream.read(2);
+    if (flagType2 === null) throw new Error('Unexpected end of stream in part flag');
+
+    if (flagType2 === 0b10) {
+        return { subType: SUBTYPE_NONE, index };
+    }
+
+    if (flagType2 === 0b01) {
+        const values: number[] = [];
+        const listTokenType = tokenizer.nextToken();
+        if (listTokenType !== TOK_SEP2) {
+            throw new Error('Expected TOK_SEP2 to start part list');
+        }
+
+        while (true) {
+            const token = tokenizer.nextToken();
+            if (token === null) throw new Error('Unexpected end of stream in part list');
+
+            if (token === TOK_SEP1) {
+                break;
+            }
+
+            if (token === TOK_VARINT) {
+                values.push(readVarint(stream));
+            } else if (token === TOK_VARBIT) {
+                values.push(readVarbit(stream));
+            } else {
+                throw new Error(`Unexpected token in part list: ${token}`);
+            }
+        }
+        return { subType: SUBTYPE_LIST, index, values };
+    }
+
+    throw new Error(`Unknown part flagType2: ${flagType2}`);
+}
+
+export function parseSerial(serial: string): Serial {
+    const decoded = decodeBase85(serial);
+    const mirrored = mirrorBytes(decoded);
+    
+    const stream = new Bitstream(mirrored);
+
+    // Magic header
+    const magic = stream.read(7);
+    if (magic !== 0b0010000) {
+        throw new Error('Invalid magic header');
+    }
+
+    const tokenizer = new Tokenizer(stream);
+    const blocks: Block[] = [];
+    let partBlocksFound = false;
+
     while (true) {
-        const chunk_val = stream.read(bitSize);
-        if (chunk_val === null) {
-            throw new Error("Not enough bits to read VarInt");
-        }
-        bytesRead++;
-        const chunk = BigInt(chunk_val);
-        const data = chunk & ((1n << (BigInt(bitSize) - 1n)) - 1n);
-        result |= data << shift;
-        shift += BigInt(bitSize) - 1n;
-        if ((chunk & (1n << (BigInt(bitSize) - 1n))) === 0n) {
-            return { value: result, bitLength: stream.bit_pos - start_pos };
-        }
-        if (bytesRead > 12) { 
-            throw new Error("Varint is too long");
-        }
-    }
-}
+        const token = tokenizer.nextToken();
+        if (token === null) break;
 
-function bytesToBits(bytes: number[]): number[] {
-    const bits: number[] = [];
-    for (const byte of bytes) {
-        bits.push(...byte.toString(2).padStart(8, '0').split('').map(Number));
-    }
-    return bits;
-}
-
-function parseMetadata(bytes: number[], parsed: any, bits: number[]) {
-    const [level, level_pos, level_bits, level_method] = detectItemLevel_byte(bytes);
-    if (level !== 'Unknown') {
-        parsed.level = {
-            value: level,
-            position: level_pos,
-            bits: level_bits,
-            method: level_method
-        };
-    }
-
-    const allOccurrences = [];
-    for (const [manufacturer, patterns] of Object.entries(MANUFACTURER_PATTERNS_BITS)) {
-        for (const pattern of patterns) {
-            let fromIndex = 0;
-            while (true) {
-                const index = findBitPattern(bytes, pattern, fromIndex);
-                if (index === -1) {
-                    break;
-                }
-                const score = 100 - Math.floor(index / 10);
-                allOccurrences.push({ name: manufacturer, pattern: pattern, position: index, score: score });
-                fromIndex = index + 1;
+        if (token === TOK_UNSUPPORTED_111) {
+            if (partBlocksFound) {
+                break;
+            } else {
+                throw new Error('Unsupported DLC item (TOK_UNSUPPORTED_111)');
             }
         }
-    }
 
-    if (allOccurrences.length > 0) {
-        const bestMatch = allOccurrences.reduce((best, current) => (current.score > best.score ? current : best));
-        const actualPattern = bits.slice(bestMatch.position, bestMatch.position + bestMatch.pattern.length);
-        parsed.manufacturer = {
-            name: bestMatch.name,
-            pattern: actualPattern,
-            position: bestMatch.position
-        };
-    }
+        const block: Block = { token };
 
-    const elementFlagIndex = findBitPattern(bytes, ELEMENT_FLAG_BITS);
-    if (elementFlagIndex !== -1) {
-        const elementStream = new Bitstream(bytes);
-        elementStream.bit_pos = elementFlagIndex + ELEMENT_FLAG_BITS.length;
-        const elementPatternBits = elementStream.read(8);
-        if (elementPatternBits !== null) {
-            const elementPattern = elementPatternBits.toString(2).padStart(8, '0').split('').map(Number);
-            const foundElement = Object.entries(ELEMENTAL_PATTERNS_V2_BITS).find(([, p]) => 
-                p.length === elementPattern.length && p.every((val, index) => val === elementPattern[index])
-            );
-            if (foundElement) {
-                parsed.element = {
-                    name: foundElement[0],
-                    pattern: elementPattern,
-                    position: elementFlagIndex
-                };
-            }
+        switch (token) {
+            case TOK_VARINT:
+                block.value = readVarint(stream);
+                break;
+            case TOK_VARBIT:
+                block.value = readVarbit(stream);
+                break;
+            case TOK_PART:
+                block.part = readPart(tokenizer);
+                partBlocksFound = true;
+                break;
         }
-    }
-}
-
-function parseAsVarInt(bytes: number[], bitSize: number): any {
-    const stream = new Bitstream(bytes);
-    stream.read(10);
-
-    const bits = bytesToBits(bytes);
-
-    const parsed: any = {
-        assets: [],
-    };
-
-    parseMetadata(bytes, parsed, bits);
-
-    const assets_start_pos = 13 * 8;
-
-    const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
-    parsed.hasEndOfAssetsMarker = endOfAssetsMarkerIndex !== -1;
-
-    stream.bit_pos = assets_start_pos;
-
-    const assets_end_pos = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex : bytes.length * 8;
-    while (stream.bit_pos < assets_end_pos) {
-        if (assets_end_pos - stream.bit_pos < 6) {
-            break;
-        }
-        try {
-            const start_pos = stream.bit_pos;
-            const { value, bitLength } = readVarInt(stream, bitSize);
-            const end_pos = stream.bit_pos;
-            const asset_bits = bits.slice(start_pos, end_pos);
-            const token: AssetToken = { value, bitLength, bits: asset_bits, position: start_pos };
-            parsed.assets.push(token);
-        } catch (e) {
-            break;
-        }
-    }
-    
-    parsed.isVarInt = true;
-    parsed.preamble_bits = bits.slice(0, assets_start_pos);
-    const trailer_start = stream.bit_pos;
-    parsed.trailer_bits = bits.slice(trailer_start);
-    parsed.assets_start_pos = assets_start_pos;
-    parsed.trailer_start = trailer_start;
-    parsed.original_bits = bits;
-
-
-    const tempStream = new Bitstream(bytes);
-    tempStream.bit_pos = assets_start_pos;
-    const assets_fixed = [];
-    const totalBits = bytes.length * 8;
-    while (totalBits - tempStream.bit_pos >= bitSize) {
-        const chunk = tempStream.read(bitSize);
-        if (chunk !== null) {
-            const asset_bits = bits.slice(tempStream.bit_pos - bitSize, tempStream.bit_pos);
-            const token: AssetToken = { value: BigInt(chunk), bitLength: bitSize, bits: asset_bits, position: tempStream.bit_pos - bitSize };
-            assets_fixed.push(token);
-        }
-    }
-    parsed.assets_fixed = assets_fixed;
-    
-    return parsed;
-}
-
-function parseAsFixedWidth(bytes: number[], bitSize: number): any {
-    const stream = new Bitstream(bytes);
-    stream.read(10);
-
-    const bits = bytesToBits(bytes);
-
-    const parsed: any = {
-        assets: [],
-        assets_fixed: [],
-    };
-
-    parseMetadata(bytes, parsed, bits);
-
-    const assets_start_pos = 13 * 8;
-
-    const endOfAssetsMarkerIndex = findBitPattern(bytes, END_OF_ASSETS_MARKER_BITS, assets_start_pos);
-    parsed.hasEndOfAssetsMarker = endOfAssetsMarkerIndex !== -1;
-
-    stream.bit_pos = assets_start_pos;
-
-    const assets_end_pos = endOfAssetsMarkerIndex !== -1 ? endOfAssetsMarkerIndex : bytes.length * 8;
-    while (stream.bit_pos < assets_end_pos) {
-        if (assets_end_pos - stream.bit_pos < bitSize) {
-            break;
-        }
-        const chunk = stream.read(bitSize);
-        if (chunk !== null) {
-            const asset_bits = bits.slice(stream.bit_pos - bitSize, stream.bit_pos);
-            const token: AssetToken = { value: BigInt(chunk), bitLength: bitSize, bits: asset_bits, position: stream.bit_pos - bitSize };
-            parsed.assets_fixed.push(token);
-        }
-    }
-    
-    parsed.isVarInt = false;
-    parsed.preamble_bits = bits.slice(0, assets_start_pos);
-    const trailer_start = stream.bit_pos;
-    parsed.trailer_bits = bits.slice(trailer_start);
-    parsed.assets_start_pos = assets_start_pos;
-    parsed.trailer_start = trailer_start;
-    parsed.original_bits = bits;
-
-    const tempStream = new Bitstream(bytes);
-    tempStream.bit_pos = assets_start_pos;
-    const totalBits = bytes.length * 8;
-    while (totalBits - tempStream.bit_pos >= bitSize) {
-        try {
-            const start_pos = tempStream.bit_pos;
-            const { value, bitLength } = readVarInt(tempStream, bitSize);
-            const end_pos = tempStream.bit_pos;
-            const asset_bits = bits.slice(start_pos, end_pos);
-            const token: AssetToken = { value, bitLength, bits: asset_bits, position: start_pos };
-            parsed.assets.push(token);
-        } catch (e) {
-            break;
-        }
+        blocks.push(block);
     }
 
-    return parsed;
-}
-
-export function parse(bytes: number[], parsingMode: string, bitSize: number): any {
-    if (parsingMode === 'varint') {
-        const parsedAsVarInt = parseAsVarInt(bytes, bitSize);
-        const newSerialVarInt = parsedToSerial(parsedAsVarInt, undefined, bitSize);
-        const newBytesVarInt = serialToBytes(newSerialVarInt);
-        const isVarIntStable = bytes.length === newBytesVarInt.length && bytes.every((b, i) => b === newBytesVarInt[i]);
-
-        if (isVarIntStable) {
-            return parsedAsVarInt;
-        }
+    // Sanitize trailing terminators
+    while (blocks.length > 0 && blocks[blocks.length - 1].token === TOK_SEP1) {
+        blocks.pop();
+    }
+    if (blocks.length > 0) {
+        blocks.push({ token: TOK_SEP1 });
     }
 
-    const parsedAsFixed = parseAsFixedWidth(bytes, bitSize);
-    const newSerialFixed = parsedToSerial(parsedAsFixed, undefined, bitSize);
-    const newBytesFixed = serialToBytes(newSerialFixed);
-    const isFixedStable = bytes.length === newBytesFixed.length && bytes.every((b, i) => b === newBytesFixed[i]);
 
-    if (isFixedStable) {
-        return parsedAsFixed;
-    }
-
-    // Fallback to varint if fixed is not stable
-    if (parsingMode === 'fixed') {
-        return parseAsVarInt(bytes, bitSize);
-    }
-
-    return parseAsFixedWidth(bytes, bitSize);
+    return blocks;
 }

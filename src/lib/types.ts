@@ -1,48 +1,20 @@
+export const SUBTYPE_NONE = 0;
+export const SUBTYPE_INT = 1;
+export const SUBTYPE_LIST = 2;
 
-export interface AssetToken {
-    value: bigint;
-    bitLength: number;
-    bits: number[];
-    position: number;
+export type SubType = typeof SUBTYPE_NONE | typeof SUBTYPE_INT | typeof SUBTYPE_LIST;
+
+export interface Part {
+    subType: SubType;
+    index: number;
+    value?: number;
+    values?: number[];
 }
 
-export interface ParsedSerial {
-    preamble: string;
-    assets: AssetToken[];
-    assets_fixed: AssetToken[];
-    assets_varint: AssetToken[];
-    parsingMode: 'fixed' | 'varint';
-    trailer: string;
-    level?: {
-        value: string;
-        position: number;
-    };
-    manufacturer?: {
-        name: string;
-        pattern: string;
-        position: number;
-    };
+export interface Block {
+    token: number;
+    value?: number;
+    part?: Part;
 }
 
-export interface State {
-    repository: string;
-    seed: string;
-    itemType: string;
-    counts: { [key: string]: number };
-    rules: {
-        targetOffset: number;
-        mutableStart: number;
-        mutableEnd: number;
-        minChunk: number;
-        maxChunk: number;
-        targetChunk: number;
-        minPart: number;
-        maxPart: number;
-        legendaryChance: number;
-    };
-    generateStats: boolean;
-    debugMode: boolean;
-    bitSize: number;
-}
-
-export {};
+export type Serial = Block[];

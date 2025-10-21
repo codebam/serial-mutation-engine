@@ -1,14 +1,15 @@
-import type { AssetToken } from './types';
-import { ELEMENT_FLAG_BITS, END_OF_ASSETS_MARKER_BITS, valueToVarIntBits } from './utils';
+import { Bitstream, UINT4_MIRROR, UINT5_MIRROR } from './bitstream';
+import type { Serial, Block, Part } from './types';
+import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE } from './types';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
-function encodeBase85Bytes(bytes: number[]): string {
+function encodeBase85(bytes: Uint8Array): string {
     let encoded = '';
     let i = 0;
 
     for (i = 0; i + 3 < bytes.length; i += 4) {
-        let value = ((bytes[i] << 24) >>> 0) + ((bytes[i+1] << 16) >>> 0) + ((bytes[i+2] << 8) >>> 0) + bytes[i+3];
+        let value = (((bytes[i] << 24) | (bytes[i + 1] << 16) | (bytes[i + 2] << 8) | bytes[i + 3]) >>> 0);
         let block = '';
         for (let j = 0; j < 5; j++) {
             block = BASE85_ALPHABET[value % 85] + block;
@@ -19,11 +20,9 @@ function encodeBase85Bytes(bytes: number[]): string {
 
     if (i < bytes.length) {
         const remaining = bytes.length - i;
-        const lastChunk = bytes.slice(i);
-        while (lastChunk.length < 4) {
-            lastChunk.push(0);
-        }
-        let value = ((lastChunk[0] << 24) >>> 0) + ((lastChunk[1] << 16) >>> 0) + ((lastChunk[2] << 8) >>> 0) + lastChunk[3];
+        const lastChunk = new Uint8Array(4);
+        lastChunk.set(bytes.slice(i));
+        let value = (((lastChunk[0] << 24) | (lastChunk[1] << 16) | (lastChunk[2] << 8) | lastChunk[3]) >>> 0);
 
         let block = '';
         for (let j = 0; j < 5; j++) {
@@ -36,181 +35,182 @@ function encodeBase85Bytes(bytes: number[]): string {
     return '@U' + encoded;
 }
 
-function bitsToBytes(bits: number[]): number[] {
-    const bytes: number[] = [];
-    const bitsLength = bits.length;
-    for (let i = 0; i < bitsLength; i += 8) {
-        let byte = 0;
-        let bitsInByte = 0;
+function mirrorBytes(bytes: Uint8Array): Uint8Array {
+    const mirrored = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) {
+        let byte = bytes[i];
+        let mirroredByte = 0;
         for (let j = 0; j < 8; j++) {
-            if (i + j < bitsLength) {
-                byte = (byte << 1) | bits[i + j];
-                bitsInByte++;
-            }
+            mirroredByte |= ((byte >> j) & 1) << (7 - j);
         }
-        if (bitsInByte > 0 && bitsInByte < 8) {
-            byte <<= (8 - bitsInByte);
-        }
-        bytes.push(byte);
+        mirrored[i] = mirroredByte;
     }
-    return bytes;
+    return mirrored;
 }
 
-export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitSize: number = 6): string {
-    const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
-    const asset_parts: { position: number, bits: number[], bitLength: number }[] = [];
-    if (assetsToEncode) {
-        for (const asset of assetsToEncode) {
-            const current_asset = {...asset};
-            if (!current_asset.bits && current_asset.value !== undefined) {
-                if (parsed.isVarInt) {
-                    current_asset.bits = valueToVarIntBits(current_asset.value, bitSize);
-                    current_asset.bitLength = current_asset.bits.length;
-                } else {
-                    current_asset.bitLength = current_asset.bitLength || bitSize;
-                    const val_str = current_asset.value.toString(2).padStart(current_asset.bitLength, '0');
-                    current_asset.bits = val_str.split('').map(Number);
-                }
+function getVarintNumBits(value: number): number {
+    if (value === 0) return 1;
+    return Math.floor(Math.log2(value)) + 1;
+}
+
+function writeVarint(stream: Bitstream, value: number) {
+    let nBits = getVarintNumBits(value);
+    if (nBits === 0) nBits = 1;
+    if (nBits > 16) nBits = 16;
+
+    let remainingValue = value;
+
+    while (nBits > 4) {
+        let chunk = 0;
+        for (let i = 0; i < 4; i++) {
+            chunk |= (remainingValue & 1) << i;
+            remainingValue >>= 1;
+        }
+        stream.write(UINT4_MIRROR[chunk], 4);
+        stream.writeBit(1); // continuation bit
+        nBits -= 4;
+    }
+
+    if (nBits > 0) {
+        let chunk = 0;
+        for (let i = 0; i < nBits; i++) {
+            chunk |= (remainingValue & 1) << i;
+            remainingValue >>= 1;
+        }
+        stream.write(UINT4_MIRROR[chunk], 4);
+        stream.writeBit(0); // no continuation
+    }
+}
+
+function getVarbitNumBits(value: number): number {
+    if (value === 0) return 0;
+    return Math.floor(Math.log2(value)) + 1;
+}
+
+function writeVarbit(stream: Bitstream, value: number) {
+    const nBits = getVarbitNumBits(value);
+    stream.write(UINT5_MIRROR[nBits], 5);
+
+    for (let i = 0; i < nBits; i++) {
+        stream.writeBit((value >> i) & 1);
+    }
+}
+
+function bestTypeForValue(v: number): { token: number[], bits: number[] } {
+    const streamVarint = new Bitstream(new Uint8Array(10));
+    writeVarint(streamVarint, v);
+
+    const streamVarbit = new Bitstream(new Uint8Array(10));
+    writeVarbit(streamVarbit, v);
+
+    if (streamVarint.bit_pos > streamVarbit.bit_pos) {
+        const bits = [];
+        for(let i = 0; i < streamVarbit.bit_pos; i++) {
+            bits.push((streamVarbit.bytes[Math.floor(i/8)] >> (7 - (i%8))) & 1);
+        }
+        return { token: [1, 1, 0], bits };
+    } else {
+        const bits = [];
+        for(let i = 0; i < streamVarint.bit_pos; i++) {
+            bits.push((streamVarint.bytes[Math.floor(i/8)] >> (7 - (i%8))) & 1);
+        }
+        return { token: [1, 0, 0], bits };
+    }
+}
+
+function writePart(stream: Bitstream, part: Part) {
+    writeVarint(stream, part.index);
+
+    switch (part.subType) {
+        case SUBTYPE_NONE:
+            stream.writeBits([0, 1, 0]);
+            break;
+        case SUBTYPE_INT:
+            stream.writeBit(1);
+            writeVarint(stream, part.value!);
+            stream.writeBits([0, 0, 0]);
+            break;
+        case SUBTYPE_LIST:
+            stream.writeBits([0, 0, 1]);
+            stream.writeBits([0, 1]); // TOK_SEP2
+            for (const v of part.values!) {
+                const { token, bits } = bestTypeForValue(v);
+                stream.writeBits(token);
+                stream.writeBits(bits);
             }
-            asset_parts.push(current_asset);
+            stream.writeBits([0, 0]); // TOK_SEP1
+            break;
+    }
+}
+
+const TOK_SEP1 = [0, 0];
+const TOK_SEP2 = [0, 1];
+const TOK_VARINT = [1, 0, 0];
+const TOK_VARBIT = [1, 1, 0];
+const TOK_PART = [1, 0, 1];
+
+export function encodeSerial(serial: Serial): string {
+
+    const stream = new Bitstream(new Uint8Array(250));
+
+
+
+    // Magic header
+
+    stream.write(0b0010000, 7);
+
+
+
+    for (const block of serial) {
+
+        switch (block.token) {
+
+            case 0: // TOK_SEP1
+
+                stream.writeBits(TOK_SEP1);
+
+                break;
+
+            case 1: // TOK_SEP2
+
+                stream.writeBits(TOK_SEP2);
+
+                break;
+
+            case 4: // TOK_VARINT
+
+                stream.writeBits(TOK_VARINT);
+
+                writeVarint(stream, block.value!);
+
+                break;
+
+            case 6: // TOK_VARBIT
+
+                stream.writeBits(TOK_VARBIT);
+
+                writeVarbit(stream, block.value!);
+
+                break;
+
+            case 5: // TOK_PART
+
+                stream.writeBits(TOK_PART);
+
+                writePart(stream, block.part!);
+
+                break;
+
         }
+
     }
 
-    const metadata_parts: { position: number, bits: number[], bitLength: number }[] = [];
-    if (parsed.manufacturer && parsed.manufacturer.position !== undefined) {
-        const part = { position: parsed.manufacturer.position, bits: parsed.manufacturer.pattern, bitLength: parsed.manufacturer.pattern.length, isMetadata: true };
-        metadata_parts.push(part);
-    }
 
-    if (parsed.element && parsed.element.position !== undefined) {
-        const elementPart = [...ELEMENT_FLAG_BITS, ...parsed.element.pattern];
-        const part = { position: parsed.element.position, bits: elementPart, bitLength: elementPart.length, isMetadata: true };
-        metadata_parts.push(part);
-    }
 
-    if (parsed.level && parsed.level.position !== undefined) {
-        let level_bits_to_encode;
-        if (parsed.level.bits) {
-            level_bits_to_encode = parsed.level.bits;
-        } else {
-            const newLevel = parseInt(parsed.level.value, 10);
-            let levelValueToEncode;
+    const bytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
 
-            if (newLevel === 1) {
-                levelValueToEncode = 49;
-            } else if (newLevel === 2) {
-                levelValueToEncode = 2;
-            } else if (newLevel >= 3 && newLevel <= 49) {
-                levelValueToEncode = newLevel + 48;
-            } else if (newLevel === 50) {
-                levelValueToEncode = 98;
-            } else {
-                levelValueToEncode = newLevel;
-            }
-            level_bits_to_encode = levelValueToEncode.toString(2).padStart(8, '0').split('').map(Number);
-        }
+    const mirrored = mirrorBytes(bytes);
 
-        if (parsed.level.method === 'standard') {
-            const LEVEL_MARKER_BITS = [0, 0, 0, 0, 0, 0];
-            const level_part = [...LEVEL_MARKER_BITS, ...level_bits_to_encode];
-            metadata_parts.push({ position: parsed.level.position, bits: level_part, bitLength: level_part.length, isMetadata: true });
-        } else {
-            metadata_parts.push({ position: parsed.level.position, bits: level_bits_to_encode, bitLength: level_bits_to_encode.length, isMetadata: true });
-        }
-    }
+    return encodeBase85(mirrored);
 
-    // find any parts that were appended to the end without a position, and give them a position
-    const positioned_parts = [...asset_parts.filter(a => a.position !== undefined && a.position > 0), ...metadata_parts];
-    let last_position = parsed.assets_start_pos;
-    if (positioned_parts.length > 0) {
-        for (const part of positioned_parts) {
-            const end_pos = part.position + (part.bitLength || 0);
-            if (end_pos > last_position) {
-                last_position = end_pos;
-            }
-        }
-    }
-
-    for (const asset of asset_parts) {
-        if (asset.position === undefined || asset.position === 0) {
-            asset.position = last_position;
-            if (!asset.bitLength) {
-                 if (parsed.isVarInt) {
-                    const bits = valueToVarIntBits(asset.value, bitSize);
-                    asset.bitLength = bits.length;
-                } else {
-                    asset.bitLength = bitSize;
-                }
-            }
-            last_position += asset.bitLength;
-        }
-    }
-
-    const filtered_asset_parts = asset_parts.filter(asset => {
-        for (const meta of metadata_parts) {
-            const asset_start = asset.position;
-            const asset_end = asset.position + asset.bitLength;
-            const meta_start = meta.position;
-            const meta_end = meta.position + meta.bitLength;
-            if (asset_start < meta_end && asset_end > meta_start) {
-                return false; // Overlap, filter out this asset
-            }
-        }
-        return true;
-    });
-
-    const parts = [...filtered_asset_parts, ...metadata_parts];
-    parts.sort((a, b) => a.position - b.position);
-
-    let assets_bits = parsed.original_bits.slice(parsed.assets_start_pos, parsed.trailer_start);
-
-    if (original_assets) {
-        const current_asset_positions = new Set(assetsToEncode.map(a => a.position));
-        const deleted_assets = original_assets.filter(a => !current_asset_positions.has(a.position));
-
-        // remove bits of deleted assets from assets_bits
-        for (const deleted of deleted_assets.reverse()) { // reverse to avoid index shifting
-            if (deleted.position === undefined) continue;
-            const relative_pos = deleted.position - parsed.assets_start_pos;
-            if (relative_pos >= 0 && deleted.bitLength > 0) {
-                assets_bits.splice(relative_pos, deleted.bitLength);
-            }
-        }
-    }
-
-    // Create a map for faster lookups of original asset bitLengths
-    const original_asset_lengths = new Map();
-    for (const asset of assetsToEncode) {
-        original_asset_lengths.set(asset.position, asset.bitLength);
-    }
-
-    // Iterate backwards to avoid index shifting issues with splice
-    for (const part of [...parts].reverse()) {
-        if (part.position === undefined) continue;
-
-        const relative_pos = part.position - parsed.assets_start_pos;
-        if (relative_pos < 0) continue;
-
-        if (!part.bits) continue;
-
-        const original_length = original_asset_lengths.get(part.position) || (part.isMetadata ? part.bitLength : 0);
-        
-        assets_bits.splice(relative_pos, original_length, ...part.bits);
-    }
-
-    const all_bits = [...parsed.preamble_bits, ...assets_bits, ...parsed.trailer_bits];
-
-    const bytes = bitsToBytes(all_bits);
-
-    const mirroredBytes = bytes.map(byte => {
-        let mirrored = 0;
-        for (let j = 0; j < 8; j++) {
-            if ((byte >> j) & 1) {
-                mirrored |= 1 << (7 - j);
-            }
-        }
-        return mirrored;
-    });
-
-    return encodeBase85Bytes(mirroredBytes);
 }
