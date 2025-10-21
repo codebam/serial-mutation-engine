@@ -61,12 +61,12 @@ function mirrorBytes(bytes: Uint8Array): Uint8Array {
 }
 
 
-const TOK_SEP1 = 0; // 00
-const TOK_SEP2 = 1; // 01
-const TOK_VARINT = 4; // 100
-const TOK_VARBIT = 6; // 110
-const TOK_PART = 5; // 101
-const TOK_UNSUPPORTED_111 = 7; // 111
+export const TOK_SEP1 = 0; // 00
+export const TOK_SEP2 = 1; // 01
+export const TOK_VARINT = 4; // 100
+export const TOK_VARBIT = 6; // 110
+export const TOK_PART = 5; // 101
+export const TOK_UNSUPPORTED_111 = 7; // 111
 
 class Tokenizer {
     stream: Bitstream;
