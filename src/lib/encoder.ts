@@ -53,44 +53,77 @@ function getVarintNumBits(value: number): number {
     return Math.floor(Math.log2(value)) + 1;
 }
 
-function writeVarint(stream: Bitstream, value: number) {
-    let nBits = getVarintNumBits(value);
-    if (nBits === 0) nBits = 1;
-    if (nBits > 16) nBits = 16;
+export function writeVarint(stream: Bitstream, value: number) {
+    const VARINT_BITS_PER_BLOCK = 4;
+    const VARINT_MAX_USABLE_BITS = 16;
+
+    let nBits = 0;
+    if (value > 0) {
+        nBits = Math.floor(Math.log2(value)) + 1;
+    } else {
+        nBits = 1;
+    }
+
+    if (nBits > VARINT_MAX_USABLE_BITS) {
+        nBits = VARINT_MAX_USABLE_BITS;
+    }
 
     let remainingValue = value;
 
-    while (nBits > 4) {
+    // Write complete blocks
+    while (nBits > VARINT_BITS_PER_BLOCK) {
         let chunk = 0;
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < VARINT_BITS_PER_BLOCK; i++) {
             chunk |= (remainingValue & 1) << i;
             remainingValue >>= 1;
         }
-        stream.write(UINT4_MIRROR[chunk], 4);
-        stream.writeBit(1); // continuation bit
-        nBits -= 4;
+        stream.write(UINT4_MIRROR[chunk], VARINT_BITS_PER_BLOCK);
+        stream.writeBit(1); // Continuation bit
+        nBits -= VARINT_BITS_PER_BLOCK;
     }
 
-    if (nBits > 0) {
-        let chunk = 0;
-        for (let i = 0; i < nBits; i++) {
+    // Write partial last block
+    let chunk = 0;
+    for (let i = 0; i < VARINT_BITS_PER_BLOCK; i++) {
+        if (nBits > 0) {
             chunk |= (remainingValue & 1) << i;
             remainingValue >>= 1;
+            nBits--;
+        } else {
+            chunk |= 0 << i; // Padding bit
         }
-        stream.write(UINT4_MIRROR[chunk], 4);
-        stream.writeBit(0); // no continuation
     }
+    stream.write(UINT4_MIRROR[chunk], VARINT_BITS_PER_BLOCK);
+    stream.writeBit(0); // No continuation
 }
 
-function getVarbitNumBits(value: number): number {
-    if (value === 0) return 0;
-    return Math.floor(Math.log2(value)) + 1;
+function IntBitsSize(value: number, minBits: number, maxBits: number): number {
+    if (value === 0) {
+        return minBits;
+    }
+
+    let i = Math.floor(Math.log2(value)) + 1;
+
+    if (i < minBits) {
+        return minBits;
+    }
+    if (i > maxBits) {
+        return maxBits;
+    }
+
+    return i;
 }
 
-function writeVarbit(stream: Bitstream, value: number) {
-    const nBits = getVarbitNumBits(value);
-    stream.write(UINT5_MIRROR[nBits], 5);
+export function writeVarbit(stream: Bitstream, value: number) {
+    const VARBIT_LENGTH_BLOCK_SIZE = 5;
+    const nBits = IntBitsSize(value, 0, (1 << VARBIT_LENGTH_BLOCK_SIZE) - 1);
 
+    // Write length
+    for (let i = 0; i < VARBIT_LENGTH_BLOCK_SIZE; i++) {
+        stream.writeBit((nBits >> i) & 1);
+    }
+
+    // Write value bits
     for (let i = 0; i < nBits; i++) {
         stream.writeBit((value >> i) & 1);
     }
