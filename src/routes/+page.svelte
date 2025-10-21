@@ -94,6 +94,9 @@
             worker.onmessage = (e) => {
                 const { type, payload } = e.data;
                 switch (type) {
+                    case 'worker_loaded':
+                        console.log('[DEBUG] Worker sent worker_loaded message.');
+                        break;
                     case 'progress':
                         progress = (payload.processed / payload.total) * 100;
                         if (payload.stage === 'stats') {
@@ -185,6 +188,7 @@
             debugMode: appState.debugMode,
             bitSize: appState.bitSize,
         };
+        console.log('[DEBUG] Sending message to worker:', { type: 'generate', payload: config });
         worker.postMessage({ type: 'generate', payload: config });
     }
 

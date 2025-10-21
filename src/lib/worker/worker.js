@@ -1,6 +1,13 @@
+console.log('[DEBUG] Worker script loaded.');
+self.postMessage({ type: 'worker_loaded' });
 
 import { DEFAULT_SEED, TG_FLAGS, RANDOM_SAFETY_MARGIN } from '../constants';
-import { setupWebGPU, generateRandomNumbersOnGPU, needsRandomNumberGeneration, getGpuDevice } from './gpu.js';
+import {
+	setupWebGPU,
+	generateRandomNumbersOnGPU,
+	needsRandomNumberGeneration,
+	getGpuDevice
+} from './gpu.js';
 import { randomChoice, ensureCharset, splitHeaderTail, extractHighValueParts } from './utils.js';
 import { calculateHighValuePartsStats } from './stats.js';
 
@@ -14,300 +21,342 @@ let debugMode = false; // Global debug flag
 // --- ASYNC WORKER MESSAGE HANDLER ---
 self.onmessage = async function (e) {
 	const { type, payload } = e.data;
-    // This is the most reliable place to set the debug flag.
-    debugMode = payload && payload.debugMode;
+	// This is the most reliable place to set the debug flag.
+	debugMode = payload && payload.debugMode;
 
-	console.log(`[DEBUG] Worker received message of type: ${type}. Debug mode is ${debugMode ? 'ENABLED' : 'DISABLED'}.`);
+	console.log(
+		`[DEBUG] Worker received message of type: ${type}. Debug mode is ${debugMode ? 'ENABLED' : 'DISABLED'}.`
+	);
 
-    if (type === 'generate') {
-        const config = e.data.payload;
-        if (debugMode) console.log('[DEBUG] Received generation config:', config);
-        try {
-            if (!getGpuDevice()) await setupWebGPU();
-            const totalRequested = Object.values(config.counts).reduce((sum, count) => sum + count, 0);
-            console.log(`[DEBUG] Total serials requested: ${totalRequested}`);
-            if (totalRequested === 0) {
-                self.postMessage({
-                    type: 'complete',
-                    payload: {
-                        yaml: 'No items requested.',
-                    
-uniqueCount: 0,
-                    totalRequested: 0,
-                    },
-                });
-                return;
-            }
-            await generateRandomNumbersOnGPU(config.gpuBatchSize);
-            const [baseHeader, baseTail] = splitHeaderTail(config.seed || DEFAULT_SEED);
-            console.log(`[DEBUG] Seed parsed into Header: "${baseHeader}" and Tail: "${baseTail.substring(0, 20)}"... (length: ${baseTail.length})`);
+	if (type === 'generate') {
+		const config = e.data.payload;
+		if (debugMode) console.log('[DEBUG] Received generation config:', config);
+		try {
+			if (!getGpuDevice()) await setupWebGPU();
+			const totalRequested = Object.values(config.counts).reduce((sum, count) => sum + count, 0);
+			console.log(`[DEBUG] Total serials requested: ${totalRequested}`);
+			if (totalRequested === 0) {
+				self.postMessage({
+					type: 'complete',
+					payload: {
+						yaml: 'No items requested.',
 
-            const repository = config.repository || '';
-            const selectedRepoTails = repository
-                .split(/[\s\n]+/
-)
-                .filter(/** @param {string} s */ (s) => s.startsWith('@U'))
-                .map(/** @param {string} s */ (s) => splitHeaderTail(s)[1]);
-            if (selectedRepoTails.length === 0) {
-                console.log('[DEBUG] No repository tails found, using base seed tail as parent.');
-                selectedRepoTails.push(baseTail);
-            } else {
-                console.log(`[DEBUG] Loaded ${selectedRepoTails.length} tails from the repository.`);
-            }
+						uniqueCount: 0,
+						totalRequested: 0
+					}
+				});
+				return;
+			}
+			await generateRandomNumbersOnGPU(config.gpuBatchSize);
+			const [baseHeader, baseTail] = splitHeaderTail(config.seed || DEFAULT_SEED);
+			console.log(
+				`[DEBUG] Seed parsed into Header: "${baseHeader}" and Tail: "${baseTail.substring(0, 20)}"... (length: ${baseTail.length})`
+			);
 
-            const highValueParts = extractHighValueParts(selectedRepoTails, config.minPartSize, config.maxPartSize, debugMode);
-            const legendaryStackingChance = config.legendaryChance / 100.0;
+			const repository = config.repository || '';
+			const selectedRepoTails = repository
+				.split(/[\s\n]+/)
+				.filter(/** @param {string} s */ (s) => s.startsWith('@U'))
+				.map(/** @param {string} s */ (s) => splitHeaderTail(s)[1]);
+			if (selectedRepoTails.length === 0) {
+				console.log('[DEBUG] No repository tails found, using base seed tail as parent.');
+				selectedRepoTails.push(baseTail);
+			} else {
+				console.log(`[DEBUG] Loaded ${selectedRepoTails.length} tails from the repository.`);
+			}
 
-            /** @param {any[]} array */
-            const shuffleArray = (array) => {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-            };
+			const highValueParts = extractHighValueParts(
+				selectedRepoTails,
+				config.minPartSize,
+				config.maxPartSize,
+				debugMode
+			);
+			const legendaryStackingChance = config.legendaryChance / 100.0;
 
-            const serialsToGenerate = [];
-            for (const [mutationName, count] of Object.entries(config.counts)) {
-                for (let i = 0; i < count; i++) {
-                    serialsToGenerate.push({ tg: mutationName });
-                }
-            }
-            shuffleArray(serialsToGenerate); // Shuffle the generation order
+			/** @param {any[]} array */
+			const shuffleArray = (array) => {
+				for (let i = array.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[array[i], array[j]] = [array[j], array[i]];
+				}
+			};
 
-            const seenSerials = new Set();
-            const generatedSerials = [];
-            console.log('[DEBUG] Starting generation loop...');
+			const serialsToGenerate = [];
+			for (const [mutationName, count] of Object.entries(config.counts)) {
+				for (let i = 0; i < count; i++) {
+					serialsToGenerate.push({ tg: mutationName });
+				}
+			}
+			shuffleArray(serialsToGenerate); // Shuffle the generation order
 
-            const mutationMap = {
-                'appendMutation': stringMutations.appendMutation,
-                'stackedPartMutationV1': stringMutations.stackedPartMutationV1,
-                'stackedPartMutationV2': stringMutations.stackedPartMutationV2,
-                'evolvingMutation': stringMutations.evolvingMutation,
-                'characterFlipMutation': stringMutations.characterFlipMutation,
-                'segmentReversalMutation': stringMutations.segmentReversalMutation,
-                'partManipulationMutation': stringMutations.partManipulationMutation,
-                'repositoryCrossoverMutation': stringMutations.repositoryCrossoverMutation,
-                'shuffleAssetsMutation': stringMutations.shuffleAssetsMutation,
-                'randomizeAssetsMutation': stringMutations.randomizeAssetsMutation,
-                'repeatHighValuePartMutation': stringMutations.repeatHighValuePartMutation,
-                'appendHighValuePartMutation': stringMutations.appendHighValuePartMutation,
-            };
+			const seenSerials = new Set();
+			const generatedSerials = [];
+			console.log('[DEBUG] Starting generation loop...');
 
-            const headerLength = baseHeader.length;
-            const adjustedMutableStart = Math.max(0, config.mutableStart - headerLength);
-            const adjustedMutableEnd = Math.max(0, config.mutableEnd - headerLength);
+			const mutationMap = {
+				appendMutation: stringMutations.appendMutation,
+				stackedPartMutationV1: stringMutations.stackedPartMutationV1,
+				stackedPartMutationV2: stringMutations.stackedPartMutationV2,
+				evolvingMutation: stringMutations.evolvingMutation,
+				characterFlipMutation: stringMutations.characterFlipMutation,
+				segmentReversalMutation: stringMutations.segmentReversalMutation,
+				partManipulationMutation: stringMutations.partManipulationMutation,
+				repositoryCrossoverMutation: stringMutations.repositoryCrossoverMutation,
+				shuffleAssetsMutation: stringMutations.shuffleAssetsMutation,
+				randomizeAssetsMutation: stringMutations.randomizeAssetsMutation,
+				repeatHighValuePartMutation: stringMutations.repeatHighValuePartMutation,
+				appendHighValuePartMutation: stringMutations.appendHighValuePartMutation
+			};
 
-            const debug_logs: string[] = [];
+			const headerLength = baseHeader.length;
+			const adjustedMutableStart = Math.max(0, config.mutableStart - headerLength);
+			const adjustedMutableEnd = Math.max(0, config.mutableEnd - headerLength);
 
-            for (let i = 0; i < totalRequested; i++) {
-                if (needsRandomNumberGeneration(RANDOM_SAFETY_MARGIN)) await generateRandomNumbersOnGPU(config.gpuBatchSize);
+			const debug_logs = [];
 
-                const item = serialsToGenerate[i];
-                let serial = '';
-                let innerAttempts = 0;
+			for (let i = 0; i < totalRequested; i++) {
+				if (needsRandomNumberGeneration(RANDOM_SAFETY_MARGIN))
+					await generateRandomNumbersOnGPU(config.gpuBatchSize);
 
-                if (debugMode) debug_logs.push(`--- Generating Serial #${i + 1} (Type: ${item.tg}) ---`);
+				const item = serialsToGenerate[i];
+				let serial = '';
+				let innerAttempts = 0;
 
-                do {
-                    const parentTail = randomChoice(selectedRepoTails);
-                    const parentSerial = baseHeader + parentTail;
+				if (debugMode) debug_logs.push(`--- Generating Serial #${i + 1} (Type: ${item.tg}) ---`);
 
-                    const mutation = mutationMap[item.tg];
-                    if (!mutation) {
-                        if (debugMode) debug_logs.push(`Unknown mutation type: ${item.tg}. Skipping.`);
-                        serial = parentSerial;
-                        break; 
-                    }
-                    
-                    const mutatedSerial = mutation(parentSerial, config, undefined, debug_logs);
-                    serial = ensureCharset(mutatedSerial);
+				do {
+					const parentTail = randomChoice(selectedRepoTails);
+					const parentSerial = baseHeader + parentTail;
 
-                    innerAttempts++;
-                    if (innerAttempts > 1 && debugMode) debug_logs.push(`Collision detected. Retrying... (Attempt ${innerAttempts})`);
-                } while (seenSerials.has(serial) && innerAttempts < 20);
+					const mutation = mutationMap[item.tg];
+					if (!mutation) {
+						if (debugMode) debug_logs.push(`Unknown mutation type: ${item.tg}. Skipping.`);
+						serial = parentSerial;
+						break;
+					}
 
-                if (!seenSerials.has(serial)) {
-                    seenSerials.add(serial);
-                    const flagValue = /** @type {any} */ (TG_FLAGS)[item.tg] || 0;
-                    generatedSerials.push({
-                        serial: serial,
-                        flag: flagValue !== 0 ? 1 : 0,
-                        state_flag: flagValue,
-                    slot: generatedSerials.length,
-                    });
-                }
-                if (i > 0 && i % 500 === 0)
-                    self.postMessage({
-                        type: 'progress',
-                        payload: { processed: i + 1, total: totalRequested, debug_logs: debug_logs },
-                    });
-            }
-            if (debugMode) debug_logs.push(`Generation loop finished. Generated ${generatedSerials.length} unique serials.`);
+					const mutatedSerial = mutation(parentSerial, config, undefined, debug_logs);
+					serial = ensureCharset(mutatedSerial);
 
-            const fullLines = ['state:', '  inventory:', '    items:', '      backpack:'];
-            generatedSerials.forEach((item) => {
-                fullLines.push(`        slot_${item.slot}:`);
-                fullLines.push(`          serial: '${item.serial}'`);
-                if (item.flag === 1) fullLines.push(`          flags: 1`);
-                if (item.state_flag !== 0) fullLines.push(`          state_flags: ${item.state_flag}`);
-            });
-            const fullYaml = fullLines.join('\n');
+					innerAttempts++;
+					if (innerAttempts > 1 && debugMode)
+						debug_logs.push(`Collision detected. Retrying... (Attempt ${innerAttempts})`);
+				} while (seenSerials.has(serial) && innerAttempts < 20);
 
-            const truncatedSerials = generatedSerials.slice(0, 30000);
-            const truncatedLines = ['state:', '  inventory:', '    items:', '      backpack:'];
-            truncatedSerials.forEach((item) => {
-                truncatedLines.push(`        slot_${item.slot}:`);
-                truncatedLines.push(`          serial: '${item.serial}'`);
-                if (item.flag === 1) truncatedLines.push(`          flags: 1`);
-                if (item.state_flag !== 0) truncatedLines.push(`          state_flags: ${item.state_flag}`);
-            });
-            const truncatedYaml = truncatedLines.join('\n');		// --- DECOUPLED MESSAGES ---
-            // 1. Send YAML data immediately for UI responsiveness
-            console.log('[DEBUG] Sending YAML output to main thread.');
-            self.postMessage({
-                type: 'complete',
-                payload: {
-                    yaml: fullYaml,
-                    truncatedYaml: truncatedYaml,
-                
-uniqueCount: generatedSerials.length,
-                    totalRequested: totalRequested,
-                    validationResult: null,
-                    debug_logs: debug_logs,
-                },
-            });
+				if (!seenSerials.has(serial)) {
+					seenSerials.add(serial);
+					const flagValue = /** @type {any} */ (TG_FLAGS)[item.tg] || 0;
+					generatedSerials.push({
+						serial: serial,
+						flag: flagValue !== 0 ? 1 : 0,
+						state_flag: flagValue,
+						slot: generatedSerials.length
+					});
+				}
+				if (i > 0 && i % 500 === 0)
+					self.postMessage({
+						type: 'progress',
+						payload: { processed: i + 1, total: totalRequested, debug_logs: debug_logs }
+					});
+			}
+			if (debugMode)
+				debug_logs.push(
+					`Generation loop finished. Generated ${generatedSerials.length} unique serials.`
+				);
 
-            // 2. If stats are enabled, calculate and send them in a separate message
-            if (config.generateStats && generatedSerials.length > 0) {
-                console.log('[DEBUG] Calculating and sending statistics.');
-                self.postMessage({ type: 'progress', payload: { processed: 0, total: 100, stage: 'stats' } });
-                /** @param {number} progress */
-                const onProgress = (progress) => {
-                    self.postMessage({ type: 'progress', payload: { processed: progress, total: 100, stage: 'stats' } });
-                };
-                const serialStrings = generatedSerials.map((s) => s.serial);
-                const highValueParts = calculateHighValuePartsStats(serialStrings, config.minPartSize, config.maxPartSize, onProgress, config.debugMode);
-                let sortedParts = highValueParts.sort((a, b) => b[1] - a[1]);
-                const maxBars = 200;
-                if (sortedParts.length > maxBars) {
-                    sortedParts = sortedParts.slice(0, maxBars);
-                }
-                const chartData = {
-                    labels: sortedParts.map((p) => p[0]),
-                    data: sortedParts.map((p) => p[1]),
-                };
-                self.postMessage({
-                    type: 'stats_complete',
-                    payload: { chartData: chartData },
-                });
-            }
-        } catch (error) {
-            console.error('Worker Error:', error);
-            self.postMessage({ type: 'error', payload: { message: /** @type {Error} */ (error).message } });
-        }
-    } else if (type === 'generate_from_editor') {
-        console.log('[DEBUG] Entering generate_from_editor handler.');
-        try {
-            const { parsedSerial, originalAssetsCount, generationCount, mutationName, rules, selectedAsset } = payload;
-            console.log(`[DEBUG] generationCount: ${generationCount}, mutationName: ${mutationName}`);
-            const mutation = coreMutations[mutationName];
+			const fullLines = ['state:', '  inventory:', '    items:', '      backpack:'];
+			generatedSerials.forEach((item) => {
+				fullLines.push(`        slot_${item.slot}:`);
+				fullLines.push(`          serial: '${item.serial}'`);
+				if (item.flag === 1) fullLines.push(`          flags: 1`);
+				if (item.state_flag !== 0) fullLines.push(`          state_flags: ${item.state_flag}`);
+			});
+			const fullYaml = fullLines.join('\n');
 
-            if (!mutation) {
-                throw new Error(`Unknown mutation: ${mutationName}`);
-            }
+			const truncatedSerials = generatedSerials.slice(0, 30000);
+			const truncatedLines = ['state:', '  inventory:', '    items:', '      backpack:'];
+			truncatedSerials.forEach((item) => {
+				truncatedLines.push(`        slot_${item.slot}:`);
+				truncatedLines.push(`          serial: '${item.serial}'`);
+				if (item.flag === 1) truncatedLines.push(`          flags: 1`);
+				if (item.state_flag !== 0) truncatedLines.push(`          state_flags: ${item.state_flag}`);
+			});
+			const truncatedYaml = truncatedLines.join('\n'); // --- DECOUPLED MESSAGES ---
+			// 1. Send YAML data immediately for UI responsiveness
+			console.log('[DEBUG] Sending YAML output to main thread.');
+			self.postMessage({
+				type: 'complete',
+				payload: {
+					yaml: fullYaml,
+					truncatedYaml: truncatedYaml,
 
-            const newSerials = new Map();
-            const dummyState = {
-                repository: '',
-                seed: '',
-                itemType: 'GUN',
-                counts: {
-                    appendMutation: 0,
-                    stackedPartMutationV1: 0,
-                    stackedPartMutationV2: 0,
-                    evolvingMutation: 0,
-                    characterFlipMutation: 0,
-                    segmentReversalMutation: 0,
-                    partManipulationMutation: 0,
-                    repositoryCrossoverMutation: 0,
-                    shuffleAssetsMutation: 0,
-                    randomizeAssetsMutation: 0,
-                    repeatHighValuePartMutation: 0,
-                    appendHighValuePartMutation: 0
-                },
-                rules: rules || {
-                    targetOffset: 0,
-                    mutableStart: 0,
-                    mutableEnd: 0,
-                    minChunk: 0,
-                    maxChunk: 0,
-                    targetChunk: 0,
-                    minPart: 0,
-                    maxPart: 0,
-                    legendaryChance: 0,
-                },
-                generateStats: false,
-                debugMode: false,
-                selectedAsset: selectedAsset
-            };
-            
-            const maxAttempts = generationCount * 5;
-            let attempts = 0;
+					uniqueCount: generatedSerials.length,
+					totalRequested: totalRequested,
+					validationResult: null,
+					debug_logs: debug_logs
+				}
+			});
 
-            while (newSerials.size < generationCount && attempts < maxAttempts) {
-                let newParsedOutput = mutation(JSON.parse(JSON.stringify(parsedSerial)), dummyState, selectedAsset);
-                let assetKey = newParsedOutput.assets.map(a => a.value).join('-');
+			// 2. If stats are enabled, calculate and send them in a separate message
+			if (config.generateStats && generatedSerials.length > 0) {
+				console.log('[DEBUG] Calculating and sending statistics.');
+				self.postMessage({
+					type: 'progress',
+					payload: { processed: 0, total: 100, stage: 'stats' }
+				});
+				/** @param {number} progress */
+				const onProgress = (progress) => {
+					self.postMessage({
+						type: 'progress',
+						payload: { processed: progress, total: 100, stage: 'stats' }
+					});
+				};
+				const serialStrings = generatedSerials.map((s) => s.serial);
+				const highValueParts = calculateHighValuePartsStats(
+					serialStrings,
+					config.minPartSize,
+					config.maxPartSize,
+					onProgress,
+					config.debugMode
+				);
+				let sortedParts = highValueParts.sort((a, b) => b[1] - a[1]);
+				const maxBars = 200;
+				if (sortedParts.length > maxBars) {
+					sortedParts = sortedParts.slice(0, maxBars);
+				}
+				const chartData = {
+					labels: sortedParts.map((p) => p[0]),
+					data: sortedParts.map((p) => p[1])
+				};
+				self.postMessage({
+					type: 'stats_complete',
+					payload: { chartData: chartData }
+				});
+			}
+		} catch (error) {
+			console.error('Worker Error:', error);
+			self.postMessage({
+				type: 'error',
+				payload: { message: /** @type {Error} */ (error).message }
+			});
+		}
+	} else if (type === 'generate_from_editor') {
+		console.log('[DEBUG] Entering generate_from_editor handler.');
+		const {
+			parsedSerial,
+			originalAssetsCount,
+			generationCount,
+			mutationName,
+			rules,
+			selectedAsset
+		} = payload;
+		console.log(`[DEBUG] generationCount: ${generationCount}, mutationName: ${mutationName}`);
+		const mutation = coreMutations[mutationName];
 
-                if (newSerials.has(assetKey)) {
-                    // Duplicate assets, apply "add-nudge"
-                    const assetsToNudge = newParsedOutput.assets;
-                    if (assetsToNudge.length > 0) {
-                        const indexToNudge = Math.floor(Math.random() * assetsToNudge.length);
-                        let value = parseInt(assetsToNudge[indexToNudge], 2);
-                        
-                        if (Math.random() < 0.5) {
-                            value = (value + 1) % 64;
-                        } else {
-                            value = (value - 1 + 64) % 64;
-                        }
-                        const newAsset = value.toString(2).padStart(6, '0');
-                        
-                        assetsToNudge.splice(indexToNudge + 1, 0, newAsset);
-                        
-                        newParsedOutput.assets = assetsToNudge;
-                        assetKey = newParsedOutput.assets.join('');
-                    }
-                }
-                newSerials.set(assetKey, newParsedOutput);
-                attempts++;
+		if (!mutation) {
+			throw new Error(`Unknown mutation: ${mutationName}`);
+		}
 
-                if (attempts % 100 === 0) {
-                     console.log(`[DEBUG] Progress: ${newSerials.size} / ${generationCount}`);
-                     self.postMessage({ type: 'generate_from_editor_progress', payload: { generated: newSerials.size, total: generationCount } });
-                }
-            }
+		const newSerials = new Map();
+		const dummyState = {
+			repository: '',
+			seed: '',
+			itemType: 'GUN',
+			counts: {
+				appendMutation: 0,
+				stackedPartMutationV1: 0,
+				stackedPartMutationV2: 0,
+				evolvingMutation: 0,
+				characterFlipMutation: 0,
+				segmentReversalMutation: 0,
+				partManipulationMutation: 0,
+				repositoryCrossoverMutation: 0,
+				shuffleAssetsMutation: 0,
+				randomizeAssetsMutation: 0,
+				repeatHighValuePartMutation: 0,
+				appendHighValuePartMutation: 0
+			},
+			rules: rules || {
+				targetOffset: 0,
+				mutableStart: 0,
+				mutableEnd: 0,
+				minChunk: 0,
+				maxChunk: 0,
+				targetChunk: 0,
+				minPart: 0,
+				maxPart: 0,
+				legendaryChance: 0
+			},
+			generateStats: false,
+			debugMode: false,
+			selectedAsset: selectedAsset
+		};
 
-            const finalSerials = [];
-            for (const newParsedOutput of newSerials.values()) {
-                const lengthDifference = (newParsedOutput.assets.length - originalAssetsCount) * 6;
+		const maxAttempts = generationCount * 5;
+		let attempts = 0;
 
-                if (newParsedOutput.level && newParsedOutput.level.position > newParsedOutput.preamble_bits.length) {
-                    newParsedOutput.level.position += lengthDifference;
-                }
-                if (newParsedOutput.manufacturer && newParsedOutput.manufacturer.position > newParsedOutput.preamble_bits.length) {
-                    newParsedOutput.manufacturer.position += lengthDifference;
-                }
+		while (newSerials.size < generationCount && attempts < maxAttempts) {
+			let newParsedOutput = mutation(
+				JSON.parse(JSON.stringify(parsedSerial)),
+				dummyState,
+				selectedAsset
+			);
+			let assetKey = newParsedOutput.assets.map((a) => a.value).join('-');
 
-                const newSerial = parsedToSerial(newParsedOutput);
-                finalSerials.push(newSerial);
-            }
+			if (newSerials.has(assetKey)) {
+				// Duplicate assets, apply "add-nudge"
+				const assetsToNudge = newParsedOutput.assets;
+				if (assetsToNudge.length > 0) {
+					const indexToNudge = Math.floor(Math.random() * assetsToNudge.length);
+					let value = parseInt(assetsToNudge[indexToNudge], 2);
 
-            console.log(`[DEBUG] Generation loop finished. Generated ${finalSerials.length} serials.`);
-            self.postMessage({ type: 'generate_from_editor_complete', payload: { serials: finalSerials } });
+					if (Math.random() < 0.5) {
+						value = (value + 1) % 64;
+					} else {
+						value = (value - 1 + 64) % 64;
+					}
+					const newAsset = value.toString(2).padStart(6, '0');
 
-        } catch (error) {
-            console.error('Error in generate_from_editor:', error);
-            self.postMessage({ type: 'error', payload: { message: error.message } });
-        }
-    }
+					assetsToNudge.splice(indexToNudge + 1, 0, newAsset);
+
+					newParsedOutput.assets = assetsToNudge;
+					assetKey = newParsedOutput.assets.join('');
+				}
+			}
+			newSerials.set(assetKey, newParsedOutput);
+			attempts++;
+
+			if (attempts % 100 === 0) {
+				console.log(`[DEBUG] Progress: ${newSerials.size} / ${generationCount}`);
+				self.postMessage({
+					type: 'generate_from_editor_progress',
+					payload: { generated: newSerials.size, total: generationCount }
+				});
+			}
+		}
+
+		const finalSerials = [];
+		for (const newParsedOutput of newSerials.values()) {
+			const lengthDifference = (newParsedOutput.assets.length - originalAssetsCount) * 6;
+
+			if (
+				newParsedOutput.level &&
+				newParsedOutput.level.position > newParsedOutput.preamble_bits.length
+			) {
+				newParsedOutput.level.position += lengthDifference;
+			}
+			if (
+				newParsedOutput.manufacturer &&
+				newParsedOutput.manufacturer.position > newParsedOutput.preamble_bits.length
+			) {
+				newParsedOutput.manufacturer.position += lengthDifference;
+			}
+
+			const newSerial = parsedToSerial(newParsedOutput);
+			finalSerials.push(newSerial);
+		}
+
+		console.log(`[DEBUG] Generation loop finished. Generated ${finalSerials.length} serials.`);
+		self.postMessage({ type: 'generate_from_editor_complete', payload: { serials: finalSerials } });
+	}
 };
