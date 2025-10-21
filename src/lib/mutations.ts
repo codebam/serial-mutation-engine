@@ -18,54 +18,6 @@ function randomInt(min: number, max: number): number {
 }
 
 
-export const appendMutation: Mutation = (parsedSerial, state) => {
-    const newAssets = [...parsedSerial.assets];
-    const maxValue = (1 << state.bitSize) - 1;
-    const assetToAdd: AssetToken = { value: BigInt(randomInt(0, maxValue)), bitLength: state.bitSize, bits: [], position: 0 };
-    newAssets.push(assetToAdd);
-
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
-};
-
-export const deleteMutation: Mutation = (parsedSerial, state) => {
-    if (parsedSerial.assets.length > 1) {
-        const newAssets = [...parsedSerial.assets];
-        const indexToRemove = randomInt(0, newAssets.length - 1);
-        newAssets.splice(indexToRemove, 1);
-
-        return {
-            ...parsedSerial,
-            assets: newAssets,
-        };
-    }
-    return parsedSerial;
-};
-
-export const shuffleAssetsMutation: Mutation = (parsedSerial, state) => {
-    const newAssets = [...parsedSerial.assets];
-    for (let i = newAssets.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newAssets[i], newAssets[j]] = [newAssets[j], newAssets[i]];
-    }
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
-};
-
-export const randomizeAssetsMutation: Mutation = (parsedSerial, state) => {
-    const maxValue = (1 << state.bitSize) - 1;
-    const newAssets = parsedSerial.assets.map(asset => {
-        return { value: BigInt(randomInt(0, maxValue)), bitLength: state.bitSize, bits: [], position: 0 };
-    });
-    return {
-        ...parsedSerial,
-        assets: newAssets,
-    };
-};
 
 function createRandomRepeatingPart(minPartSize: number, maxPartSize: number, assetPool: number[], bitSize: number): AssetToken[] {
     const totalLength = randomInt(minPartSize, maxPartSize);

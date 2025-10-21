@@ -5,7 +5,7 @@
     import { ELEMENTAL_PATTERNS_V2, MANUFACTURER_PATTERNS, valueToVarIntBits } from '$lib/utils';
     import FormGroup from './FormGroup.svelte';
     import Asset from './Asset.svelte';
-    import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation, appendHighValuePartMutation, appendSelectedAssetMutation, repeatSelectedAssetMutation } from '$lib/mutations';
+    import { repeatHighValuePartMutation, appendHighValuePartMutation, appendSelectedAssetMutation, repeatSelectedAssetMutation } from '$lib/mutations';
     import type { ParsedSerial, State, AssetToken } from '$lib/types';
 
     import BitSizeSlider from './BitSizeSlider.svelte';
@@ -510,13 +510,6 @@
                 >
             </div>
             <div class="flex gap-2 mt-4">
-                <button onclick={() => applyMutation(appendMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Append Asset</button>
-                <button onclick={() => applyMutation(deleteMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Delete Asset</button>
-                <button onclick={() => applyMutation(shuffleAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Shuffle Assets</button>
-            </div>
-            <div class="flex gap-2 mt-2">
-                <button onclick={() => applyMutation(randomizeAssetsMutation)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Randomize Assets</button>
-                <button onclick={() => startWorkerGeneration('repeatHighValuePartMutation')} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={!selectedAssetId}>Repeat High Value Part</button>
                 <button onclick={() => applyMutation(repeatSelectedAssetMutation, assetsWithIds.find(a => a.id === selectedAssetId)?.asset)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={!selectedAssetId}>Repeat Selected</button>
                 <button onclick={() => applyMutation(appendSelectedAssetMutation, assetsWithIds.find(a => a.id === selectedAssetId)?.asset)} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" disabled={!selectedAssetId}>Append Selected</button>
             </div>
