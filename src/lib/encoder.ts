@@ -156,21 +156,19 @@ export function writeVarbit(stream: Bitstream, value: number) {
 function bestTypeForValue(v: number): { token: number[], bits: number[] } {
     const streamVarint = new Bitstream(new Uint8Array(10));
     writeVarint(streamVarint, v);
+    const varintLen = streamVarint.bit_pos;
 
     const streamVarbit = new Bitstream(new Uint8Array(10));
     writeVarbit(streamVarbit, v);
+    const varbitLen = streamVarbit.bit_pos;
 
-    if (streamVarint.bit_pos > streamVarbit.bit_pos) {
-        const bits = [];
-        for(let i = 0; i < streamVarbit.bit_pos; i++) {
-            bits.push((streamVarbit.bytes[Math.floor(i/8)] >> (7 - (i%8))) & 1);
-        }
+    if (varintLen > varbitLen) {
+        streamVarbit.bit_pos = 0;
+        const bits = streamVarbit.readBits(varbitLen) || [];
         return { token: [1, 1, 0], bits };
     } else {
-        const bits = [];
-        for(let i = 0; i < streamVarint.bit_pos; i++) {
-            bits.push((streamVarint.bytes[Math.floor(i/8)] >> (7 - (i%8))) & 1);
-        }
+        streamVarint.bit_pos = 0;
+        const bits = streamVarint.readBits(varintLen) || [];
         return { token: [1, 0, 0], bits };
     }
 }
