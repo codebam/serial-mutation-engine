@@ -6,7 +6,8 @@ import { calculateHighValuePartsStats } from './stats.js';
 
 import { parse } from '../parser';
 import { parsedToSerial } from '../encoder';
-import * as mutations from '../mutations';
+import * as stringMutations from '../string_mutations';
+import * as coreMutations from '../mutations';
 
 let debugMode = false; // Global debug flag
 
@@ -66,14 +67,14 @@ uniqueCount: 0,
             };
 
             const serialsToGenerate = [];
-            for (let i = 0; i < config.newCount; i++) serialsToGenerate.push({ tg: 'NEW_V0' });
-            for (let i = 0; i < config.newV1Count; i++) serialsToGenerate.push({ tg: 'NEW_V1' });
-            for (let i = 0; i < config.newV2Count; i++) serialsToGenerate.push({ tg: 'NEW_V2' });
-            for (let i = 0; i < config.newV3Count; i++) serialsToGenerate.push({ tg: 'NEW_V3' });
-            for (let i = 0; i < config.tg1Count; i++) serialsToGenerate.push({ tg: 'TG1' });
-            for (let i = 0; i < config.tg2Count; i++) serialsToGenerate.push({ tg: 'TG2' });
-            for (let i = 0; i < config.tg3Count; i++) serialsToGenerate.push({ tg: 'TG3' });
-            for (let i = 0; i < config.tg4Count; i++) serialsToGenerate.push({ tg: 'TG4' });
+            for (let i = 0; i < config.newCount; i++) serialsToGenerate.push({ tg: 'NEW' });
+            for (let i = 0; i < config.newV1Count; i++) serialsToGenerate.push({ tg: 'NEW' });
+            for (let i = 0; i < config.newV2Count; i++) serialsToGenerate.push({ tg: 'NEW' });
+            for (let i = 0; i < config.newV3Count; i++) serialsToGenerate.push({ tg: 'NEW' });
+            for (let i = 0; i < config.tg1Count; i++) serialsToGenerate.push({ tg: 'NEW' });
+            for (let i = 0; i < config.tg2Count; i++) serialsToGenerate.push({ tg: 'NEW' });
+            for (let i = 0; i < config.tg3Count; i++) serialsToGenerate.push({ tg: 'NEW' });
+            for (let i = 0; i < config.tg4Count; i++) serialsToGenerate.push({ tg: 'NEW' });
             shuffleArray(serialsToGenerate); // Shuffle the generation order
 
             const seenSerials = new Set();
@@ -96,27 +97,19 @@ uniqueCount: 0,
 
                 do {
                     const parentTail = randomChoice(selectedRepoTails);
-                    const protectedStartLength = adjustedMutableStart;
-                    let dynamicTargetLength = Math.floor(baseTail.length + config.targetOffset);
-                    dynamicTargetLength = Math.max(dynamicTargetLength, protectedStartLength);
-
-                                    const parsedSerial = parse(baseTail);
-
                     const mutationMap = {
-                        'NEW_V0': mutations.appendMutation,
-                        'NEW_V1': mutations.stackedPartMutationV1,
-                        'NEW_V2': mutations.stackedPartMutationV2,
-                        'NEW_V3': mutations.evolvingMutation,
-                        'TG1': mutations.characterFlipMutation,
-                        'TG2': mutations.segmentReversalMutation,
-                        'TG3': mutations.partManipulationMutation,
-                        'TG4': mutations.repositoryCrossoverMutation,
+                        'NEW_V0': stringMutations.appendMutation,
+                        'NEW_V1': stringMutations.stackedPartMutationV1,
+                        'NEW_V2': stringMutations.stackedPartMutationV2,
+                        'NEW_V3': stringMutations.evolvingMutation,
+                        'TG1': stringMutations.characterFlipMutation,
+                        'TG2': stringMutations.segmentReversalMutation,
+                        'TG3': stringMutations.partManipulationMutation,
+                        'TG4': stringMutations.repositoryCrossoverMutation,
                     };
 
-                    const mutation = mutationMap[item.tg] || mutations.appendMutation;
-                    const mutatedParsedSerial = mutation(parsedSerial, config);
-
-                    mutatedTail = parsedToSerial(mutatedParsedSerial);
+                    const mutation = mutationMap[item.tg] || stringMutations.appendMutation;
+                    mutatedTail = mutation(parentTail, config);
 
                     serial = ensureCharset(baseHeader + mutatedTail);
                     innerAttempts++;
@@ -206,7 +199,7 @@ uniqueCount: generatedSerials.length,
         try {
             const { parsedSerial, originalAssetsCount, generationCount, mutationName, rules, selectedAsset } = payload;
             console.log(`[DEBUG] generationCount: ${generationCount}, mutationName: ${mutationName}`);
-            const mutation = mutations[mutationName];
+            const mutation = coreMutations[mutationName];
 
             if (!mutation) {
                 throw new Error(`Unknown mutation: ${mutationName}`);
@@ -238,8 +231,8 @@ uniqueCount: generatedSerials.length,
             let attempts = 0;
 
             while (newSerials.size < generationCount && attempts < maxAttempts) {
-                let newParsedOutput = mutation(JSON.parse(JSON.stringify(parsedSerial)), dummyState);
-                let assetKey = newParsedOutput.assets.join('');
+                let newParsedOutput = mutation(JSON.parse(JSON.stringify(parsedSerial)), dummyState, selectedAsset);
+                let assetKey = newParsedOutput.assets.map(a => a.value).join('-');
 
                 if (newSerials.has(assetKey)) {
                     // Duplicate assets, apply "add-nudge"

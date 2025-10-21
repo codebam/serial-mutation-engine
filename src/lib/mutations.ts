@@ -5,6 +5,28 @@ import { BASE85_ALPHABET, getCharPoolForItemType, STABLE_MOTIFS } from './knowle
 import { parse } from './parser';
 import { serialToBytes } from './decode';
 
+export function getInitialState(): State {
+    return {
+        repository: '',
+        seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
+        itemType: 'GUN',
+        counts: { new: 10000, newV1: 0, newV2: 0, newV3: 0, tg1: 0, tg2: 0, tg3: 0, tg4: 0 },
+        rules: {
+            targetOffset: 200,
+            mutableStart: 13,
+            mutableEnd: 13,
+            minChunk: 3,
+            maxChunk: 7,
+            targetChunk: 5,
+            minPart: 4,
+            maxPart: 8,
+            legendaryChance: 100,
+        },
+        generateStats: false,
+        debugMode: false,
+    };
+}
+
 export interface Mutation {
     (parsedSerial: ParsedSerial, state: State, selectedAsset?: AssetToken): ParsedSerial;
 }
@@ -335,6 +357,45 @@ export const repositoryCrossoverMutation: Mutation = (parsedSerial, state) => {
 
 };
 
+export const appendMutation: Mutation = (parsedSerial, state) => {
+    const newAssets = [...parsedSerial.assets];
+    const maxValue = (1 << state.bitSize) - 1;
+    const randomAsset: AssetToken = {
+        value: BigInt(randomInt(0, maxValue)),
+        bitLength: state.bitSize,
+        bits: [],
+        position: 0
+    };
+    newAssets.push(randomAsset);
+
+    return {
+        ...parsedSerial,
+        assets: newAssets,
+    };
+};
+
+export const shuffleAssetsMutation: Mutation = (parsedSerial) => {
+    const newAssets = [...parsedSerial.assets];
+    for (let i = newAssets.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newAssets[i], newAssets[j]] = [newAssets[j], newAssets[i]];
+    }
+    return { ...parsedSerial, assets: newAssets };
+};
+
+export const randomizeAssetsMutation: Mutation = (parsedSerial, state) => {
+    const newAssets = parsedSerial.assets.map(() => {
+        const maxValue = (1 << state.bitSize) - 1;
+        return {
+            value: BigInt(randomInt(0, maxValue)),
+            bitLength: state.bitSize,
+            bits: [],
+            position: 0
+        };
+    });
+    return { ...parsedSerial, assets: newAssets };
+};
+
 export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
     const assets = parsedSerial.assets;
     const newAssets = [...assets];
@@ -469,6 +530,77 @@ export const appendSelectedAssetMutation: Mutation = (parsedSerial, state, selec
         assets: newAssets,
     };
 };
+
+export function mergeSerial(currentYaml: string, baseYaml: string, serialToInsert: string): { newYaml: string, message: string } {
+    if (!baseYaml) {
+        return { newYaml: currentYaml, message: 'Please select a base YAML file first.' };
+    }
+
+    let yaml = currentYaml || baseYaml;
+
+    if (yaml.includes('backpack: null')) {
+        const backpackLine = yaml.split('\n').find(line => line.trim() === 'backpack: null');
+        const indent = ' '.repeat(backpackLine!.search(/\S/));
+        const newBackpackString = [
+            `${indent}backpack:`,
+            `${indent}  slot_0:`,
+            `${indent}    serial: '${serialToInsert}'`
+        ].join('\n');
+        const newYaml = yaml.replace(backpackLine!, newBackpackString);
+        return { newYaml, message: `✅ Merged serial into new backpack.` };
+    } else if (yaml.includes('backpack:')) {
+        let lines = yaml.split('\n');
+        let backpackIndex = -1;
+        let backpackIndent = -1;
+
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].trim() === 'backpack:') {
+                backpackIndex = i;
+                backpackIndent = lines[i].search(/\S/);
+                break;
+            }
+        }
+
+        let lastSlot = -1;
+        let endOfBackpackIndex = -1;
+
+        for (let i = backpackIndex + 1; i < lines.length; i++) {
+            if (lines[i].trim() !== '' && lines[i].search(/\S/) <= backpackIndent) {
+                endOfBackpackIndex = i;
+                break;
+            }
+            const slotMatch = lines[i].match(/^\s*slot_(\d+):/);
+            if (slotMatch) {
+                lastSlot = Math.max(lastSlot, parseInt(slotMatch[1], 10));
+            }
+        }
+        if (endOfBackpackIndex === -1) {
+            endOfBackpackIndex = lines.length;
+        }
+
+        const nextSlotNum = lastSlot + 1;
+        const indent = ' '.repeat(backpackIndent + 2);
+        const newSlotLines = [
+            `${indent}slot_${nextSlotNum}:`,
+            `${indent}  serial: '${serialToInsert}'`
+        ];
+
+        lines.splice(endOfBackpackIndex, 0, ...newSlotLines);
+        const newYaml = lines.join('\n');
+        return { newYaml, message: `✅ Merged serial into slot_${nextSlotNum}.` };
+    } else {
+        const newStructure = [
+            'state:',
+            '  inventory:',
+            '    items:',
+            '      backpack:',
+            '        slot_0:',
+            `          serial: '${serialToInsert}'`
+        ];
+        const newYaml = (yaml.trim() === '' ? '' : yaml + '\n') + newStructure.join('\n');
+        return { newYaml, message: '✅ Created new backpack structure and merged serial.' };
+    }
+}
 
 export const repeatSelectedAssetMutation: Mutation = (parsedSerial, state, selectedAsset) => {
     if (!selectedAsset) {

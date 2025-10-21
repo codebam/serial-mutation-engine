@@ -9,27 +9,9 @@
 
     Chart.register(...registerables);
 
-    import type { State } from '$lib/types';
+    import { getInitialState, mergeSerial } from '$lib/mutations';
 
-    let appState = $state<State>({
-        repository: '',
-        seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
-        itemType: 'GUN',
-        counts: { new: 10000, newV1: 0, newV2: 0, newV3: 0, tg1: 0, tg2: 0, tg3: 0, tg4: 0 },
-        rules: {
-            targetOffset: 200,
-            mutableStart: 13,
-            mutableEnd: 13,
-            minChunk: 3,
-            maxChunk: 7,
-            targetChunk: 5,
-            minPart: 4,
-            maxPart: 8,
-            legendaryChance: 100,
-        },
-        generateStats: false,
-        debugMode: false,
-    });
+    let appState = $state<State>(getInitialState());
 
     let statusMessage = $state('Ready to generate.');
     let progress = $state(0);
@@ -219,25 +201,7 @@
 
     function resetForm() {
         if (confirm('Are you sure you want to reset all settings to their original defaults?')) {
-            appState = {
-                repository: '',
-                seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
-                itemType: 'GUN',
-                counts: { new: 10000, newV1: 0, newV2: 0, newV3: 0, tg1: 0, tg2: 0, tg3: 0, tg4: 0 },
-                rules: {
-                    targetOffset: 200,
-                    mutableStart: 13,
-                    mutableEnd: 13,
-                    minChunk: 3,
-                    maxChunk: 7,
-                    targetChunk: 5,
-                    minPart: 4,
-                    maxPart: 8,
-                    legendaryChance: 100,
-                },
-                generateStats: false,
-                debugMode: false,
-            };
+            appState = getInitialState();
             outputYaml = '';
             fullYaml = '';
             filteredYaml = '';
@@ -324,11 +288,6 @@
     }
 
     function importAndMerge() {
-        if (!baseYaml) {
-            statusMessage = 'Please select a base YAML file first.';
-            return;
-        }
-
         const editorToMerge = serialEditors.find(e => e.serial && !e.merged);
 
         if (!editorToMerge) {
@@ -337,72 +296,13 @@
         }
 
         const serialToInsert = editorToMerge.serial;
-        let currentYaml = outputYaml || baseYaml;
+        const result = mergeSerial(outputYaml, baseYaml, serialToInsert);
 
-        if (currentYaml.includes('backpack: null')) {
-            const backpackLine = currentYaml.split('\n').find(line => line.trim() === 'backpack: null');
-            const indent = ' '.repeat(backpackLine!.search(/\S/));
-            const newBackpackString = [
-                `${indent}backpack:`,
-                `${indent}  slot_0:`,
-                `${indent}    serial: '${serialToInsert}'`
-            ].join('\n');
-            outputYaml = currentYaml.replace(backpackLine!, newBackpackString);
+        outputYaml = result.newYaml;
+        statusMessage = result.message;
+
+        if (result.message.startsWith('✅')) {
             editorToMerge.merged = true;
-            statusMessage = `✅ Merged serial from Editor #${editorToMerge.id} into new backpack.`;
-        } else if (currentYaml.includes('backpack:')) {
-            let lines = currentYaml.split('\n');
-            let backpackIndex = -1;
-            let backpackIndent = -1;
-
-            for (let i = 0; i < lines.length; i++) {
-                if (lines[i].trim() === 'backpack:') {
-                    backpackIndex = i;
-                    backpackIndent = lines[i].search(/\S/);
-                    break;
-                }
-            }
-
-            let lastSlot = -1;
-            let endOfBackpackIndex = -1;
-
-            for (let i = backpackIndex + 1; i < lines.length; i++) {
-                if (lines[i].trim() !== '' && lines[i].search(/\S/) <= backpackIndent) {
-                    endOfBackpackIndex = i;
-                    break;
-                }
-                const slotMatch = lines[i].match(/^\s*slot_(\d+):/);
-                if (slotMatch) {
-                    lastSlot = Math.max(lastSlot, parseInt(slotMatch[1], 10));
-                }
-            }
-            if (endOfBackpackIndex === -1) {
-                endOfBackpackIndex = lines.length;
-            }
-
-            const nextSlotNum = lastSlot + 1;
-            const indent = ' '.repeat(backpackIndent + 2);
-            const newSlotLines = [
-                `${indent}slot_${nextSlotNum}:`,
-                `${indent}  serial: '${serialToInsert}'`
-            ];
-
-            lines.splice(endOfBackpackIndex, 0, ...newSlotLines);
-            outputYaml = lines.join('\n');
-            editorToMerge.merged = true;
-            statusMessage = `✅ Merged serial from Editor #${editorToMerge.id} into slot_${nextSlotNum}.`;
-        } else {
-            const newStructure = [
-                'state:',
-                '  inventory:',
-                '    items:',
-                '      backpack:',
-                '        slot_0:',
-                `          serial: '${serialToInsert}'`
-            ];
-            outputYaml = (currentYaml.trim() === '' ? '' : currentYaml + '\n') + newStructure.join('\n');
-            editorToMerge.merged = true;
-            statusMessage = '✅ Created new backpack structure and merged serial.';
         }
     }
 
@@ -551,7 +451,7 @@
                             class={inputClasses}
                             
                         />
-                        <p class="text-xs text-gray-400">Randomly appends characters to the base seed.</p>
+                        <p class="text-xs text-gray-400">Appends a single randomly generated asset to the end of the serial.</p>
                     </FormGroup>
                     <FormGroup label="NEW (v1)">
                         <input
@@ -571,7 +471,7 @@
                             class={inputClasses}
                             
                         />
-                        <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (restricted alphabet).</p>
+                        <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (restricted alphabet based on item type).</p>
                     </FormGroup>
                     <FormGroup label="NEW (v3)">
                         <input
@@ -581,9 +481,9 @@
                             class={inputClasses}
                             
                         />
-                        <p class="text-xs text-gray-400">Experimental algorithm for data gathering.</p>
+                        <p class="text-xs text-gray-400">Applies a series of random transformations (motif chaining, segment scramble, asset flips).</p>
                     </FormGroup>
-                    <FormGroup label="TG1">
+                    <FormGroup label="NEW (TG1)">
                         <input
                             type="number"
                             name="counts.tg1"
@@ -591,9 +491,9 @@
                             class={inputClasses}
                             
                         />
-                        <p class="text-xs text-gray-400">Inserts one stable motif at a random position within the serial's safe zone.</p>
+                        <p class="text-xs text-gray-400">Inserts one stable motif at a random position.</p>
                     </FormGroup>
-                    <FormGroup label="TG2">
+                    <FormGroup label="NEW (TG2)">
                         <input
                             type="number"
                             name="counts.tg2"
@@ -601,9 +501,9 @@
                             class={inputClasses}
                             
                         />
-                        <p class="text-xs text-gray-400">Inserts two stable motifs at random positions within the serial's safe zone.</p>
+                        <p class="text-xs text-gray-400">Inserts two stable motifs at random positions.</p>
                     </FormGroup>
-                    <FormGroup label="TG3">
+                    <FormGroup label="NEW (TG3)">
                         <input
                             type="number"
                             name="counts.tg3"
@@ -611,9 +511,9 @@
                             class={inputClasses}
                             
                         />
-                        <p class="text-xs text-gray-400">Injects a repeating high-value part at the end of the serial.</p>
+                        <p class="text-xs text-gray-400">Injects a high-value part from the repository based on legendary chance.</p>
                     </FormGroup>
-                    <FormGroup label="TG4">
+                    <FormGroup label="NEW (TG4)">
                         <input
                             type="number"
                             name="counts.tg4"
@@ -621,7 +521,7 @@
                             class={inputClasses}
                             
                         />
-                        <p class="text-xs text-gray-400">Overwrites a large part of the serial with a random chunk from the repository.</p>
+                        <p class="text-xs text-gray-400">Overwrites a segment with a random chunk from another serial in the repository.</p>
                     </FormGroup>
                 </div>
             </Accordion>
