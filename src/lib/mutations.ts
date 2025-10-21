@@ -10,7 +10,20 @@ export function getInitialState(): State {
         repository: '',
         seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
         itemType: 'GUN',
-        counts: { new: 10000, newV1: 0, newV2: 0, newV3: 0, tg1: 0, tg2: 0, tg3: 0, tg4: 0 },
+        counts: {
+            appendMutation: 10000,
+            stackedPartMutationV1: 0,
+            stackedPartMutationV2: 0,
+            evolvingMutation: 0,
+            characterFlipMutation: 0,
+            segmentReversalMutation: 0,
+            partManipulationMutation: 0,
+            repositoryCrossoverMutation: 0,
+            shuffleAssetsMutation: 0,
+            randomizeAssetsMutation: 0,
+            repeatHighValuePartMutation: 0,
+            appendHighValuePartMutation: 0
+        },
         rules: {
             targetOffset: 200,
             mutableStart: 13,

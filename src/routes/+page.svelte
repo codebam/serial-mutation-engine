@@ -175,14 +175,7 @@
             seed: appState.seed,
             itemType: appState.itemType,
             repository: appState.repository,
-            newCount: appState.counts.new,
-            newV1Count: appState.counts.newV1,
-            newV2Count: appState.counts.newV2,
-            newV3Count: appState.counts.newV3,
-            tg1Count: appState.counts.tg1,
-            tg2Count: appState.counts.tg2,
-            tg3Count: appState.counts.tg3,
-            tg4Count: appState.counts.tg4,
+            counts: appState.counts,
             minChunkSize: appState.rules.minChunk,
             maxChunkSize: appState.rules.maxChunk,
             targetChunkSize: appState.rules.targetChunk,
@@ -442,86 +435,54 @@
                 </FormGroup>
             </Accordion>
             <Accordion title="🔢 Output Counts" open={true}>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <FormGroup label="NEW (v0)">
-                        <input
-                            type="number"
-                            name="counts.new"
-                            bind:value={appState.counts.new}
-                            class={inputClasses}
-                            
-                        />
+                <div class="flex flex-col gap-4">
+                    <FormGroup label="appendMutation">
+                        <input type="number" name="counts.appendMutation" bind:value={appState.counts.appendMutation} class={inputClasses} />
                         <p class="text-xs text-gray-400">Appends a single randomly generated asset to the end of the serial.</p>
                     </FormGroup>
-                    <FormGroup label="NEW (v1)">
-                        <input
-                            type="number"
-                            name="counts.newV1"
-                            bind:value={appState.counts.newV1}
-                            class={inputClasses}
-                            
-                        />
+                    <FormGroup label="stackedPartMutationV1">
+                        <input type="number" name="counts.stackedPartMutationV1" bind:value={appState.counts.stackedPartMutationV1} class={inputClasses} />
                         <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (full alphabet).</p>
                     </FormGroup>
-                    <FormGroup label="NEW (v2)">
-                        <input
-                            type="number"
-                            name="counts.newV2"
-                            bind:value={appState.counts.newV2}
-                            class={inputClasses}
-                            
-                        />
+                    <FormGroup label="stackedPartMutationV2">
+                        <input type="number" name="counts.stackedPartMutationV2" bind:value={appState.counts.stackedPartMutationV2} class={inputClasses} />
                         <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (restricted alphabet based on item type).</p>
                     </FormGroup>
-                    <FormGroup label="NEW (v3)">
-                        <input
-                            type="number"
-                            name="counts.newV3"
-                            bind:value={appState.counts.newV3}
-                            class={inputClasses}
-                            
-                        />
+                    <FormGroup label="evolvingMutation">
+                        <input type="number" name="counts.evolvingMutation" bind:value={appState.counts.evolvingMutation} class={inputClasses} />
                         <p class="text-xs text-gray-400">Applies a series of random transformations (motif chaining, segment scramble, asset flips).</p>
                     </FormGroup>
-                    <FormGroup label="NEW (TG1)">
-                        <input
-                            type="number"
-                            name="counts.tg1"
-                            bind:value={appState.counts.tg1}
-                            class={inputClasses}
-                            
-                        />
+                    <FormGroup label="characterFlipMutation">
+                        <input type="number" name="counts.characterFlipMutation" bind:value={appState.counts.characterFlipMutation} class={inputClasses} />
                         <p class="text-xs text-gray-400">Inserts one stable motif at a random position.</p>
                     </FormGroup>
-                    <FormGroup label="NEW (TG2)">
-                        <input
-                            type="number"
-                            name="counts.tg2"
-                            bind:value={appState.counts.tg2}
-                            class={inputClasses}
-                            
-                        />
+                    <FormGroup label="segmentReversalMutation">
+                        <input type="number" name="counts.segmentReversalMutation" bind:value={appState.counts.segmentReversalMutation} class={inputClasses} />
                         <p class="text-xs text-gray-400">Inserts two stable motifs at random positions.</p>
                     </FormGroup>
-                    <FormGroup label="NEW (TG3)">
-                        <input
-                            type="number"
-                            name="counts.tg3"
-                            bind:value={appState.counts.tg3}
-                            class={inputClasses}
-                            
-                        />
+                    <FormGroup label="partManipulationMutation">
+                        <input type="number" name="counts.partManipulationMutation" bind:value={appState.counts.partManipulationMutation} class={inputClasses} />
                         <p class="text-xs text-gray-400">Injects a high-value part from the repository based on legendary chance.</p>
                     </FormGroup>
-                    <FormGroup label="NEW (TG4)">
-                        <input
-                            type="number"
-                            name="counts.tg4"
-                            bind:value={appState.counts.tg4}
-                            class={inputClasses}
-                            
-                        />
+                    <FormGroup label="repositoryCrossoverMutation">
+                        <input type="number" name="counts.repositoryCrossoverMutation" bind:value={appState.counts.repositoryCrossoverMutation} class={inputClasses} />
                         <p class="text-xs text-gray-400">Overwrites a segment with a random chunk from another serial in the repository.</p>
+                    </FormGroup>
+                    <FormGroup label="shuffleAssetsMutation">
+                        <input type="number" name="counts.shuffleAssetsMutation" bind:value={appState.counts.shuffleAssetsMutation} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Shuffles all assets in the serial.</p>
+                    </FormGroup>
+                    <FormGroup label="randomizeAssetsMutation">
+                        <input type="number" name="counts.randomizeAssetsMutation" bind:value={appState.counts.randomizeAssetsMutation} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Randomizes all assets in the serial.</p>
+                    </FormGroup>
+                    <FormGroup label="repeatHighValuePartMutation">
+                        <input type="number" name="counts.repeatHighValuePartMutation" bind:value={appState.counts.repeatHighValuePartMutation} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Repeats a high-value part of the serial.</p>
+                    </FormGroup>
+                    <FormGroup label="appendHighValuePartMutation">
+                        <input type="number" name="counts.appendHighValuePartMutation" bind:value={appState.counts.appendHighValuePartMutation} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Appends a high-value part to the end of the serial.</p>
                     </FormGroup>
                 </div>
             </Accordion>

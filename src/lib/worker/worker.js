@@ -24,7 +24,7 @@ self.onmessage = async function (e) {
         if (debugMode) console.log('[DEBUG] Received generation config:', config);
         try {
             if (!getGpuDevice()) await setupWebGPU();
-            const totalRequested = config.newCount + config.newV1Count + config.newV2Count + config.newV3Count + config.tg1Count + config.tg2Count + config.tg3Count + config.tg4Count;
+            const totalRequested = Object.values(config.counts).reduce((sum, count) => sum + count, 0);
             console.log(`[DEBUG] Total serials requested: ${totalRequested}`);
             if (totalRequested === 0) {
                 self.postMessage({
@@ -67,14 +67,11 @@ uniqueCount: 0,
             };
 
             const serialsToGenerate = [];
-            for (let i = 0; i < config.newCount; i++) serialsToGenerate.push({ tg: 'NEW' });
-            for (let i = 0; i < config.newV1Count; i++) serialsToGenerate.push({ tg: 'NEW' });
-            for (let i = 0; i < config.newV2Count; i++) serialsToGenerate.push({ tg: 'NEW' });
-            for (let i = 0; i < config.newV3Count; i++) serialsToGenerate.push({ tg: 'NEW' });
-            for (let i = 0; i < config.tg1Count; i++) serialsToGenerate.push({ tg: 'NEW' });
-            for (let i = 0; i < config.tg2Count; i++) serialsToGenerate.push({ tg: 'NEW' });
-            for (let i = 0; i < config.tg3Count; i++) serialsToGenerate.push({ tg: 'NEW' });
-            for (let i = 0; i < config.tg4Count; i++) serialsToGenerate.push({ tg: 'NEW' });
+            for (const [mutationName, count] of Object.entries(config.counts)) {
+                for (let i = 0; i < count; i++) {
+                    serialsToGenerate.push({ tg: mutationName });
+                }
+            }
             shuffleArray(serialsToGenerate); // Shuffle the generation order
 
             const seenSerials = new Set();
@@ -98,17 +95,27 @@ uniqueCount: 0,
                 do {
                     const parentTail = randomChoice(selectedRepoTails);
                     const mutationMap = {
-                        'NEW_V0': stringMutations.appendMutation,
-                        'NEW_V1': stringMutations.stackedPartMutationV1,
-                        'NEW_V2': stringMutations.stackedPartMutationV2,
-                        'NEW_V3': stringMutations.evolvingMutation,
-                        'TG1': stringMutations.characterFlipMutation,
-                        'TG2': stringMutations.segmentReversalMutation,
-                        'TG3': stringMutations.partManipulationMutation,
-                        'TG4': stringMutations.repositoryCrossoverMutation,
+                        'appendMutation': stringMutations.appendMutation,
+                        'stackedPartMutationV1': stringMutations.stackedPartMutationV1,
+                        'stackedPartMutationV2': stringMutations.stackedPartMutationV2,
+                        'evolvingMutation': stringMutations.evolvingMutation,
+                        'characterFlipMutation': stringMutations.characterFlipMutation,
+                        'segmentReversalMutation': stringMutations.segmentReversalMutation,
+                        'partManipulationMutation': stringMutations.partManipulationMutation,
+                        'repositoryCrossoverMutation': stringMutations.repositoryCrossoverMutation,
+                        'shuffleAssetsMutation': stringMutations.shuffleAssetsMutation,
+                        'randomizeAssetsMutation': stringMutations.randomizeAssetsMutation,
+                        'repeatHighValuePartMutation': stringMutations.repeatHighValuePartMutation,
+                        'appendHighValuePartMutation': stringMutations.appendHighValuePartMutation,
                     };
 
-                    const mutation = mutationMap[item.tg] || stringMutations.appendMutation;
+                    const mutation = mutationMap[item.tg];
+                    if (!mutation) {
+                        console.warn(`[DEBUG] Unknown mutation type: ${item.tg}. Skipping generation for this item.`);
+                        serial = parentTail; // or some other default behavior
+                        mutatedTail = parentTail;
+                        break; 
+                    }
                     mutatedTail = mutation(parentTail, config);
 
                     serial = ensureCharset(baseHeader + mutatedTail);
@@ -210,7 +217,20 @@ uniqueCount: generatedSerials.length,
                 repository: '',
                 seed: '',
                 itemType: 'GUN',
-                counts: { new: 0, newV1: 0, newV2: 0, newV3: 0, tg1: 0, tg2: 0, tg3: 0, tg4: 0 },
+                counts: {
+                    appendMutation: 0,
+                    stackedPartMutationV1: 0,
+                    stackedPartMutationV2: 0,
+                    evolvingMutation: 0,
+                    characterFlipMutation: 0,
+                    segmentReversalMutation: 0,
+                    partManipulationMutation: 0,
+                    repositoryCrossoverMutation: 0,
+                    shuffleAssetsMutation: 0,
+                    randomizeAssetsMutation: 0,
+                    repeatHighValuePartMutation: 0,
+                    appendHighValuePartMutation: 0
+                },
                 rules: rules || {
                     targetOffset: 0,
                     mutableStart: 0,
