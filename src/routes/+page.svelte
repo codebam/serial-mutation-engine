@@ -180,6 +180,7 @@
             gpuBatchSize: 250000,
             generateStats: appState.generateStats,
             debugMode: appState.debugMode,
+            bitSize: appState.bitSize,
         };
         worker.postMessage({ type: 'generate', payload: config });
     }
@@ -423,6 +424,16 @@
                         bind:value={appState.rules.targetOffset}
                         class={inputClasses}
                         
+                    />
+                </FormGroup>
+                <FormGroup label="Bit Size ({appState.bitSize})">
+                    <input
+                        type="range"
+                        min="4"
+                        max="8"
+                        step="1"
+                        bind:value={appState.bitSize}
+                        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
                     />
                 </FormGroup>
             </Accordion>

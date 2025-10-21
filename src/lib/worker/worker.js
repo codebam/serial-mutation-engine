@@ -78,6 +78,21 @@ uniqueCount: 0,
             const generatedSerials = [];
             console.log('[DEBUG] Starting generation loop...');
 
+            const mutationMap = {
+                'appendMutation': stringMutations.appendMutation,
+                'stackedPartMutationV1': stringMutations.stackedPartMutationV1,
+                'stackedPartMutationV2': stringMutations.stackedPartMutationV2,
+                'evolvingMutation': stringMutations.evolvingMutation,
+                'characterFlipMutation': stringMutations.characterFlipMutation,
+                'segmentReversalMutation': stringMutations.segmentReversalMutation,
+                'partManipulationMutation': stringMutations.partManipulationMutation,
+                'repositoryCrossoverMutation': stringMutations.repositoryCrossoverMutation,
+                'shuffleAssetsMutation': stringMutations.shuffleAssetsMutation,
+                'randomizeAssetsMutation': stringMutations.randomizeAssetsMutation,
+                'repeatHighValuePartMutation': stringMutations.repeatHighValuePartMutation,
+                'appendHighValuePartMutation': stringMutations.appendHighValuePartMutation,
+            };
+
             const headerLength = baseHeader.length;
             const adjustedMutableStart = Math.max(0, config.mutableStart - headerLength);
             const adjustedMutableEnd = Math.max(0, config.mutableEnd - headerLength);
@@ -94,31 +109,18 @@ uniqueCount: 0,
 
                 do {
                     const parentTail = randomChoice(selectedRepoTails);
-                    const mutationMap = {
-                        'appendMutation': stringMutations.appendMutation,
-                        'stackedPartMutationV1': stringMutations.stackedPartMutationV1,
-                        'stackedPartMutationV2': stringMutations.stackedPartMutationV2,
-                        'evolvingMutation': stringMutations.evolvingMutation,
-                        'characterFlipMutation': stringMutations.characterFlipMutation,
-                        'segmentReversalMutation': stringMutations.segmentReversalMutation,
-                        'partManipulationMutation': stringMutations.partManipulationMutation,
-                        'repositoryCrossoverMutation': stringMutations.repositoryCrossoverMutation,
-                        'shuffleAssetsMutation': stringMutations.shuffleAssetsMutation,
-                        'randomizeAssetsMutation': stringMutations.randomizeAssetsMutation,
-                        'repeatHighValuePartMutation': stringMutations.repeatHighValuePartMutation,
-                        'appendHighValuePartMutation': stringMutations.appendHighValuePartMutation,
-                    };
+                    const parentSerial = baseHeader + parentTail;
 
                     const mutation = mutationMap[item.tg];
                     if (!mutation) {
                         console.warn(`[DEBUG] Unknown mutation type: ${item.tg}. Skipping generation for this item.`);
-                        serial = parentTail; // or some other default behavior
-                        mutatedTail = parentTail;
+                        serial = parentSerial;
                         break; 
                     }
-                    mutatedTail = mutation(parentTail, config);
+                    
+                    const mutatedSerial = mutation(parentSerial, config);
+                    serial = ensureCharset(mutatedSerial);
 
-                    serial = ensureCharset(baseHeader + mutatedTail);
                     innerAttempts++;
                     if (innerAttempts > 1 && debugMode) console.warn(`[DEBUG] Collision detected. Retrying... (Attempt ${innerAttempts})`);
                 } while (seenSerials.has(serial) && innerAttempts < 20);
