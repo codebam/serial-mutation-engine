@@ -2,7 +2,7 @@
     import { serialToBytes } from '$lib/decode';
     import { parse } from '$lib/parser';
     import { parsedToSerial } from '$lib/encoder';
-    import { ELEMENTAL_PATTERNS_V2, MANUFACTURER_PATTERNS } from '$lib/utils';
+    import { ELEMENTAL_PATTERNS_V2, MANUFACTURER_PATTERNS, valueToVarIntBits } from '$lib/utils';
     import FormGroup from './FormGroup.svelte';
     import Asset from './Asset.svelte';
     import { appendMutation, deleteMutation, shuffleAssetsMutation, randomizeAssetsMutation, repeatHighValuePartMutation, appendHighValuePartMutation } from '$lib/mutations';
@@ -248,6 +248,21 @@
     function handleDrop(index: number) {
         const draggedItem = assetsWithIds.splice(dragIndex, 1)[0];
         assetsWithIds.splice(index, 0, draggedItem);
+
+        if (parsedOutput) {
+            let currentPosition = parsedOutput.assets_start_pos;
+            for (const item of assetsWithIds) {
+                item.asset.position = currentPosition;
+                if (parsedOutput.isVarInt) {
+                    const bits = valueToVarIntBits(item.asset.value, bitSize);
+                    item.asset.bitLength = bits.length;
+                    currentPosition += bits.length;
+                } else {
+                    currentPosition += item.asset.bitLength || bitSize;
+                }
+            }
+        }
+
         debouncedUpdateSerialFromAssets();
     }
 
@@ -452,10 +467,18 @@
                     <div
                         role="listitem"
                         draggable="true"
+                        class="transition-transform duration-200"
                         ondragstart={() => handleDragStart(i)}
-                        ondragover={(e) => e.preventDefault()}
+                        ondragover={(e) => {
+                            e.preventDefault();
+                            e.currentTarget.classList.add('scale-105', 'bg-black/10');
+                        }}
+                        ondragleave={(e) => {
+                            e.currentTarget.classList.remove('scale-105', 'bg-black/10');
+                        }}
                         ondrop={(e) => {
                             e.preventDefault();
+                            e.currentTarget.classList.remove('scale-105', 'bg-black/10');
                             handleDrop(i);
                         }}
                     >
