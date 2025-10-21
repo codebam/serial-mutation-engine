@@ -55,7 +55,7 @@ uniqueCount: 0,
                 console.log(`[DEBUG] Loaded ${selectedRepoTails.length} tails from the repository.`);
             }
 
-            const highValueParts = extractHighValueParts(selectedRepoTails, config.minPartSize, config.maxPartSize);
+            const highValueParts = extractHighValueParts(selectedRepoTails, config.minPartSize, config.maxPartSize, debugMode);
             const legendaryStackingChance = config.legendaryChance / 100.0;
 
             /** @param {any[]} array */
@@ -97,15 +97,16 @@ uniqueCount: 0,
             const adjustedMutableStart = Math.max(0, config.mutableStart - headerLength);
             const adjustedMutableEnd = Math.max(0, config.mutableEnd - headerLength);
 
+            const debug_logs: string[] = [];
+
             for (let i = 0; i < totalRequested; i++) {
                 if (needsRandomNumberGeneration(RANDOM_SAFETY_MARGIN)) await generateRandomNumbersOnGPU(config.gpuBatchSize);
 
                 const item = serialsToGenerate[i];
                 let serial = '';
                 let innerAttempts = 0;
-                let mutatedTail;
 
-                if (debugMode && i < 10) console.log(`\n[DEBUG] --- Generating Serial #${i + 1} (Type: ${item.tg}) ---`);
+                if (debugMode) debug_logs.push(`--- Generating Serial #${i + 1} (Type: ${item.tg}) ---`);
 
                 do {
                     const parentTail = randomChoice(selectedRepoTails);
@@ -113,16 +114,16 @@ uniqueCount: 0,
 
                     const mutation = mutationMap[item.tg];
                     if (!mutation) {
-                        console.warn(`[DEBUG] Unknown mutation type: ${item.tg}. Skipping generation for this item.`);
+                        if (debugMode) debug_logs.push(`Unknown mutation type: ${item.tg}. Skipping.`);
                         serial = parentSerial;
                         break; 
                     }
                     
-                    const mutatedSerial = mutation(parentSerial, config);
+                    const mutatedSerial = mutation(parentSerial, config, undefined, debug_logs);
                     serial = ensureCharset(mutatedSerial);
 
                     innerAttempts++;
-                    if (innerAttempts > 1 && debugMode) console.warn(`[DEBUG] Collision detected. Retrying... (Attempt ${innerAttempts})`);
+                    if (innerAttempts > 1 && debugMode) debug_logs.push(`Collision detected. Retrying... (Attempt ${innerAttempts})`);
                 } while (seenSerials.has(serial) && innerAttempts < 20);
 
                 if (!seenSerials.has(serial)) {
@@ -138,10 +139,10 @@ uniqueCount: 0,
                 if (i > 0 && i % 500 === 0)
                     self.postMessage({
                         type: 'progress',
-                        payload: { processed: i + 1, total: totalRequested },
+                        payload: { processed: i + 1, total: totalRequested, debug_logs: debug_logs },
                     });
             }
-            console.log(`[DEBUG] Generation loop finished. Generated ${generatedSerials.length} unique serials.`);
+            if (debugMode) debug_logs.push(`Generation loop finished. Generated ${generatedSerials.length} unique serials.`);
 
             const fullLines = ['state:', '  inventory:', '    items:', '      backpack:'];
             generatedSerials.forEach((item) => {
@@ -172,6 +173,7 @@ uniqueCount: 0,
 uniqueCount: generatedSerials.length,
                     totalRequested: totalRequested,
                     validationResult: null,
+                    debug_logs: debug_logs,
                 },
             });
 
@@ -184,7 +186,7 @@ uniqueCount: generatedSerials.length,
                     self.postMessage({ type: 'progress', payload: { processed: progress, total: 100, stage: 'stats' } });
                 };
                 const serialStrings = generatedSerials.map((s) => s.serial);
-                const highValueParts = calculateHighValuePartsStats(serialStrings, config.minPartSize, config.maxPartSize, onProgress);
+                const highValueParts = calculateHighValuePartsStats(serialStrings, config.minPartSize, config.maxPartSize, onProgress, config.debugMode);
                 let sortedParts = highValueParts.sort((a, b) => b[1] - a[1]);
                 const maxBars = 200;
                 if (sortedParts.length > maxBars) {

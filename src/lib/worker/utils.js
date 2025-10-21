@@ -50,7 +50,7 @@ export function getSerialTail(serial) {
  * @param {number} minPartSize
  * @param {number} maxPartSize
  */
-export function extractHighValueParts(repoTails, minPartSize, maxPartSize) {
+export function extractHighValueParts(repoTails, minPartSize, maxPartSize, debugMode) {
     console.log('[DEBUG] Starting high-value part extraction...');
 	const frequencyMap = new Map();
 	// 1. Find all repeating substrings within the size range
@@ -63,11 +63,11 @@ export function extractHighValueParts(repoTails, minPartSize, maxPartSize) {
 			}
 		}
 	}
-    if (self.debugMode) console.log(`[DEBUG] Initial frequency map size: ${frequencyMap.size}`);
+    if (debugMode) console.log(`[DEBUG] Initial frequency map size: ${frequencyMap.size}`);
 
 
 	let parts = [...frequencyMap.entries()].filter(([, count]) => count > 1).map(([part]) => part);
-    if (self.debugMode) console.log(`[DEBUG] Found ${parts.length} repeating parts.`);
+    if (debugMode) console.log(`[DEBUG] Found ${parts.length} repeating parts.`);
 
 
 	// 2. Consolidate overlapping and contained parts
@@ -96,7 +96,7 @@ export function extractHighValueParts(repoTails, minPartSize, maxPartSize) {
 		}
 	}
     console.log(`[DEBUG] Consolidated to ${parts.length} unique high-value parts.`);
-    if (self.debugMode) console.log('[DEBUG] Top 5 High-Value Parts:', parts.slice(0, 5));
+    if (debugMode) console.log('[DEBUG] Top 5 High-Value Parts:', parts.slice(0, 5));
 
 
 	// 3. Sort by length (longest first) as a final step

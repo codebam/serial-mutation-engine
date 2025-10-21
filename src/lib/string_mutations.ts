@@ -5,15 +5,15 @@ import { parsedToSerial } from './encoder';
 import * as coreMutations from './mutations';
 
 export interface StringMutation {
-    (serial: string, state: State, selectedAsset?: AssetToken): string;
+    (serial: string, state: State, selectedAsset?: AssetToken, debug_logs?: string[]): string;
 }
 
 function wrapMutation(mutation: coreMutations.Mutation): StringMutation {
-    return (serial: string, state: State, selectedAsset?: AssetToken): string => {
+    return (serial: string, state: State, selectedAsset?: AssetToken, debug_logs?: string[]): string => {
         const bytes = serialToBytes(serial);
         const parsedSerial = parse(bytes, 'fixed', state.bitSize);
-        const newParsedSerial = mutation(parsedSerial, state, selectedAsset);
-        return parsedToSerial(newParsedSerial);
+        const newParsedSerial = mutation(parsedSerial, state, selectedAsset, debug_logs);
+        return parsedToSerial(newParsedSerial, undefined, state.bitSize, debug_logs);
     };
 }
 

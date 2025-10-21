@@ -42,18 +42,22 @@ export function getInitialState(): State {
 }
 
 export interface Mutation {
-    (parsedSerial: ParsedSerial, state: State, selectedAsset?: AssetToken): ParsedSerial;
-}
-
-function randomChoice<T>(arr: T[]): T {
-    return arr[Math.floor(Math.random() * arr.length)];
+    (parsedSerial: ParsedSerial, state: State, selectedAsset?: AssetToken, debug_logs?: string[]): ParsedSerial;
 }
 
 function randomInt(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    const range = max - min + 1;
+    const random_array = new Uint32Array(1);
+    crypto.getRandomValues(random_array);
+    return Math.floor(random_array[0] / (0xFFFFFFFF + 1) * range) + min;
 }
 
-function recalculateAssetPositions(assets: AssetToken[], startPosition: number, isVarInt: boolean, bitSize: number): AssetToken[] {
+function randomChoice<T>(arr: T[]): T {
+    return arr[randomInt(0, arr.length - 1)];
+}
+
+function recalculateAssetPositions(assets: AssetToken[], startPosition: number, isVarInt: boolean, bitSize: number, debug_logs?: string[]): AssetToken[] {
+    debug_logs?.push(`Recalculating positions. isVarInt: ${isVarInt}, bitSize: ${bitSize}, startPosition: ${startPosition}`);
     let currentPosition = startPosition;
     return assets.map(asset => {
         let assetBitLength = asset.bitLength;
@@ -500,8 +504,10 @@ export const repeatHighValuePartMutation: Mutation = (parsedSerial, state) => {
     // 6. Decide whether to place it before or after.
     const placeBefore = Math.random() < 0.5;
 
-    // 7. Decide how many times to repeat.
-    const repeatCount = randomInt(1, 3);
+    const bitsPerCharacter = 8;
+    const bitsPerAsset = state.bitSize;
+    const maxNumberOfRepeats = Math.floor(((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset);
+    const repeatCount = randomInt(1, Math.max(1, maxNumberOfRepeats));
 
     // 8. Insert the asset.
     const insertIndex = placeBefore ? indexToModify : indexToModify + 1;

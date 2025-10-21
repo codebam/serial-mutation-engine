@@ -56,8 +56,10 @@ function bitsToBytes(bits: number[]): number[] {
     return bytes;
 }
 
-export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitSize: number = 6): string {
+export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitSize: number = 6, debug_logs?: string[]): string {
+    debug_logs?.push(`Encoding serial. isVarInt: ${parsed.isVarInt}`);
     const assetsToEncode = parsed.isVarInt ? parsed.assets : parsed.assets_fixed;
+    debug_logs?.push(`Assets to encode count: ${assetsToEncode.length}`);
     const asset_parts: { position: number, bits: number[], bitLength: number }[] = [];
     if (assetsToEncode) {
         for (const asset of assetsToEncode) {
@@ -185,5 +187,7 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitS
         return mirrored;
     });
 
-    return encodeBase85Bytes(mirroredBytes);
+    const finalSerial = encodeBase85Bytes(mirroredBytes);
+    debug_logs?.push(`Final encoded serial length: ${finalSerial.length}`);
+    return finalSerial;
 }
