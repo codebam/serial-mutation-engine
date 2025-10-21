@@ -200,12 +200,6 @@ function writePart(stream: Bitstream, part: Part) {
     }
 }
 
-const TOK_SEP1 = [0, 0];
-const TOK_SEP2 = [0, 1];
-const TOK_VARINT = [1, 0, 0];
-const TOK_VARBIT = [1, 1, 0];
-const TOK_PART = [1, 0, 1];
-const TOK_UNSUPPORTED_111 = [1, 1, 1];
 
 const TOKEN_BIT_PATTERNS = {
     [TOK_SEP1]: [0, 0],
