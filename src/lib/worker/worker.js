@@ -131,9 +131,7 @@ self.onmessage = async function (e) {
                                             config.random = Math.random;
                                         }
 					const newParsedSerial = mutationFunc(parsedSerial, config, undefined, debug_logs);
-					const mutatedSerial = parsedToSerial(newParsedSerial, undefined, config.bitSize, debug_logs);
-
-					serial = ensureCharset(mutatedSerial);
+					                                        const mutatedSerial = parsedToSerial(newParsedSerial, undefined, config.bitSize, debug_logs);					serial = ensureCharset(mutatedSerial);
 
 					innerAttempts++;
 					if (innerAttempts > 1 && debugMode)

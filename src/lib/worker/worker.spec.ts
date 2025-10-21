@@ -52,6 +52,7 @@ describe('Web Worker Generation', () => {
         const config = {
             ...dummyState,
             counts: { appendMutation: 10 },
+            debugMode: true,
             gpuBatchSize: 100000, // A reasonable number for the test
         };
 

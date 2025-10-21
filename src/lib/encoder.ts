@@ -170,6 +170,9 @@ export function parsedToSerial(parsed: any, original_assets?: AssetToken[], bitS
 
         const original_length = original_asset_lengths.get(part.position) || (part.isMetadata ? part.bitLength : 0);
         
+        if (debug_logs) {
+            debug_logs.push(`splicing part at rel_pos=${relative_pos} (abs_pos=${part.position}), len=${part.bitLength}, orig_len=${original_length}, assets_bits_len=${assets_bits.length}`);
+        }
         assets_bits.splice(relative_pos, original_length, ...part.bits);
     }
 

@@ -443,7 +443,7 @@ export const randomizeAssetsMutation: Mutation = (parsedSerial, state) => {
     let newAssets = assetList.map(() => {
         const maxValue = (1 << state.bitSize) - 1;
         return {
-            value: BigInt(randomInt(0, maxValue)),
+            value: BigInt(randomInt(0, maxValue, state)),
             bitLength: state.bitSize,
             bits: [],
             position: 0
