@@ -79,7 +79,7 @@ self.onmessage = async function (e) {
                 if (i > 0 && i % 100 === 0) {
                     self.postMessage({
                         type: 'progress',
-                        payload: { stage: 'generating', processed: i + 1, total: totalRequested, mutation: item.tg }
+                        payload: { stage: 'generating', processed: i + 1, total: totalRequested, mutation: item.tg, difficulty: config.difficulties[item.tg] }
                     });
                 }
             }

@@ -102,7 +102,7 @@
                         } else if (payload.stage === 'merging') {
                             statusMessage = `Merging YAML... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
                         } else if (payload.stage === 'generating') {
-                            statusMessage = `Generating (${payload.mutation})... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
+                            statusMessage = `Generating (${payload.mutation}, Difficulty: ${payload.difficulty.toFixed(1)})... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
                         } else {
                             statusMessage = `Generating... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
                         }
