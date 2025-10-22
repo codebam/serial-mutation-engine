@@ -1,44 +1,85 @@
-import { parseSerial } from './parser.js';
-import { encodeSerial } from './encoder.js';
-import type { Serial, Block, Part } from './types.js';
-import { TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART, SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE } from './types.js';
+import { parseSerial } from './parser';
+import { encodeSerial } from './encoder';
+import type { Serial, Block, Part } from './types';
+import { TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART, SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE } from './types';
 
 function toCustomFormat(p: Serial): string {
     if (!p) return '';
+    const parts: string[] = [];
     const firstPartIndex = p.findIndex(block => block.token === TOK_PART);
-    return p.map((block, index) => {
+
+    for (let i = 0; i < p.length; i++) {
+        const block = p[i];
+        let blockStr = '';
+
         switch (block.token) {
             case TOK_SEP1:
-                return '|';
+                blockStr = '|';
+                break;
             case TOK_SEP2:
-                return ',';
+                blockStr = ',';
+                break;
             case TOK_VARINT:
             case TOK_VARBIT:
-                if (firstPartIndex === -1 || index < firstPartIndex) {
-                    return block.value;
+                if (firstPartIndex === -1 || i < firstPartIndex) {
+                    blockStr = String(block.value);
+                } else {
+                    blockStr = `{${block.value}}`;
                 }
-                return `{${block.value}}`;
+                break;
             case TOK_PART:
                 if (block.part) {
                     if (block.part.subType === SUBTYPE_NONE) {
-                        return `{${block.part.index}}`;
+                        blockStr = `{${block.part.index}}`;
                     }
                     if (block.part.subType === SUBTYPE_INT) {
-                        return `{${block.part.index}:${block.part.value}}`;
+                        blockStr = `{${block.part.index}:${block.part.value}}`;
                     }
                     if (block.part.subType === SUBTYPE_LIST) {
                         const values = block.part.values?.map(v => v.value).join(' ') || '';
-                        return `{${block.part.index}:[${values}]}`;
+                        blockStr = `{${block.part.index}:[${values}]}`;
                     }
+                } else {
+                    blockStr = '{?}';
                 }
-                return '{?}';
+                break;
             default:
-                return '?';
+                blockStr = '?';
+                break;
         }
-    }).join(' ');
+        parts.push(blockStr);
+    }
+
+    let result = '';
+    for (let i = 0; i < parts.length; i++) {
+        const currentPart = parts[i];
+        const nextPart = i < parts.length - 1 ? parts[i+1] : null;
+
+        const currentIsSeparator = currentPart === '|' || currentPart === ',';
+        const nextIsSeparator = nextPart === '|' || nextPart === ',';
+
+        result += currentPart;
+
+        if (i < parts.length - 1) {
+            if (currentIsSeparator && nextIsSeparator) {
+                // No space between consecutive separators
+                continue;
+            } else if (currentIsSeparator) {
+                // Space after a separator if not followed by another separator
+                result += ' ';
+            } else if (!nextIsSeparator) {
+                // Space between non-separator assets
+                result += ' ';
+            }
+        }
+    }
+
+    return result.trim();
 }
 
 function parseCustomFormat(custom: string): Serial {
+    // This function needs to be updated to handle the new spacing format
+    // For now, it will remain as is, assuming input will be space-separated
     const tokens = custom.split(' ');
     const newParsed: Serial = [];
     for (const token of tokens) {
