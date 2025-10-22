@@ -4,7 +4,7 @@ self.postMessage({ type: 'worker_loaded' });
 import { parseSerial } from '../parser';
 import { encodeSerial } from '../encoder';
 import * as coreMutations from '../mutations';
-import { mergeSerial } from '../mutations';
+import { mergeSerials } from '../mutations';
 
 self.onmessage = async function (e) {
     const { type, payload } = e.data;
@@ -44,6 +44,8 @@ self.onmessage = async function (e) {
             const seenSerials = new Set();
             const generatedSerials = [];
 
+            self.postMessage({ type: 'progress', payload: { stage: 'generating', processed: 0, total: totalRequested } });
+
             for (let i = 0; i < totalRequested; i++) {
                 const item = serialsToGenerate[i];
                 let serial = '';
@@ -70,18 +72,18 @@ self.onmessage = async function (e) {
                     generatedSerials.push(serial);
                     selectedRepoSerials.push(serial);
                 }
-                if (i > 0 && i % 500 === 0)
+                if (i > 0 && i % 100 === 0) {
                     self.postMessage({
                         type: 'progress',
-                        payload: { processed: i + 1, total: totalRequested }
+                        payload: { stage: 'generating', processed: i + 1, total: totalRequested, mutation: item.tg }
                     });
+                }
             }
 
-            let finalYaml = config.baseYaml;
-            for (const serial of generatedSerials) {
-                const result = mergeSerial(finalYaml, serial);
-                finalYaml = result.newYaml;
-            }
+            self.postMessage({ type: 'progress', payload: { stage: 'merging', processed: 0, total: 1 } });
+            const { newYaml: finalYaml } = mergeSerials(config.baseYaml, generatedSerials);
+            self.postMessage({ type: 'progress', payload: { stage: 'merging', processed: 1, total: 1 } });
+
 
             self.postMessage({
                 type: 'complete',

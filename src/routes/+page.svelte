@@ -101,6 +101,10 @@
                         progress = (payload.processed / payload.total) * 100;
                         if (payload.stage === 'stats') {
                             statusMessage = `Generating Statistics... ${Math.round(progress)}%`;
+                        } else if (payload.stage === 'merging') {
+                            statusMessage = `Merging YAML... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
+                        } else if (payload.stage === 'generating') {
+                            statusMessage = `Generating (${payload.mutation})... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
                         } else {
                             statusMessage = `Generating... ${payload.processed.toLocaleString()} / ${payload.total.toLocaleString()}`;
                         }
@@ -174,7 +178,7 @@
 
     function startGeneration() {
         isGenerating = true;
-        statusMessage = 'Sending job...';
+        statusMessage = 'Initializing...';
         progress = 0;
         filteredYaml = '';
         const config = {
