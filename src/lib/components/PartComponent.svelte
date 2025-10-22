@@ -12,6 +12,8 @@
         onUpdatePartList: (part: Part, index: number, value: number) => void;
     }>();
 
+    console.log('Part in PartComponent:', part);
+
     function updateIndex(value: number) {
         part.index = value;
         onUpdatePart(part);
@@ -44,6 +46,9 @@
 
 <div class="flex items-center gap-2">
     <PartName {part} {partService} {itemType} />
+    {#if part.subType === SUBTYPE_INT}
+        <span class="text-sm text-gray-400 ml-2">{`{${part.subType}:${part.value}}`}</span>
+    {/if}
     {#if part.subType === SUBTYPE_NONE}
         <Asset value={part.index} onUpdate={updateIndex} />
     {:else}

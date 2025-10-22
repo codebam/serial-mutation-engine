@@ -144,3 +144,34 @@ export function deserialized_to_base85(custom: string): string {
     const parsed = parseCustomFormat(custom);
     return encodeSerial(parsed);
 }
+
+export function parsePartString(partStr: string): Block | null {
+    if (partStr.startsWith('{') && partStr.endsWith('}')) {
+        const content = partStr.slice(1, -1);
+        const parts = content.split(':');
+
+        if (parts.length === 1) {
+            // SUBTYPE_NONE: {index}
+            const index = parseInt(parts[0], 10);
+            if (!isNaN(index)) {
+                return { token: TOK_PART, part: { subType: SUBTYPE_NONE, index } };
+            }
+        } else if (parts.length === 2) {
+            const index = parseInt(parts[0], 10);
+            const valueStr = parts[1];
+            if (valueStr.startsWith('[') && valueStr.endsWith(']')) {
+                // SUBTYPE_LIST: {index:[values]}
+                const valuesStr = valueStr.slice(1, -1);
+                const values = valuesStr !== '' ? valuesStr.split(' ').map(v => ({ type: bestTypeForValue(parseInt(v, 10)), value: parseInt(v, 10) })) : [];
+                return { token: TOK_PART, part: { subType: SUBTYPE_LIST, index, values } };
+            } else {
+                // SUBTYPE_INT: {index:value}
+                const value = parseInt(valueStr, 10);
+                if (!isNaN(index) && !isNaN(value)) {
+                    return { token: TOK_PART, part: { subType: SUBTYPE_INT, index, value } };
+                }
+            }
+        }
+    }
+    return null;
+}

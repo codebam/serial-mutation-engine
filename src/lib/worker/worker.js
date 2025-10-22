@@ -40,84 +40,25 @@ self.onmessage = async function (e) {
             const key = Object.keys(data)[0];
             let items = data[key];
 
-            if (name === 'regular_grenades') {
-                if (items.type8) {
-                    items.type8.forEach(item => {
-                        const match = item.universalPart.match(/\{(\d+):\[(\d+)\]\}/);
-                        if (match) {
-                            const subType = parseInt(match[1]);
-                            const index = parseInt(match[2]);
-                            const partInfo = {
-                                name: item.effect || item.perkType || item.name,
-                                subType,
-                                index,
-                                fileName: name,
-                                code: item.universalPart
-                            };
-                            allParts.push(partInfo);
-                            if (!partMap.has(subType)) partMap.set(subType, new Map());
-                            partMap.get(subType).set(index, partInfo);
-                        }
-                    });
-                }
-                if (items.type245) {
-                    items.type245.forEach(item => {
-                        const match = item.universalPart.match(/\{(\d+):(\d+)\}/);
-                        if (match) {
-                            const subType = parseInt(match[1]);
-                            const index = parseInt(match[2]);
-                            const partInfo = {
-                                name: item.effect || item.perkType || item.name,
-                                subType,
-                                index,
-                                fileName: name,
-                                code: item.universalPart
-                            };
-                            allParts.push(partInfo);
-                            if (!partMap.has(subType)) partMap.set(subType, new Map());
-                            partMap.get(subType).set(index, partInfo);
-                        }
-                    });
-                }
-            } else if (Array.isArray(items)) {
+            if (Array.isArray(items)) {
                 items.forEach(item => {
                     if (!item.universalPart) return;
-                    const match = item.universalPart.match(/\{(\d+):(?:\|(\d+)\||(\d+))\}/) || item.universalPart.match(/\{(\d+):\[(\d+)(?: \d+)?\]\}/);
-                    if (match) {
-                        const subType = parseInt(match[1]);
-                        const index = parseInt(match[2] || match[3]);
-                        const partInfo = {
-                            name: item.effect || item.perkType || item.name,
-                            subType,
-                            index,
-                            fileName: name,
-                            code: item.universalPart
-                        };
-                        allParts.push(partInfo);
-                        if (!partMap.has(subType)) partMap.set(subType, new Map());
-                        partMap.get(subType).set(index, partInfo);
-                    }
+                    allParts.push({
+                        name: item.effect || item.perkType || item.name,
+                        universalPart: item.universalPart,
+                        fileName: name
+                    });
                 });
             } else if (typeof items === 'object') {
                 for (const manufacturer in items) {
                     if(Array.isArray(items[manufacturer])) {
                         items[manufacturer].forEach(item => {
                             if (!item.universalPart) return;
-                            const match = item.universalPart.match(/\{(\d+):(\d+)\}/);
-                            if (match) {
-                                const subType = parseInt(match[1]);
-                                const index = parseInt(match[2]);
-                                const partInfo = {
-                                    name: item.perk || item.partName,
-                                    subType,
-                                    index,
-                                    fileName: name,
-                                    code: item.universalPart
-                                };
-                                allParts.push(partInfo);
-                                if (!partMap.has(subType)) partMap.set(subType, new Map());
-                                partMap.get(subType).set(index, partInfo);
-                            }
+                            allParts.push({
+                                name: item.name || item.perk || item.partName,
+                                universalPart: item.universalPart,
+                                fileName: name
+                            });
                         });
                     }
                 }
@@ -127,13 +68,7 @@ self.onmessage = async function (e) {
         self.postMessage({
             type: 'part_data_loaded',
             payload: {
-                allParts: allParts.sort((a, b) => {
-                    if (a.name && b.name) {
-                        return a.name.localeCompare(b.name);
-                    }
-                    return 0;
-                }),
-                partMap: partMap
+                rawParts: allParts
             }
         });
     } else if (type === 'parse_serial') {

@@ -1,7 +1,12 @@
+import { parsePartString } from './custom_parser';
+import { SUBTYPE_INT, SUBTYPE_LIST, TOK_PART } from './types';
+import { toCustomFormat } from './custom_parser';
 export class PartService {
     worker: Worker;
     allParts = [];
     partMap = new Map();
+
+    isDataLoaded = false;
 
     constructor(worker: Worker) {
         this.worker = worker;
@@ -12,8 +17,41 @@ export class PartService {
             this.worker.addEventListener('message', (e) => {
                 const { type, payload } = e.data;
                 if (type === 'part_data_loaded') {
-                    this.allParts = payload.allParts;
-                    this.partMap = payload.partMap;
+                    this.allParts = [];
+                    this.partMap = new Map();
+
+                    for (const rawPart of payload.rawParts) {
+                        const partBlock = parsePartString(rawPart.universalPart);
+                        if (partBlock && partBlock.part) {
+                            const partInfo: any = {
+                                name: rawPart.name,
+                                subType: partBlock.part.subType,
+                                index: partBlock.part.index,
+                                fileName: rawPart.fileName,
+                                code: rawPart.universalPart
+                            };
+                            if (partBlock.part.value !== undefined) {
+                                partInfo.value = partBlock.part.value;
+                            }
+                            if (partBlock.part.values !== undefined) {
+                                partInfo.values = partBlock.part.values;
+                            }
+
+                            this.allParts.push(partInfo);
+                            const key = `${partInfo.subType}:${partInfo.index}:${partInfo.value}`;
+                            this.partMap.set(key, partInfo);
+                        }
+                    }
+                    // Sort allParts here
+                    this.allParts.sort((a, b) => {
+                        if (a.name && b.name) {
+                            return a.name.localeCompare(b.name);
+                        }
+                        return 0;
+                    });
+
+                    this.isDataLoaded = true;
+                    console.log('Manual lookup for {1:12}:', this.partMap.get('1:1:12'));
                     resolve();
                 }
             });
@@ -21,14 +59,9 @@ export class PartService {
         });
     }
 
-    findPartName(part) {
-        if (this.partMap.has(part.subType)) {
-            const subTypeMap = this.partMap.get(part.subType);
-            if (subTypeMap.has(part.index)) {
-                return subTypeMap.get(part.index).name;
-            }
-        }
-        return null;
+    findPartInfo(part) {
+        const key = `${part.subType}:${part.index}:${part.value}`;
+        return this.partMap.get(key);
     }
 
     getParts(itemType) {

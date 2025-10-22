@@ -7,9 +7,9 @@
         partService: PartService;
     }>();
 
-    let partName = $derived(partService.findPartName(part));
+    let partInfo = $derived(partService.isDataLoaded ? partService.findPartInfo(part) : undefined);
 </script>
 
-{#if partName}
-    <span class="text-sm text-gray-400 ml-2">({partName})</span>
+{#if partInfo && partInfo.name}
+    <span class="text-sm text-gray-400 ml-2">({partInfo.name})</span>
 {/if}
