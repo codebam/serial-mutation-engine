@@ -585,7 +585,7 @@
                     <Accordion {title} open={true}>
                         <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={appState.rules} />
                         {#snippet actions()}
-                            <button onclick={() => toggleMaximize(editor.id)} class="text-gray-400 hover:text-white transition-colors" aria-label="Maximize/Minimize Editor">
+                            <button onclick={(e) => { e.stopPropagation(); e.preventDefault(); toggleMaximize(editor.id); }} class="text-gray-400 hover:text-white transition-colors" aria-label="Maximize/Minimize Editor">
                                 {#if maximizedEditorId === editor.id}
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
@@ -597,7 +597,7 @@
                                 {/if}
                             </button>
                             <button
-                                onclick={() => removeSerialEditor(editor.id)}
+                                onclick={(e) => { e.stopPropagation(); e.preventDefault(); removeSerialEditor(editor.id); }}
                                 class="text-gray-400 hover:text-white transition-colors"
                                 aria-label="Remove Serial Editor"
                             >
