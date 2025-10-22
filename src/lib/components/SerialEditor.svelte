@@ -8,7 +8,7 @@
     import AddBlockMenu from './AddBlockMenu.svelte';
     import DebugView from './DebugView.svelte';
 
-    let { serial, onSerialUpdate, onMaximize, isMaximized } = $props<{ serial: string; onSerialUpdate: (newSerial: string) => void; onMaximize: () => void; isMaximized: boolean; }>();
+    let { serial, onSerialUpdate } = $props<{ serial: string; onSerialUpdate: (newSerial: string) => void; }>();
     let parsed: Serial = $state([]);
     let error: string | null = $state(null);
 
@@ -109,9 +109,6 @@
         ></textarea>
         <button onclick={copyUrl} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all h-full">
             {copyUrlText}
-        </button>
-        <button onclick={onMaximize} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all h-full">
-            {isMaximized ? 'Minimize' : 'Maximize'}
         </button>
     </div>
 </FormGroup>

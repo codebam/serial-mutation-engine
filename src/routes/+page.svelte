@@ -303,10 +303,14 @@
         }
     }
 
-    let isMaximized = $state(false);
+    let maximizedEditorId = $state<number | null>(null);
 
-    function onMaximize() {
-        isMaximized = !isMaximized;
+    function toggleMaximize(editorId: number) {
+        if (maximizedEditorId === editorId) {
+            maximizedEditorId = null;
+        } else {
+            maximizedEditorId = editorId;
+        }
     }
 
     const inputClasses =
@@ -323,7 +327,7 @@
 
 <div class="p-4 md:p-8 pt-0 md:pt-0">
     <main class="grid grid-cols-1 xl:grid-cols-3 gap-8 max-w-screen-3xl mx-auto">
-        {#if !isMaximized}
+        {#if maximizedEditorId === null}
         <div class="flex flex-col gap-4">
             <Accordion title="📦 Repository & Base Seed" open={true}>
                 <FormGroup label="Repository">
@@ -574,40 +578,47 @@
             </div>
         </div>
         {/if}
-        <div class="flex flex-col gap-4 h-full {isMaximized ? 'col-span-3' : 'xl:col-span-2 2xl:col-span-1'}">
+        <div class="flex flex-col gap-4 h-full {maximizedEditorId !== null ? 'col-span-3' : 'xl:col-span-2 2xl:col-span-1'}">
             {#each serialEditors as editor (editor.id)}
-                {@const title = `⚙️ Serial Editor #${editor.id}`}
-                <Accordion {title} open={true}>
-                    <SerialEditor 
-                        serial={editor.serial} 
-                        onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} 
-                        rules={appState.rules} 
-                        onMaximize={onMaximize}
-                        isMaximized={isMaximized}
-                    />
-                    {#snippet actions()}
-                        <button
-                            onclick={() => removeSerialEditor(editor.id)}
-                            class="text-gray-400 hover:text-white transition-colors"
-                            aria-label="Remove Serial Editor"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="w-5 h-5"
+                {#if maximizedEditorId === null || maximizedEditorId === editor.id}
+                    {@const title = `⚙️ Serial Editor #${editor.id}`}
+                    <Accordion {title} open={true}>
+                        <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={appState.rules} />
+                        {#snippet actions()}
+                            <button onclick={() => toggleMaximize(editor.id)} class="text-gray-400 hover:text-white transition-colors" aria-label="Maximize/Minimize Editor">
+                                {#if maximizedEditorId === editor.id}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                                    </svg>
+                                {:else}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v16.5h16.5V3.75H3.75z" />
+                                    </svg>
+                                {/if}
+                            </button>
+                            <button
+                                onclick={() => removeSerialEditor(editor.id)}
+                                class="text-gray-400 hover:text-white transition-colors"
+                                aria-label="Remove Serial Editor"
                             >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M6 18L18 6M6 6l12 12"
-                                ></path>
-                            </svg>
-                        </button>
-                    {/snippet}
-                </Accordion>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="w-5 h-5"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    ></path>
+                                </svg>
+                            </button>
+                        {/snippet}
+                    </Accordion>
+                {/if}
             {/each}
             <div class="flex justify-end">
                 <button onclick={addSerialEditor} class="{btnClasses.tertiary} mb-4">+ Add Serial Editor</button>
