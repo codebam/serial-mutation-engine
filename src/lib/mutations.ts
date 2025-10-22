@@ -1,4 +1,4 @@
-import type { Serial, Block,  TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, TOK_SEP2, TOK_UNSUPPORTED_111 } from './types';
+import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, TOK_SEP2, TOK_UNSUPPORTED_111 } from './types';
 import { parseSerial} from './parser';
 
 export function getInitialState(): any {
