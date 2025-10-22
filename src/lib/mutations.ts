@@ -464,96 +464,100 @@ export function mergeSerials(yaml: string, serialsToInsert: string[]): { newYaml
         return { newYaml: yaml, message: 'No serials to merge.' };
     }
 
-    if (yaml.includes('backpack: null')) {
-        const backpackLine = yaml.split('\n').find(line => line.trim() === 'backpack: null');
-        const indent = ' '.repeat(backpackLine!.search(/\S/));
-        const newSlots = serialsToInsert.map((s, i) => [
+    const lines = yaml.split('\n');
+    let backpackIndex = lines.findIndex(line => line.trim().startsWith('backpack:'));
+
+    if (backpackIndex === -1) {
+        // Case 1: No backpack section, add one to the end
+        const newStructure = [
+            'state:',
+            '  inventory:',
+            '    items:',
+            '      backpack:',
+            ...serialsToInsert.flatMap((s, i) => [
+                `        slot_${i}:`,
+                `          serial: '${s}'`
+            ])
+        ];
+        const newYaml = (yaml.trim() === '' ? '' : yaml + '\n') + newStructure.join('\n');
+        return { newYaml, message: '✅ Created new backpack structure and merged serials.' };
+    }
+
+    const backpackLine = lines[backpackIndex];
+    const backpackIndent = backpackLine.search(/\S/);
+
+    if (backpackLine.trim() === 'backpack: null') {
+        // Case 2: backpack: null, replace it
+        const indent = ' '.repeat(backpackIndent);
+        const newSlotLines = serialsToInsert.flatMap((s, i) => [
             `${indent}  slot_${i}:`,
             `${indent}    serial: '${s}'`
-        ].join('\n')).join('\n');
-        const newBackpackString = `${indent}backpack:\n${newSlots}`;
-        const newYaml = yaml.replace(backpackLine!, newBackpackString);
-        return { newYaml, message: `✅ Merged ${serialsToInsert.length} serials into new backpack.` };
-    } else if (yaml.includes('backpack:')) {
-        let lines = yaml.split('\n');
-        let backpackIndex = -1;
-        let backpackIndent = -1;
+        ]);
+        lines.splice(backpackIndex, 1, `${indent}backpack:`, ...newSlotLines);
+        return { newYaml: lines.join('\n'), message: `✅ Merged ${serialsToInsert.length} serials into new backpack.` };
+    }
 
-        for (let i = 0; i < lines.length; i++) {
-            if (lines[i].trim().startsWith('backpack:')) {
-                backpackIndex = i;
-                backpackIndent = lines[i].search(/\S/);
-                break;
-            }
+    // Case 3: Existing backpack section
+    let lastSlot = -1;
+    let lastSlotLineIndex = -1;
+
+    for (let i = backpackIndex + 1; i < lines.length; i++) {
+        const line = lines[i];
+        const lineIndent = line.search(/\S/);
+
+        if (line.trim() !== '' && lineIndent <= backpackIndent) {
+            break; // End of backpack section
         }
 
-        if (backpackIndex === -1) { // Should not happen due to the includes check, but for safety
-            return createNewBackpack(yaml, serialsToInsert);
+        const slotMatch = line.match(/^\s*slot_(\d+):/);
+        if (slotMatch) {
+            lastSlot = Math.max(lastSlot, parseInt(slotMatch[1], 10));
+            lastSlotLineIndex = i;
         }
+    }
 
-        let lastSlot = -1;
-        let lastSlotLineIndex = -1;
+    let insertionIndex;
+    let indent;
 
-        for (let i = backpackIndex + 1; i < lines.length; i++) {
+    if (lastSlotLineIndex !== -1) {
+        const lastSlotIndent = lines[lastSlotLineIndex].search(/\S/);
+        indent = ' '.repeat(lastSlotIndent);
+        insertionIndex = lastSlotLineIndex + 1;
+
+        // Find the end of the last slot's content
+        for (let i = lastSlotLineIndex + 1; i < lines.length; i++) {
             const line = lines[i];
             const lineIndent = line.search(/\S/);
-
-            if (line.trim() !== '' && lineIndent <= backpackIndent) {
-                lastSlotLineIndex = i - 1;
+            if (line.trim() === '' || lineIndent > lastSlotIndent) {
+                insertionIndex = i;
+            } else {
                 break;
             }
-
-            const slotMatch = line.match(/^\s*slot_(\d+):/);
-            if (slotMatch) {
-                lastSlot = Math.max(lastSlot, parseInt(slotMatch[1], 10));
-                lastSlotLineIndex = i;
-                 for (let j = i + 1; j < lines.length; j++) {
-                    const subLine = lines[j];
-                    const subLineIndent = subLine.search(/\S/);
-                    if (subLine.trim() !== '' && subLineIndent <= lineIndent) {
-                        lastSlotLineIndex = j -1;
-                        break;
-                    }
-                    lastSlotLineIndex = j;
-                }
-            }
-             if (lastSlotLineIndex === -1) { // Reached end of file
-                    lastSlotLineIndex = lines.length -1;
-            }
         }
-        if (lastSlotLineIndex === -1) { // Backpack has no slots
-             lastSlotLineIndex = backpackIndex;
+         // Find the correct insertion point after the last slot
+        for (let i = lastSlotLineIndex + 1; i < lines.length; i++) {
+            const line = lines[i];
+            const lineIndent = line.search(/\S/);
+            if (line.trim() !== '' && lineIndent <= lastSlotIndent) {
+                insertionIndex = i;
+                break;
+            }
+            insertionIndex = i + 1;
         }
 
-        const startSlotNum = lastSlot + 1;
-        const indent = ' '.repeat(backpackIndent + 2);
-        const newSlotLines: string[] = [];
-        serialsToInsert.forEach((s, i) => {
-            newSlotLines.push(`${indent}slot_${startSlotNum + i}:`);
-            newSlotLines.push(`${indent}  serial: '${s}'`);
-        });
-
-        lines.splice(lastSlotLineIndex + 1, 0, ...newSlotLines);
-        const newYaml = lines.join('\n');
-        return { newYaml, message: `✅ Merged ${serialsToInsert.length} serials.` };
     } else {
-        return createNewBackpack(yaml, serialsToInsert);
+        // No slots in the backpack yet
+        indent = ' '.repeat(backpackIndent + 2);
+        insertionIndex = backpackIndex + 1;
     }
-}
 
-function createNewBackpack(yaml: string, serialsToInsert: string[]) {
-    const newSlots = serialsToInsert.map((s, i) => [
-        '        slot_0:',
-        `          serial: '${s}'`
-    ].join('\n')).join('\n');
+    const startSlotNum = lastSlot + 1;
+    const newSlotLines = serialsToInsert.flatMap((s, i) => [
+        `${indent}slot_${startSlotNum + i}:`,
+        `${indent}  serial: '${s}'`
+    ]);
 
-    const newStructure = [
-        'state:',
-        '  inventory:',
-        '    items:',
-        '      backpack:',
-        ...serialsToInsert.map((s, i) => `        slot_${i}:\n          serial: '${s}'`).join('\n').split('\n')
-    ];
-    const newYaml = (yaml.trim() === '' ? '' : yaml + '\n') + newStructure.join('\n');
-    return { newYaml, message: '✅ Created new backpack structure and merged serials.' };
+    lines.splice(insertionIndex, 0, ...newSlotLines);
+    const newYaml = lines.join('\n');
+    return { newYaml, message: `✅ Merged ${serialsToInsert.length} serials.` };
 }
