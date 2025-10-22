@@ -1,4 +1,3 @@
-
 export const UINT4_MIRROR: number[] = [];
 for (let i = 0; i < 16; i++) {
     UINT4_MIRROR[i] = (i & 0x01) << 3 | (i & 0x02) << 1 | (i & 0x04) >> 1 | (i & 0x08) >> 3;

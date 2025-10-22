@@ -1,6 +1,6 @@
-import { Bitstream } from './bitstream';
-import type { Serial, Block, Part } from './types';
-import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART } from './types';
+import { Bitstream } from './bitstream.js';
+import type { Serial, Block, Part } from './types.js';
+import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART } from './types.js';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 

@@ -1,6 +1,6 @@
-import { Bitstream, UINT4_MIRROR, UINT5_MIRROR } from './bitstream';
-import type { Serial, Block, Part } from './types';
-import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_UNSUPPORTED_111 } from './types';
+import { Bitstream, UINT4_MIRROR, UINT5_MIRROR } from './bitstream.js';
+import type { Serial, Block, Part } from './types.js';
+import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_UNSUPPORTED_111 } from './types.js';
 
 const BASE85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
