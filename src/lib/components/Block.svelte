@@ -22,7 +22,7 @@
 
 </script>
 
-<div class="flex flex-col gap-2 p-2 bg-gray-800 border border-gray-700 rounded-md" draggable="true" ondragstart={handleDragStart}>
+<div class="flex flex-col gap-2 p-2 bg-gray-800 border border-gray-700 rounded-md" draggable="true" ondragstart={handleDragStart} role="listitem">
     <div class="flex items-center gap-2">
         <button class="text-gray-400 hover:text-white">☰</button>
         <BlockContent {block} {onUpdateBlockValue} {onUpdatePart} {onUpdatePartList} />

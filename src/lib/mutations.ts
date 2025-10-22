@@ -33,7 +33,6 @@ export function getInitialState(): any {
         },
         generateStats: false,
         debugMode: false,
-        bitSize: 6,
     };
 }
 
@@ -292,7 +291,7 @@ export const shuffleAssetsMutation: Mutation = (serial, state) => {
 export const randomizeAssetsMutation: Mutation = (serial, state) => {
     const assetList = blocksToValues(serial);
     let newAssets = assetList.map(() => {
-        const maxValue = (1 << state.bitSize) - 1;
+        const maxValue = 84;
         return randomInt(0, maxValue);
     });
     return valuesToBlocks(newAssets);
@@ -342,7 +341,7 @@ export const repeatHighValuePartMutation: Mutation = (serial, state) => {
     const placeBefore = Math.random() < 0.5;
 
     const bitsPerCharacter = 8;
-    const bitsPerAsset = state.bitSize;
+    const bitsPerAsset = 8;
     const maxNumberOfRepeats = Math.floor(((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset);
     const repeatCount = randomInt(1, Math.max(1, maxNumberOfRepeats));
 
@@ -384,7 +383,7 @@ export const appendHighValuePartMutation: Mutation = (serial, state) => {
 
     // 2. Determine number of appends.
     const bitsPerCharacter = 8; // Approximate bits per character in the final encoded string
-    const bitsPerAsset = state.bitSize;
+    const bitsPerAsset = 8;
     const maxNumberOfAppends = Math.floor(((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset);
     const numberOfAppends = randomInt(1, Math.max(1, maxNumberOfAppends));
 
@@ -438,12 +437,10 @@ export const repeatSelectedAssetMutation: Mutation = (serial, state) => {
     return valuesToBlocks(newAssets);
 };
 
-export function mergeSerial(currentYaml: string, baseYaml: string, serialToInsert: string): { newYaml: string, message: string } {
-    if (!baseYaml) {
-        return { newYaml: currentYaml, message: 'Please select a base YAML file first.' };
+export function mergeSerial(yaml: string, serialToInsert: string): { newYaml: string, message: string } {
+    if (!yaml) {
+        return { newYaml: '', message: 'Please select a base YAML file first.' };
     }
-
-    let yaml = currentYaml || baseYaml;
 
     if (yaml.includes('backpack: null')) {
         const backpackLine = yaml.split('\n').find(line => line.trim() === 'backpack: null');
@@ -461,29 +458,51 @@ export function mergeSerial(currentYaml: string, baseYaml: string, serialToInser
         let backpackIndent = -1;
 
         for (let i = 0; i < lines.length; i++) {
-            if (lines[i].trim() === 'backpack:') {
+            if (lines[i].trim().startsWith('backpack:')) {
                 backpackIndex = i;
                 backpackIndent = lines[i].search(/\S/);
                 break;
             }
         }
 
+        if (backpackIndex === -1) { // Should not happen due to the includes check, but for safety
+            return createNewBackpack(yaml, serialToInsert);
+        }
+
         let lastSlot = -1;
-        let endOfBackpackIndex = -1;
+        let lastSlotLineIndex = -1;
 
         for (let i = backpackIndex + 1; i < lines.length; i++) {
-            if (lines[i].trim() !== '' && lines[i].search(/\S/) <= backpackIndent) {
-                endOfBackpackIndex = i;
+            const line = lines[i];
+            const lineIndent = line.search(/\S/);
+
+            if (line.trim() !== '' && lineIndent <= backpackIndent) {
+                lastSlotLineIndex = i -1; // The line before this is the last line of the backpack
                 break;
             }
-            const slotMatch = lines[i].match(/^\s*slot_(\d+):/);
+
+            const slotMatch = line.match(/^\s*slot_(\d+):/);
             if (slotMatch) {
                 lastSlot = Math.max(lastSlot, parseInt(slotMatch[1], 10));
+                // Find the end of this slot block to set the insertion point
+                for (let j = i + 1; j < lines.length; j++) {
+                    const subLine = lines[j];
+                    const subLineIndent = subLine.search(/\S/);
+                    if (subLine.trim() !== '' && subLineIndent <= lineIndent) {
+                        lastSlotLineIndex = j -1;
+                        break;
+                    }
+                    lastSlotLineIndex = j;
+                }
+                 if (lastSlotLineIndex === -1) { // Reached end of file
+                    lastSlotLineIndex = lines.length -1;
+                }
             }
         }
-        if (endOfBackpackIndex === -1) {
-            endOfBackpackIndex = lines.length;
+        if (lastSlotLineIndex === -1) { // Backpack has no slots
+             lastSlotLineIndex = backpackIndex;
         }
+
 
         const nextSlotNum = lastSlot + 1;
         const indent = ' '.repeat(backpackIndent + 2);
@@ -492,19 +511,23 @@ export function mergeSerial(currentYaml: string, baseYaml: string, serialToInser
             `${indent}  serial: '${serialToInsert}'`
         ];
 
-        lines.splice(endOfBackpackIndex, 0, ...newSlotLines);
+        lines.splice(lastSlotLineIndex + 1, 0, ...newSlotLines);
         const newYaml = lines.join('\n');
         return { newYaml, message: `✅ Merged serial into slot_${nextSlotNum}.` };
     } else {
-        const newStructure = [
-            'state:',
-            '  inventory:',
-            '    items:',
-            '      backpack:',
-            '        slot_0:',
-            `          serial: '${serialToInsert}'`
-        ];
-        const newYaml = (yaml.trim() === '' ? '' : yaml + '\n') + newStructure.join('\n');
-        return { newYaml, message: '✅ Created new backpack structure and merged serial.' };
+        return createNewBackpack(yaml, serialToInsert);
     }
+}
+
+function createNewBackpack(yaml: string, serialToInsert: string) {
+    const newStructure = [
+        'state:',
+        '  inventory:',
+        '    items:',
+        '      backpack:',
+        '        slot_0:',
+        `          serial: '${serialToInsert}'`
+    ];
+    const newYaml = (yaml.trim() === '' ? '' : yaml + '\n') + newStructure.join('\n');
+    return { newYaml, message: '✅ Created new backpack structure and merged serial.' };
 }

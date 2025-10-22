@@ -186,6 +186,8 @@
             gpuBatchSize: 250000,
             generateStats: appState.generateStats,
             debugMode: appState.debugMode,
+
+            baseYaml: baseYaml,
         };
         console.log('[DEBUG] Sending message to worker:', { type: 'generate', payload: config });
         worker.postMessage({ type: 'generate', payload: config });

@@ -1,12 +1,11 @@
 
 <script lang="ts">
-	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false, bitSize = 6, selected = false, onClick = () => {} } = $props<{
+	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false, selected = false, onClick = () => {} } = $props<{
 		value: number;
 		onUpdate: (newValue: number) => void;
         onDelete?: () => void;
 		color?: string;
         isVarInt?: boolean;
-        bitSize?: number;
         selected?: boolean;
         onClick?: () => void;
 	}>();
@@ -30,8 +29,6 @@
 
         if (newValue < 0) {
             newValue = 0;
-        } else if (!isVarInt && newValue >= (1 << bitSize)) {
-            newValue = (1 << bitSize) - 1;
         }
 
         localValue = newValue.toString(10);
