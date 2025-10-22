@@ -1,11 +1,15 @@
 {
 	"name": "@codebam/u-serial",
 	
-	"version": "0.0.2",
-	  "files": [
-	    "dist"
-	  ],
-	  "type": "module",	"scripts": {
+	"version": "0.0.5",
+	      "files": [
+	        "dist",
+	        "README.md"
+	      ],
+	      "exports": {
+	        ".": "./dist/api.js"
+	      },
+	      "type": "module",	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
