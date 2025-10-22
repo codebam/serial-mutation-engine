@@ -315,7 +315,26 @@ export const repeatHighValuePartMutation: Mutation = (serial, state) => {
     }
 
     if (repeatingAssets.length === 0) {
-        return serial; // No repeating non-zero assets found.
+        const nonZeroAssets = newAssets.filter(a => a !== 0);
+        if (nonZeroAssets.length === 0) {
+            return serial; // No non-zero assets to repeat
+        }
+        const assetToRepeat = randomChoice(nonZeroAssets);
+        const indices = newAssets.map((a, i) => a === assetToRepeat ? i : -1).filter(i => i !== -1);
+        if (indices.length === 0) {
+            return serial;
+        }
+        const indexToModify = randomChoice(indices);
+        const placeBefore = Math.random() < 0.5;
+        const bitsPerCharacter = 8;
+        const bitsPerAsset = 8;
+        const maxNumberOfRepeats = Math.floor(((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset);
+        const repeatCount = randomInt(1, Math.max(1, maxNumberOfRepeats));
+        const insertIndex = placeBefore ? indexToModify : indexToModify + 1;
+        for (let i = 0; i < repeatCount; i++) {
+            newAssets.splice(insertIndex, 0, assetToRepeat);
+        }
+        return valuesToBlocks(newAssets);
     }
 
     // 3. Select a "high value" one. Let's pick the most frequent one.
@@ -393,13 +412,7 @@ export const appendHighValuePartMutation: Mutation = (serial, state) => {
         assetsToAppend.push(assetToAppend);
     }
 
-    if (newAssets.length > 0 && newAssets[newAssets.length - 1] === 0) {
-        // If last asset is 0, insert before it
-        newAssets.splice(newAssets.length - 1, 0, ...assetsToAppend);
-    } else {
-        // Otherwise, append to the end
-        newAssets.push(...assetsToAppend);
-    }
+    newAssets.push(...assetsToAppend);
 
     return valuesToBlocks(newAssets);
 };
