@@ -34,11 +34,11 @@ function decodeBase85(encoded: string): Uint8Array {
     }
 
     if (bufferSize > 0) {
+        const bytesToPush = bufferSize - 1;
         const padding = 5 - bufferSize;
         for (let i = 0; i < padding; i++) {
             buffer = buffer * 85 + 84;
         }
-        const bytesToPush = 4 - padding;
         for (let i = 0; i < bytesToPush; i++) {
             decoded.push((buffer >> (24 - i * 8)) & 0xFF);
         }
