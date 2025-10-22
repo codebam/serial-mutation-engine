@@ -127,25 +127,9 @@ export function writeVarbit(stream: Bitstream, value: number) {
     }
 }
 
-function bestTypeForValue(v: number): { token: number[], bits: number[] } {
-    const streamVarint = new Bitstream(new Uint8Array(10));
-    writeVarint(streamVarint, v);
-    const varintLen = streamVarint.bit_pos;
 
-    const streamVarbit = new Bitstream(new Uint8Array(10));
-    writeVarbit(streamVarbit, v);
-    const varbitLen = streamVarbit.bit_pos;
 
-    if (varintLen > varbitLen) {
-        streamVarbit.bit_pos = 0;
-        const bits = streamVarbit.readBits(varbitLen) || [];
-        return { token: [1, 1, 0], bits };
-    } else {
-        streamVarint.bit_pos = 0;
-        const bits = streamVarint.readBits(varintLen) || [];
-        return { token: [1, 0, 0], bits };
-    }
-}
+
 
 function writePart(stream: Bitstream, part: Part) {
     writeVarint(stream, part.index);
@@ -163,9 +147,13 @@ function writePart(stream: Bitstream, part: Part) {
             stream.writeBits([0, 0, 1]);
             stream.writeBits([0, 1]); // TOK_SEP2
             for (const v of part.values!) {
-                const { token, bits } = bestTypeForValue(v);
-                stream.writeBits(token);
-                stream.writeBits(bits);
+                if (v.type === TOK_VARINT) {
+                    stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARINT]);
+                    writeVarint(stream, v.value);
+                } else {
+                    stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARBIT]);
+                    writeVarbit(stream, v.value);
+                }
             }
             stream.writeBits([0, 0]); // TOK_SEP1
             break;

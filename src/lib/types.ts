@@ -15,7 +15,7 @@ export interface Part {
     subType: SubType;
     index: number;
     value?: number;
-    values?: number[];
+    values?: { type: number, value: number }[];
 }
 
 export interface Block {

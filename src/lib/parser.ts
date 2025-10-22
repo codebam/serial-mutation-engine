@@ -147,7 +147,7 @@ function readPart(tokenizer: Tokenizer): Part {
     }
 
     if (flagType2 === 0b01) {
-        const values: number[] = [];
+        const values: { type: number, value: number }[] = [];
         const listTokenType = tokenizer.nextToken();
         if (listTokenType !== TOK_SEP2) {
             throw new Error('Expected TOK_SEP2 to start part list');
@@ -162,9 +162,9 @@ function readPart(tokenizer: Tokenizer): Part {
             }
 
             if (token === TOK_VARINT) {
-                values.push(readVarint(stream));
+                values.push({ type: TOK_VARINT, value: readVarint(stream) });
             } else if (token === TOK_VARBIT) {
-                values.push(readVarbit(stream));
+                values.push({ type: TOK_VARBIT, value: readVarbit(stream) });
             } else {
                 throw new Error(`Unexpected token in part list: ${token}`);
             }
