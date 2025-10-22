@@ -8,7 +8,7 @@
     import AddBlockMenu from './AddBlockMenu.svelte';
     import DebugView from './DebugView.svelte';
 
-    let { serial, onSerialUpdate } = $props<{ serial: string; onSerialUpdate: (newSerial: string) => void; }>();
+    let { serial, onSerialUpdate, isMaximized } = $props<{ serial: string; onSerialUpdate: (newSerial: string) => void; isMaximized: boolean; }>();
     let parsed: Serial = $state([]);
     let error: string | null = $state(null);
 
@@ -101,7 +101,7 @@
 
 {#if parsed.length > 0}
 
-    <DebugView {parsed} {onParsedUpdate} />
+    <DebugView {parsed} {onParsedUpdate} {isMaximized} />
 
 {/if}
 

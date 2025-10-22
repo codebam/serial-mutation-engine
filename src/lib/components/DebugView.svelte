@@ -3,9 +3,10 @@
     import type { Serial, Block, Part } from '$lib/types';
     import { toCustomFormat, parseCustomFormat } from '$lib/custom_parser';
 
-    let { parsed, onParsedUpdate } = $props<{
+    let { parsed, onParsedUpdate, isMaximized } = $props<{
         parsed: Serial;
         onParsedUpdate: (newParsed: Serial) => void;
+        isMaximized: boolean;
     }>();
 
     let jsonString = $state(JSON.stringify(parsed, null, 2));
@@ -36,8 +37,8 @@
 
 </script>
 
-<div class="mt-4 space-y-2">
-    <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+<div class="mt-4" class:flex={isMaximized} class:gap-2={isMaximized} class:space-y-2={!isMaximized}>
+    <div class="p-4 bg-gray-800 border border-gray-700 rounded-md" class:flex-1={isMaximized}>
         <div class="flex justify-between items-center">
             <h4 class="font-semibold">Deserialized</h4>
             <div>
@@ -47,7 +48,7 @@
         </div>
         <textarea class="text-xs text-gray-300 bg-gray-900 p-2 rounded-md mt-2 w-full h-24 font-mono" bind:value={customString}></textarea>
     </div>
-    <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
+    <div class="p-4 bg-gray-800 border border-gray-700 rounded-md" class:flex-1={isMaximized}>
         <div class="flex justify-between items-center">
             <h4 class="font-semibold">JSON</h4>
             <div>

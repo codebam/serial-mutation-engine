@@ -595,7 +595,7 @@
                 {#if maximizedEditorId === null || maximizedEditorId === editor.id}
                     {@const title = `⚙️ Serial Editor #${editor.id}`}
                     <Accordion {title} open={true}>
-                        <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={appState.rules} />
+                        <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={appState.rules} isMaximized={maximizedEditorId === editor.id} />
                         {#snippet actions()}
                             <button onclick={(e) => { e.stopPropagation(); e.preventDefault(); copyUrl(editor); }} class="text-gray-400 hover:text-white transition-colors" aria-label="Copy URL">
                                 {#if copiedEditorId === editor.id}
