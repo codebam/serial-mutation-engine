@@ -116,8 +116,12 @@ function readVarbit(stream: Bitstream): number {
     const mirroredLength = UINT5_MIRROR[length];
     if (mirroredLength === 0) return 0;
 
-    const value = stream.read(mirroredLength);
-    if (value === null) throw new Error('Unexpected end of stream in varbit value');
+    let value = 0;
+    for (let i = 0; i < mirroredLength; i++) {
+        const bit = stream.readBit();
+        if (bit === null) throw new Error('Unexpected end of stream in varbit value');
+        value |= bit << i;
+    }
 
     return value;
 }
@@ -186,6 +190,7 @@ export function parseSerial(serial: string): Serial {
     const tokenizer = new Tokenizer(stream);
     const blocks: Block[] = [];
     let partBlocksFound = false;
+    let trailingTerminators = 0;
 
     while (true) {
         const token = tokenizer.nextToken();
@@ -197,6 +202,12 @@ export function parseSerial(serial: string): Serial {
             } else {
                 throw new Error('Unsupported DLC item (TOK_UNSUPPORTED_111)');
             }
+        }
+
+        if (token === TOK_SEP1) {
+            trailingTerminators++;
+        } else {
+            trailingTerminators = 0;
         }
 
         const block: Block = { token };
@@ -216,14 +227,10 @@ export function parseSerial(serial: string): Serial {
         blocks.push(block);
     }
 
-    // Sanitize trailing terminators
-    while (blocks.length > 0 && blocks[blocks.length - 1].token === TOK_SEP1) {
+    while (trailingTerminators > 1) {
         blocks.pop();
+        trailingTerminators--;
     }
-    if (blocks.length > 0) {
-        blocks.push({ token: TOK_SEP1 });
-    }
-
 
     return blocks;
 }
