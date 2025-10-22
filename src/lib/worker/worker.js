@@ -51,6 +51,10 @@ self.onmessage = async function (e) {
                 let serial = '';
                 let innerAttempts = 0;
 
+                if ((config.difficulties[item.tg] || 1) >= 1000) {
+                    continue;
+                }
+
                 do {
                     if (innerAttempts > 0) {
                         config.difficulties[item.tg] = (config.difficulties[item.tg] || 1) + 0.1;

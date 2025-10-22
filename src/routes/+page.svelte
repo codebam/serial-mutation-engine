@@ -415,53 +415,53 @@
             </Accordion>
             <Accordion title="🔢 Output Counts" open={true}>
                 <div class="flex flex-col gap-4">
-                    <FormGroup label="appendMutation">
-                        <input type="number" name="counts.appendMutation" bind:value={appState.counts.appendMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Appends a single randomly generated asset to the end of the serial.</p>
+                    <FormGroup label="Append Random Asset">
+                        <input type="number" name="counts.appendRandomAsset" bind:value={appState.counts.appendRandomAsset} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Appends one or more random assets (0-100) to the end of the serial. The number of appended assets increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="stackedPartMutationV1">
-                        <input type="number" name="counts.stackedPartMutationV1" bind:value={appState.counts.stackedPartMutationV1} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (full alphabet).</p>
+                    <FormGroup label="Inject Repeating Part">
+                        <input type="number" name="counts.injectRepeatingPart" bind:value={appState.counts.injectRepeatingPart} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Injects two or more repeating parts into the serial. The number of injected parts increases with difficulty. Uses a limited asset pool.</p>
                     </FormGroup>
-                    <FormGroup label="stackedPartMutationV2">
-                        <input type="number" name="counts.stackedPartMutationV2" bind:value={appState.counts.stackedPartMutationV2} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Injects two randomly generated repeating parts (restricted alphabet based on item type).</p>
+                    <FormGroup label="Inject Repeating Part (Full)">
+                        <input type="number" name="counts.injectRepeatingPartFull" bind:value={appState.counts.injectRepeatingPartFull} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Injects two or more repeating parts into the serial. The number of injected parts increases with difficulty. Uses the full asset pool.</p>
                     </FormGroup>
-                    <FormGroup label="evolvingMutation">
-                        <input type="number" name="counts.evolvingMutation" bind:value={appState.counts.evolvingMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Applies a series of random transformations (motif chaining, segment scramble, asset flips).</p>
+                    <FormGroup label="Scramble and Append from Repo">
+                        <input type="number" name="counts.scrambleAndAppendFromRepo" bind:value={appState.counts.scrambleAndAppendFromRepo} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Reverses a random segment of the serial and appends one or more assets from a random repository serial's last 25%. The number of appended assets increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="characterFlipMutation">
-                        <input type="number" name="counts.characterFlipMutation" bind:value={appState.counts.characterFlipMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Inserts one stable motif at a random position.</p>
+                    <FormGroup label="Inject Random Asset">
+                        <input type="number" name="counts.injectRandomAsset" bind:value={appState.counts.injectRandomAsset} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Injects one or more random assets (0-84) at a random position in the serial. The number of injected assets increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="segmentReversalMutation">
-                        <input type="number" name="counts.segmentReversalMutation" bind:value={appState.counts.segmentReversalMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Inserts two stable motifs at random positions.</p>
+                    <FormGroup label="Reverse Random Segments">
+                        <input type="number" name="counts.reverseRandomSegments" bind:value={appState.counts.reverseRandomSegments} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Reverses one or more random segments of the serial. The number of reversed segments increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="partManipulationMutation">
-                        <input type="number" name="counts.partManipulationMutation" bind:value={appState.counts.partManipulationMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Injects a high-value part from the repository based on legendary chance.</p>
+                    <FormGroup label="Inject High-Value Part">
+                        <input type="number" name="counts.injectHighValuePart" bind:value={appState.counts.injectHighValuePart} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Injects one or more high-value parts from the repository into the serial, based on legendary chance. The number of injected parts increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="repositoryCrossoverMutation">
-                        <input type="number" name="counts.repositoryCrossoverMutation" bind:value={appState.counts.repositoryCrossoverMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Overwrites a segment with a random chunk from another serial in the repository.</p>
+                    <FormGroup label="Crossover with Repository">
+                        <input type="number" name="counts.crossoverWithRepository" bind:value={appState.counts.crossoverWithRepository} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Overwrites a segment of the serial with a random segment from another serial in the repository. The size of the segment increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="shuffleAssetsMutation">
-                        <input type="number" name="counts.shuffleAssetsMutation" bind:value={appState.counts.shuffleAssetsMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Shuffles all assets in the serial.</p>
+                    <FormGroup label="Shuffle Assets">
+                        <input type="number" name="counts.shuffleAssets" bind:value={appState.counts.shuffleAssets} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Shuffles a percentage of the serial's assets. The percentage increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="randomizeAssetsMutation">
-                        <input type="number" name="counts.randomizeAssetsMutation" bind:value={appState.counts.randomizeAssetsMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Randomizes all assets in the serial.</p>
+                    <FormGroup label="Randomize Assets">
+                        <input type="number" name="counts.randomizeAssets" bind:value={appState.counts.randomizeAssets} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Randomizes a percentage of the serial's assets. The percentage increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="repeatHighValuePartMutation">
-                        <input type="number" name="counts.repeatHighValuePartMutation" bind:value={appState.counts.repeatHighValuePartMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Repeats a high-value part of the serial.</p>
+                    <FormGroup label="Repeat High-Value Part">
+                        <input type="number" name="counts.repeatHighValuePart" bind:value={appState.counts.repeatHighValuePart} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Repeats a high-value part of the serial. The number of repetitions increases with difficulty.</p>
                     </FormGroup>
-                    <FormGroup label="appendHighValuePartMutation">
-                        <input type="number" name="counts.appendHighValuePartMutation" bind:value={appState.counts.appendHighValuePartMutation} class={inputClasses} />
-                        <p class="text-xs text-gray-400">Appends a high-value part to the end of the serial.</p>
+                    <FormGroup label="Append High-Value Part">
+                        <input type="number" name="counts.appendHighValuePart" bind:value={appState.counts.appendHighValuePart} class={inputClasses} />
+                        <p class="text-xs text-gray-400">Appends a high-value part to the end of the serial. The number of appended parts increases with difficulty.</p>
                     </FormGroup>
                 </div>
             </Accordion>
