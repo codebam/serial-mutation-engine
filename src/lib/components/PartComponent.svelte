@@ -2,9 +2,12 @@
     import type { Part } from '$lib/types';
     import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_VARINT } from '$lib/types';
     import Asset from './Asset.svelte';
+    import PartName from './PartName.svelte';
 
-    let { part, onUpdatePart, onUpdatePartList } = $props<{
+    let { part, partService, itemType, onUpdatePart, onUpdatePartList } = $props<{
         part: Part;
+        partService: any;
+        itemType: string;
         onUpdatePart: (part: Part) => void;
         onUpdatePartList: (part: Part, index: number, value: number) => void;
     }>();
@@ -40,6 +43,7 @@
 </script>
 
 <div class="flex items-center gap-2">
+    <PartName {part} {partService} {itemType} />
     {#if part.subType === SUBTYPE_NONE}
         <Asset value={part.index} onUpdate={updateIndex} />
     {:else}

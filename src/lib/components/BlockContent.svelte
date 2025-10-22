@@ -5,8 +5,10 @@
     import Asset from './Asset.svelte';
 import PartComponent from './PartComponent.svelte';
 
-    let { block, onUpdateBlockValue, onUpdatePart, onUpdatePartList } = $props<{
+    let { block, partService, itemType, onUpdateBlockValue, onUpdatePart, onUpdatePartList } = $props<{
         block: Block;
+        partService: any;
+        itemType: string;
         onUpdateBlockValue: (value: number) => void;
         onUpdatePart: (part: Part) => void;
         onUpdatePartList: (part: Part, index: number, value: number) => void;
@@ -16,7 +18,7 @@ import PartComponent from './PartComponent.svelte';
 {#if block.token === TOK_VARINT || block.token === TOK_VARBIT}
     <Asset value={block.value ?? 0} onUpdate={onUpdateBlockValue} isVarInt={block.token === TOK_VARINT} />
 {:else if block.token === TOK_PART && block.part}
-    <PartComponent part={block.part} onUpdatePart={onUpdatePart} onUpdatePartList={onUpdatePartList} />
+    <PartComponent part={block.part} {partService} {itemType} onUpdatePart={onUpdatePart} onUpdatePartList={onUpdatePartList} />
 {:else if block.token === TOK_SEP1}
     <div class="text-gray-400">SEP1</div>
 {:else if block.token === TOK_SEP2}

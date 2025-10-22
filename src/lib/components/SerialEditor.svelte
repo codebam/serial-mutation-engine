@@ -7,10 +7,79 @@
     import BlockComponent from './Block.svelte';
     import AddBlockMenu from './AddBlockMenu.svelte';
     import DebugView from './DebugView.svelte';
+    import { browser } from '$app/environment';
+    import { PartService } from '$lib/partService';
+    import Worker from '$lib/worker/worker.js?worker';
 
     let { serial, onSerialUpdate, isMaximized } = $props<{ serial: string; onSerialUpdate: (newSerial: string) => void; isMaximized: boolean; }>();
     let parsed: Serial = $state([]);
     let error: string | null = $state(null);
+    let itemType = $state('UNKNOWN');
+    
+    class DummyPartService {
+        loadPartData() { return Promise.resolve(); }
+        findPartName(part) { return null; }
+        getParts(itemType) { return []; }
+    }
+
+    let partService = $state(new DummyPartService());
+    let worker: Worker | undefined;
+
+    if (browser) {
+        worker = new Worker();
+        partService = new PartService(worker);
+
+        $effect(() => {
+            partService.loadPartData();
+        });
+
+        worker.onmessage = (e) => {
+            const { type, payload } = e.data;
+            if (type === 'parsed_serial') {
+                parsed = payload.parsed;
+                itemType = detectItemType(parsed);
+                error = payload.error;
+            } else if (type === 'encoded_serial') {
+                if (payload.serial !== serial) {
+                    onSerialUpdate(payload.serial);
+                }
+                error = payload.error;
+            }
+        };
+    }
+
+    function detectItemType(parsed: Serial): string {
+        if (!parsed || parsed.length === 0) {
+            return 'UNKNOWN';
+        }
+
+        const firstBlock = parsed[0];
+        if (firstBlock.token === TOK_VARINT) {
+            switch (firstBlock.value) {
+                case 254:
+                    return 'VEX_CLASS_MOD';
+                case 256:
+                    return 'RAFA_CLASS_MOD';
+                case 259:
+                    return 'HARLOWE_CLASS_MOD';
+            }
+        }
+
+        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 244)) {
+            return 'HEAVY_ORDNANCE';
+        }
+        if (parsed.some(b => b.token === TOK_PART && b.part && (b.part.subType === 246 || b.part.subType === 248 || b.part.subType === 237))) {
+            return 'SHIELD';
+        }
+        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 243)) {
+            return 'REPKIT';
+        }
+        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 245)) {
+            return 'GRENADE';
+        }
+
+        return 'UNKNOWN'; // Default to unknown
+    }
 
     function analyzeSerial() {
         if (!serial) {
@@ -18,23 +87,14 @@
             error = null;
             return;
         }
-        try {
-            parsed = parseSerial(serial);
-            error = null;
-        } catch (e: any) {
-            parsed = [];
-            error = e.message;
+        if (worker) {
+            worker.postMessage({ type: 'parse_serial', payload: serial });
         }
     }
 
     function updateSerial() {
         if (parsed) {
-            try {
-                const newSerial = encodeSerial(parsed);
-                onSerialUpdate(newSerial);
-            } catch (e: any) {
-                error = e.message;
-            }
+            worker.postMessage({ type: 'encode_serial', payload: parsed });
         }
     }
 
@@ -47,12 +107,12 @@
         updateSerial();
     }
 
-    function addBlock(index: number, token: number) {
+    function addBlock(index: number, token: number, part?: Part) {
         const newBlock: Block = { token };
         if (token === TOK_VARINT || token === TOK_VARBIT) {
             newBlock.value = 0;
         } else if (token === TOK_PART) {
-            newBlock.part = { subType: SUBTYPE_NONE, index: 0 };
+            newBlock.part = part || { subType: SUBTYPE_NONE, index: 0 };
         }
         parsed.splice(index, 0, newBlock);
         parsed = parsed; // Trigger reactivity
@@ -65,7 +125,21 @@
         updateSerial();
     }
 
-    let dragIndex = -1;
+    function updateBlockValue(block: Block, value: number) {
+        if (block.token === TOK_VARINT || block.token === TOK_VARBIT) {
+            block.value = value;
+        }
+        updateSerial();
+    }
+
+    function updatePartListValue(part: Part, index: number, value: number) {
+        if (part.values) {
+            part.values[index].value = value;
+            updateSerial();
+        }
+    }
+
+    let dragIndex = $state(-1);
     let isHorizontal = $state(false);
 
     function handleDragStart(index: number) {
@@ -100,7 +174,20 @@
 
 
 {#if parsed.length > 0}
-
+    <div class="mt-4 p-4 bg-gray-800 border border-gray-700 text-gray-200 rounded-md">
+        <p>Detected Item Type: <span class="font-semibold text-green-400">{itemType}</span></p>
+        <select onchange={(e) => itemType = e.currentTarget.value} class="mt-2 p-2 bg-gray-700 text-white rounded-md" value={itemType}>
+            <option value="UNKNOWN">Select Item Type</option>
+            <option value="WEAPON">Weapon</option>
+            <option value="SHIELD">Shield</option>
+            <option value="GRENADE">Grenade</option>
+            <option value="REPKIT">Repkit</option>
+            <option value="HEAVY_ORDNANCE">Heavy Ordnance</option>
+            <option value="VEX_CLASS_MOD">Vex Class Mod</option>
+            <option value="RAFA_CLASS_MOD">Rafa Class Mod</option>
+            <option value="HARLOWE_CLASS_MOD">Harlowe Class Mod</option>
+        </select>
+    </div>
     <DebugView {parsed} {onParsedUpdate} {isMaximized} />
 
 {/if}
@@ -135,7 +222,7 @@
         </button>
     </div>
 
-    <AddBlockMenu onAdd={(token) => addBlock(0, token)} />
+    <AddBlockMenu {partService} {itemType} onAdd={(token, part) => addBlock(0, token, part)} />
 
     <div class="mt-2" class:flex={isHorizontal} class:flex-wrap={isHorizontal} class:gap-2={isHorizontal} class:space-y-2={!isHorizontal}>
         {#each parsed as block, i}
@@ -145,6 +232,8 @@
                 <BlockComponent
 
                     {block}
+                    {partService}
+                    {itemType}
 
                     onDelete={() => deleteBlock(i)}
 
@@ -169,6 +258,6 @@
         {/each}
     </div>
 
-    <AddBlockMenu onAdd={(token) => addBlock(parsed.length, token)} />
+    <AddBlockMenu {partService} {itemType} onAdd={(token, part) => addBlock(parsed.length, token, part)} />
 
 </div>

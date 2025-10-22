@@ -3,8 +3,10 @@
     import type { Block, Part } from '$lib/types';
     import BlockContent from './BlockContent.svelte';
 
-    let { block, onDelete, onAddBefore, onAddAfter, onUpdateBlockValue, onUpdatePart, onUpdatePartList, index, ondragstart } = $props<{
+    let { block, partService, itemType, onDelete, onAddBefore, onAddAfter, onUpdateBlockValue, onUpdatePart, onUpdatePartList, index, ondragstart } = $props<{
         block: Block;
+        partService: any;
+        itemType: string;
         onDelete: () => void;
         onAddBefore: () => void;
         onAddAfter: () => void;
@@ -22,7 +24,7 @@
 <div class="flex flex-col gap-2 p-2 bg-gray-800 border border-gray-700 rounded-md" draggable="true" ondragstart={ondragstart} role="listitem">
     <div class="flex items-center gap-2">
         <button class="text-gray-400 hover:text-white">☰</button>
-        <BlockContent {block} {onUpdateBlockValue} {onUpdatePart} {onUpdatePartList} />
+        <BlockContent {block} {partService} {itemType} {onUpdateBlockValue} {onUpdatePart} {onUpdatePartList} />
         <div class="flex gap-1 ml-auto">
             <button class="text-gray-400 hover:text-white" onclick={() => showJson = !showJson}>JSON</button>
             <button class="text-gray-400 hover:text-white" onclick={onAddBefore}>+</button>
