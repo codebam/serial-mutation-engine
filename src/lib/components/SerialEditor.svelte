@@ -10,11 +10,47 @@
     import { browser } from '$app/environment';
     import { PartService } from '$lib/partService';
     import Worker from '$lib/worker/worker.js?worker';
+    import { parseCustomFormat } from '$lib/custom_parser';
 
     let { serial, onSerialUpdate, isMaximized } = $props<{ serial: string; onSerialUpdate: (newSerial: string) => void; isMaximized: boolean; }>();
     let parsed: Serial = $state([]);
     let error: string | null = $state(null);
     let itemType = $state('UNKNOWN');
+    let pastedContent = $state('');
+
+    function applyPastedContent() {
+        if (!pastedContent) return;
+
+        // 1. Try JSON
+        try {
+            const newParsed = JSON.parse(pastedContent);
+            if (Array.isArray(newParsed) && newParsed.every(item => typeof item === 'object' && 'token' in item)) {
+                parsed = newParsed;
+                updateSerial();
+                error = null;
+                pastedContent = '';
+                return;
+            }
+        } catch (e) {
+            // Not JSON, proceed to next format
+        }
+
+        // 2. Try Custom Format
+        try {
+            const newParsed = parseCustomFormat(pastedContent);
+            if (newParsed && newParsed.length > 0) {
+                parsed = newParsed;
+                updateSerial();
+                error = null;
+                pastedContent = '';
+                return;
+            }
+        } catch (e) {
+            // Not custom format, fail
+        }
+
+        error = 'Invalid format. Please paste valid JSON or Custom Format.';
+    }
     
     class DummyPartService {
         loadPartData() { return Promise.resolve(); }
@@ -169,6 +205,15 @@
         oninput={(e) => onSerialUpdate(e.currentTarget.value)}
         placeholder="Paste serial here..."
     ></textarea>
+</FormGroup>
+
+<FormGroup label="Paste Deserialized JSON or Custom Format">
+    <textarea
+        class='w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm min-h-[80px]'
+        bind:value={pastedContent}
+        placeholder="Paste deserialized JSON or Custom Format here..."
+    ></textarea>
+    <button onclick={applyPastedContent} class="mt-2 py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Apply</button>
 </FormGroup>
 
 
