@@ -53,8 +53,6 @@
 
     let chart: Chart;
 
-    let debugLogs = $state<string[]>([]);
-
     $effect(() => {
         const storedBaseYaml = localStorage.getItem('baseYaml');
         if (storedBaseYaml) {
@@ -118,7 +116,6 @@
                         fullYaml = payload.yaml;
                         filteredYaml = '';
                         statusMessage = `✅ Complete! ${payload.uniqueCount.toLocaleString()} unique serials generated.`;
-                        debugLogs = payload.debug_logs || [];
                         break;
                     case 'error':
                         isGenerating = false;
@@ -475,11 +472,6 @@
                         <input type="number" name="counts.appendHighValuePartMutation" bind:value={appState.counts.appendHighValuePartMutation} class={inputClasses} />
                         <p class="text-xs text-gray-400">Appends a high-value part to the end of the serial.</p>
                     </FormGroup>
-                </div>
-            </Accordion>
-            <Accordion title="🐞 Debug Logs" open={false}>
-                <div class="p-4 bg-gray-900 rounded-md">
-                    <pre class="text-xs text-gray-300 whitespace-pre-wrap">{debugLogs.join('\n')}</pre>
                 </div>
             </Accordion>
         </div>
