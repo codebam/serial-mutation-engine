@@ -110,7 +110,7 @@
 <div class="mt-4 space-y-2">
     <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
         <div class="flex justify-between items-center">
-            <h4 class="font-semibold">Custom Format</h4>
+            <h4 class="font-semibold">Deserialized</h4>
             <button class="py-1 px-3 text-sm font-medium text-gray-300 bg-blue-700 rounded-md hover:bg-blue-600 transition-all" onclick={updateParsedFromCustom}>Apply</button>
         </div>
         <textarea class="text-xs text-gray-300 bg-gray-900 p-2 rounded-md mt-2 w-full h-24 font-mono" bind:value={customString}></textarea>
