@@ -57,7 +57,7 @@ self.onmessage = async function (e) {
 
                 do {
                     if (innerAttempts > 0) {
-                        config.difficulties[item.tg] = (config.difficulties[item.tg] || 1) + 0.1;
+                        config.difficulties[item.tg] = (config.difficulties[item.tg] || 1) + (config.rules.difficultyIncrement || 0.1);
                     }
 
                     const parentSerialStr = selectedRepoSerials[Math.floor(Math.random() * selectedRepoSerials.length)];

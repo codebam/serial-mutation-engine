@@ -26,6 +26,7 @@ export function getInitialState(): any {
             minPart: 1,
             maxPart: 1,
             legendaryChance: 100,
+            difficultyIncrement: 0.1,
         },
         difficulties: {
             appendRandomAsset: 1,

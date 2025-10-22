@@ -412,6 +412,16 @@
                         
                     />
                 </FormGroup>
+                <FormGroup label="Difficulty Increment">
+                    <input
+                        type="number"
+                        name="rules.difficultyIncrement"
+                        bind:value={appState.rules.difficultyIncrement}
+                        class={inputClasses}
+                        step="0.01"
+                        min="0.01"
+                    />
+                </FormGroup>
             </Accordion>
             <Accordion title="🔢 Output Counts" open={true}>
                 <div class="flex flex-col gap-4">
