@@ -40,7 +40,7 @@ function encodeBase85(bytes: Uint8Array): string {
         encoded += block.substring(0, remaining + 1);
     }
 
-    return encoded;
+    return '@U' + encoded;
 }
 
 function mirrorBytes(bytes: Uint8Array): Uint8Array {
@@ -215,5 +215,5 @@ export function encodeSerial(serial: Serial): string {
 
     const bytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
     const mirrored = mirrorBytes(bytes);
-    return '@U' + encodeBase85(mirrored);
+    return encodeBase85(mirrored);
 }
