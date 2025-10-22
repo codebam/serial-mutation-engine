@@ -365,15 +365,9 @@
                         <option value="GENERIC">Generic</option>
                     </select>
                 </FormGroup>
-                <MutableRangeSelector
-                    bind:seed={appState.seed}
-                    bind:start={appState.rules.mutableStart}
-                    bind:end={appState.rules.mutableEnd}
-                    inputClasses={inputClasses}
-                    isMerging={isGenerating}
-                />
+
                 <FormGroup label="Crossover Chunk Size">
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-2 gap-4">
                         <input
                             type="number"
                             name="rules.minChunk"
@@ -388,14 +382,6 @@
                             bind:value={appState.rules.maxChunk}
                             class={inputClasses}
                             title="The largest crossover segment size."
-                            
-                        />
-                        <input
-                            type="number"
-                            name="rules.targetChunk"
-                            bind:value={appState.rules.targetChunk}
-                            class={inputClasses}
-                            title="The preferred crossover segment size."
                             
                         />
                     </div>
