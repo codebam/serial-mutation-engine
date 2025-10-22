@@ -1,9 +1,11 @@
 {
-	"name": "serial-generator-webworker-sveltekit",
-	"private": true,
-	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
+	"name": "@codebam/u-serial",
+	
+	"version": "0.0.2",
+	  "files": [
+	    "dist"
+	  ],
+	  "type": "module",	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",

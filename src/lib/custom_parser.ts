@@ -21,11 +21,7 @@ function toCustomFormat(p: Serial): string {
                 break;
             case TOK_VARINT:
             case TOK_VARBIT:
-                if (firstPartIndex === -1 || i < firstPartIndex) {
-                    blockStr = String(block.value);
-                } else {
-                    blockStr = `{${block.value}}`;
-                }
+                blockStr = String(block.value);
                 break;
             case TOK_PART:
                 if (block.part) {
@@ -74,7 +70,26 @@ function toCustomFormat(p: Serial): string {
     return result.trim();
 }
 
-function parseCustomFormat(custom: string): Serial {
+
+import { writeVarint, writeVarbit } from './encoder';
+import { Bitstream } from './bitstream';
+
+function bestTypeForValue(v: number): number {
+    const streamVarint = new Bitstream(new Uint8Array(10));
+    writeVarint(streamVarint, v);
+    const lenVarint = streamVarint.bit_pos;
+
+    const streamVarbit = new Bitstream(new Uint8Array(10));
+    writeVarbit(streamVarbit, v);
+    const lenVarbit = streamVarbit.bit_pos;
+
+    if (lenVarint > lenVarbit) {
+        return TOK_VARBIT;
+    }
+    return TOK_VARINT;
+}
+
+export function parseCustomFormat(custom: string): Serial {
     const tokens: string[] = [];
     const regex = /(\d+)|(,)|(\|{1,2})|(\{[^}]+\})/g;
     let match;
@@ -98,7 +113,7 @@ function parseCustomFormat(custom: string): Serial {
                 const index = parseInt(indexStr, 10);
                 if (valueStr.startsWith('[') && valueStr.endsWith(']')) {
                     const valuesStr = valueStr.slice(1, -1);
-                    const values = valuesStr !== '' ? valuesStr.split(' ').map(v => ({ type: TOK_VARINT, value: parseInt(v, 10) })) : [];
+                    const values = valuesStr !== '' ? valuesStr.split(' ').map(v => ({ type: bestTypeForValue(parseInt(v, 10)), value: parseInt(v, 10) })) : [];
                     newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_LIST, index, values } });
                 } else {
                     const value = parseInt(valueStr, 10);
@@ -113,7 +128,7 @@ function parseCustomFormat(custom: string): Serial {
         } else {
             const value = parseInt(token, 10);
             if (!isNaN(value)) {
-                newParsed.push({ token: TOK_VARINT, value });
+                newParsed.push({ token: bestTypeForValue(value), value });
             }
         }
     }

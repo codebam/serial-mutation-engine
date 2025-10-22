@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { base85_to_deserialized, deserialized_to_base85 } from './api';
+import { parseSerial } from './parser';
+import { parseCustomFormat } from './custom_parser';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -19,7 +21,13 @@ describe('roundtrip', () => {
 
         if (serial !== new_serial) {
           failed_count++;
-          failed_serials.push(`Mismatch: Original: ${serial}, New: ${new_serial}`);
+          const original_parsed = parseSerial(serial);
+          const new_parsed = parseCustomFormat(deserialized);
+          if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {
+            failed_serials.push(`Mismatch for ${serial}:\nOriginal parsed: ${JSON.stringify(original_parsed)}\nNew parsed: ${JSON.stringify(new_parsed)}`);
+          } else {
+            failed_serials.push(`Encoding mismatch for ${serial}`);
+          }
         }
       } catch (e: any) {
         failed_count++;
@@ -28,8 +36,8 @@ describe('roundtrip', () => {
     }
 
     console.log(`Failed to roundtrip ${failed_count} serials`);
-    console.log(failed_serials);
+    console.log(failed_serials.slice(0, 5));
 
-    expect(failed_count).toBe(37);
+    expect(failed_count).toBe(35);
   });
 });
