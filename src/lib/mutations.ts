@@ -572,16 +572,6 @@ export function mergeSerials(yaml: string, serialsToInsert: string[]): { newYaml
         for (let i = lastSlotLineIndex + 1; i < lines.length; i++) {
             const line = lines[i];
             const lineIndent = line.search(/\S/);
-            if (line.trim() === '' || lineIndent > lastSlotIndent) {
-                insertionIndex = i;
-            } else {
-                break;
-            }
-        }
-         // Find the correct insertion point after the last slot
-        for (let i = lastSlotLineIndex + 1; i < lines.length; i++) {
-            const line = lines[i];
-            const lineIndent = line.search(/\S/);
             if (line.trim() !== '' && lineIndent <= lastSlotIndent) {
                 insertionIndex = i;
                 break;

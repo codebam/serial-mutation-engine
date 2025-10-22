@@ -292,7 +292,8 @@
         }
 
         const serialToInsert = editorToMerge.serial;
-        const result = mergeSerial(outputYaml, baseYaml, serialToInsert);
+        const yamlToMerge = outputYaml || baseYaml;
+        const result = mergeSerial(yamlToMerge, serialToInsert);
 
         outputYaml = result.newYaml;
         statusMessage = result.message;
