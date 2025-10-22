@@ -303,6 +303,12 @@
         }
     }
 
+    let isMaximized = $state(false);
+
+    function onMaximize() {
+        isMaximized = !isMaximized;
+    }
+
     const inputClasses =
         'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
     const btnClasses = {
@@ -317,6 +323,7 @@
 
 <div class="p-4 md:p-8 pt-0 md:pt-0">
     <main class="grid grid-cols-1 xl:grid-cols-3 gap-8 max-w-screen-3xl mx-auto">
+        {#if !isMaximized}
         <div class="flex flex-col gap-4">
             <Accordion title="📦 Repository & Base Seed" open={true}>
                 <FormGroup label="Repository">
@@ -566,11 +573,18 @@
                 {/if}
             </div>
         </div>
-        <div class="flex flex-col gap-4 h-full xl:col-span-2 2xl:col-span-1">
+        {/if}
+        <div class="flex flex-col gap-4 h-full {isMaximized ? 'col-span-3' : 'xl:col-span-2 2xl:col-span-1'}">
             {#each serialEditors as editor (editor.id)}
                 {@const title = `⚙️ Serial Editor #${editor.id}`}
                 <Accordion {title} open={true}>
-                    <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={appState.rules} />
+                    <SerialEditor 
+                        serial={editor.serial} 
+                        onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} 
+                        rules={appState.rules} 
+                        onMaximize={onMaximize}
+                        isMaximized={isMaximized}
+                    />
                     {#snippet actions()}
                         <button
                             onclick={() => removeSerialEditor(editor.id)}
