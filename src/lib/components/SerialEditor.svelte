@@ -66,6 +66,7 @@
     }
 
     let dragIndex = -1;
+    let isHorizontal = $state(false);
 
     function handleDragStart(index: number) {
         dragIndex = index;
@@ -118,41 +119,55 @@
 
 
 
-<div class="mt-4 space-y-2" role="list">
-
-    <h3 class="text-lg font-semibold">Parsed Blocks</h3>
+<div class="mt-4" role="list">
+    <div class="flex items-center justify-between mb-2">
+        <h3 class="text-lg font-semibold">Parsed Blocks</h3>
+        <button onclick={() => isHorizontal = !isHorizontal} class="text-gray-400 hover:text-white p-1 rounded-md hover:bg-gray-700">
+            {#if isHorizontal}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            {:else}
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125A1.125 1.125 0 0 0 3 5.625v12.75c0 .621.504 1.125 1.125 1.125z" />
+                </svg>
+            {/if}
+        </button>
+    </div>
 
     <AddBlockMenu onAdd={(token) => addBlock(0, token)} />
 
-    {#each parsed as block, i}
+    <div class="mt-2" class:flex={isHorizontal} class:flex-wrap={isHorizontal} class:gap-2={isHorizontal} class:space-y-2={!isHorizontal}>
+        {#each parsed as block, i}
 
-        <div ondragover={(e) => e.preventDefault()} ondrop={(e) => handleDrop(e, i)} role="listitem">
+            <div ondragover={(e) => e.preventDefault()} ondrop={(e) => handleDrop(e, i)} role="listitem">
 
-            <BlockComponent
+                <BlockComponent
 
-                {block}
+                    {block}
 
-                onDelete={() => deleteBlock(i)}
+                    onDelete={() => deleteBlock(i)}
 
-                onAddBefore={() => addBlock(i, TOK_SEP1)} 
+                    onAddBefore={() => addBlock(i, TOK_SEP1)} 
 
-                onAddAfter={() => addBlock(i + 1, TOK_SEP1)}
+                    onAddAfter={() => addBlock(i + 1, TOK_SEP1)}
 
-                onUpdateBlockValue={(value) => updateBlockValue(block, value)}
+                    onUpdateBlockValue={(value) => updateBlockValue(block, value)}
 
-                onUpdatePart={(part) => updateSerial()}
+                    onUpdatePart={(part) => updateSerial()}
 
-                onUpdatePartList={(part, index, value) => updatePartListValue(part, index, value)}
+                    onUpdatePartList={(part, index, value) => updatePartListValue(part, index, value)}
 
-                index={i}
+                    index={i}
 
-                ondragstart={() => handleDragStart(i)}
+                    ondragstart={() => handleDragStart(i)}
 
-            />
+                />
 
-        </div>
+            </div>
 
-    {/each}
+        {/each}
+    </div>
 
     <AddBlockMenu onAdd={(token) => addBlock(parsed.length, token)} />
 
