@@ -34,6 +34,9 @@ function decodeBase85(encoded: string): Uint8Array {
     }
 
     if (bufferSize > 0) {
+        if (bufferSize === 1) {
+            throw new Error('Invalid Base85 string length');
+        }
         const bytesToPush = bufferSize - 1;
         const padding = 5 - bufferSize;
         for (let i = 0; i < padding; i++) {
@@ -226,6 +229,8 @@ export function parseSerial(serial: string): Serial {
         }
         blocks.push(block);
     }
+
+
 
     while (trailingTerminators > 1) {
         blocks.pop();
