@@ -83,13 +83,13 @@
                 } else {
                     const value = parseInt(content, 10);
                     if (!isNaN(value)) {
-                         newParsed.push({ token: TOK_VARINT, value });
-                    } else {
-                        const index = parseInt(content, 10);
-                        if (!isNaN(index)) {
-                            newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index } });
-                        }
+                        newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: value } });
                     }
+                }
+            } else {
+                const value = parseInt(token, 10);
+                if (!isNaN(value)) {
+                    newParsed.push({ token: TOK_VARINT, value });
                 }
             }
         }
