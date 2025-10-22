@@ -1,3 +1,4 @@
+
 <script lang="ts">
 	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false, bitSize = 6, selected = false, onClick = () => {} } = $props<{
 		value: number;
@@ -10,18 +11,18 @@
         onClick?: () => void;
 	}>();
 
-	let localValue = $state(value.toString(16).toUpperCase());
+	let localValue = $state(value.toString(10));
     let snapshot = value;
 
 	$effect(() => {
         if (value !== snapshot) {
-            localValue = value.toString(16).toUpperCase();
+            localValue = value.toString(10);
             snapshot = value;
         }
 	});
 
 	function handleChange() {
-		let newValue = parseInt(localValue, 16);
+		let newValue = parseInt(localValue, 10);
 
         if (isNaN(newValue)) {
             newValue = 0;
@@ -33,7 +34,7 @@
             newValue = (1 << bitSize) - 1;
         }
 
-        localValue = newValue.toString(16).toUpperCase();
+        localValue = newValue.toString(10);
 
 		if (onUpdate) {
 			onUpdate(newValue);
@@ -57,3 +58,4 @@
     onclick={onClick}
 	class={`border p-2.5 cursor-move min-w-[40px] text-center ${color} text-black w-16 rounded-md ${selected ? 'border-blue-500' : 'border-gray-300'}`}
 />
+
