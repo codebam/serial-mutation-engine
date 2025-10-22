@@ -125,7 +125,7 @@
 
 
 
-<div class="mt-4 space-y-2">
+<div class="mt-4 space-y-2" role="list">
 
     <h3 class="text-lg font-semibold">Parsed Blocks</h3>
 
@@ -133,7 +133,7 @@
 
     {#each parsed as block, i}
 
-        <div ondragover={(e) => e.preventDefault()} ondrop={(e) => handleDrop(e, i)}>
+        <div ondragover={(e) => e.preventDefault()} ondrop={(e) => handleDrop(e, i)} role="listitem">
 
             <BlockComponent
 
