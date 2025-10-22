@@ -351,17 +351,7 @@
                 </div>
             </Accordion>
             <Accordion title="🧬 Mutation Rules" open={true}>
-                <FormGroup label="Item Type">
-                    <select name="itemType" bind:value={appState.itemType} class={inputClasses} >
-                        <option value="GUN">Gun</option>
-                        <option value="SHIELD">Shield</option>
-                        <option value="CLASS_MOD">Class Mod</option>
-                        <option value="ENHANCEMENT">Enhancement</option>
-                        <option value="REPKIT">Repair Kit</option>
-                        <option value="ORDNANCE">Ordnance</option>
-                        <option value="GENERIC">Generic</option>
-                    </select>
-                </FormGroup>
+
 
                 <FormGroup label="Crossover Chunk Size">
                     <div class="grid grid-cols-2 gap-4">

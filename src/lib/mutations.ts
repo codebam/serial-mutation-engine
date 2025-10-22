@@ -5,7 +5,6 @@ export function getInitialState(): any {
     return {
         repository: '',
         seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
-        itemType: 'GUN',
         counts: {
             appendMutation: 0,
             stackedPartMutationV1: 0,
@@ -27,6 +26,9 @@ export function getInitialState(): any {
             minPart: 1,
             maxPart: 1,
             legendaryChance: 100,
+        },
+        difficulties: {
+            evolvingMutation: 1,
         },
         generateStats: false,
         debugMode: false,
@@ -105,38 +107,12 @@ export const stackedPartMutationV1: Mutation = (serial, state) => {
 
     return valuesToBlocks(newAssets);
 };
-import { getCharPoolForItemType, BASE85_ALPHABET, STABLE_MOTIFS } from './knowledge';
-
-function motifToAssets(motif: string): number[] {
-    return motif.split('').map(c => BASE85_ALPHABET.indexOf(c));
-}
 
 export const evolvingMutation: Mutation = (serial, state) => {
     const assetList = blocksToValues(serial);
     let newAssets = [...assetList];
-    const { minChunk, maxChunk } = state.rules;
-
-    // Motif Chaining
-    if (Math.random() < 0.3) {
-        let motifChain: number[] = [];
-        const chainCount = randomInt(2, 3);
-        for (let i = 0; i < chainCount; i++) {
-            motifChain = motifChain.concat(motifToAssets(randomChoice(STABLE_MOTIFS)));
-        }
-        if (newAssets.length > motifChain.length) {
-            const injectPosition = randomInt(0, newAssets.length - motifChain.length);
-            newAssets.splice(injectPosition, 0, ...motifChain);
-        }
-    }
-
-    // Motif Injection
-    if (Math.random() < 0.4) {
-        const motif = motifToAssets(randomChoice(STABLE_MOTIFS));
-        if (newAssets.length > motif.length) {
-            const injectPosition = randomInt(0, newAssets.length - motif.length);
-            newAssets.splice(injectPosition, 0, ...motif);
-        }
-    }
+    const { minChunk, maxChunk, targetOffset } = state.rules;
+    const difficulty = state.difficulties.evolvingMutation || 1;
 
     // Segment Scramble
     const chunkSize = randomInt(minChunk, maxChunk);
@@ -147,6 +123,27 @@ export const evolvingMutation: Mutation = (serial, state) => {
         newAssets.splice(start, chunkSize, ...segment);
     }
 
+    // Append assets from repository
+    const repository = state.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
+    if (repository.length > 0) {
+        const otherSerialStr = randomChoice(repository);
+        const otherSerialAssets = blocksToValues(parseSerial(otherSerialStr));
+        const quarterLength = Math.floor(otherSerialAssets.length * 0.25);
+        const lastQuarter = otherSerialAssets.slice(otherSerialAssets.length - quarterLength);
+
+        if (lastQuarter.length > 0) {
+            const bitsPerCharacter = 8;
+            const bitsPerAsset = 8;
+            const maxNumberOfAppends = Math.floor(((targetOffset || 0) * bitsPerCharacter) / bitsPerAsset);
+            const numberOfAppends = Math.min(Math.floor(difficulty), maxNumberOfAppends);
+
+            for (let i = 0; i < numberOfAppends; i++) {
+                const assetToAppend = randomChoice(lastQuarter);
+                newAssets.push(assetToAppend);
+            }
+        }
+    }
+
     return valuesToBlocks(newAssets);
 };
 
@@ -155,8 +152,7 @@ export const stackedPartMutationV2: Mutation = (serial, state) => {
     let newAssets = [...assetList];
     const { minPart, maxPart } = state.rules;
 
-    const charPool = getCharPoolForItemType(state.itemType);
-    const assetPool = charPool.map(c => BASE85_ALPHABET.indexOf(c)).filter(i => i !== -1);
+    const assetPool = Array.from(Array(85).keys()); // Full range of assets
 
     for (let i = 0; i < 2; i++) {
         const part = createRandomRepeatingPart(minPart, maxPart, assetPool);
@@ -169,23 +165,13 @@ export const stackedPartMutationV2: Mutation = (serial, state) => {
 export const characterFlipMutation: Mutation = (serial, state) => {
     const assetList = blocksToValues(serial);
     let newAssets = [...assetList];
-    const motif = motifToAssets(randomChoice(STABLE_MOTIFS));
     const injectPosition = randomInt(0, newAssets.length);
-    newAssets.splice(injectPosition, 0, ...motif);
+    newAssets.splice(injectPosition, 0, randomInt(0, 84));
 
     return valuesToBlocks(newAssets);
 };
 export const segmentReversalMutation: Mutation = (serial, state) => {
-    const assetList = blocksToValues(serial);
-    let newAssets = [...assetList];
-
-    for (let i = 0; i < 2; i++) {
-        const motif = motifToAssets(randomChoice(STABLE_MOTIFS));
-        const injectPosition = randomInt(0, newAssets.length);
-        newAssets.splice(injectPosition, 0, ...motif);
-    }
-
-    return valuesToBlocks(newAssets);
+    return serial;
 };
 function extractHighValueParts(repoSerials: string[], minPartSize: number, maxPartSize: number): number[][] {
     const frequencyMap = new Map<string, number>();
