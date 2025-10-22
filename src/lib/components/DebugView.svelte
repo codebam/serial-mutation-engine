@@ -18,7 +18,8 @@
 
     function toCustomFormat(p: Serial): string {
         if (!p) return '';
-        return p.map(block => {
+        const firstPartIndex = p.findIndex(block => block.token === TOK_PART);
+        return p.map((block, index) => {
             switch (block.token) {
                 case TOK_SEP1:
                     return '|';
@@ -26,6 +27,9 @@
                     return ',';
                 case TOK_VARINT:
                 case TOK_VARBIT:
+                    if (firstPartIndex === -1 || index < firstPartIndex) {
+                        return block.value;
+                    }
                     return `{${block.value}}`;
                 case TOK_PART:
                     if (block.part) {
