@@ -3,7 +3,7 @@ import { encodeSerial } from './encoder';
 import type { Serial, Block, Part } from './types';
 import { TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_VARBIT, TOK_PART, SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE } from './types';
 
-function toCustomFormat(p: Serial): string {
+export function toCustomFormat(p: Serial): string {
     if (!p) return '';
     const parts: string[] = [];
     const firstPartIndex = p.findIndex(block => block.token === TOK_PART);
