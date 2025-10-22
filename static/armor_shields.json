@@ -1,0 +1,208 @@
+{
+  "armor_shields": [
+    {
+      "id": 1,
+      "effect": "Scavenger 20%",
+      "meaning": "Perk",
+      "universalPart": "{237:[1 1]}"
+    },
+    {
+      "id": 2,
+      "effect": "Reinforced Grants overshield",
+      "meaning": "Perk",
+      "universalPart": "{237:[2 2]}"
+    },
+    {
+      "id": 3,
+      "effect": "Reinforced Grants more overshield",
+      "meaning": "Perk",
+      "universalPart": "{237:[3 3]}"
+    },
+    {
+      "id": 4,
+      "effect": "Positive Reinforcement 15%",
+      "meaning": "Perk",
+      "universalPart": "{237:[4 4]}"
+    },
+    {
+      "id": 5,
+      "effect": "Positive Reinforcement 25%",
+      "meaning": "Perk",
+      "universalPart": "{237:[5 5]}"
+    },
+    {
+      "id": 6,
+      "effect": "Mini Nova nova damage",
+      "meaning": "Perk",
+      "universalPart": "{237:[6 6]}"
+    },
+    {
+      "id": 7,
+      "effect": "Mini Nova more nova damage",
+      "meaning": "Perk",
+      "universalPart": "{237:[7 7]}"
+    },
+    {
+      "id": 8,
+      "effect": "Missile Swarm 2 missiles for 744",
+      "meaning": "Perk",
+      "universalPart": "{237:[8 8]}"
+    },
+    {
+      "id": 9,
+      "effect": "Missile Swarm 3 missiles for 1487",
+      "meaning": "Perk",
+      "universalPart": "{237:[9 9]}"
+    },
+    {
+      "id": 10,
+      "effect": "Knockback 30%",
+      "meaning": "Perk",
+      "universalPart": "{237:[10 10]}"
+    },
+    {
+      "id": 11,
+      "effect": "Knockback 40%",
+      "meaning": "Perk",
+      "universalPart": "{237:[11 11]}"
+    },
+    {
+      "id": 12,
+      "effect": "Heavy Plating 20%",
+      "meaning": "Perk",
+      "universalPart": "{237:[12 12]}"
+    },
+    {
+      "id": 13,
+      "effect": "Heavy Plating 35%",
+      "meaning": "Perk",
+      "universalPart": "{237:[13 13]}"
+    },
+    {
+      "id": 14,
+      "effect": "Spunky 10%",
+      "meaning": "Perk",
+      "universalPart": "{237:[14 14]}"
+    },
+    {
+      "id": 15,
+      "effect": "Spunky 20%",
+      "meaning": "Perk",
+      "universalPart": "{237:[15 15]}"
+    },
+    {
+      "id": 16,
+      "effect": "Bladed 13%",
+      "meaning": "Perk",
+      "universalPart": "{237:[16 16]}"
+    },
+    {
+      "id": 17,
+      "effect": "Bladed 20%",
+      "meaning": "Perk",
+      "universalPart": "{237:[17 17]}"
+    },
+    {
+      "id": 18,
+      "effect": "Armor Strength 10%",
+      "meaning": "Perk",
+      "universalPart": "{237:[18 18]}"
+    },
+    {
+      "id": 19,
+      "effect": "Armor Strength 20%",
+      "meaning": "Perk",
+      "universalPart": "{237:[19 19]}"
+    },
+    {
+      "id": 20,
+      "effect": "Armor Segment +1",
+      "meaning": "Perk",
+      "universalPart": "{237:[20 20]}"
+    },
+    {
+      "id": 21,
+      "effect": "Armor Segment +1",
+      "meaning": "Perk",
+      "universalPart": "{237:[21 21]}"
+    },
+    {
+      "id": 22,
+      "effect": "Flanking 10%",
+      "meaning": "Perk",
+      "universalPart": "{237:[22 22]}"
+    },
+    {
+      "id": 23,
+      "effect": "Flanking 18%",
+      "meaning": "Perk",
+      "universalPart": "{237:[23 23]}"
+    },
+    {
+      "id": 24,
+      "effect": "Boxer 15%",
+      "meaning": "Perk",
+      "universalPart": "{237:[24 24]}"
+    },
+    {
+      "id": 25,
+      "effect": "Boxer 25%",
+      "meaning": "Perk",
+      "universalPart": "{237:[25 25]}"
+    },
+    {
+      "id": 26,
+      "effect": "White Item Card",
+      "meaning": "Slot 1 lookup",
+      "universalPart": "{237:[26 26]}"
+    },
+    {
+      "id": 27,
+      "effect": "Green Item Card",
+      "meaning": "Slot 1 lookup",
+      "universalPart": "{237:[27 27]}"
+    },
+    {
+      "id": 28,
+      "effect": "Blue Item Card",
+      "meaning": "Slot 1 lookup",
+      "universalPart": "{237:[28 28]}"
+    },
+    {
+      "id": 29,
+      "effect": "Purple Item Card",
+      "meaning": "Slot 1 lookup",
+      "universalPart": "{237:[29 29]}"
+    },
+    {
+      "id": 30,
+      "effect": "Leg Item Card",
+      "meaning": "Slot 1 lookup",
+      "universalPart": "{237:[30 30]}"
+    },
+    {
+      "id": 31,
+      "effect": "Scavenger 10%",
+      "meaning": "Perk",
+      "universalPart": "{237:[31 31]}"
+    },
+    {
+      "id": 32,
+      "effect": "Unknown Item",
+      "meaning": "/",
+      "universalPart": "{237:[32 32]}"
+    },
+    {
+      "id": 33,
+      "effect": "Unknown Item",
+      "meaning": "/",
+      "universalPart": "{237:[33 33]}"
+    },
+    {
+      "id": 34,
+      "effect": "Unknown Item",
+      "meaning": "/",
+      "universalPart": "{237:[34 34]}"
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "legendary_barrels": {
+    "Daedalus": [
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Oscar Mike",
+        "partName": "Tactical Rounds",
+        "partType": "Barrel",
+        "universalPart": "{13:8}"
+      },
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Oscar Mike",
+        "partName": "Space Laser",
+        "partType": "Underbarrel",
+        "universalPart": "{13:75}"
+      },
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Oscar Mike",
+        "partName": "Fragcendiary Grenades",
+        "partType": "Underbarrel",
+        "universalPart": "{13:67}"
+      },
+      {
+        "typeName": "Shotgun",
+        "perk": "Bod",
+        "partName": "All-Arounder",
+        "partType": "Barrel",
+        "universalPart": "{8:52}"
+      },
+      {
+        "typeName": "SMG",
+        "perk": "Darkbeast",
+        "partName": "Parley",
+        "partType": "Barrel",
+        "universalPart": "{20:64}"
+      },
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Lumberjack",
+        "partName": "Timber",
+        "partType": "Barrel",
+        "universalPart": "{13:57}"
+      },
+      {
+        "typeName": "Pistol",
+        "perk": "Rangefinder",
+        "partName": "Precision",
+        "partType": "Barrel",
+        "universalPart": "{2:78}"
+      },
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Star Helix",
+        "partName": "Constellation",
+        "partType": "Barrel",
+        "universalPart": "{13:77}"
+      }
+    ],
+    "Jakobs": [
+      {
+        "typeName": "Pistol",
+        "perk": "Songbird",
+        "partName": "Dueling Pistol",
+        "partType": "Barrel",
+        "universalPart": "{3:72}"
+      },
+      {
+        "typeName": "Sniper Rifle",
+        "perk": "Boomslang",
+        "partName": "Bullet Pollinator",
+        "partType": "Barrel",
+        "universalPart": "{24:74}"
+      },
+      {
+        "typeName": "Pistol",
+        "perk": "Seventh Sense",
+        "partName": "Proprioception",
+        "partType": "Barrel",
+        "universalPart": "{3:80}"
+      },
+      {
+        "typeName": "Shotgun",
+        "perk": "Hellwalker",
+        "partName": "Soothslayer",
+        "partType": "Barrel",
+        "universalPart": "{9:82}"
+      },
+      {
+        "typeName": "Shotgun",
+        "perk": "T.K's wave",
+        "partName": "Heirloom",
+        "partType": "Barrel",
+        "universalPart": "{9:90}"
+      },
+      {
+        "typeName": "Sniper Rifle",
+        "perk": "Balista",
+        "partName": "Propagation",
+        "partType": "Barrel",
+        "universalPart": "{24:72}"
+      },
+      {
+        "typeName": "Shotgun",
+        "perk": "Hot Slugger",
+        "partName": "Blazing Barrel",
+        "partType": "Barrel",
+        "universalPart": "{9:79}"
+      }
+    ],
+    "Maliwan": [
+      {
+        "typeName": "Sniper Rifle",
+        "perk": "Complex Root",
+        "partName": "Sierpinski",
+        "partType": "Barrel",
+        "universalPart": "{25:20}"
+      },
+      {
+        "typeName": "Heavy Weapon",
+        "perk": "Bottled Lightning",
+        "partName": "Strike Twice",
+        "partType": "Barrel+Scope sight",
+        "universalPart": "{289:26}"
+      },
+      {
+        "typeName": "SMG",
+        "perk": "Plasma Coil",
+        "partName": "Superheated",
+        "partType": "Barrel",
+        "universalPart": "{21:62}"
+      },
+      {
+        "typeName": "Shotgun",
+        "perk": "Kickballer",
+        "partName": "Force Bunt",
+        "partType": "Barrel",
+        "universalPart": "{10:7}"
+      },
+      {
+        "typeName": "Sniper Rifle",
+        "perk": "Katagawa's Revenge",
+        "partName": "Storm Cloud",
+        "partType": "Barrel",
+        "universalPart": "{25:60}"
+      }
+    ],
+    "Order": [
+      {
+        "typeName": "Assault Rifle",
+        "perk": "G.M.R.",
+        "partName": "Big Name Hunter",
+        "partType": "Barrel",
+        "universalPart": "{75:2}"
+      }
+    ],
+    "Ripper": [
+      {
+        "typeName": "SMG",
+        "perk": "Prince Harming",
+        "partName": "Pamplemousse",
+        "partType": "Barrel",
+        "universalPart": "{19:17}"
+      },
+      {
+        "typeName": "Heavy Weapon",
+        "perk": "Streamer",
+        "partName": "Delegation",
+        "partType": "Barrel",
+        "universalPart": "{275:1}"
+      },
+      {
+        "typeName": "Heavy Weapon",
+        "perk": "Disc Jockey",
+        "partName": "Bouncing Biscuits",
+        "partType": "Barrel",
+        "universalPart": "{275:30}"
+      },
+      {
+        "typeName": "Sniper Rifle",
+        "perk": "Vamoose",
+        "partName": "Scarce",
+        "partType": "Barrel",
+        "universalPart": "{23:21}"
+      }
+    ],
+    "Tediore": [
+      {
+        "typeName": "Shotgun",
+        "perk": "Husky Friend",
+        "partName": "Husky auto turret",
+        "partType": "Underbarrel",
+        "universalPart": "{11:79}"
+      }
+    ],
+    "Torgue": [
+      {
+        "typeName": "Heavy Weapon",
+        "perk": "Ravenfire",
+        "partName": "621",
+        "partType": "Barrel",
+        "universalPart": "{273:40}"
+      },
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Bugbear",
+        "partName": "Rotary Gun",
+        "partType": "Barrel",
+        "universalPart": "{17:54}"
+      },
+      {
+        "typeName": "Shotgun",
+        "perk": "Lead Balloon",
+        "partName": "Lightweight",
+        "partType": "Barrel",
+        "universalPart": "{12:56}"
+      },
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Potato Thrower IV",
+        "partName": "Spudgun",
+        "partType": "Barrel",
+        "universalPart": "{17:77}"
+      }
+    ],
+    "Vladof": [
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Wombo Combo",
+        "partName": "Rip Rockets",
+        "partType": "Barrel",
+        "universalPart": "{18:64}"
+      },
+      {
+        "typeName": "SMG",
+        "perk": "Kaoson",
+        "partName": "Granted",
+        "partType": "Barrel",
+        "universalPart": "{22:66}"
+      },
+      {
+        "typeName": "Sniper Rifle",
+        "perk": "Stop Gap",
+        "partName": "Reconfigure",
+        "partType": "Barrel",
+        "universalPart": "{16:72}"
+      },
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Lucian's Flank",
+        "partName": "Trample",
+        "partType": "Barrel",
+        "universalPart": "{18:1}"
+      },
+      {
+        "typeName": "Heavy Weapon",
+        "perk": "Atling Gun",
+        "partName": "Whistler",
+        "partType": "Barrel",
+        "universalPart": "{282:25}"
+      },
+      {
+        "typeName": "Assault Rifle",
+        "perk": "Whiskey Foxtrot",
+        "partName": "Scrap canon",
+        "partType": "Underbarrel",
+        "universalPart": "{18:92}"
+      },
+      {
+        "typeName": "Heavy Weapon",
+        "perk": "Inkling",
+        "partName": "Inkling",
+        "partType": "Barrel",
+        "universalPart": "{282:2}"
+      }
+    ]
+  }
+}

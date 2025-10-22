@@ -1,0 +1,130 @@
+{
+  "elemental_effects": {
+    "ElementalPart": [
+      {
+        "name": "Fire",
+        "universalPart": "{1:12}"
+      },
+      {
+        "name": "Shock",
+        "universalPart": "todo"
+      },
+      {
+        "name": "Corrosive",
+        "universalPart": "{1:36}"
+      },
+      {
+        "name": "Cryo",
+        "universalPart": "{1:11}"
+      },
+      {
+        "name": "Radiation",
+        "universalPart": "{1:9}"
+      }
+    ],
+    "DONsFindings": [
+      {
+        "name": "Corrosive",
+        "universalPart": "{1:10}"
+      },
+      {
+        "name": "Cryo",
+        "universalPart": "{1:11}"
+      },
+      {
+        "name": "Fire",
+        "universalPart": "{1:12}"
+      },
+      {
+        "name": "Radiation",
+        "universalPart": "{1:13}"
+      },
+      {
+        "name": "Shock",
+        "universalPart": "{1:14}"
+      }
+    ],
+    "ElementSwitch": [
+      {
+        "name": "Shock/Radiation",
+        "universalPart": "{1:29}"
+      },
+      {
+        "name": "Incendiary/Radiation",
+        "universalPart": "{1:30}"
+      },
+      {
+        "name": "Cryo/Radiation",
+        "universalPart": "{1:31}"
+      },
+      {
+        "name": "Corrosive/Radiation",
+        "universalPart": "{1:32}"
+      },
+      {
+        "name": "Radiation/Corrosive",
+        "universalPart": "{1:33}"
+      },
+      {
+        "name": "Shock/Corrosive",
+        "universalPart": "{1:34}"
+      },
+      {
+        "name": "Incendiary/Corrosive",
+        "universalPart": "{1:35}"
+      },
+      {
+        "name": "Cryo/Corrosive",
+        "universalPart": "{1:36}"
+      },
+      {
+        "name": "Radiation/Cryo",
+        "universalPart": "{1:37}"
+      },
+      {
+        "name": "Shock/Cryo",
+        "universalPart": "{1:38}"
+      },
+      {
+        "name": "Incendiary/Cryo",
+        "universalPart": "{1:39}"
+      },
+      {
+        "name": "Corrosive/Cryo",
+        "universalPart": "{1:40}"
+      },
+      {
+        "name": "Radiation/Incendiary",
+        "universalPart": "{1:41}"
+      },
+      {
+        "name": "Cryo/Incendiary",
+        "universalPart": "{1:42}"
+      },
+      {
+        "name": "Shock/Incendiary",
+        "universalPart": "{1:43}"
+      },
+      {
+        "name": "Corrosive/Incendiary",
+        "universalPart": "{1:44}"
+      },
+      {
+        "name": "Radiation/Shock",
+        "universalPart": "{1:45}"
+      },
+      {
+        "name": "Cryo/Shock",
+        "universalPart": "{1:46}"
+      },
+      {
+        "name": "Corrosive/Shock",
+        "universalPart": "{1:47}"
+      },
+      {
+        "name": "Incendiary/Shock",
+        "universalPart": "{1:48}"
+      }
+    ]
+  }
+}

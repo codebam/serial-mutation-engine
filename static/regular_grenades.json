@@ -1,0 +1,614 @@
+{
+  "regular_grenades": {
+    "type245": [
+      {
+        "id": 1,
+        "effect": "God Killer",
+        "description": "",
+        "universalPart": "{245:1}"
+      },
+      {
+        "id": 2,
+        "effect": "Reel Big Fist",
+        "description": "",
+        "universalPart": "{245:2}"
+      },
+      {
+        "id": 3,
+        "effect": "Lifeblood",
+        "description": "",
+        "universalPart": "{245:3}"
+      },
+      {
+        "id": 4,
+        "effect": "Airstrike",
+        "description": "",
+        "universalPart": "{245:4}"
+      },
+      {
+        "id": 5,
+        "effect": "High Caliber",
+        "description": "",
+        "universalPart": "{245:5}"
+      },
+      {
+        "id": 6,
+        "effect": "Gadget Ahoy",
+        "description": "",
+        "universalPart": "{245:6}"
+      },
+      {
+        "id": 7,
+        "effect": "",
+        "description": "",
+        "universalPart": "{245:7}"
+      },
+      {
+        "id": 8,
+        "effect": "Oscar Mike",
+        "description": "",
+        "universalPart": "{245:8}"
+      },
+      {
+        "id": 9,
+        "effect": "Rubberband Man",
+        "description": "",
+        "universalPart": "{245:9}"
+      },
+      {
+        "id": 10,
+        "effect": "Deadeye",
+        "description": "",
+        "universalPart": "{245:10}"
+      },
+      {
+        "id": 11,
+        "effect": "Action Fist",
+        "description": "",
+        "universalPart": "{245:11}"
+      },
+      {
+        "id": 12,
+        "effect": "GooJFC",
+        "description": "",
+        "universalPart": "{245:12}"
+      },
+      {
+        "id": 13,
+        "effect": "Atlas E.X.",
+        "description": "",
+        "universalPart": "{245:13}"
+      },
+      {
+        "id": 14,
+        "effect": "Atlas Infinum",
+        "description": "",
+        "universalPart": "{245:14}"
+      },
+      {
+        "id": 15,
+        "effect": "Trickshot",
+        "description": "",
+        "universalPart": "{245:15}"
+      },
+      {
+        "id": 16,
+        "effect": "Jacked",
+        "description": "",
+        "universalPart": "{245:16}"
+      },
+      {
+        "id": 17,
+        "effect": "Get Throwin'",
+        "description": "",
+        "universalPart": "{245:17}"
+      },
+      {
+        "id": 18,
+        "effect": "Heating Up",
+        "description": "",
+        "universalPart": "{245:18}"
+      },
+      {
+        "id": 19,
+        "effect": "Bullets to Spare",
+        "description": "",
+        "universalPart": "{245:19}"
+      },
+      {
+        "id": 20,
+        "effect": "Daed-dy O'",
+        "description": "",
+        "universalPart": "{245:20}"
+      },
+      {
+        "id": 21,
+        "effect": "Duration Augment",
+        "description": "Increases the duration of the Lingering Grenade by 50%",
+        "universalPart": "{245:21}"
+      },
+      {
+        "id": 22,
+        "effect": "Spawning Augment",
+        "description": "Spawns additional Grenades on each bounce",
+        "universalPart": "{245:22}"
+      },
+      {
+        "id": 23,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:23}"
+      },
+      {
+        "id": 24,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:24}"
+      },
+      {
+        "id": 25,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:25}"
+      },
+      {
+        "id": 26,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:26}"
+      },
+      {
+        "id": 27,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:27}"
+      },
+      {
+        "id": 28,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:28}"
+      },
+      {
+        "id": 29,
+        "effect": "MIRV Payload",
+        "description": "Spawns 4 MIRV Grenades on exploding",
+        "universalPart": "{245:29}"
+      },
+      {
+        "id": 30,
+        "effect": "Divider Payload",
+        "description": "Spawns a second Grenade while midflight",
+        "universalPart": "{245:30}"
+      },
+      {
+        "id": 31,
+        "effect": "Spring Payload",
+        "description": "Bounces in place, exploding 3 additional times",
+        "universalPart": "{245:31}"
+      },
+      {
+        "id": 32,
+        "effect": "Artillery Payload",
+        "description": "Fires bullets around the Grenade, Dealing 0 damage/s",
+        "universalPart": "{245:32}"
+      },
+      {
+        "id": 33,
+        "effect": "Singularity Payload",
+        "description": "Spawns a Singularity that pulls in nearby enemies",
+        "universalPart": "{245:33}"
+      },
+      {
+        "id": 34,
+        "effect": "Lingering Payload",
+        "description": "Spawns 4 rotating beams dealing 0 incendiary damage/s",
+        "universalPart": "{245:34}"
+      },
+      {
+        "id": 35,
+        "effect": "Lingering Payload",
+        "description": "Corrosive",
+        "universalPart": "{245:35}"
+      },
+      {
+        "id": 36,
+        "effect": "Lingering Payload",
+        "description": "Shock",
+        "universalPart": "{245:36}"
+      },
+      {
+        "id": 37,
+        "effect": "Lingering Payload",
+        "description": "Cryo",
+        "universalPart": "{245:37}"
+      },
+      {
+        "id": 38,
+        "effect": "Lingering Payload",
+        "description": "Radiation",
+        "universalPart": "{245:38}"
+      },
+      {
+        "id": 39,
+        "effect": "Damage Amp Payload",
+        "description": "Damage Taken by impacted target is increased by +15% for 10s",
+        "universalPart": "{245:39}"
+      },
+      {
+        "id": 40,
+        "effect": "Tightly Packed Augment",
+        "description": "Increases amount of MIRV Grenades spawned by +2",
+        "universalPart": "{245:40}"
+      },
+      {
+        "id": 41,
+        "effect": "Rubberized Augment",
+        "description": "MIRV Grenades bounce up to 5 times before exploding",
+        "universalPart": "{245:41}"
+      },
+      {
+        "id": 42,
+        "effect": "Micro Mirv Augment",
+        "description": "MIRV Grenades each spawn 3 Micro MIRVs when they explode",
+        "universalPart": "{245:42}"
+      },
+      {
+        "id": 43,
+        "effect": "Spring Augment",
+        "description": "MIRV Grenades bounce in place 3 times, exploding on each bounce",
+        "universalPart": "{245:43}"
+      },
+      {
+        "id": 44,
+        "effect": "Long Division Augment",
+        "description": "Spawn another additional Grenade while midflight",
+        "universalPart": "{245:44}"
+      },
+      {
+        "id": 45,
+        "effect": "Splinter Augment",
+        "description": "Launches the second spawned Grenade toward an enemy",
+        "universalPart": "{245:45}"
+      },
+      {
+        "id": 46,
+        "effect": "Pulling Augment",
+        "description": "Each Grenade spawns a Singularity",
+        "universalPart": "{245:46}"
+      },
+      {
+        "id": 47,
+        "effect": "Repeater Augment",
+        "description": "Spawns additional Grenades downwards",
+        "universalPart": "{245:47}"
+      },
+      {
+        "id": 48,
+        "effect": "Spring Augment",
+        "description": "Each Grenade bounces in place, exploding 3 extra times",
+        "universalPart": "{245:48}"
+      },
+      {
+        "id": 49,
+        "effect": "Tightly Coiled",
+        "description": "Grenade bounces in place, exploding an additional +3 times",
+        "universalPart": "{245:49}"
+      },
+      {
+        "id": 50,
+        "effect": "Apex Augment",
+        "description": "Each Grenade also explodes at the apex of each bounce",
+        "universalPart": "{245:50}"
+      },
+      {
+        "id": 51,
+        "effect": "Compounding Augment",
+        "description": "With every bounce Damage increases by +25% and Damage Radius by +13%",
+        "universalPart": "{245:51}"
+      },
+      {
+        "id": 52,
+        "effect": "Bouncer Augment",
+        "description": "Each Grenade bounces twards nearby enemies",
+        "universalPart": "{245:52}"
+      },
+      {
+        "id": 53,
+        "effect": "Duration Augment",
+        "description": "Increases the duration of the Artillery Grenade by +50%",
+        "universalPart": "{245:53}"
+      },
+      {
+        "id": 54,
+        "effect": "Ricochet Augment",
+        "description": "Artillery Projectiles will bounce off of enemies, and Ricochet towards another nearby enemy",
+        "universalPart": "{245:54}"
+      },
+      {
+        "id": 55,
+        "effect": "Missles Augment",
+        "description": "Fires Micro-Missiles that home in on nearby enemies, each dealing 0 Damage",
+        "universalPart": "{245:55}"
+      },
+      {
+        "id": 56,
+        "effect": "Maglock Augment",
+        "description": "Homes in on nearby enemies",
+        "universalPart": "{245:56}"
+      },
+      {
+        "id": 57,
+        "effect": "Mortar Augment",
+        "description": "Fires Mortars toward enemy positions, each dealing 0 Damage",
+        "universalPart": "{245:57}"
+      },
+      {
+        "id": 58,
+        "effect": "Prolonged Augment",
+        "description": "Increases the duration of the Singularity Grenade by 50%",
+        "universalPart": "{245:58}"
+      },
+      {
+        "id": 59,
+        "effect": "Gnawing Augment",
+        "description": "Deals 2379 Damage/s for the Duration of the Singularity",
+        "universalPart": "{245:59}"
+      },
+      {
+        "id": 60,
+        "effect": "Collapsing Augment",
+        "description": "The Singularity pulls in enemies more rapidly, and with increased Force withen a large Radius",
+        "universalPart": "{245:60}"
+      },
+      {
+        "id": 61,
+        "effect": "Repulsor Augment",
+        "description": "Upon Exploding, pushes enemies away from the singularity",
+        "universalPart": "{245:61}"
+      },
+      {
+        "id": 62,
+        "effect": "Duration Augment",
+        "description": "Increases the Duration of the Lingering Grenade by 50%",
+        "universalPart": "{245:62}"
+      },
+      {
+        "id": 63,
+        "effect": "Pulsing Augment",
+        "description": "Radiates Elementap Pulses from the Grenade each Pulse dealing 0 Damage",
+        "universalPart": "{245:63}"
+      },
+      {
+        "id": 64,
+        "effect": "Splat Pack Augment",
+        "description": "Launches 3 Projectiles that each spawn an Elemental Puddle on landing",
+        "universalPart": "{245:64}"
+      },
+      {
+        "id": 65,
+        "effect": "Fracture Augment",
+        "description": "Spawns 3 Elemental Pillars in the direction the Grenade was thrown, each dealing X damage",
+        "universalPart": "{245:65}"
+      },
+      {
+        "id": 66,
+        "effect": "Alchemic Augment",
+        "description": "Grenade Status Effect Chance +300%",
+        "universalPart": "{245:66}"
+      },
+      {
+        "id": 67,
+        "effect": "Bouncing Blade Augment",
+        "description": "Ricochets additional knives toward nearby enemies, dealing 0 Damage",
+        "universalPart": "{245:67}"
+      },
+      {
+        "id": 68,
+        "effect": "Supressor Augment",
+        "description": "Damage Delt by impacted target is reduced by -25% for 10s",
+        "universalPart": "{245:68}"
+      },
+      {
+        "id": 69,
+        "effect": "Penetrator Augment",
+        "description": "Damge to the impacted target are automatic Critical Hits for 5s",
+        "universalPart": "{245:69}"
+      },
+      {
+        "id": 70,
+        "effect": "Overflow",
+        "description": "Maximum Grenade Charge is increased by +1",
+        "universalPart": "{245:70}"
+      },
+      {
+        "id": 71,
+        "effect": "Express",
+        "description": "Grenade cooldown Duration is reduced by -15%",
+        "universalPart": "{245:71}"
+      },
+      {
+        "id": 72,
+        "effect": "Explosive",
+        "description": "Grenade Damage is increased by 20%",
+        "universalPart": "{245:72}"
+      },
+      {
+        "id": 73,
+        "effect": "Expansive",
+        "description": "Grenade Damage Radius is increased by +30%",
+        "universalPart": "{245:73}"
+      },
+      {
+        "id": 74,
+        "effect": "Hazardous",
+        "description": "Grenade Status Effect Chance is increased by +14% and Greande Status Effect Damage is increased by +28%",
+        "universalPart": "{245:74}"
+      },
+      {
+        "id": 75,
+        "effect": "Exacting",
+        "description": "Grenade has a 18/24% Chance to deal Critical Damage",
+        "universalPart": "{245:75}"
+      },
+      {
+        "id": 76,
+        "effect": "Nuke",
+        "description": "Grenade Damage is Increased by 30% Grenade Damage Radius is increased by 60%, and Grenade Cooldown Duration is increased by +25%",
+        "universalPart": "{245:76}"
+      },
+      {
+        "id": 77,
+        "effect": "Concussive",
+        "description": "Knockback Force is increased by +70%",
+        "universalPart": "{245:77}"
+      },
+      {
+        "id": 78,
+        "effect": "Bloodthirsty",
+        "description": "Grenade Lifesteal is increased by 16%",
+        "universalPart": "{245:78}"
+      },
+      {
+        "id": 79,
+        "effect": "Merciless",
+        "description": "Grenade Critical Damage is increased by +70%",
+        "universalPart": "{245:79}"
+      },
+      {
+        "id": 80,
+        "effect": "Lethal",
+        "description": "Grenade Damage is increased by 30%, and Grenade Projectile Speed is reduced by -50%",
+        "universalPart": "{245:80}"
+      },
+      {
+        "id": 81,
+        "effect": "Wideload",
+        "description": "Damage Radius is increased by 45%, Homing Turn Rate reduced by -50%",
+        "universalPart": "{245:81}"
+      },
+      {
+        "id": 82,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:82}"
+      },
+      {
+        "id": 83,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:83}"
+      },
+      {
+        "id": 84,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:84}"
+      },
+      {
+        "id": 85,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:85}"
+      },
+      {
+        "id": 86,
+        "effect": "Nothing",
+        "description": "",
+        "universalPart": "{245:86}"
+      },
+      {
+        "id": 87,
+        "effect": "Risky Boots",
+        "description": "",
+        "universalPart": "{245:87}"
+      }
+    ],
+    "type8": [
+      {
+        "id": 1,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[1]}"
+      },
+      {
+        "id": 2,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[2]}"
+      },
+      {
+        "id": 3,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[3]}"
+      },
+      {
+        "id": 4,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[4]}"
+      },
+      {
+        "id": 5,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[5]}"
+      },
+      {
+        "id": 6,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[6]}"
+      },
+      {
+        "id": 7,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[7]}"
+      },
+      {
+        "id": 8,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[8]}"
+      },
+      {
+        "id": 9,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[9]}"
+      },
+      {
+        "id": 10,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[10]}"
+      },
+      {
+        "id": 11,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[11]}"
+      },
+      {
+        "id": 12,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[12]}"
+      },
+      {
+        "id": 13,
+        "effect": "lethal",
+        "description": "",
+        "universalPart": "{8:[13]}"
+      },
+      {
+        "id": 14,
+        "effect": "",
+        "description": "",
+        "universalPart": "{8:[14]}"
+      }
+    ]
+  }
+}

@@ -1,0 +1,3220 @@
+{
+  "vex_class_mods": [
+    {
+      "id": 1,
+      "perkType": "Transistor",
+      "description": "Name+Skin",
+      "universalPart": "{254:1}"
+    },
+    {
+      "id": 2,
+      "perkType": "Firedancer",
+      "description": "Name+Skin",
+      "universalPart": "{254:2}"
+    },
+    {
+      "id": 3,
+      "perkType": "Naturalist",
+      "description": "Name+Skin",
+      "universalPart": "{254:3}"
+    },
+    {
+      "id": 4,
+      "perkType": "Weaver",
+      "description": "Name+Skin",
+      "universalPart": "{254:4}"
+    },
+    {
+      "id": 5,
+      "perkType": "Radiance",
+      "description": "Name+Skin",
+      "universalPart": "{254:5}"
+    },
+    {
+      "id": 6,
+      "perkType": "Ritualist",
+      "description": "Name+Skin",
+      "universalPart": "{254:6}"
+    },
+    {
+      "id": 7,
+      "perkType": "Alchemist",
+      "description": "Name+Skin",
+      "universalPart": "{254:7}"
+    },
+    {
+      "id": 8,
+      "perkType": "Commander",
+      "description": "Name+Skin",
+      "universalPart": "{254:8}"
+    },
+    {
+      "id": 9,
+      "perkType": "Hunter",
+      "description": "Name+Skin",
+      "universalPart": "{254:9}"
+    },
+    {
+      "id": 10,
+      "perkType": "Technomancer",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{254:10}"
+    },
+    {
+      "id": 11,
+      "perkType": "Avatar",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{254:11}"
+    },
+    {
+      "id": 12,
+      "perkType": "Undead Eye",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{254:12}"
+    },
+    {
+      "id": 13,
+      "perkType": "Kindread Spirits",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{254:13}"
+    },
+    {
+      "id": 14,
+      "perkType": "Illusionist",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{254:14}"
+    },
+    {
+      "id": 15,
+      "perkType": "Teen Witch",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{254:15}"
+    },
+    {
+      "id": 16,
+      "perkType": "Claw and Bang",
+      "description": "Skill",
+      "universalPart": "{254:16}"
+    },
+    {
+      "id": 17,
+      "perkType": "Claw and Bang",
+      "description": "Skill",
+      "universalPart": "{254:17}"
+    },
+    {
+      "id": 18,
+      "perkType": "Claw and Bang",
+      "description": "Skill",
+      "universalPart": "{254:18}"
+    },
+    {
+      "id": 19,
+      "perkType": "Claw and Bang",
+      "description": "Skill",
+      "universalPart": "{254:19}"
+    },
+    {
+      "id": 20,
+      "perkType": "Claw and Bang",
+      "description": "Skill",
+      "universalPart": "{254:20}"
+    },
+    {
+      "id": 21,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:21}"
+    },
+    {
+      "id": 22,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:22}"
+    },
+    {
+      "id": 23,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:23}"
+    },
+    {
+      "id": 24,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:24}"
+    },
+    {
+      "id": 25,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:25}"
+    },
+    {
+      "id": 26,
+      "perkType": "Grave Quickening",
+      "description": "Skill",
+      "universalPart": "{254:26}"
+    },
+    {
+      "id": 27,
+      "perkType": "Grave Quickening",
+      "description": "Skill",
+      "universalPart": "{254:27}"
+    },
+    {
+      "id": 28,
+      "perkType": "Grave Quickening",
+      "description": "Skill",
+      "universalPart": "{254:28}"
+    },
+    {
+      "id": 29,
+      "perkType": "Grave Quickening",
+      "description": "Skill",
+      "universalPart": "{254:29}"
+    },
+    {
+      "id": 30,
+      "perkType": "Grave Quickening",
+      "description": "Skill",
+      "universalPart": "{254:30}"
+    },
+    {
+      "id": 31,
+      "perkType": "Blood Sacrifice",
+      "description": "Skill",
+      "universalPart": "{254:31}"
+    },
+    {
+      "id": 32,
+      "perkType": "Blood Sacrifice",
+      "description": "Skill",
+      "universalPart": "{254:32}"
+    },
+    {
+      "id": 33,
+      "perkType": "Blood Sacrifice",
+      "description": "Skill",
+      "universalPart": "{254:33}"
+    },
+    {
+      "id": 34,
+      "perkType": "Blood Sacrifice",
+      "description": "Skill",
+      "universalPart": "{254:34}"
+    },
+    {
+      "id": 35,
+      "perkType": "Blood Sacrifice",
+      "description": "Skill",
+      "universalPart": "{254:35}"
+    },
+    {
+      "id": 36,
+      "perkType": "Cold Iron",
+      "description": "Skill",
+      "universalPart": "{254:36}"
+    },
+    {
+      "id": 37,
+      "perkType": "Cold Iron",
+      "description": "Skill",
+      "universalPart": "{254:37}"
+    },
+    {
+      "id": 38,
+      "perkType": "Cold Iron",
+      "description": "Skill",
+      "universalPart": "{254:38}"
+    },
+    {
+      "id": 39,
+      "perkType": "Cold Iron",
+      "description": "Skill",
+      "universalPart": "{254:39}"
+    },
+    {
+      "id": 40,
+      "perkType": "Cold Iron",
+      "description": "Skill",
+      "universalPart": "{254:40}"
+    },
+    {
+      "id": 41,
+      "perkType": "Volatile Essence",
+      "description": "Skill",
+      "universalPart": "{254:41}"
+    },
+    {
+      "id": 42,
+      "perkType": "Volatile Essence",
+      "description": "Skill",
+      "universalPart": "{254:42}"
+    },
+    {
+      "id": 43,
+      "perkType": "Volatile Essence",
+      "description": "Skill",
+      "universalPart": "{254:43}"
+    },
+    {
+      "id": 44,
+      "perkType": "Volatile Essence",
+      "description": "Skill",
+      "universalPart": "{254:44}"
+    },
+    {
+      "id": 45,
+      "perkType": "Volatile Essence",
+      "description": "Skill",
+      "universalPart": "{254:45}"
+    },
+    {
+      "id": 46,
+      "perkType": "Material Components",
+      "description": "Skill",
+      "universalPart": "{254:46}"
+    },
+    {
+      "id": 47,
+      "perkType": "Material Components",
+      "description": "Skill",
+      "universalPart": "{254:47}"
+    },
+    {
+      "id": 48,
+      "perkType": "Material Components",
+      "description": "Skill",
+      "universalPart": "{254:48}"
+    },
+    {
+      "id": 49,
+      "perkType": "Material Components",
+      "description": "Skill",
+      "universalPart": "{254:49}"
+    },
+    {
+      "id": 50,
+      "perkType": "Material Components",
+      "description": "Skill",
+      "universalPart": "{254:50}"
+    },
+    {
+      "id": 51,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:51}"
+    },
+    {
+      "id": 52,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:52}"
+    },
+    {
+      "id": 53,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:53}"
+    },
+    {
+      "id": 54,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:54}"
+    },
+    {
+      "id": 55,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:55}"
+    },
+    {
+      "id": 56,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:56}"
+    },
+    {
+      "id": 57,
+      "perkType": "Extra Cursed",
+      "description": "Skill",
+      "universalPart": "{254:57}"
+    },
+    {
+      "id": 58,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:58}"
+    },
+    {
+      "id": 59,
+      "perkType": "Grave Fiends",
+      "description": "Skill",
+      "universalPart": "{254:59}"
+    },
+    {
+      "id": 60,
+      "perkType": "Cursed Blade",
+      "description": "Skill",
+      "universalPart": "{254:60}"
+    },
+    {
+      "id": 61,
+      "perkType": "Portents of Suffering",
+      "description": "Skill",
+      "universalPart": "{254:61}"
+    },
+    {
+      "id": 62,
+      "perkType": "Grave Assault",
+      "description": "Skill",
+      "universalPart": "{254:62}"
+    },
+    {
+      "id": 63,
+      "perkType": "Fell Inscriptions",
+      "description": "Skill",
+      "universalPart": "{254:63}"
+    },
+    {
+      "id": 64,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:64}"
+    },
+    {
+      "id": 65,
+      "perkType": "Idle Hands",
+      "description": "Skill",
+      "universalPart": "{254:65}"
+    },
+    {
+      "id": 66,
+      "perkType": "Sanguine Fiends",
+      "description": "Skill",
+      "universalPart": "{254:66}"
+    },
+    {
+      "id": 67,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:67}"
+    },
+    {
+      "id": 68,
+      "perkType": "Channeling",
+      "description": "Skill",
+      "universalPart": "{254:68}"
+    },
+    {
+      "id": 69,
+      "perkType": "Grave Power",
+      "description": "Skill",
+      "universalPart": "{254:69}"
+    },
+    {
+      "id": 70,
+      "perkType": "Target Prescience",
+      "description": "Skill",
+      "universalPart": "{254:70}"
+    },
+    {
+      "id": 71,
+      "perkType": "Grave Implements",
+      "description": "Skill",
+      "universalPart": "{254:71}"
+    },
+    {
+      "id": 72,
+      "perkType": "Bloodletter",
+      "description": "Skill",
+      "universalPart": "{254:72}"
+    },
+    {
+      "id": 73,
+      "perkType": "Fiendish Invigoration",
+      "description": "Skill",
+      "universalPart": "{254:73}"
+    },
+    {
+      "id": 74,
+      "perkType": "Grave Sights",
+      "description": "Skill",
+      "universalPart": "{254:74}"
+    },
+    {
+      "id": 75,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:75}"
+    },
+    {
+      "id": 76,
+      "perkType": "Leeching Attunement",
+      "description": "Skill",
+      "universalPart": "{254:76}"
+    },
+    {
+      "id": 77,
+      "perkType": "Guns and Needles",
+      "description": "Skill",
+      "universalPart": "{254:77}"
+    },
+    {
+      "id": 78,
+      "perkType": "Vorpal Fiends",
+      "description": "Skill",
+      "universalPart": "{254:78}"
+    },
+    {
+      "id": 79,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:79}"
+    },
+    {
+      "id": 80,
+      "perkType": "Overheal",
+      "description": "Skill",
+      "universalPart": "{254:80}"
+    },
+    {
+      "id": 81,
+      "perkType": "Mourning",
+      "description": "Skill",
+      "universalPart": "{254:81}"
+    },
+    {
+      "id": 82,
+      "perkType": "Yowl and Bay",
+      "description": "Skill",
+      "universalPart": "{254:82}"
+    },
+    {
+      "id": 83,
+      "perkType": "Overprotective",
+      "description": "Skill",
+      "universalPart": "{254:83}"
+    },
+    {
+      "id": 84,
+      "perkType": "Hasty Fiends",
+      "description": "Skill",
+      "universalPart": "{254:84}"
+    },
+    {
+      "id": 85,
+      "perkType": "Blood is Magic",
+      "description": "Skill",
+      "universalPart": "{254:85}"
+    },
+    {
+      "id": 86,
+      "perkType": "Grave Command",
+      "description": "Skill",
+      "universalPart": "{254:86}"
+    },
+    {
+      "id": 87,
+      "perkType": "Enchantment",
+      "description": "Skill",
+      "universalPart": "{254:87}"
+    },
+    {
+      "id": 88,
+      "perkType": "Grave Sustenance",
+      "description": "Skill",
+      "universalPart": "{254:88}"
+    },
+    {
+      "id": 89,
+      "perkType": "Extra Cursed",
+      "description": "Skill",
+      "universalPart": "{254:89}"
+    },
+    {
+      "id": 90,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:90}"
+    },
+    {
+      "id": 91,
+      "perkType": "Grave Fiends",
+      "description": "Skill",
+      "universalPart": "{254:91}"
+    },
+    {
+      "id": 92,
+      "perkType": "Cursed Blade",
+      "description": "Skill",
+      "universalPart": "{254:92}"
+    },
+    {
+      "id": 93,
+      "perkType": "Portents of suffering",
+      "description": "Skill",
+      "universalPart": "{254:93}"
+    },
+    {
+      "id": 94,
+      "perkType": "Grave assault",
+      "description": "Skill",
+      "universalPart": "{254:94}"
+    },
+    {
+      "id": 95,
+      "perkType": "Fell Inscriptions",
+      "description": "Skill",
+      "universalPart": "{254:95}"
+    },
+    {
+      "id": 96,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:96}"
+    },
+    {
+      "id": 97,
+      "perkType": "Idle Hands",
+      "description": "Skill",
+      "universalPart": "{254:97}"
+    },
+    {
+      "id": 98,
+      "perkType": "Sanguine Fiends",
+      "description": "Skill",
+      "universalPart": "{254:98}"
+    },
+    {
+      "id": 99,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:99}"
+    },
+    {
+      "id": 100,
+      "perkType": "Channeling",
+      "description": "Skill",
+      "universalPart": "{254:100}"
+    },
+    {
+      "id": 101,
+      "perkType": "Grave Power",
+      "description": "Skill",
+      "universalPart": "{254:101}"
+    },
+    {
+      "id": 102,
+      "perkType": "Target Prescience",
+      "description": "Skill",
+      "universalPart": "{254:102}"
+    },
+    {
+      "id": 103,
+      "perkType": "Grave Implements",
+      "description": "Skill",
+      "universalPart": "{254:103}"
+    },
+    {
+      "id": 104,
+      "perkType": "Bloodletter",
+      "description": "Skill",
+      "universalPart": "{254:104}"
+    },
+    {
+      "id": 105,
+      "perkType": "Fiendish Invigoration",
+      "description": "Skill",
+      "universalPart": "{254:105}"
+    },
+    {
+      "id": 106,
+      "perkType": "Grave Sights",
+      "description": "Skill",
+      "universalPart": "{254:106}"
+    },
+    {
+      "id": 107,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:107}"
+    },
+    {
+      "id": 108,
+      "perkType": "Leeching Attunement",
+      "description": "Skill",
+      "universalPart": "{254:108}"
+    },
+    {
+      "id": 109,
+      "perkType": "Guns and Needles",
+      "description": "Skill",
+      "universalPart": "{254:109}"
+    },
+    {
+      "id": 110,
+      "perkType": "Vorpal Fiends",
+      "description": "Skill",
+      "universalPart": "{254:110}"
+    },
+    {
+      "id": 111,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:111}"
+    },
+    {
+      "id": 112,
+      "perkType": "Overheal",
+      "description": "Skill",
+      "universalPart": "{254:112}"
+    },
+    {
+      "id": 113,
+      "perkType": "Mourning",
+      "description": "Skill",
+      "universalPart": "{254:113}"
+    },
+    {
+      "id": 114,
+      "perkType": "Yowl and Bay",
+      "description": "Skill",
+      "universalPart": "{254:114}"
+    },
+    {
+      "id": 115,
+      "perkType": "Overprotective",
+      "description": "Skill",
+      "universalPart": "{254:115}"
+    },
+    {
+      "id": 116,
+      "perkType": "Hasty Fiends",
+      "description": "Skill",
+      "universalPart": "{254:116}"
+    },
+    {
+      "id": 117,
+      "perkType": "Blood is Magic",
+      "description": "Skill",
+      "universalPart": "{254:117}"
+    },
+    {
+      "id": 118,
+      "perkType": "Grave Command",
+      "description": "Skill",
+      "universalPart": "{254:118}"
+    },
+    {
+      "id": 119,
+      "perkType": "Enchantment",
+      "description": "Skill",
+      "universalPart": "{254:119}"
+    },
+    {
+      "id": 120,
+      "perkType": "Grave Sustenance",
+      "description": "Skill",
+      "universalPart": "{254:120}"
+    },
+    {
+      "id": 121,
+      "perkType": "Extra Cursed",
+      "description": "Skill",
+      "universalPart": "{254:121}"
+    },
+    {
+      "id": 122,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:122}"
+    },
+    {
+      "id": 123,
+      "perkType": "Grave Fiends",
+      "description": "Skill",
+      "universalPart": "{254:123}"
+    },
+    {
+      "id": 124,
+      "perkType": "Cursed Blade",
+      "description": "Skill",
+      "universalPart": "{254:124}"
+    },
+    {
+      "id": 125,
+      "perkType": "Portents of suffering",
+      "description": "Skill",
+      "universalPart": "{254:125}"
+    },
+    {
+      "id": 126,
+      "perkType": "Grave assault",
+      "description": "Skill",
+      "universalPart": "{254:126}"
+    },
+    {
+      "id": 127,
+      "perkType": "Fell Inscriptions",
+      "description": "Skill",
+      "universalPart": "{254:127}"
+    },
+    {
+      "id": 128,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:128}"
+    },
+    {
+      "id": 129,
+      "perkType": "Idle Hands",
+      "description": "Skill",
+      "universalPart": "{254:129}"
+    },
+    {
+      "id": 130,
+      "perkType": "Sanguine Fiends",
+      "description": "Skill",
+      "universalPart": "{254:130}"
+    },
+    {
+      "id": 131,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:131}"
+    },
+    {
+      "id": 132,
+      "perkType": "Channeling",
+      "description": "Skill",
+      "universalPart": "{254:132}"
+    },
+    {
+      "id": 133,
+      "perkType": "Grave Power",
+      "description": "Skill",
+      "universalPart": "{254:133}"
+    },
+    {
+      "id": 134,
+      "perkType": "Target Prescience",
+      "description": "Skill",
+      "universalPart": "{254:134}"
+    },
+    {
+      "id": 135,
+      "perkType": "Grave Implements",
+      "description": "Skill",
+      "universalPart": "{254:135}"
+    },
+    {
+      "id": 136,
+      "perkType": "Bloodletter",
+      "description": "Skill",
+      "universalPart": "{254:136}"
+    },
+    {
+      "id": 137,
+      "perkType": "Fiendish Invigoration",
+      "description": "Skill",
+      "universalPart": "{254:137}"
+    },
+    {
+      "id": 138,
+      "perkType": "Grave Sights",
+      "description": "Skill",
+      "universalPart": "{254:138}"
+    },
+    {
+      "id": 139,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:139}"
+    },
+    {
+      "id": 140,
+      "perkType": "Leeching Attunement",
+      "description": "Skill",
+      "universalPart": "{254:140}"
+    },
+    {
+      "id": 141,
+      "perkType": "Guns and Needles",
+      "description": "Skill",
+      "universalPart": "{254:141}"
+    },
+    {
+      "id": 142,
+      "perkType": "Vorpal Fiends",
+      "description": "Skill",
+      "universalPart": "{254:142}"
+    },
+    {
+      "id": 143,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:143}"
+    },
+    {
+      "id": 144,
+      "perkType": "Overheal",
+      "description": "Skill",
+      "universalPart": "{254:144}"
+    },
+    {
+      "id": 145,
+      "perkType": "Mourning",
+      "description": "Skill",
+      "universalPart": "{254:145}"
+    },
+    {
+      "id": 146,
+      "perkType": "Yowl and Bay",
+      "description": "Skill",
+      "universalPart": "{254:146}"
+    },
+    {
+      "id": 147,
+      "perkType": "Overprotective",
+      "description": "Skill",
+      "universalPart": "{254:147}"
+    },
+    {
+      "id": 148,
+      "perkType": "Hasty Fiends",
+      "description": "Skill",
+      "universalPart": "{254:148}"
+    },
+    {
+      "id": 149,
+      "perkType": "Blood is Magic",
+      "description": "Skill",
+      "universalPart": "{254:149}"
+    },
+    {
+      "id": 150,
+      "perkType": "Grave Command",
+      "description": "Skill",
+      "universalPart": "{254:150}"
+    },
+    {
+      "id": 151,
+      "perkType": "Enchantment",
+      "description": "Skill",
+      "universalPart": "{254:151}"
+    },
+    {
+      "id": 152,
+      "perkType": "Grave Sustenance",
+      "description": "Skill",
+      "universalPart": "{254:152}"
+    },
+    {
+      "id": 153,
+      "perkType": "Extra Cursed",
+      "description": "Skill",
+      "universalPart": "{254:153}"
+    },
+    {
+      "id": 154,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:154}"
+    },
+    {
+      "id": 155,
+      "perkType": "Grave Fiends",
+      "description": "Skill",
+      "universalPart": "{254:155}"
+    },
+    {
+      "id": 156,
+      "perkType": "Cursed Blade",
+      "description": "Skill",
+      "universalPart": "{254:156}"
+    },
+    {
+      "id": 157,
+      "perkType": "Portents of suffering",
+      "description": "Skill",
+      "universalPart": "{254:157}"
+    },
+    {
+      "id": 158,
+      "perkType": "Grave assault",
+      "description": "Skill",
+      "universalPart": "{254:158}"
+    },
+    {
+      "id": 159,
+      "perkType": "Fell Inscriptions",
+      "description": "Skill",
+      "universalPart": "{254:159}"
+    },
+    {
+      "id": 160,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:160}"
+    },
+    {
+      "id": 161,
+      "perkType": "Idle Hands",
+      "description": "Skill",
+      "universalPart": "{254:161}"
+    },
+    {
+      "id": 162,
+      "perkType": "Sanguine Fiends",
+      "description": "Skill",
+      "universalPart": "{254:162}"
+    },
+    {
+      "id": 163,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:163}"
+    },
+    {
+      "id": 164,
+      "perkType": "Channeling",
+      "description": "Skill",
+      "universalPart": "{254:164}"
+    },
+    {
+      "id": 165,
+      "perkType": "Grave Power",
+      "description": "Skill",
+      "universalPart": "{254:165}"
+    },
+    {
+      "id": 166,
+      "perkType": "Target Prescience",
+      "description": "Skill",
+      "universalPart": "{254:166}"
+    },
+    {
+      "id": 167,
+      "perkType": "Grave Implements",
+      "description": "Skill",
+      "universalPart": "{254:167}"
+    },
+    {
+      "id": 168,
+      "perkType": "Bloodletter",
+      "description": "Skill",
+      "universalPart": "{254:168}"
+    },
+    {
+      "id": 169,
+      "perkType": "Fiendish Invigoration",
+      "description": "Skill",
+      "universalPart": "{254:169}"
+    },
+    {
+      "id": 170,
+      "perkType": "Grave Sights",
+      "description": "Skill",
+      "universalPart": "{254:170}"
+    },
+    {
+      "id": 171,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:171}"
+    },
+    {
+      "id": 172,
+      "perkType": "Leeching Attunement",
+      "description": "Skill",
+      "universalPart": "{254:172}"
+    },
+    {
+      "id": 173,
+      "perkType": "Guns and Needles",
+      "description": "Skill",
+      "universalPart": "{254:173}"
+    },
+    {
+      "id": 174,
+      "perkType": "Vorpal Fiends",
+      "description": "Skill",
+      "universalPart": "{254:174}"
+    },
+    {
+      "id": 175,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:175}"
+    },
+    {
+      "id": 176,
+      "perkType": "Overheal",
+      "description": "Skill",
+      "universalPart": "{254:176}"
+    },
+    {
+      "id": 177,
+      "perkType": "Mourning",
+      "description": "Skill",
+      "universalPart": "{254:177}"
+    },
+    {
+      "id": 178,
+      "perkType": "Yowl and Bay",
+      "description": "Skill",
+      "universalPart": "{254:178}"
+    },
+    {
+      "id": 179,
+      "perkType": "Overprotective",
+      "description": "Skill",
+      "universalPart": "{254:179}"
+    },
+    {
+      "id": 180,
+      "perkType": "Hasty Fiends",
+      "description": "Skill",
+      "universalPart": "{254:180}"
+    },
+    {
+      "id": 181,
+      "perkType": "Blood is Magic",
+      "description": "Skill",
+      "universalPart": "{254:181}"
+    },
+    {
+      "id": 182,
+      "perkType": "Grave Command",
+      "description": "Skill",
+      "universalPart": "{254:182}"
+    },
+    {
+      "id": 183,
+      "perkType": "Enchantment",
+      "description": "Skill",
+      "universalPart": "{254:183}"
+    },
+    {
+      "id": 184,
+      "perkType": "Grave Sustenance",
+      "description": "Skill",
+      "universalPart": "{254:184}"
+    },
+    {
+      "id": 185,
+      "perkType": "Extra Cursed",
+      "description": "Skill",
+      "universalPart": "{254:185}"
+    },
+    {
+      "id": 186,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:186}"
+    },
+    {
+      "id": 187,
+      "perkType": "Grave Fiends",
+      "description": "Skill",
+      "universalPart": "{254:187}"
+    },
+    {
+      "id": 188,
+      "perkType": "Cursed Blade",
+      "description": "Skill",
+      "universalPart": "{254:188}"
+    },
+    {
+      "id": 189,
+      "perkType": "Portents of suffering",
+      "description": "Skill",
+      "universalPart": "{254:189}"
+    },
+    {
+      "id": 190,
+      "perkType": "Grave assault",
+      "description": "Skill",
+      "universalPart": "{254:190}"
+    },
+    {
+      "id": 191,
+      "perkType": "Fell Inscriptions",
+      "description": "Skill",
+      "universalPart": "{254:191}"
+    },
+    {
+      "id": 192,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:192}"
+    },
+    {
+      "id": 193,
+      "perkType": "Idle Hands",
+      "description": "Skill",
+      "universalPart": "{254:193}"
+    },
+    {
+      "id": 194,
+      "perkType": "Sanguine Fiends",
+      "description": "Skill",
+      "universalPart": "{254:194}"
+    },
+    {
+      "id": 195,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:195}"
+    },
+    {
+      "id": 196,
+      "perkType": "Channeling",
+      "description": "Skill",
+      "universalPart": "{254:196}"
+    },
+    {
+      "id": 197,
+      "perkType": "Grave Power",
+      "description": "Skill",
+      "universalPart": "{254:197}"
+    },
+    {
+      "id": 198,
+      "perkType": "Target Prescience",
+      "description": "Skill",
+      "universalPart": "{254:198}"
+    },
+    {
+      "id": 199,
+      "perkType": "Grave Implements",
+      "description": "Skill",
+      "universalPart": "{254:199}"
+    },
+    {
+      "id": 200,
+      "perkType": "Bloodletter",
+      "description": "Skill",
+      "universalPart": "{254:200}"
+    },
+    {
+      "id": 201,
+      "perkType": "Fiendish Invigoration",
+      "description": "Skill",
+      "universalPart": "{254:201}"
+    },
+    {
+      "id": 202,
+      "perkType": "Grave Sights",
+      "description": "Skill",
+      "universalPart": "{254:202}"
+    },
+    {
+      "id": 203,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:203}"
+    },
+    {
+      "id": 204,
+      "perkType": "Leeching Attunement",
+      "description": "Skill",
+      "universalPart": "{254:204}"
+    },
+    {
+      "id": 205,
+      "perkType": "Guns and Needles",
+      "description": "Skill",
+      "universalPart": "{254:205}"
+    },
+    {
+      "id": 206,
+      "perkType": "Vorpal Fiends",
+      "description": "Skill",
+      "universalPart": "{254:206}"
+    },
+    {
+      "id": 207,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:207}"
+    },
+    {
+      "id": 208,
+      "perkType": "Overheal",
+      "description": "Skill",
+      "universalPart": "{254:208}"
+    },
+    {
+      "id": 209,
+      "perkType": "Mourning",
+      "description": "Skill",
+      "universalPart": "{254:209}"
+    },
+    {
+      "id": 210,
+      "perkType": "Yowl and Bay",
+      "description": "Skill",
+      "universalPart": "{254:210}"
+    },
+    {
+      "id": 211,
+      "perkType": "Overprotective",
+      "description": "Skill",
+      "universalPart": "{254:211}"
+    },
+    {
+      "id": 212,
+      "perkType": "Hasty Fiends",
+      "description": "Skill",
+      "universalPart": "{254:212}"
+    },
+    {
+      "id": 213,
+      "perkType": "Grave Command",
+      "description": "Skill",
+      "universalPart": "{254:213}"
+    },
+    {
+      "id": 214,
+      "perkType": "Blood is Magic",
+      "description": "Skill",
+      "universalPart": "{254:214}"
+    },
+    {
+      "id": 215,
+      "perkType": "Enchantment",
+      "description": "Skill",
+      "universalPart": "{254:215}"
+    },
+    {
+      "id": 216,
+      "perkType": "Grave Sustenance",
+      "description": "Skill",
+      "universalPart": "{254:216}"
+    },
+    {
+      "id": 217,
+      "perkType": "Common Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:217}"
+    },
+    {
+      "id": 218,
+      "perkType": "Uncommon Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:218}"
+    },
+    {
+      "id": 219,
+      "perkType": "Rare Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:219}"
+    },
+    {
+      "id": 220,
+      "perkType": "Epic Rarity",
+      "description": "Rarity",
+      "universalPart": "{254:220}"
+    },
+    {
+      "id": 221,
+      "perkType": "Psion Name",
+      "description": "Name+Skin",
+      "universalPart": "{254:221}"
+    },
+    {
+      "id": 222,
+      "perkType": "Radiant Attunement",
+      "description": "Skill",
+      "universalPart": "{254:222}"
+    },
+    {
+      "id": 223,
+      "perkType": "conjunction",
+      "description": "Skill",
+      "universalPart": "{254:223}"
+    },
+    {
+      "id": 224,
+      "perkType": "Dreadlight",
+      "description": "Skill",
+      "universalPart": "{254:224}"
+    },
+    {
+      "id": 225,
+      "perkType": "Restorative Tonic",
+      "description": "Skill",
+      "universalPart": "{254:225}"
+    },
+    {
+      "id": 226,
+      "perkType": "Full Moon",
+      "description": "Skill",
+      "universalPart": "{254:226}"
+    },
+    {
+      "id": 227,
+      "perkType": "Havoc",
+      "description": "Skill",
+      "universalPart": "{254:227}"
+    },
+    {
+      "id": 228,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:228}"
+    },
+    {
+      "id": 229,
+      "perkType": "Drink Full",
+      "description": "Skill",
+      "universalPart": "{254:229}"
+    },
+    {
+      "id": 230,
+      "perkType": "Keen Mind",
+      "description": "Skill",
+      "universalPart": "{254:230}"
+    },
+    {
+      "id": 231,
+      "perkType": "Phase Pocket",
+      "description": "Skill",
+      "universalPart": "{254:231}"
+    },
+    {
+      "id": 232,
+      "perkType": "Mortal Terror",
+      "description": "Skill",
+      "universalPart": "{254:232}"
+    },
+    {
+      "id": 233,
+      "perkType": "Grave Elements",
+      "description": "Skill",
+      "universalPart": "{254:233}"
+    },
+    {
+      "id": 234,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:234}"
+    },
+    {
+      "id": 235,
+      "perkType": "Strike Me Down",
+      "description": "Skill",
+      "universalPart": "{254:235}"
+    },
+    {
+      "id": 236,
+      "perkType": "Grave Vitality",
+      "description": "Skill",
+      "universalPart": "{254:236}"
+    },
+    {
+      "id": 237,
+      "perkType": "Ars Arcana",
+      "description": "Skill",
+      "universalPart": "{254:237}"
+    },
+    {
+      "id": 238,
+      "perkType": "A Deeper Grave",
+      "description": "Skill",
+      "universalPart": "{254:238}"
+    },
+    {
+      "id": 239,
+      "perkType": "Blood shot",
+      "description": "Skill",
+      "universalPart": "{254:239}"
+    },
+    {
+      "id": 240,
+      "perkType": "Essence Leech",
+      "description": "Skill",
+      "universalPart": "{254:240}"
+    },
+    {
+      "id": 241,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:241}"
+    },
+    {
+      "id": 242,
+      "perkType": "Blood Is Power",
+      "description": "Skill",
+      "universalPart": "{254:242}"
+    },
+    {
+      "id": 243,
+      "perkType": "Icy Attunement",
+      "description": "Skill",
+      "universalPart": "{254:243}"
+    },
+    {
+      "id": 244,
+      "perkType": "Blast Rites",
+      "description": "Skill",
+      "universalPart": "{254:244}"
+    },
+    {
+      "id": 245,
+      "perkType": "Overspirited",
+      "description": "Skill",
+      "universalPart": "{254:245}"
+    },
+    {
+      "id": 246,
+      "perkType": "Blasted Fiends",
+      "description": "Skill",
+      "universalPart": "{254:246}"
+    },
+    {
+      "id": 247,
+      "perkType": "Corporeal",
+      "description": "Skill",
+      "universalPart": "{254:247}"
+    },
+    {
+      "id": 248,
+      "perkType": "Shiver",
+      "description": "Skill",
+      "universalPart": "{254:248}"
+    },
+    {
+      "id": 249,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:249}"
+    },
+    {
+      "id": 250,
+      "perkType": "Elemental Essence",
+      "description": "Skill",
+      "universalPart": "{254:250}"
+    },
+    {
+      "id": 251,
+      "perkType": "Keen Fiends",
+      "description": "Skill",
+      "universalPart": "{254:251}"
+    },
+    {
+      "id": 252,
+      "perkType": "Infernal Sum",
+      "description": "Skill",
+      "universalPart": "{254:252}"
+    },
+    {
+      "id": 253,
+      "perkType": "sacrificial essence",
+      "description": "Skill",
+      "universalPart": "{254:253}"
+    },
+    {
+      "id": 254,
+      "perkType": "Reawakening",
+      "description": "Skill",
+      "universalPart": "{254:254}"
+    },
+    {
+      "id": 255,
+      "perkType": "Tail Whip",
+      "description": "Skill",
+      "universalPart": "{254:255}"
+    },
+    {
+      "id": 256,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:256}"
+    },
+    {
+      "id": 257,
+      "perkType": "Shocking Attunement",
+      "description": "Skill",
+      "universalPart": "{254:257}"
+    },
+    {
+      "id": 258,
+      "perkType": "Grave Current",
+      "description": "Skill",
+      "universalPart": "{254:258}"
+    },
+    {
+      "id": 259,
+      "perkType": "Deadwire",
+      "description": "Skill",
+      "universalPart": "{254:259}"
+    },
+    {
+      "id": 260,
+      "perkType": "Grave Thirst",
+      "description": "Skill",
+      "universalPart": "{254:260}"
+    },
+    {
+      "id": 261,
+      "perkType": "Infusion",
+      "description": "Skill",
+      "universalPart": "{254:261}"
+    },
+    {
+      "id": 262,
+      "perkType": "Stormblessed",
+      "description": "Skill",
+      "universalPart": "{254:262}"
+    },
+    {
+      "id": 263,
+      "perkType": "Red Tree Strike Me Down?????? BROKEN!!!",
+      "description": "Skill",
+      "universalPart": "{254:263}"
+    },
+    {
+      "id": 264,
+      "perkType": "Blight Attunement",
+      "description": "Skill",
+      "universalPart": "{254:264}"
+    },
+    {
+      "id": 265,
+      "perkType": "Prismatic Ichor",
+      "description": "Skill",
+      "universalPart": "{254:265}"
+    },
+    {
+      "id": 266,
+      "perkType": "Keen Suffering",
+      "description": "Skill",
+      "universalPart": "{254:266}"
+    },
+    {
+      "id": 267,
+      "perkType": "Ghasterbait",
+      "description": "Skill",
+      "universalPart": "{254:267}"
+    },
+    {
+      "id": 268,
+      "perkType": "Shot To Go!",
+      "description": "Skill",
+      "universalPart": "{254:268}"
+    },
+    {
+      "id": 269,
+      "perkType": "Necrosis",
+      "description": "Skill",
+      "universalPart": "{254:269}"
+    },
+    {
+      "id": 270,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:270}"
+    },
+    {
+      "id": 271,
+      "perkType": "Burning Attunement",
+      "description": "Skill",
+      "universalPart": "{254:271}"
+    },
+    {
+      "id": 272,
+      "perkType": "Recurrence",
+      "description": "Skill",
+      "universalPart": "{254:272}"
+    },
+    {
+      "id": 273,
+      "perkType": "Reverburnations",
+      "description": "Skill",
+      "universalPart": "{254:273}"
+    },
+    {
+      "id": 274,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:274}"
+    },
+    {
+      "id": 275,
+      "perkType": "Haruspex",
+      "description": "Skill",
+      "universalPart": "{254:275}"
+    },
+    {
+      "id": 276,
+      "perkType": "Burnt Offering",
+      "description": "Skill",
+      "universalPart": "{254:276}"
+    },
+    {
+      "id": 277,
+      "perkType": "Pincushion",
+      "description": "Skill",
+      "universalPart": "{254:277}"
+    },
+    {
+      "id": 278,
+      "perkType": "Prismatic Weaponry",
+      "description": "Skill",
+      "universalPart": "{254:278}"
+    },
+    {
+      "id": 279,
+      "perkType": "Obedient Fiends",
+      "description": "Skill",
+      "universalPart": "{254:279}"
+    },
+    {
+      "id": 280,
+      "perkType": "Spirit Bomb",
+      "description": "Skill",
+      "universalPart": "{254:280}"
+    },
+    {
+      "id": 281,
+      "perkType": "Ancient Rites",
+      "description": "Skill",
+      "universalPart": "{254:281}"
+    },
+    {
+      "id": 282,
+      "perkType": "Death Follows Closer",
+      "description": "Skill",
+      "universalPart": "{254:282}"
+    },
+    {
+      "id": 283,
+      "perkType": "Diener",
+      "description": "Skill",
+      "universalPart": "{254:283}"
+    },
+    {
+      "id": 284,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:284}"
+    },
+    {
+      "id": 285,
+      "perkType": "Radiant Attunement",
+      "description": "Skill",
+      "universalPart": "{254:285}"
+    },
+    {
+      "id": 286,
+      "perkType": "conjunction",
+      "description": "Skill",
+      "universalPart": "{254:286}"
+    },
+    {
+      "id": 287,
+      "perkType": "Dreadlight",
+      "description": "Skill",
+      "universalPart": "{254:287}"
+    },
+    {
+      "id": 288,
+      "perkType": "Restorative Tonic",
+      "description": "Skill",
+      "universalPart": "{254:288}"
+    },
+    {
+      "id": 289,
+      "perkType": "Full Moon",
+      "description": "Skill",
+      "universalPart": "{254:289}"
+    },
+    {
+      "id": 290,
+      "perkType": "Havoc",
+      "description": "Skill",
+      "universalPart": "{254:290}"
+    },
+    {
+      "id": 291,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:291}"
+    },
+    {
+      "id": 292,
+      "perkType": "Drink Full",
+      "description": "Skill",
+      "universalPart": "{254:292}"
+    },
+    {
+      "id": 293,
+      "perkType": "Keen Mind",
+      "description": "Skill",
+      "universalPart": "{254:293}"
+    },
+    {
+      "id": 294,
+      "perkType": "Phase Pocket",
+      "description": "Skill",
+      "universalPart": "{254:294}"
+    },
+    {
+      "id": 295,
+      "perkType": "Mortal Terror",
+      "description": "Skill",
+      "universalPart": "{254:295}"
+    },
+    {
+      "id": 296,
+      "perkType": "Grave Elements",
+      "description": "Skill",
+      "universalPart": "{254:296}"
+    },
+    {
+      "id": 297,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:297}"
+    },
+    {
+      "id": 298,
+      "perkType": "Strike Me Down",
+      "description": "Skill",
+      "universalPart": "{254:298}"
+    },
+    {
+      "id": 299,
+      "perkType": "Grave Vitality",
+      "description": "Skill",
+      "universalPart": "{254:299}"
+    },
+    {
+      "id": 300,
+      "perkType": "Ars Arcana",
+      "description": "Skill",
+      "universalPart": "{254:300}"
+    },
+    {
+      "id": 301,
+      "perkType": "A Deeper Grave",
+      "description": "Skill",
+      "universalPart": "{254:301}"
+    },
+    {
+      "id": 302,
+      "perkType": "Blood Shot",
+      "description": "Skill",
+      "universalPart": "{254:302}"
+    },
+    {
+      "id": 303,
+      "perkType": "Essence Leech",
+      "description": "Skill",
+      "universalPart": "{254:303}"
+    },
+    {
+      "id": 304,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:304}"
+    },
+    {
+      "id": 305,
+      "perkType": "Blood Is Power",
+      "description": "Skill",
+      "universalPart": "{254:305}"
+    },
+    {
+      "id": 306,
+      "perkType": "Icy Attunement",
+      "description": "Skill",
+      "universalPart": "{254:306}"
+    },
+    {
+      "id": 307,
+      "perkType": "Blast Rites",
+      "description": "Skill",
+      "universalPart": "{254:307}"
+    },
+    {
+      "id": 308,
+      "perkType": "Overspirited",
+      "description": "Skill",
+      "universalPart": "{254:308}"
+    },
+    {
+      "id": 309,
+      "perkType": "Blasted Fiends",
+      "description": "Skill",
+      "universalPart": "{254:309}"
+    },
+    {
+      "id": 310,
+      "perkType": "Corporeal",
+      "description": "Skill",
+      "universalPart": "{254:310}"
+    },
+    {
+      "id": 311,
+      "perkType": "Shiver",
+      "description": "Skill",
+      "universalPart": "{254:311}"
+    },
+    {
+      "id": 312,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:312}"
+    },
+    {
+      "id": 313,
+      "perkType": "Elemental Essence",
+      "description": "Skill",
+      "universalPart": "{254:313}"
+    },
+    {
+      "id": 314,
+      "perkType": "Keen Fiends",
+      "description": "Skill",
+      "universalPart": "{254:314}"
+    },
+    {
+      "id": 315,
+      "perkType": "Infernal Sum",
+      "description": "Skill",
+      "universalPart": "{254:315}"
+    },
+    {
+      "id": 316,
+      "perkType": "sacrificial essence",
+      "description": "Skill",
+      "universalPart": "{254:316}"
+    },
+    {
+      "id": 317,
+      "perkType": "Reawakening",
+      "description": "Skill",
+      "universalPart": "{254:317}"
+    },
+    {
+      "id": 318,
+      "perkType": "Tail Whip",
+      "description": "Skill",
+      "universalPart": "{254:318}"
+    },
+    {
+      "id": 319,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:319}"
+    },
+    {
+      "id": 320,
+      "perkType": "Shocking Attunement",
+      "description": "Skill",
+      "universalPart": "{254:320}"
+    },
+    {
+      "id": 321,
+      "perkType": "Grave Current",
+      "description": "Skill",
+      "universalPart": "{254:321}"
+    },
+    {
+      "id": 322,
+      "perkType": "Deadwire",
+      "description": "Skill",
+      "universalPart": "{254:322}"
+    },
+    {
+      "id": 323,
+      "perkType": "Grave Thirst",
+      "description": "Skill",
+      "universalPart": "{254:323}"
+    },
+    {
+      "id": 324,
+      "perkType": "Infusion",
+      "description": "Skill",
+      "universalPart": "{254:324}"
+    },
+    {
+      "id": 325,
+      "perkType": "Stormblessed",
+      "description": "Skill",
+      "universalPart": "{254:325}"
+    },
+    {
+      "id": 326,
+      "perkType": "Red Tree Strike Me Down?????? BROKEN!!!",
+      "description": "Skill",
+      "universalPart": "{254:326}"
+    },
+    {
+      "id": 327,
+      "perkType": "Blight Attunement",
+      "description": "Skill",
+      "universalPart": "{254:327}"
+    },
+    {
+      "id": 328,
+      "perkType": "Prismatic Ichor",
+      "description": "Skill",
+      "universalPart": "{254:328}"
+    },
+    {
+      "id": 329,
+      "perkType": "Keen Suffering",
+      "description": "Skill",
+      "universalPart": "{254:329}"
+    },
+    {
+      "id": 330,
+      "perkType": "Ghasterbait",
+      "description": "Skill",
+      "universalPart": "{254:330}"
+    },
+    {
+      "id": 331,
+      "perkType": "Shot To Go!",
+      "description": "Skill",
+      "universalPart": "{254:331}"
+    },
+    {
+      "id": 332,
+      "perkType": "Necrosis",
+      "description": "Skill",
+      "universalPart": "{254:332}"
+    },
+    {
+      "id": 333,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:333}"
+    },
+    {
+      "id": 334,
+      "perkType": "Burning Attunement",
+      "description": "Skill",
+      "universalPart": "{254:334}"
+    },
+    {
+      "id": 335,
+      "perkType": "Recurrence",
+      "description": "Skill",
+      "universalPart": "{254:335}"
+    },
+    {
+      "id": 336,
+      "perkType": "Reverburnations",
+      "description": "Skill",
+      "universalPart": "{254:336}"
+    },
+    {
+      "id": 337,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:337}"
+    },
+    {
+      "id": 338,
+      "perkType": "Haruspex",
+      "description": "Skill",
+      "universalPart": "{254:338}"
+    },
+    {
+      "id": 339,
+      "perkType": "Burnt Offering",
+      "description": "Skill",
+      "universalPart": "{254:339}"
+    },
+    {
+      "id": 340,
+      "perkType": "Pincushion",
+      "description": "Skill",
+      "universalPart": "{254:340}"
+    },
+    {
+      "id": 341,
+      "perkType": "Prismatic Weaponry",
+      "description": "Skill",
+      "universalPart": "{254:341}"
+    },
+    {
+      "id": 342,
+      "perkType": "Obedient Fiends",
+      "description": "Skill",
+      "universalPart": "{254:342}"
+    },
+    {
+      "id": 343,
+      "perkType": "Spirit Bomb",
+      "description": "Skill",
+      "universalPart": "{254:343}"
+    },
+    {
+      "id": 344,
+      "perkType": "Ancient Rites",
+      "description": "Skill",
+      "universalPart": "{254:344}"
+    },
+    {
+      "id": 345,
+      "perkType": "Death Follows Closer",
+      "description": "Skill",
+      "universalPart": "{254:345}"
+    },
+    {
+      "id": 346,
+      "perkType": "Diener",
+      "description": "Skill",
+      "universalPart": "{254:346}"
+    },
+    {
+      "id": 347,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:347}"
+    },
+    {
+      "id": 348,
+      "perkType": "Radiant Attunement",
+      "description": "Skill",
+      "universalPart": "{254:348}"
+    },
+    {
+      "id": 349,
+      "perkType": "conjunction",
+      "description": "Skill",
+      "universalPart": "{254:349}"
+    },
+    {
+      "id": 350,
+      "perkType": "Dreadlight",
+      "description": "Skill",
+      "universalPart": "{254:350}"
+    },
+    {
+      "id": 351,
+      "perkType": "Restorative Tonic",
+      "description": "Skill",
+      "universalPart": "{254:351}"
+    },
+    {
+      "id": 352,
+      "perkType": "Full Moon",
+      "description": "Skill",
+      "universalPart": "{254:352}"
+    },
+    {
+      "id": 353,
+      "perkType": "Havoc",
+      "description": "Skill",
+      "universalPart": "{254:353}"
+    },
+    {
+      "id": 354,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:354}"
+    },
+    {
+      "id": 355,
+      "perkType": "Drink Full",
+      "description": "Skill",
+      "universalPart": "{254:355}"
+    },
+    {
+      "id": 356,
+      "perkType": "Keen Mind",
+      "description": "Skill",
+      "universalPart": "{254:356}"
+    },
+    {
+      "id": 357,
+      "perkType": "Phase Pocket",
+      "description": "Skill",
+      "universalPart": "{254:357}"
+    },
+    {
+      "id": 358,
+      "perkType": "Mortal Terror",
+      "description": "Skill",
+      "universalPart": "{254:358}"
+    },
+    {
+      "id": 359,
+      "perkType": "Grave Elements",
+      "description": "Skill",
+      "universalPart": "{254:359}"
+    },
+    {
+      "id": 360,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:360}"
+    },
+    {
+      "id": 361,
+      "perkType": "Strike Me Down",
+      "description": "Skill",
+      "universalPart": "{254:361}"
+    },
+    {
+      "id": 362,
+      "perkType": "Grave Vitality",
+      "description": "Skill",
+      "universalPart": "{254:362}"
+    },
+    {
+      "id": 363,
+      "perkType": "Ars Arcana",
+      "description": "Skill",
+      "universalPart": "{254:363}"
+    },
+    {
+      "id": 364,
+      "perkType": "A Deeper Grave",
+      "description": "Skill",
+      "universalPart": "{254:364}"
+    },
+    {
+      "id": 365,
+      "perkType": "Blood Shot",
+      "description": "Skill",
+      "universalPart": "{254:365}"
+    },
+    {
+      "id": 366,
+      "perkType": "Essence Leech",
+      "description": "Skill",
+      "universalPart": "{254:366}"
+    },
+    {
+      "id": 367,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:367}"
+    },
+    {
+      "id": 368,
+      "perkType": "Blood Is Power",
+      "description": "Skill",
+      "universalPart": "{254:368}"
+    },
+    {
+      "id": 369,
+      "perkType": "Icy Attunement",
+      "description": "Skill",
+      "universalPart": "{254:369}"
+    },
+    {
+      "id": 370,
+      "perkType": "Blast Rites",
+      "description": "Skill",
+      "universalPart": "{254:370}"
+    },
+    {
+      "id": 371,
+      "perkType": "Overspirited",
+      "description": "Skill",
+      "universalPart": "{254:371}"
+    },
+    {
+      "id": 372,
+      "perkType": "Blasted Fiends",
+      "description": "Skill",
+      "universalPart": "{254:372}"
+    },
+    {
+      "id": 373,
+      "perkType": "Corporeal",
+      "description": "Skill",
+      "universalPart": "{254:373}"
+    },
+    {
+      "id": 374,
+      "perkType": "Shiver",
+      "description": "Skill",
+      "universalPart": "{254:374}"
+    },
+    {
+      "id": 375,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:375}"
+    },
+    {
+      "id": 376,
+      "perkType": "Elemental Essence",
+      "description": "Skill",
+      "universalPart": "{254:376}"
+    },
+    {
+      "id": 377,
+      "perkType": "Keen Fiends",
+      "description": "Skill",
+      "universalPart": "{254:377}"
+    },
+    {
+      "id": 378,
+      "perkType": "Infernal Sum",
+      "description": "Skill",
+      "universalPart": "{254:378}"
+    },
+    {
+      "id": 379,
+      "perkType": "sacrificial essence",
+      "description": "Skill",
+      "universalPart": "{254:379}"
+    },
+    {
+      "id": 380,
+      "perkType": "Reawakening",
+      "description": "Skill",
+      "universalPart": "{254:380}"
+    },
+    {
+      "id": 381,
+      "perkType": "Tail Whip",
+      "description": "Skill",
+      "universalPart": "{254:381}"
+    },
+    {
+      "id": 382,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:382}"
+    },
+    {
+      "id": 383,
+      "perkType": "Shocking Attunement",
+      "description": "Skill",
+      "universalPart": "{254:383}"
+    },
+    {
+      "id": 384,
+      "perkType": "Grave Current",
+      "description": "Skill",
+      "universalPart": "{254:384}"
+    },
+    {
+      "id": 385,
+      "perkType": "Deadwire",
+      "description": "Skill",
+      "universalPart": "{254:385}"
+    },
+    {
+      "id": 386,
+      "perkType": "Grave Thirst",
+      "description": "Skill",
+      "universalPart": "{254:386}"
+    },
+    {
+      "id": 387,
+      "perkType": "Infusion",
+      "description": "Skill",
+      "universalPart": "{254:387}"
+    },
+    {
+      "id": 388,
+      "perkType": "Stormblessed",
+      "description": "Skill",
+      "universalPart": "{254:388}"
+    },
+    {
+      "id": 389,
+      "perkType": "Red Tree Strike Me Down?????? BROKEN!!!",
+      "description": "Skill",
+      "universalPart": "{254:389}"
+    },
+    {
+      "id": 390,
+      "perkType": "Blight Attunement",
+      "description": "Skill",
+      "universalPart": "{254:390}"
+    },
+    {
+      "id": 391,
+      "perkType": "Prismatic Ichor",
+      "description": "Skill",
+      "universalPart": "{254:391}"
+    },
+    {
+      "id": 392,
+      "perkType": "Keen Suffering",
+      "description": "Skill",
+      "universalPart": "{254:392}"
+    },
+    {
+      "id": 393,
+      "perkType": "Ghasterbait",
+      "description": "Skill",
+      "universalPart": "{254:393}"
+    },
+    {
+      "id": 394,
+      "perkType": "Shot To Go!",
+      "description": "Skill",
+      "universalPart": "{254:394}"
+    },
+    {
+      "id": 395,
+      "perkType": "Necrosis",
+      "description": "Skill",
+      "universalPart": "{254:395}"
+    },
+    {
+      "id": 396,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:396}"
+    },
+    {
+      "id": 397,
+      "perkType": "Burning Attunement",
+      "description": "Skill",
+      "universalPart": "{254:397}"
+    },
+    {
+      "id": 398,
+      "perkType": "Recurrence",
+      "description": "Skill",
+      "universalPart": "{254:398}"
+    },
+    {
+      "id": 399,
+      "perkType": "Reverburnations",
+      "description": "Skill",
+      "universalPart": "{254:399}"
+    },
+    {
+      "id": 400,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:400}"
+    },
+    {
+      "id": 401,
+      "perkType": "Haruspex",
+      "description": "Skill",
+      "universalPart": "{254:401}"
+    },
+    {
+      "id": 402,
+      "perkType": "Burnt Offering",
+      "description": "Skill",
+      "universalPart": "{254:402}"
+    },
+    {
+      "id": 403,
+      "perkType": "Pincushion",
+      "description": "Skill",
+      "universalPart": "{254:403}"
+    },
+    {
+      "id": 404,
+      "perkType": "Prismatic Weaponry",
+      "description": "Skill",
+      "universalPart": "{254:404}"
+    },
+    {
+      "id": 405,
+      "perkType": "Obedient Fiends",
+      "description": "Skill",
+      "universalPart": "{254:405}"
+    },
+    {
+      "id": 406,
+      "perkType": "Spirit Bomb",
+      "description": "Skill",
+      "universalPart": "{254:406}"
+    },
+    {
+      "id": 407,
+      "perkType": "Ancient Rites",
+      "description": "Skill",
+      "universalPart": "{254:407}"
+    },
+    {
+      "id": 408,
+      "perkType": "Death Follows Closer",
+      "description": "Skill",
+      "universalPart": "{254:408}"
+    },
+    {
+      "id": 409,
+      "perkType": "Diener",
+      "description": "Skill",
+      "universalPart": "{254:409}"
+    },
+    {
+      "id": 410,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:410}"
+    },
+    {
+      "id": 411,
+      "perkType": "Radiant Attunement",
+      "description": "Skill",
+      "universalPart": "{254:411}"
+    },
+    {
+      "id": 412,
+      "perkType": "conjunction",
+      "description": "Skill",
+      "universalPart": "{254:412}"
+    },
+    {
+      "id": 413,
+      "perkType": "Dreadlight",
+      "description": "Skill",
+      "universalPart": "{254:413}"
+    },
+    {
+      "id": 414,
+      "perkType": "Restorative Tonic",
+      "description": "Skill",
+      "universalPart": "{254:414}"
+    },
+    {
+      "id": 415,
+      "perkType": "Full Moon",
+      "description": "Skill",
+      "universalPart": "{254:415}"
+    },
+    {
+      "id": 416,
+      "perkType": "Havoc",
+      "description": "Skill",
+      "universalPart": "{254:416}"
+    },
+    {
+      "id": 417,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:417}"
+    },
+    {
+      "id": 418,
+      "perkType": "Drink Full",
+      "description": "Skill",
+      "universalPart": "{254:418}"
+    },
+    {
+      "id": 419,
+      "perkType": "Keen Mind",
+      "description": "Skill",
+      "universalPart": "{254:419}"
+    },
+    {
+      "id": 420,
+      "perkType": "Phase Pocket",
+      "description": "Skill",
+      "universalPart": "{254:420}"
+    },
+    {
+      "id": 421,
+      "perkType": "Mortal Terror",
+      "description": "Skill",
+      "universalPart": "{254:421}"
+    },
+    {
+      "id": 422,
+      "perkType": "Grave Elements",
+      "description": "Skill",
+      "universalPart": "{254:422}"
+    },
+    {
+      "id": 423,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:423}"
+    },
+    {
+      "id": 424,
+      "perkType": "Strike Me Down",
+      "description": "Skill",
+      "universalPart": "{254:424}"
+    },
+    {
+      "id": 425,
+      "perkType": "Grave Vitality",
+      "description": "Skill",
+      "universalPart": "{254:425}"
+    },
+    {
+      "id": 426,
+      "perkType": "Ars Arcana",
+      "description": "Skill",
+      "universalPart": "{254:426}"
+    },
+    {
+      "id": 427,
+      "perkType": "A Deeper Grave",
+      "description": "Skill",
+      "universalPart": "{254:427}"
+    },
+    {
+      "id": 428,
+      "perkType": "Blood Shot",
+      "description": "Skill",
+      "universalPart": "{254:428}"
+    },
+    {
+      "id": 429,
+      "perkType": "Essence Leech",
+      "description": "Skill",
+      "universalPart": "{254:429}"
+    },
+    {
+      "id": 430,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:430}"
+    },
+    {
+      "id": 431,
+      "perkType": "Blood Is Power",
+      "description": "Skill",
+      "universalPart": "{254:431}"
+    },
+    {
+      "id": 432,
+      "perkType": "Icy Attunement",
+      "description": "Skill",
+      "universalPart": "{254:432}"
+    },
+    {
+      "id": 433,
+      "perkType": "Blast Rites",
+      "description": "Skill",
+      "universalPart": "{254:433}"
+    },
+    {
+      "id": 434,
+      "perkType": "Overspirited",
+      "description": "Skill",
+      "universalPart": "{254:434}"
+    },
+    {
+      "id": 435,
+      "perkType": "Blasted Fiends",
+      "description": "Skill",
+      "universalPart": "{254:435}"
+    },
+    {
+      "id": 436,
+      "perkType": "Corporeal",
+      "description": "Skill",
+      "universalPart": "{254:436}"
+    },
+    {
+      "id": 437,
+      "perkType": "Shiver",
+      "description": "Skill",
+      "universalPart": "{254:437}"
+    },
+    {
+      "id": 438,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:438}"
+    },
+    {
+      "id": 439,
+      "perkType": "Elemental Essence",
+      "description": "Skill",
+      "universalPart": "{254:439}"
+    },
+    {
+      "id": 440,
+      "perkType": "Keen Fiends",
+      "description": "Skill",
+      "universalPart": "{254:440}"
+    },
+    {
+      "id": 441,
+      "perkType": "Infernal Sum",
+      "description": "Skill",
+      "universalPart": "{254:441}"
+    },
+    {
+      "id": 442,
+      "perkType": "sacrificial essence",
+      "description": "Skill",
+      "universalPart": "{254:442}"
+    },
+    {
+      "id": 443,
+      "perkType": "Reawakening",
+      "description": "Skill",
+      "universalPart": "{254:443}"
+    },
+    {
+      "id": 444,
+      "perkType": "Tail Whip",
+      "description": "Skill",
+      "universalPart": "{254:444}"
+    },
+    {
+      "id": 445,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:445}"
+    },
+    {
+      "id": 446,
+      "perkType": "Shocking Attunement",
+      "description": "Skill",
+      "universalPart": "{254:446}"
+    },
+    {
+      "id": 447,
+      "perkType": "Grave Current",
+      "description": "Skill",
+      "universalPart": "{254:447}"
+    },
+    {
+      "id": 448,
+      "perkType": "Deadwire",
+      "description": "Skill",
+      "universalPart": "{254:448}"
+    },
+    {
+      "id": 449,
+      "perkType": "Grave Thirst",
+      "description": "Skill",
+      "universalPart": "{254:449}"
+    },
+    {
+      "id": 450,
+      "perkType": "Infusion",
+      "description": "Skill",
+      "universalPart": "{254:450}"
+    },
+    {
+      "id": 451,
+      "perkType": "Stormblessed",
+      "description": "Skill",
+      "universalPart": "{254:451}"
+    },
+    {
+      "id": 452,
+      "perkType": "Red Tree Strike Me Down?????? BROKEN!!!",
+      "description": "Skill",
+      "universalPart": "{254:452}"
+    },
+    {
+      "id": 453,
+      "perkType": "Blight Attunement",
+      "description": "Skill",
+      "universalPart": "{254:453}"
+    },
+    {
+      "id": 454,
+      "perkType": "Prismatic Ichor",
+      "description": "Skill",
+      "universalPart": "{254:454}"
+    },
+    {
+      "id": 455,
+      "perkType": "Keen Suffering",
+      "description": "Skill",
+      "universalPart": "{254:455}"
+    },
+    {
+      "id": 456,
+      "perkType": "Ghasterbait",
+      "description": "Skill",
+      "universalPart": "{254:456}"
+    },
+    {
+      "id": 457,
+      "perkType": "Shot To Go!",
+      "description": "Skill",
+      "universalPart": "{254:457}"
+    },
+    {
+      "id": 458,
+      "perkType": "Necrosis",
+      "description": "Skill",
+      "universalPart": "{254:458}"
+    },
+    {
+      "id": 459,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:459}"
+    },
+    {
+      "id": 460,
+      "perkType": "Burning Attunement",
+      "description": "Skill",
+      "universalPart": "{254:460}"
+    },
+    {
+      "id": 461,
+      "perkType": "Recurrence",
+      "description": "Skill",
+      "universalPart": "{254:461}"
+    },
+    {
+      "id": 462,
+      "perkType": "Reverburnations",
+      "description": "Skill",
+      "universalPart": "{254:462}"
+    },
+    {
+      "id": 463,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:463}"
+    },
+    {
+      "id": 464,
+      "perkType": "Haruspex",
+      "description": "Skill",
+      "universalPart": "{254:464}"
+    },
+    {
+      "id": 465,
+      "perkType": "Burnt Offering",
+      "description": "Skill",
+      "universalPart": "{254:465}"
+    },
+    {
+      "id": 466,
+      "perkType": "Pincushion",
+      "description": "Skill",
+      "universalPart": "{254:466}"
+    },
+    {
+      "id": 467,
+      "perkType": "Prismatic Weaponry",
+      "description": "Skill",
+      "universalPart": "{254:467}"
+    },
+    {
+      "id": 468,
+      "perkType": "Obedient Fiends",
+      "description": "Skill",
+      "universalPart": "{254:468}"
+    },
+    {
+      "id": 469,
+      "perkType": "Spirit Bomb",
+      "description": "Skill",
+      "universalPart": "{254:469}"
+    },
+    {
+      "id": 470,
+      "perkType": "Ancient Rites",
+      "description": "Skill",
+      "universalPart": "{254:470}"
+    },
+    {
+      "id": 471,
+      "perkType": "Death Follows Closer",
+      "description": "Skill",
+      "universalPart": "{254:471}"
+    },
+    {
+      "id": 472,
+      "perkType": "Diener",
+      "description": "Skill",
+      "universalPart": "{254:472}"
+    },
+    {
+      "id": 473,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:473}"
+    },
+    {
+      "id": 474,
+      "perkType": "Radiant Attunement",
+      "description": "Skill",
+      "universalPart": "{254:474}"
+    },
+    {
+      "id": 475,
+      "perkType": "conjunction",
+      "description": "Skill",
+      "universalPart": "{254:475}"
+    },
+    {
+      "id": 476,
+      "perkType": "Dreadlight",
+      "description": "Skill",
+      "universalPart": "{254:476}"
+    },
+    {
+      "id": 477,
+      "perkType": "Restorative Tonic",
+      "description": "Skill",
+      "universalPart": "{254:477}"
+    },
+    {
+      "id": 478,
+      "perkType": "Full Moon",
+      "description": "Skill",
+      "universalPart": "{254:478}"
+    },
+    {
+      "id": 479,
+      "perkType": "Havoc",
+      "description": "Skill",
+      "universalPart": "{254:479}"
+    },
+    {
+      "id": 480,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:480}"
+    },
+    {
+      "id": 481,
+      "perkType": "Drink Full",
+      "description": "Skill",
+      "universalPart": "{254:481}"
+    },
+    {
+      "id": 482,
+      "perkType": "Keen Mind",
+      "description": "Skill",
+      "universalPart": "{254:482}"
+    },
+    {
+      "id": 483,
+      "perkType": "Phase Pocket",
+      "description": "Skill",
+      "universalPart": "{254:483}"
+    },
+    {
+      "id": 484,
+      "perkType": "Mortal Terror",
+      "description": "Skill",
+      "universalPart": "{254:484}"
+    },
+    {
+      "id": 485,
+      "perkType": "Grave Elements",
+      "description": "Skill",
+      "universalPart": "{254:485}"
+    },
+    {
+      "id": 486,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:486}"
+    },
+    {
+      "id": 487,
+      "perkType": "Strike Me Down",
+      "description": "Skill",
+      "universalPart": "{254:487}"
+    },
+    {
+      "id": 488,
+      "perkType": "Grave Vitality",
+      "description": "Skill",
+      "universalPart": "{254:488}"
+    },
+    {
+      "id": 489,
+      "perkType": "Ars Arcana",
+      "description": "Skill",
+      "universalPart": "{254:489}"
+    },
+    {
+      "id": 490,
+      "perkType": "A Deeper Grave",
+      "description": "Skill",
+      "universalPart": "{254:490}"
+    },
+    {
+      "id": 491,
+      "perkType": "Blood Shot",
+      "description": "Skill",
+      "universalPart": "{254:491}"
+    },
+    {
+      "id": 492,
+      "perkType": "Essence Leech",
+      "description": "Skill",
+      "universalPart": "{254:492}"
+    },
+    {
+      "id": 493,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{254:493}"
+    },
+    {
+      "id": 494,
+      "perkType": "Blood Is Power",
+      "description": "Skill",
+      "universalPart": "{254:494}"
+    },
+    {
+      "id": 495,
+      "perkType": "Icy Attunement",
+      "description": "Skill",
+      "universalPart": "{254:495}"
+    },
+    {
+      "id": 496,
+      "perkType": "Blast Rites",
+      "description": "Skill",
+      "universalPart": "{254:496}"
+    },
+    {
+      "id": 497,
+      "perkType": "Overspirited",
+      "description": "Skill",
+      "universalPart": "{254:497}"
+    },
+    {
+      "id": 498,
+      "perkType": "Blasted Fiends",
+      "description": "Skill",
+      "universalPart": "{254:498}"
+    },
+    {
+      "id": 499,
+      "perkType": "Corporeal",
+      "description": "Skill",
+      "universalPart": "{254:499}"
+    },
+    {
+      "id": 500,
+      "perkType": "Shiver",
+      "description": "Skill",
+      "universalPart": "{254:500}"
+    },
+    {
+      "id": 501,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:501}"
+    },
+    {
+      "id": 502,
+      "perkType": "Elemental Essence",
+      "description": "Skill",
+      "universalPart": "{254:502}"
+    },
+    {
+      "id": 503,
+      "perkType": "Keen Fiends",
+      "description": "Skill",
+      "universalPart": "{254:503}"
+    },
+    {
+      "id": 504,
+      "perkType": "Infernal Sum",
+      "description": "Skill",
+      "universalPart": "{254:504}"
+    },
+    {
+      "id": 505,
+      "perkType": "sacrificial essence",
+      "description": "Skill",
+      "universalPart": "{254:505}"
+    },
+    {
+      "id": 506,
+      "perkType": "Reawakening",
+      "description": "Skill",
+      "universalPart": "{254:506}"
+    },
+    {
+      "id": 507,
+      "perkType": "Tail Whip",
+      "description": "Skill",
+      "universalPart": "{254:507}"
+    },
+    {
+      "id": 508,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{254:508}"
+    },
+    {
+      "id": 509,
+      "perkType": "Shocking Attunement",
+      "description": "Skill",
+      "universalPart": "{254:509}"
+    },
+    {
+      "id": 510,
+      "perkType": "Grave Current",
+      "description": "Skill",
+      "universalPart": "{254:510}"
+    },
+    {
+      "id": 511,
+      "perkType": "Deadwire",
+      "description": "Skill",
+      "universalPart": "{254:511}"
+    },
+    {
+      "id": 512,
+      "perkType": "Grave Thirst",
+      "description": "Skill",
+      "universalPart": "{254:512}"
+    },
+    {
+      "id": 513,
+      "perkType": "Infusion",
+      "description": "Skill",
+      "universalPart": "{254:513}"
+    },
+    {
+      "id": 514,
+      "perkType": "Stormblessed",
+      "description": "Skill",
+      "universalPart": "{254:514}"
+    },
+    {
+      "id": 515,
+      "perkType": "Red Tree Strike Me Down?????? BROKEN!!!",
+      "description": "Skill",
+      "universalPart": "{254:515}"
+    },
+    {
+      "id": 516,
+      "perkType": "Blight Attunement",
+      "description": "Skill",
+      "universalPart": "{254:516}"
+    },
+    {
+      "id": 517,
+      "perkType": "Prismatic Ichor",
+      "description": "Skill",
+      "universalPart": "{254:517}"
+    },
+    {
+      "id": 518,
+      "perkType": "Keen Suffering",
+      "description": "Skill",
+      "universalPart": "{254:518}"
+    },
+    {
+      "id": 519,
+      "perkType": "Ghasterbait",
+      "description": "Skill",
+      "universalPart": "{254:519}"
+    },
+    {
+      "id": 520,
+      "perkType": "Shot To Go!",
+      "description": "Skill",
+      "universalPart": "{254:520}"
+    },
+    {
+      "id": 521,
+      "perkType": "Necrosis",
+      "description": "Skill",
+      "universalPart": "{254:521}"
+    },
+    {
+      "id": 522,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:522}"
+    },
+    {
+      "id": 523,
+      "perkType": "Burning Attunement",
+      "description": "Skill",
+      "universalPart": "{254:523}"
+    },
+    {
+      "id": 524,
+      "perkType": "Recurrence",
+      "description": "Skill",
+      "universalPart": "{254:524}"
+    },
+    {
+      "id": 525,
+      "perkType": "Reverburnations",
+      "description": "Skill",
+      "universalPart": "{254:525}"
+    },
+    {
+      "id": 526,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:526}"
+    },
+    {
+      "id": 527,
+      "perkType": "Haruspex",
+      "description": "Skill",
+      "universalPart": "{254:527}"
+    },
+    {
+      "id": 528,
+      "perkType": "Burnt Offering",
+      "description": "Skill",
+      "universalPart": "{254:528}"
+    },
+    {
+      "id": 529,
+      "perkType": "Pincushion",
+      "description": "Skill",
+      "universalPart": "{254:529}"
+    },
+    {
+      "id": 530,
+      "perkType": "Prismatic Weaponry",
+      "description": "Skill",
+      "universalPart": "{254:530}"
+    },
+    {
+      "id": 531,
+      "perkType": "Obedient Fiends",
+      "description": "Skill",
+      "universalPart": "{254:531}"
+    },
+    {
+      "id": 532,
+      "perkType": "Spirit Bomb",
+      "description": "Skill",
+      "universalPart": "{254:532}"
+    },
+    {
+      "id": 533,
+      "perkType": "Ancient Rites",
+      "description": "Skill",
+      "universalPart": "{254:533}"
+    },
+    {
+      "id": 534,
+      "perkType": "Death Follows Closer",
+      "description": "Skill",
+      "universalPart": "{254:534}"
+    },
+    {
+      "id": 535,
+      "perkType": "Diener",
+      "description": "Skill",
+      "universalPart": "{254:535}"
+    },
+    {
+      "id": 536,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{254:536}"
+    }
+  ]
+}

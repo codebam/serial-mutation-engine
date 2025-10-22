@@ -1,0 +1,3238 @@
+{
+  "harlowe_class_mods": [
+    {
+      "id": 1,
+      "perkType": "Chemist",
+      "description": "Name+Skin",
+      "universalPart": "{259:1}"
+    },
+    {
+      "id": 2,
+      "perkType": "Assistant",
+      "description": "Name+Skin",
+      "universalPart": "{259:2}"
+    },
+    {
+      "id": 3,
+      "perkType": "Physicist",
+      "description": "Name+Skin",
+      "universalPart": "{259:3}"
+    },
+    {
+      "id": 4,
+      "perkType": "Controller",
+      "description": "Name+Skin",
+      "universalPart": "{259:4}"
+    },
+    {
+      "id": 5,
+      "perkType": "Compiler",
+      "description": "Name+Skin",
+      "universalPart": "{259:5}"
+    },
+    {
+      "id": 6,
+      "perkType": "Specialist",
+      "description": "Name+Skin",
+      "universalPart": "{259:6}"
+    },
+    {
+      "id": 7,
+      "perkType": "Bookworm",
+      "description": "Name+Skin",
+      "universalPart": "{259:7}"
+    },
+    {
+      "id": 8,
+      "perkType": "Radiologist",
+      "description": "Name+Skin",
+      "universalPart": "{259:8}"
+    },
+    {
+      "id": 9,
+      "perkType": "Savant",
+      "description": "Name+Skin",
+      "universalPart": "{259:9}"
+    },
+    {
+      "id": 10,
+      "perkType": "Bio Robot",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{259:10}"
+    },
+    {
+      "id": 11,
+      "perkType": "Reactor",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{259:11}"
+    },
+    {
+      "id": 12,
+      "perkType": "Generator",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{259:12}"
+    },
+    {
+      "id": 13,
+      "perkType": "Driver",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{259:13}"
+    },
+    {
+      "id": 14,
+      "perkType": "Skeptic",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{259:14}"
+    },
+    {
+      "id": 15,
+      "perkType": "Scientist",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{259:15}"
+    },
+    {
+      "id": 16,
+      "perkType": "Negative Entropy",
+      "description": "Skill",
+      "universalPart": "{259:16}"
+    },
+    {
+      "id": 17,
+      "perkType": "Negative Entropy",
+      "description": "Skill",
+      "universalPart": "{259:17}"
+    },
+    {
+      "id": 18,
+      "perkType": "Negative Entropy",
+      "description": "Skill",
+      "universalPart": "{259:18}"
+    },
+    {
+      "id": 19,
+      "perkType": "Negative Entropy",
+      "description": "Skill",
+      "universalPart": "{259:19}"
+    },
+    {
+      "id": 20,
+      "perkType": "Negative Entropy",
+      "description": "Skill",
+      "universalPart": "{259:20}"
+    },
+    {
+      "id": 21,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:21}"
+    },
+    {
+      "id": 22,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:22}"
+    },
+    {
+      "id": 23,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:23}"
+    },
+    {
+      "id": 24,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:24}"
+    },
+    {
+      "id": 25,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:25}"
+    },
+    {
+      "id": 26,
+      "perkType": "Legendary Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:26}"
+    },
+    {
+      "id": 27,
+      "perkType": "ALWAYS COMES ON LEGENDARY",
+      "description": "Unknown",
+      "universalPart": "{259:27}"
+    },
+    {
+      "id": 28,
+      "perkType": "Enriched",
+      "description": "Skill",
+      "universalPart": "{259:28}"
+    },
+    {
+      "id": 29,
+      "perkType": "Great Red DoT",
+      "description": "Skill",
+      "universalPart": "{259:29}"
+    },
+    {
+      "id": 30,
+      "perkType": "Elephant's Foot",
+      "description": "Skill",
+      "universalPart": "{259:30}"
+    },
+    {
+      "id": 31,
+      "perkType": "Get up and Go",
+      "description": "Skill",
+      "universalPart": "{259:31}"
+    },
+    {
+      "id": 32,
+      "perkType": "Test Subjects",
+      "description": "Skill",
+      "universalPart": "{259:32}"
+    },
+    {
+      "id": 33,
+      "perkType": "Elementary",
+      "description": "Skill",
+      "universalPart": "{259:33}"
+    },
+    {
+      "id": 34,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:34}"
+    },
+    {
+      "id": 35,
+      "perkType": "Bleeding Edge",
+      "description": "Skill",
+      "universalPart": "{259:35}"
+    },
+    {
+      "id": 36,
+      "perkType": "Field-Ready Prototype",
+      "description": "Skill",
+      "universalPart": "{259:36}"
+    },
+    {
+      "id": 37,
+      "perkType": "Fuzzy Math",
+      "description": "Skill",
+      "universalPart": "{259:37}"
+    },
+    {
+      "id": 38,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:38}"
+    },
+    {
+      "id": 39,
+      "perkType": "PPE",
+      "description": "Skill",
+      "universalPart": "{259:39}"
+    },
+    {
+      "id": 40,
+      "perkType": "Cyclotron",
+      "description": "Skill",
+      "universalPart": "{259:40}"
+    },
+    {
+      "id": 41,
+      "perkType": "Cryodynamics",
+      "description": "Skill",
+      "universalPart": "{259:41}"
+    },
+    {
+      "id": 42,
+      "perkType": "Too Coolant For Schoolant",
+      "description": "Skill",
+      "universalPart": "{259:42}"
+    },
+    {
+      "id": 43,
+      "perkType": "Precision Engineering",
+      "description": "Skill",
+      "universalPart": "{259:43}"
+    },
+    {
+      "id": 44,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:44}"
+    },
+    {
+      "id": 45,
+      "perkType": "Ripple Effect",
+      "description": "Skill",
+      "universalPart": "{259:45}"
+    },
+    {
+      "id": 46,
+      "perkType": "Periodic Table Flip",
+      "description": "Skill",
+      "universalPart": "{259:46}"
+    },
+    {
+      "id": 47,
+      "perkType": "Negative Entropy",
+      "description": "Skill",
+      "universalPart": "{259:47}"
+    },
+    {
+      "id": 48,
+      "perkType": "Bright Future",
+      "description": "Skill",
+      "universalPart": "{259:48}"
+    },
+    {
+      "id": 49,
+      "perkType": "Make Extraordinary",
+      "description": "Skill",
+      "universalPart": "{259:49}"
+    },
+    {
+      "id": 50,
+      "perkType": "Pulse Drive",
+      "description": "Skill",
+      "universalPart": "{259:50}"
+    },
+    {
+      "id": 51,
+      "perkType": "Parallel Circuit",
+      "description": "Skill",
+      "universalPart": "{259:51}"
+    },
+    {
+      "id": 52,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:52}"
+    },
+    {
+      "id": 53,
+      "perkType": "Quantum Immortality",
+      "description": "Skill",
+      "universalPart": "{259:53}"
+    },
+    {
+      "id": 54,
+      "perkType": "Creative Overflow",
+      "description": "Skill",
+      "universalPart": "{259:54}"
+    },
+    {
+      "id": 55,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:55}"
+    },
+    {
+      "id": 56,
+      "perkType": "Resonance Cascade",
+      "description": "Skill",
+      "universalPart": "{259:56}"
+    },
+    {
+      "id": 57,
+      "perkType": "Confirmative Reality",
+      "description": "Skill",
+      "universalPart": "{259:57}"
+    },
+    {
+      "id": 58,
+      "perkType": "Absolute Zero",
+      "description": "Skill",
+      "universalPart": "{259:58}"
+    },
+    {
+      "id": 59,
+      "perkType": "Heat Death",
+      "description": "Skill",
+      "universalPart": "{259:59}"
+    },
+    {
+      "id": 60,
+      "perkType": "Neutron Decay",
+      "description": "Skill",
+      "universalPart": "{259:60}"
+    },
+    {
+      "id": 61,
+      "perkType": "Mass Function",
+      "description": "Skill",
+      "universalPart": "{259:61}"
+    },
+    {
+      "id": 62,
+      "perkType": "Momentum",
+      "description": "Skill",
+      "universalPart": "{259:62}"
+    },
+    {
+      "id": 63,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:63}"
+    },
+    {
+      "id": 64,
+      "perkType": "Action at a Distance",
+      "description": "Skill",
+      "universalPart": "{259:64}"
+    },
+    {
+      "id": 65,
+      "perkType": "Personal Observation",
+      "description": "Skill",
+      "universalPart": "{259:65}"
+    },
+    {
+      "id": 66,
+      "perkType": "Mains Hum",
+      "description": "Skill",
+      "universalPart": "{259:66}"
+    },
+    {
+      "id": 67,
+      "perkType": "Creative Overflow",
+      "description": "Skill",
+      "universalPart": "{259:67}"
+    },
+    {
+      "id": 68,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:68}"
+    },
+    {
+      "id": 69,
+      "perkType": "Resonance Cascade",
+      "description": "Skill",
+      "universalPart": "{259:69}"
+    },
+    {
+      "id": 70,
+      "perkType": "Confirmative Reality",
+      "description": "Skill",
+      "universalPart": "{259:70}"
+    },
+    {
+      "id": 71,
+      "perkType": "Absolute Zero",
+      "description": "Skill",
+      "universalPart": "{259:71}"
+    },
+    {
+      "id": 72,
+      "perkType": "Heat Death",
+      "description": "Skill",
+      "universalPart": "{259:72}"
+    },
+    {
+      "id": 73,
+      "perkType": "Neutron Decay",
+      "description": "Skill",
+      "universalPart": "{259:73}"
+    },
+    {
+      "id": 74,
+      "perkType": "Mass Function",
+      "description": "Skill",
+      "universalPart": "{259:74}"
+    },
+    {
+      "id": 75,
+      "perkType": "Momentum",
+      "description": "Skill",
+      "universalPart": "{259:75}"
+    },
+    {
+      "id": 76,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:76}"
+    },
+    {
+      "id": 77,
+      "perkType": "Action at a Distance",
+      "description": "Skill",
+      "universalPart": "{259:77}"
+    },
+    {
+      "id": 78,
+      "perkType": "Personal Observation",
+      "description": "Skill",
+      "universalPart": "{259:78}"
+    },
+    {
+      "id": 79,
+      "perkType": "Mains Hum",
+      "description": "Skill",
+      "universalPart": "{259:79}"
+    },
+    {
+      "id": 80,
+      "perkType": "Cryodynamics",
+      "description": "Skill",
+      "universalPart": "{259:80}"
+    },
+    {
+      "id": 81,
+      "perkType": "Too Coolant For Schoolant",
+      "description": "Skill",
+      "universalPart": "{259:81}"
+    },
+    {
+      "id": 82,
+      "perkType": "Precision Engineering",
+      "description": "Skill",
+      "universalPart": "{259:82}"
+    },
+    {
+      "id": 83,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:83}"
+    },
+    {
+      "id": 84,
+      "perkType": "Ripple Effect",
+      "description": "Skill",
+      "universalPart": "{259:84}"
+    },
+    {
+      "id": 85,
+      "perkType": "Periodic Table Flip",
+      "description": "Skill",
+      "universalPart": "{259:85}"
+    },
+    {
+      "id": 86,
+      "perkType": "Bright Future",
+      "description": "Skill",
+      "universalPart": "{259:86}"
+    },
+    {
+      "id": 87,
+      "perkType": "Make Extraordinary",
+      "description": "Skill",
+      "universalPart": "{259:87}"
+    },
+    {
+      "id": 88,
+      "perkType": "Pulse Drive",
+      "description": "Skill",
+      "universalPart": "{259:88}"
+    },
+    {
+      "id": 89,
+      "perkType": "Parallel Circuit",
+      "description": "Skill",
+      "universalPart": "{259:89}"
+    },
+    {
+      "id": 90,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:90}"
+    },
+    {
+      "id": 91,
+      "perkType": "Quantum Immortality",
+      "description": "Skill",
+      "universalPart": "{259:91}"
+    },
+    {
+      "id": 92,
+      "perkType": "Enriched",
+      "description": "Skill",
+      "universalPart": "{259:92}"
+    },
+    {
+      "id": 93,
+      "perkType": "Great Red DoT",
+      "description": "Skill",
+      "universalPart": "{259:93}"
+    },
+    {
+      "id": 94,
+      "perkType": "Elephant's Foot",
+      "description": "Skill",
+      "universalPart": "{259:94}"
+    },
+    {
+      "id": 95,
+      "perkType": "Get up and Go",
+      "description": "Skill",
+      "universalPart": "{259:95}"
+    },
+    {
+      "id": 96,
+      "perkType": "Test Subjects",
+      "description": "Skill",
+      "universalPart": "{259:96}"
+    },
+    {
+      "id": 97,
+      "perkType": "Elementary",
+      "description": "Skill",
+      "universalPart": "{259:97}"
+    },
+    {
+      "id": 98,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:98}"
+    },
+    {
+      "id": 99,
+      "perkType": "Bleeding Edge",
+      "description": "Skill",
+      "universalPart": "{259:99}"
+    },
+    {
+      "id": 100,
+      "perkType": "Field-Ready Prototype",
+      "description": "Skill",
+      "universalPart": "{259:100}"
+    },
+    {
+      "id": 101,
+      "perkType": "Fuzzy Math",
+      "description": "Skill",
+      "universalPart": "{259:101}"
+    },
+    {
+      "id": 102,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:102}"
+    },
+    {
+      "id": 103,
+      "perkType": "PPE",
+      "description": "Skill",
+      "universalPart": "{259:103}"
+    },
+    {
+      "id": 104,
+      "perkType": "Cyclotron",
+      "description": "Skill",
+      "universalPart": "{259:104}"
+    },
+    {
+      "id": 105,
+      "perkType": "Creative Overflow",
+      "description": "Skill",
+      "universalPart": "{259:105}"
+    },
+    {
+      "id": 106,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:106}"
+    },
+    {
+      "id": 107,
+      "perkType": "Resonance Cascade",
+      "description": "Skill",
+      "universalPart": "{259:107}"
+    },
+    {
+      "id": 108,
+      "perkType": "Confirmative Reality",
+      "description": "Skill",
+      "universalPart": "{259:108}"
+    },
+    {
+      "id": 109,
+      "perkType": "Absolute Zero",
+      "description": "Skill",
+      "universalPart": "{259:109}"
+    },
+    {
+      "id": 110,
+      "perkType": "Heat Death",
+      "description": "Skill",
+      "universalPart": "{259:110}"
+    },
+    {
+      "id": 111,
+      "perkType": "Neutron Decay",
+      "description": "Skill",
+      "universalPart": "{259:111}"
+    },
+    {
+      "id": 112,
+      "perkType": "Mass Function",
+      "description": "Skill",
+      "universalPart": "{259:112}"
+    },
+    {
+      "id": 113,
+      "perkType": "Momentum",
+      "description": "Skill",
+      "universalPart": "{259:113}"
+    },
+    {
+      "id": 114,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:114}"
+    },
+    {
+      "id": 115,
+      "perkType": "Action at a Distance",
+      "description": "Skill",
+      "universalPart": "{259:115}"
+    },
+    {
+      "id": 116,
+      "perkType": "Personal Observation",
+      "description": "Skill",
+      "universalPart": "{259:116}"
+    },
+    {
+      "id": 117,
+      "perkType": "Mains Hum",
+      "description": "Skill",
+      "universalPart": "{259:117}"
+    },
+    {
+      "id": 118,
+      "perkType": "Cryodynamics",
+      "description": "Skill",
+      "universalPart": "{259:118}"
+    },
+    {
+      "id": 119,
+      "perkType": "Too Coolant For Schoolant",
+      "description": "Skill",
+      "universalPart": "{259:119}"
+    },
+    {
+      "id": 120,
+      "perkType": "Precision Engineering",
+      "description": "Skill",
+      "universalPart": "{259:120}"
+    },
+    {
+      "id": 121,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:121}"
+    },
+    {
+      "id": 122,
+      "perkType": "Ripple Effect",
+      "description": "Skill",
+      "universalPart": "{259:122}"
+    },
+    {
+      "id": 123,
+      "perkType": "Periodic Table Flip",
+      "description": "Skill",
+      "universalPart": "{259:123}"
+    },
+    {
+      "id": 124,
+      "perkType": "Bright Future",
+      "description": "Skill",
+      "universalPart": "{259:124}"
+    },
+    {
+      "id": 125,
+      "perkType": "Make Extraordinary",
+      "description": "Skill",
+      "universalPart": "{259:125}"
+    },
+    {
+      "id": 126,
+      "perkType": "Pulse Drive",
+      "description": "Skill",
+      "universalPart": "{259:126}"
+    },
+    {
+      "id": 127,
+      "perkType": "Parallel Circuit",
+      "description": "Skill",
+      "universalPart": "{259:127}"
+    },
+    {
+      "id": 128,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:128}"
+    },
+    {
+      "id": 129,
+      "perkType": "Quantum Immortality",
+      "description": "Skill",
+      "universalPart": "{259:129}"
+    },
+    {
+      "id": 130,
+      "perkType": "Enriched",
+      "description": "Skill",
+      "universalPart": "{259:130}"
+    },
+    {
+      "id": 131,
+      "perkType": "Great Red DoT",
+      "description": "Skill",
+      "universalPart": "{259:131}"
+    },
+    {
+      "id": 132,
+      "perkType": "Elephant's Foot",
+      "description": "Skill",
+      "universalPart": "{259:132}"
+    },
+    {
+      "id": 133,
+      "perkType": "Get up and Go",
+      "description": "Skill",
+      "universalPart": "{259:133}"
+    },
+    {
+      "id": 134,
+      "perkType": "Test Subjects",
+      "description": "Skill",
+      "universalPart": "{259:134}"
+    },
+    {
+      "id": 135,
+      "perkType": "Elementary",
+      "description": "Skill",
+      "universalPart": "{259:135}"
+    },
+    {
+      "id": 136,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:136}"
+    },
+    {
+      "id": 137,
+      "perkType": "Bleeding Edge",
+      "description": "Skill",
+      "universalPart": "{259:137}"
+    },
+    {
+      "id": 138,
+      "perkType": "Field-Ready Prototype",
+      "description": "Skill",
+      "universalPart": "{259:138}"
+    },
+    {
+      "id": 139,
+      "perkType": "Fuzzy Math",
+      "description": "Skill",
+      "universalPart": "{259:139}"
+    },
+    {
+      "id": 140,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:140}"
+    },
+    {
+      "id": 141,
+      "perkType": "PPE",
+      "description": "Skill",
+      "universalPart": "{259:141}"
+    },
+    {
+      "id": 142,
+      "perkType": "Cyclotron",
+      "description": "Skill",
+      "universalPart": "{259:142}"
+    },
+    {
+      "id": 143,
+      "perkType": "Creative Overflow",
+      "description": "Skill",
+      "universalPart": "{259:143}"
+    },
+    {
+      "id": 144,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:144}"
+    },
+    {
+      "id": 145,
+      "perkType": "Resonance Cascade",
+      "description": "Skill",
+      "universalPart": "{259:145}"
+    },
+    {
+      "id": 146,
+      "perkType": "Confirmative Reality",
+      "description": "Skill",
+      "universalPart": "{259:146}"
+    },
+    {
+      "id": 147,
+      "perkType": "Absolute Zero",
+      "description": "Skill",
+      "universalPart": "{259:147}"
+    },
+    {
+      "id": 148,
+      "perkType": "Heat Death",
+      "description": "Skill",
+      "universalPart": "{259:148}"
+    },
+    {
+      "id": 149,
+      "perkType": "Neutron Decay",
+      "description": "Skill",
+      "universalPart": "{259:149}"
+    },
+    {
+      "id": 150,
+      "perkType": "Mass Function",
+      "description": "Skill",
+      "universalPart": "{259:150}"
+    },
+    {
+      "id": 151,
+      "perkType": "Momentum",
+      "description": "Skill",
+      "universalPart": "{259:151}"
+    },
+    {
+      "id": 152,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:152}"
+    },
+    {
+      "id": 153,
+      "perkType": "Action at a Distance",
+      "description": "Skill",
+      "universalPart": "{259:153}"
+    },
+    {
+      "id": 154,
+      "perkType": "Personal Observation",
+      "description": "Skill",
+      "universalPart": "{259:154}"
+    },
+    {
+      "id": 155,
+      "perkType": "Mains Hum",
+      "description": "Skill",
+      "universalPart": "{259:155}"
+    },
+    {
+      "id": 156,
+      "perkType": "Cryodynamics",
+      "description": "Skill",
+      "universalPart": "{259:156}"
+    },
+    {
+      "id": 157,
+      "perkType": "Too Coolant For Schoolant",
+      "description": "Skill",
+      "universalPart": "{259:157}"
+    },
+    {
+      "id": 158,
+      "perkType": "Precision Engineering",
+      "description": "Skill",
+      "universalPart": "{259:158}"
+    },
+    {
+      "id": 159,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:159}"
+    },
+    {
+      "id": 160,
+      "perkType": "Ripple Effect",
+      "description": "Skill",
+      "universalPart": "{259:160}"
+    },
+    {
+      "id": 161,
+      "perkType": "Periodic Table Flip",
+      "description": "Skill",
+      "universalPart": "{259:161}"
+    },
+    {
+      "id": 162,
+      "perkType": "Bright Future",
+      "description": "Skill",
+      "universalPart": "{259:162}"
+    },
+    {
+      "id": 163,
+      "perkType": "Make Extraordinary",
+      "description": "Skill",
+      "universalPart": "{259:163}"
+    },
+    {
+      "id": 164,
+      "perkType": "Pulse Drive",
+      "description": "Skill",
+      "universalPart": "{259:164}"
+    },
+    {
+      "id": 165,
+      "perkType": "Parallel Circuit",
+      "description": "Skill",
+      "universalPart": "{259:165}"
+    },
+    {
+      "id": 166,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:166}"
+    },
+    {
+      "id": 167,
+      "perkType": "Quantum Immortality",
+      "description": "Skill",
+      "universalPart": "{259:167}"
+    },
+    {
+      "id": 168,
+      "perkType": "Enriched",
+      "description": "Skill",
+      "universalPart": "{259:168}"
+    },
+    {
+      "id": 169,
+      "perkType": "Great Red DoT",
+      "description": "Skill",
+      "universalPart": "{259:169}"
+    },
+    {
+      "id": 170,
+      "perkType": "Elephant's Foot",
+      "description": "Skill",
+      "universalPart": "{259:170}"
+    },
+    {
+      "id": 171,
+      "perkType": "Get up and Go",
+      "description": "Skill",
+      "universalPart": "{259:171}"
+    },
+    {
+      "id": 172,
+      "perkType": "Test Subjects",
+      "description": "Skill",
+      "universalPart": "{259:172}"
+    },
+    {
+      "id": 173,
+      "perkType": "Elementary",
+      "description": "Skill",
+      "universalPart": "{259:173}"
+    },
+    {
+      "id": 174,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:174}"
+    },
+    {
+      "id": 175,
+      "perkType": "Bleeding Edge",
+      "description": "Skill",
+      "universalPart": "{259:175}"
+    },
+    {
+      "id": 176,
+      "perkType": "Field-Ready Prototype",
+      "description": "Skill",
+      "universalPart": "{259:176}"
+    },
+    {
+      "id": 177,
+      "perkType": "Fuzzy Math",
+      "description": "Skill",
+      "universalPart": "{259:177}"
+    },
+    {
+      "id": 178,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:178}"
+    },
+    {
+      "id": 179,
+      "perkType": "PPE",
+      "description": "Skill",
+      "universalPart": "{259:179}"
+    },
+    {
+      "id": 180,
+      "perkType": "Cyclotron",
+      "description": "Skill",
+      "universalPart": "{259:180}"
+    },
+    {
+      "id": 181,
+      "perkType": "Creative Overflow",
+      "description": "Skill",
+      "universalPart": "{259:181}"
+    },
+    {
+      "id": 182,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:182}"
+    },
+    {
+      "id": 183,
+      "perkType": "Resonance Cascade",
+      "description": "Skill",
+      "universalPart": "{259:183}"
+    },
+    {
+      "id": 184,
+      "perkType": "Confirmative Reality",
+      "description": "Skill",
+      "universalPart": "{259:184}"
+    },
+    {
+      "id": 185,
+      "perkType": "Absolute Zero",
+      "description": "Skill",
+      "universalPart": "{259:185}"
+    },
+    {
+      "id": 186,
+      "perkType": "Heat Death",
+      "description": "Skill",
+      "universalPart": "{259:186}"
+    },
+    {
+      "id": 187,
+      "perkType": "Neutron Decay",
+      "description": "Skill",
+      "universalPart": "{259:187}"
+    },
+    {
+      "id": 188,
+      "perkType": "Mass Function",
+      "description": "Skill",
+      "universalPart": "{259:188}"
+    },
+    {
+      "id": 189,
+      "perkType": "Momentum",
+      "description": "Skill",
+      "universalPart": "{259:189}"
+    },
+    {
+      "id": 190,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:190}"
+    },
+    {
+      "id": 191,
+      "perkType": "Action at a Distance",
+      "description": "Skill",
+      "universalPart": "{259:191}"
+    },
+    {
+      "id": 192,
+      "perkType": "Personal Observation",
+      "description": "Skill",
+      "universalPart": "{259:192}"
+    },
+    {
+      "id": 193,
+      "perkType": "Heat Death",
+      "description": "Skill",
+      "universalPart": "{259:193}"
+    },
+    {
+      "id": 194,
+      "perkType": "Neutron Decay",
+      "description": "Skill",
+      "universalPart": "{259:194}"
+    },
+    {
+      "id": 195,
+      "perkType": "Mass Function",
+      "description": "Skill",
+      "universalPart": "{259:195}"
+    },
+    {
+      "id": 196,
+      "perkType": "Momentum",
+      "description": "Skill",
+      "universalPart": "{259:196}"
+    },
+    {
+      "id": 197,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:197}"
+    },
+    {
+      "id": 198,
+      "perkType": "Action at a Distance",
+      "description": "Skill",
+      "universalPart": "{259:198}"
+    },
+    {
+      "id": 199,
+      "perkType": "Personal Observation",
+      "description": "Skill",
+      "universalPart": "{259:199}"
+    },
+    {
+      "id": 200,
+      "perkType": "Bright Future",
+      "description": "Skill",
+      "universalPart": "{259:200}"
+    },
+    {
+      "id": 201,
+      "perkType": "Make Extraordinary",
+      "description": "Skill",
+      "universalPart": "{259:201}"
+    },
+    {
+      "id": 202,
+      "perkType": "Pulse Drive",
+      "description": "Skill",
+      "universalPart": "{259:202}"
+    },
+    {
+      "id": 203,
+      "perkType": "Parallel Circuit",
+      "description": "Skill",
+      "universalPart": "{259:203}"
+    },
+    {
+      "id": 204,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{259:204}"
+    },
+    {
+      "id": 205,
+      "perkType": "Quantum Immortality",
+      "description": "Skill",
+      "universalPart": "{259:205}"
+    },
+    {
+      "id": 206,
+      "perkType": "Enriched",
+      "description": "Skill",
+      "universalPart": "{259:206}"
+    },
+    {
+      "id": 207,
+      "perkType": "Great Red DoT",
+      "description": "Skill",
+      "universalPart": "{259:207}"
+    },
+    {
+      "id": 208,
+      "perkType": "Elephant's Foot",
+      "description": "Skill",
+      "universalPart": "{259:208}"
+    },
+    {
+      "id": 209,
+      "perkType": "Get up and Go",
+      "description": "Skill",
+      "universalPart": "{259:209}"
+    },
+    {
+      "id": 210,
+      "perkType": "Test Subjects",
+      "description": "Skill",
+      "universalPart": "{259:210}"
+    },
+    {
+      "id": 211,
+      "perkType": "Elementary",
+      "description": "Skill",
+      "universalPart": "{259:211}"
+    },
+    {
+      "id": 212,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:212}"
+    },
+    {
+      "id": 213,
+      "perkType": "Bleeding Edge",
+      "description": "Skill",
+      "universalPart": "{259:213}"
+    },
+    {
+      "id": 214,
+      "perkType": "Field-Ready Prototype",
+      "description": "Skill",
+      "universalPart": "{259:214}"
+    },
+    {
+      "id": 215,
+      "perkType": "Fuzzy Math",
+      "description": "Skill",
+      "universalPart": "{259:215}"
+    },
+    {
+      "id": 216,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:216}"
+    },
+    {
+      "id": 217,
+      "perkType": "PPE",
+      "description": "Skill",
+      "universalPart": "{259:217}"
+    },
+    {
+      "id": 218,
+      "perkType": "Cyclotron",
+      "description": "Skill",
+      "universalPart": "{259:218}"
+    },
+    {
+      "id": 219,
+      "perkType": "Nothing that i can tell tested 3x",
+      "description": "",
+      "universalPart": "{259:219}"
+    },
+    {
+      "id": 220,
+      "perkType": "Breaker",
+      "description": "Name+Skin",
+      "universalPart": "{259:220}"
+    },
+    {
+      "id": 221,
+      "perkType": "Epic Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:221}"
+    },
+    {
+      "id": 222,
+      "perkType": "Rare Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:222}"
+    },
+    {
+      "id": 223,
+      "perkType": "Uncommon Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:223}"
+    },
+    {
+      "id": 224,
+      "perkType": "Common Rarity",
+      "description": "Rarity",
+      "universalPart": "{259:224}"
+    },
+    {
+      "id": 225,
+      "perkType": "Blue Shift",
+      "description": "Skill",
+      "universalPart": "{259:225}"
+    },
+    {
+      "id": 226,
+      "perkType": "Decoherence",
+      "description": "Skill",
+      "universalPart": "{259:226}"
+    },
+    {
+      "id": 227,
+      "perkType": "Latent Charge",
+      "description": "Skill",
+      "universalPart": "{259:227}"
+    },
+    {
+      "id": 228,
+      "perkType": "Feedback Loop",
+      "description": "Skill",
+      "universalPart": "{259:228}"
+    },
+    {
+      "id": 229,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:229}"
+    },
+    {
+      "id": 230,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:230}"
+    },
+    {
+      "id": 231,
+      "perkType": "Runaway Reaction",
+      "description": "Skill",
+      "universalPart": "{259:231}"
+    },
+    {
+      "id": 232,
+      "perkType": "Gamma Ray Burst",
+      "description": "Skill",
+      "universalPart": "{259:232}"
+    },
+    {
+      "id": 233,
+      "perkType": "Harlowe's Certainty Principle",
+      "description": "Skill",
+      "universalPart": "{259:233}"
+    },
+    {
+      "id": 234,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:234}"
+    },
+    {
+      "id": 235,
+      "perkType": "Jaunt",
+      "description": "Skill",
+      "universalPart": "{259:235}"
+    },
+    {
+      "id": 236,
+      "perkType": "Critical Funding",
+      "description": "Skill",
+      "universalPart": "{259:236}"
+    },
+    {
+      "id": 237,
+      "perkType": "Exposed Core",
+      "description": "Skill",
+      "universalPart": "{259:237}"
+    },
+    {
+      "id": 238,
+      "perkType": "MeltDown",
+      "description": "Skill",
+      "universalPart": "{259:238}"
+    },
+    {
+      "id": 239,
+      "perkType": "Refraction",
+      "description": "Skill",
+      "universalPart": "{259:239}"
+    },
+    {
+      "id": 240,
+      "perkType": "Excited State",
+      "description": "Skill",
+      "universalPart": "{259:240}"
+    },
+    {
+      "id": 241,
+      "perkType": "Accretion",
+      "description": "Skill",
+      "universalPart": "{259:241}"
+    },
+    {
+      "id": 242,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:242}"
+    },
+    {
+      "id": 243,
+      "perkType": "Distribution Function",
+      "description": "Skill",
+      "universalPart": "{259:243}"
+    },
+    {
+      "id": 244,
+      "perkType": "Pencils Down",
+      "description": "Skill",
+      "universalPart": "{259:244}"
+    },
+    {
+      "id": 245,
+      "perkType": "Annihilation",
+      "description": "Skill",
+      "universalPart": "{259:245}"
+    },
+    {
+      "id": 246,
+      "perkType": "Practical Applications",
+      "description": "Skill",
+      "universalPart": "{259:246}"
+    },
+    {
+      "id": 247,
+      "perkType": "Carry the One",
+      "description": "Skill",
+      "universalPart": "{259:247}"
+    },
+    {
+      "id": 248,
+      "perkType": "Core Sample",
+      "description": "Skill",
+      "universalPart": "{259:248}"
+    },
+    {
+      "id": 249,
+      "perkType": "Break the Ice",
+      "description": "Skill",
+      "universalPart": "{259:249}"
+    },
+    {
+      "id": 250,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:250}"
+    },
+    {
+      "id": 251,
+      "perkType": "Opposing Force",
+      "description": "Skill",
+      "universalPart": "{259:251}"
+    },
+    {
+      "id": 252,
+      "perkType": "Cold Welding",
+      "description": "Skill",
+      "universalPart": "{259:252}"
+    },
+    {
+      "id": 253,
+      "perkType": "Poisoned Sun",
+      "description": "Skill",
+      "universalPart": "{259:253}"
+    },
+    {
+      "id": 254,
+      "perkType": "Glow Up",
+      "description": "Skill",
+      "universalPart": "{259:254}"
+    },
+    {
+      "id": 255,
+      "perkType": "Fissile Launcher",
+      "description": "Skill",
+      "universalPart": "{259:255}"
+    },
+    {
+      "id": 256,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:256}"
+    },
+    {
+      "id": 257,
+      "perkType": "Chain Reactor",
+      "description": "Skill",
+      "universalPart": "{259:257}"
+    },
+    {
+      "id": 258,
+      "perkType": "Wasted",
+      "description": "Skill",
+      "universalPart": "{259:258}"
+    },
+    {
+      "id": 259,
+      "perkType": "Dirty Bomb",
+      "description": "Skill",
+      "universalPart": "{259:259}"
+    },
+    {
+      "id": 260,
+      "perkType": "Highly Efficient",
+      "description": "Skill",
+      "universalPart": "{259:260}"
+    },
+    {
+      "id": 261,
+      "perkType": "Mechanical Brilliance",
+      "description": "Skill",
+      "universalPart": "{259:261}"
+    },
+    {
+      "id": 262,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:262}"
+    },
+    {
+      "id": 263,
+      "perkType": "Eureka!",
+      "description": "Skill",
+      "universalPart": "{259:263}"
+    },
+    {
+      "id": 264,
+      "perkType": "Rounding Up",
+      "description": "Skill",
+      "universalPart": "{259:264}"
+    },
+    {
+      "id": 265,
+      "perkType": "Alternative Fuel Source",
+      "description": "Skill",
+      "universalPart": "{259:265}"
+    },
+    {
+      "id": 266,
+      "perkType": "QED",
+      "description": "Skill",
+      "universalPart": "{259:266}"
+    },
+    {
+      "id": 267,
+      "perkType": "Concurrence",
+      "description": "Skill",
+      "universalPart": "{259:267}"
+    },
+    {
+      "id": 268,
+      "perkType": "Force Of Will",
+      "description": "Skill",
+      "universalPart": "{259:268}"
+    },
+    {
+      "id": 269,
+      "perkType": "Control Group",
+      "description": "Skill",
+      "universalPart": "{259:269}"
+    },
+    {
+      "id": 270,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:270}"
+    },
+    {
+      "id": 271,
+      "perkType": "Slingshot",
+      "description": "Skill",
+      "universalPart": "{259:271}"
+    },
+    {
+      "id": 272,
+      "perkType": "Freeze Frame",
+      "description": "Skill",
+      "universalPart": "{259:272}"
+    },
+    {
+      "id": 273,
+      "perkType": "Stun Lock",
+      "description": "Skill",
+      "universalPart": "{259:273}"
+    },
+    {
+      "id": 274,
+      "perkType": "Unstable Ice-otope",
+      "description": "Skill",
+      "universalPart": "{259:274}"
+    },
+    {
+      "id": 275,
+      "perkType": "Keep Ice On That",
+      "description": "Skill",
+      "universalPart": "{259:275}"
+    },
+    {
+      "id": 276,
+      "perkType": "Endothermic Reaction",
+      "description": "Skill",
+      "universalPart": "{259:276}"
+    },
+    {
+      "id": 277,
+      "perkType": "Flash Freeze",
+      "description": "Skill",
+      "universalPart": "{259:277}"
+    },
+    {
+      "id": 278,
+      "perkType": "Heat Sink",
+      "description": "Skill",
+      "universalPart": "{259:278}"
+    },
+    {
+      "id": 279,
+      "perkType": "Triple Point",
+      "description": "Skill",
+      "universalPart": "{259:279}"
+    },
+    {
+      "id": 280,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:280}"
+    },
+    {
+      "id": 281,
+      "perkType": "Indiscrete Math",
+      "description": "Skill",
+      "universalPart": "{259:281}"
+    },
+    {
+      "id": 282,
+      "perkType": "Experimentation",
+      "description": "Skill",
+      "universalPart": "{259:282}"
+    },
+    {
+      "id": 283,
+      "perkType": "Domino Effect",
+      "description": "Skill",
+      "universalPart": "{259:283}"
+    },
+    {
+      "id": 284,
+      "perkType": "Sustained Reaction",
+      "description": "Skill",
+      "universalPart": "{259:284}"
+    },
+    {
+      "id": 285,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:285}"
+    },
+    {
+      "id": 286,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:286}"
+    },
+    {
+      "id": 287,
+      "perkType": "Gordian Knot",
+      "description": "Skill",
+      "universalPart": "{259:287}"
+    },
+    {
+      "id": 288,
+      "perkType": "Blue Shift",
+      "description": "Skill",
+      "universalPart": "{259:288}"
+    },
+    {
+      "id": 289,
+      "perkType": "Decoherence",
+      "description": "Skill",
+      "universalPart": "{259:289}"
+    },
+    {
+      "id": 290,
+      "perkType": "Latent Charge",
+      "description": "Skill",
+      "universalPart": "{259:290}"
+    },
+    {
+      "id": 291,
+      "perkType": "Feedback Loop",
+      "description": "Skill",
+      "universalPart": "{259:291}"
+    },
+    {
+      "id": 292,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:292}"
+    },
+    {
+      "id": 293,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:293}"
+    },
+    {
+      "id": 294,
+      "perkType": "Runaway Reaction",
+      "description": "Skill",
+      "universalPart": "{259:294}"
+    },
+    {
+      "id": 295,
+      "perkType": "Gamma Ray Burst",
+      "description": "Skill",
+      "universalPart": "{259:295}"
+    },
+    {
+      "id": 296,
+      "perkType": "Harlowe's Certainty Principle",
+      "description": "Skill",
+      "universalPart": "{259:296}"
+    },
+    {
+      "id": 297,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:297}"
+    },
+    {
+      "id": 298,
+      "perkType": "Jaunt",
+      "description": "Skill",
+      "universalPart": "{259:298}"
+    },
+    {
+      "id": 299,
+      "perkType": "Critical Funding",
+      "description": "Skill",
+      "universalPart": "{259:299}"
+    },
+    {
+      "id": 300,
+      "perkType": "Exposed Core",
+      "description": "Skill",
+      "universalPart": "{259:300}"
+    },
+    {
+      "id": 301,
+      "perkType": "MeltDown",
+      "description": "Skill",
+      "universalPart": "{259:301}"
+    },
+    {
+      "id": 302,
+      "perkType": "Refraction",
+      "description": "Skill",
+      "universalPart": "{259:302}"
+    },
+    {
+      "id": 303,
+      "perkType": "Excited State",
+      "description": "Skill",
+      "universalPart": "{259:303}"
+    },
+    {
+      "id": 304,
+      "perkType": "Accretion",
+      "description": "Skill",
+      "universalPart": "{259:304}"
+    },
+    {
+      "id": 305,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:305}"
+    },
+    {
+      "id": 306,
+      "perkType": "Distribution Function",
+      "description": "Skill",
+      "universalPart": "{259:306}"
+    },
+    {
+      "id": 307,
+      "perkType": "Pencils Down",
+      "description": "Skill",
+      "universalPart": "{259:307}"
+    },
+    {
+      "id": 308,
+      "perkType": "Annihilation",
+      "description": "Skill",
+      "universalPart": "{259:308}"
+    },
+    {
+      "id": 309,
+      "perkType": "Practical Applications",
+      "description": "Skill",
+      "universalPart": "{259:309}"
+    },
+    {
+      "id": 310,
+      "perkType": "Carry the One",
+      "description": "Skill",
+      "universalPart": "{259:310}"
+    },
+    {
+      "id": 311,
+      "perkType": "Core Sample",
+      "description": "Skill",
+      "universalPart": "{259:311}"
+    },
+    {
+      "id": 312,
+      "perkType": "Break the Ice",
+      "description": "Skill",
+      "universalPart": "{259:312}"
+    },
+    {
+      "id": 313,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:313}"
+    },
+    {
+      "id": 314,
+      "perkType": "Opposing Force",
+      "description": "Skill",
+      "universalPart": "{259:314}"
+    },
+    {
+      "id": 315,
+      "perkType": "Cold Welding",
+      "description": "Skill",
+      "universalPart": "{259:315}"
+    },
+    {
+      "id": 316,
+      "perkType": "Poisoned Sun",
+      "description": "Skill",
+      "universalPart": "{259:316}"
+    },
+    {
+      "id": 317,
+      "perkType": "Glow Up",
+      "description": "Skill",
+      "universalPart": "{259:317}"
+    },
+    {
+      "id": 318,
+      "perkType": "Fissile Launcher",
+      "description": "Skill",
+      "universalPart": "{259:318}"
+    },
+    {
+      "id": 319,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:319}"
+    },
+    {
+      "id": 320,
+      "perkType": "Chain Reaction",
+      "description": "Skill",
+      "universalPart": "{259:320}"
+    },
+    {
+      "id": 321,
+      "perkType": "Wasted",
+      "description": "Skill",
+      "universalPart": "{259:321}"
+    },
+    {
+      "id": 322,
+      "perkType": "Dirty Bomb",
+      "description": "Skill",
+      "universalPart": "{259:322}"
+    },
+    {
+      "id": 323,
+      "perkType": "Highly Efficient",
+      "description": "Skill",
+      "universalPart": "{259:323}"
+    },
+    {
+      "id": 324,
+      "perkType": "Mechanical Brilliance",
+      "description": "Skill",
+      "universalPart": "{259:324}"
+    },
+    {
+      "id": 325,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:325}"
+    },
+    {
+      "id": 326,
+      "perkType": "Eureka!",
+      "description": "Skill",
+      "universalPart": "{259:326}"
+    },
+    {
+      "id": 327,
+      "perkType": "Rounding Up",
+      "description": "Skill",
+      "universalPart": "{259:327}"
+    },
+    {
+      "id": 328,
+      "perkType": "Alternative Fuel Source",
+      "description": "Skill",
+      "universalPart": "{259:328}"
+    },
+    {
+      "id": 329,
+      "perkType": "QED",
+      "description": "Skill",
+      "universalPart": "{259:329}"
+    },
+    {
+      "id": 330,
+      "perkType": "Concurrence",
+      "description": "Skill",
+      "universalPart": "{259:330}"
+    },
+    {
+      "id": 331,
+      "perkType": "Force Of Will",
+      "description": "Skill",
+      "universalPart": "{259:331}"
+    },
+    {
+      "id": 332,
+      "perkType": "Control Group",
+      "description": "Skill",
+      "universalPart": "{259:332}"
+    },
+    {
+      "id": 333,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:333}"
+    },
+    {
+      "id": 334,
+      "perkType": "Slingshot",
+      "description": "Skill",
+      "universalPart": "{259:334}"
+    },
+    {
+      "id": 335,
+      "perkType": "Freeze Frame",
+      "description": "Skill",
+      "universalPart": "{259:335}"
+    },
+    {
+      "id": 336,
+      "perkType": "Stun Lock",
+      "description": "Skill",
+      "universalPart": "{259:336}"
+    },
+    {
+      "id": 337,
+      "perkType": "Unstable Ice-otope",
+      "description": "Skill",
+      "universalPart": "{259:337}"
+    },
+    {
+      "id": 338,
+      "perkType": "Keep Ice On That",
+      "description": "Skill",
+      "universalPart": "{259:338}"
+    },
+    {
+      "id": 339,
+      "perkType": "Endothermic Reaction",
+      "description": "Skill",
+      "universalPart": "{259:339}"
+    },
+    {
+      "id": 340,
+      "perkType": "Flash Freeze",
+      "description": "Skill",
+      "universalPart": "{259:340}"
+    },
+    {
+      "id": 341,
+      "perkType": "Heat Sink",
+      "description": "Skill",
+      "universalPart": "{259:341}"
+    },
+    {
+      "id": 342,
+      "perkType": "Triple Point",
+      "description": "Skill",
+      "universalPart": "{259:342}"
+    },
+    {
+      "id": 343,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:343}"
+    },
+    {
+      "id": 344,
+      "perkType": "Indiscrete Math",
+      "description": "Skill",
+      "universalPart": "{259:344}"
+    },
+    {
+      "id": 345,
+      "perkType": "Experimentation",
+      "description": "Skill",
+      "universalPart": "{259:345}"
+    },
+    {
+      "id": 346,
+      "perkType": "Domino Effect",
+      "description": "Skill",
+      "universalPart": "{259:346}"
+    },
+    {
+      "id": 347,
+      "perkType": "Sustained Reaction",
+      "description": "Skill",
+      "universalPart": "{259:347}"
+    },
+    {
+      "id": 348,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:348}"
+    },
+    {
+      "id": 349,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:349}"
+    },
+    {
+      "id": 350,
+      "perkType": "Gordian Knot",
+      "description": "Skill",
+      "universalPart": "{259:350}"
+    },
+    {
+      "id": 351,
+      "perkType": "Blue Shift",
+      "description": "Skill",
+      "universalPart": "{259:351}"
+    },
+    {
+      "id": 352,
+      "perkType": "Decoherence",
+      "description": "Skill",
+      "universalPart": "{259:352}"
+    },
+    {
+      "id": 353,
+      "perkType": "Latent Charge",
+      "description": "Skill",
+      "universalPart": "{259:353}"
+    },
+    {
+      "id": 354,
+      "perkType": "Feedback Loop",
+      "description": "Skill",
+      "universalPart": "{259:354}"
+    },
+    {
+      "id": 355,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:355}"
+    },
+    {
+      "id": 356,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:356}"
+    },
+    {
+      "id": 357,
+      "perkType": "Runaway Reaction",
+      "description": "Skill",
+      "universalPart": "{259:357}"
+    },
+    {
+      "id": 358,
+      "perkType": "Gamma Ray Burst",
+      "description": "Skill",
+      "universalPart": "{259:358}"
+    },
+    {
+      "id": 359,
+      "perkType": "Harlowe's Certainty Principle",
+      "description": "Skill",
+      "universalPart": "{259:359}"
+    },
+    {
+      "id": 360,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:360}"
+    },
+    {
+      "id": 361,
+      "perkType": "Jaunt",
+      "description": "Skill",
+      "universalPart": "{259:361}"
+    },
+    {
+      "id": 362,
+      "perkType": "Critical Funding",
+      "description": "Skill",
+      "universalPart": "{259:362}"
+    },
+    {
+      "id": 363,
+      "perkType": "Exposed Core",
+      "description": "Skill",
+      "universalPart": "{259:363}"
+    },
+    {
+      "id": 364,
+      "perkType": "MeltDown",
+      "description": "Skill",
+      "universalPart": "{259:364}"
+    },
+    {
+      "id": 365,
+      "perkType": "Refraction",
+      "description": "Skill",
+      "universalPart": "{259:365}"
+    },
+    {
+      "id": 366,
+      "perkType": "Excited State",
+      "description": "Skill",
+      "universalPart": "{259:366}"
+    },
+    {
+      "id": 367,
+      "perkType": "Accretion",
+      "description": "Skill",
+      "universalPart": "{259:367}"
+    },
+    {
+      "id": 368,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:368}"
+    },
+    {
+      "id": 369,
+      "perkType": "Distribution Function",
+      "description": "Skill",
+      "universalPart": "{259:369}"
+    },
+    {
+      "id": 370,
+      "perkType": "Pencils Down",
+      "description": "Skill",
+      "universalPart": "{259:370}"
+    },
+    {
+      "id": 371,
+      "perkType": "Annihilation",
+      "description": "Skill",
+      "universalPart": "{259:371}"
+    },
+    {
+      "id": 372,
+      "perkType": "Practical Applications",
+      "description": "Skill",
+      "universalPart": "{259:372}"
+    },
+    {
+      "id": 373,
+      "perkType": "Carry the One",
+      "description": "Skill",
+      "universalPart": "{259:373}"
+    },
+    {
+      "id": 374,
+      "perkType": "Core Sample",
+      "description": "Skill",
+      "universalPart": "{259:374}"
+    },
+    {
+      "id": 375,
+      "perkType": "Break the Ice",
+      "description": "Skill",
+      "universalPart": "{259:375}"
+    },
+    {
+      "id": 376,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:376}"
+    },
+    {
+      "id": 377,
+      "perkType": "Opposing Force",
+      "description": "Skill",
+      "universalPart": "{259:377}"
+    },
+    {
+      "id": 378,
+      "perkType": "Cold Welding",
+      "description": "Skill",
+      "universalPart": "{259:378}"
+    },
+    {
+      "id": 379,
+      "perkType": "Poisoned Sun",
+      "description": "Skill",
+      "universalPart": "{259:379}"
+    },
+    {
+      "id": 380,
+      "perkType": "Glow Up",
+      "description": "Skill",
+      "universalPart": "{259:380}"
+    },
+    {
+      "id": 381,
+      "perkType": "Fissile Launcher",
+      "description": "Skill",
+      "universalPart": "{259:381}"
+    },
+    {
+      "id": 382,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:382}"
+    },
+    {
+      "id": 383,
+      "perkType": "Chain Reactor",
+      "description": "Skill",
+      "universalPart": "{259:383}"
+    },
+    {
+      "id": 384,
+      "perkType": "Wasted",
+      "description": "Skill",
+      "universalPart": "{259:384}"
+    },
+    {
+      "id": 385,
+      "perkType": "Dirty Bomb",
+      "description": "Skill",
+      "universalPart": "{259:385}"
+    },
+    {
+      "id": 386,
+      "perkType": "Highly Efficient",
+      "description": "Skill",
+      "universalPart": "{259:386}"
+    },
+    {
+      "id": 387,
+      "perkType": "Mechanical Brilliance",
+      "description": "Skill",
+      "universalPart": "{259:387}"
+    },
+    {
+      "id": 388,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:388}"
+    },
+    {
+      "id": 389,
+      "perkType": "Eureka!",
+      "description": "Skill",
+      "universalPart": "{259:389}"
+    },
+    {
+      "id": 390,
+      "perkType": "Rounding Up",
+      "description": "Skill",
+      "universalPart": "{259:390}"
+    },
+    {
+      "id": 391,
+      "perkType": "Alternative Fuel Source",
+      "description": "Skill",
+      "universalPart": "{259:391}"
+    },
+    {
+      "id": 392,
+      "perkType": "QED",
+      "description": "Skill",
+      "universalPart": "{259:392}"
+    },
+    {
+      "id": 393,
+      "perkType": "Concurrence",
+      "description": "Skill",
+      "universalPart": "{259:393}"
+    },
+    {
+      "id": 394,
+      "perkType": "Force Of Will",
+      "description": "Skill",
+      "universalPart": "{259:394}"
+    },
+    {
+      "id": 395,
+      "perkType": "Control Group",
+      "description": "Skill",
+      "universalPart": "{259:395}"
+    },
+    {
+      "id": 396,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:396}"
+    },
+    {
+      "id": 397,
+      "perkType": "Slingshot",
+      "description": "Skill",
+      "universalPart": "{259:397}"
+    },
+    {
+      "id": 398,
+      "perkType": "Freeze Frame",
+      "description": "Skill",
+      "universalPart": "{259:398}"
+    },
+    {
+      "id": 399,
+      "perkType": "Stun Lock",
+      "description": "Skill",
+      "universalPart": "{259:399}"
+    },
+    {
+      "id": 400,
+      "perkType": "Unstable Ice-otope",
+      "description": "Skill",
+      "universalPart": "{259:400}"
+    },
+    {
+      "id": 401,
+      "perkType": "Keep Ice On That",
+      "description": "Skill",
+      "universalPart": "{259:401}"
+    },
+    {
+      "id": 402,
+      "perkType": "Endothermic Reaction",
+      "description": "Skill",
+      "universalPart": "{259:402}"
+    },
+    {
+      "id": 403,
+      "perkType": "Flash Freeze",
+      "description": "Skill",
+      "universalPart": "{259:403}"
+    },
+    {
+      "id": 404,
+      "perkType": "Heat Sink",
+      "description": "Skill",
+      "universalPart": "{259:404}"
+    },
+    {
+      "id": 405,
+      "perkType": "Triple Point",
+      "description": "Skill",
+      "universalPart": "{259:405}"
+    },
+    {
+      "id": 406,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:406}"
+    },
+    {
+      "id": 407,
+      "perkType": "Indiscrete Math",
+      "description": "Skill",
+      "universalPart": "{259:407}"
+    },
+    {
+      "id": 408,
+      "perkType": "Experimentation",
+      "description": "Skill",
+      "universalPart": "{259:408}"
+    },
+    {
+      "id": 409,
+      "perkType": "Domino Effect",
+      "description": "Skill",
+      "universalPart": "{259:409}"
+    },
+    {
+      "id": 410,
+      "perkType": "Sustained Reaction",
+      "description": "Skill",
+      "universalPart": "{259:410}"
+    },
+    {
+      "id": 411,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:411}"
+    },
+    {
+      "id": 412,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:412}"
+    },
+    {
+      "id": 413,
+      "perkType": "Gordian Knot",
+      "description": "Skill",
+      "universalPart": "{259:413}"
+    },
+    {
+      "id": 414,
+      "perkType": "Blue Shift",
+      "description": "Skill",
+      "universalPart": "{259:414}"
+    },
+    {
+      "id": 415,
+      "perkType": "Decoherence",
+      "description": "Skill",
+      "universalPart": "{259:415}"
+    },
+    {
+      "id": 416,
+      "perkType": "Latent Charge",
+      "description": "Skill",
+      "universalPart": "{259:416}"
+    },
+    {
+      "id": 417,
+      "perkType": "Feedback Loop",
+      "description": "Skill",
+      "universalPart": "{259:417}"
+    },
+    {
+      "id": 418,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:418}"
+    },
+    {
+      "id": 419,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:419}"
+    },
+    {
+      "id": 420,
+      "perkType": "Runaway Reaction",
+      "description": "Skill",
+      "universalPart": "{259:420}"
+    },
+    {
+      "id": 421,
+      "perkType": "Gamma Ray Burst",
+      "description": "Skill",
+      "universalPart": "{259:421}"
+    },
+    {
+      "id": 422,
+      "perkType": "Harlowe's Certainty Principle",
+      "description": "Skill",
+      "universalPart": "{259:422}"
+    },
+    {
+      "id": 423,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:423}"
+    },
+    {
+      "id": 424,
+      "perkType": "Jaunt",
+      "description": "Skill",
+      "universalPart": "{259:424}"
+    },
+    {
+      "id": 425,
+      "perkType": "Critical Funding",
+      "description": "Skill",
+      "universalPart": "{259:425}"
+    },
+    {
+      "id": 426,
+      "perkType": "Exposed Core",
+      "description": "Skill",
+      "universalPart": "{259:426}"
+    },
+    {
+      "id": 427,
+      "perkType": "MeltDown",
+      "description": "Skill",
+      "universalPart": "{259:427}"
+    },
+    {
+      "id": 428,
+      "perkType": "Refraction",
+      "description": "Skill",
+      "universalPart": "{259:428}"
+    },
+    {
+      "id": 429,
+      "perkType": "Excited State",
+      "description": "Skill",
+      "universalPart": "{259:429}"
+    },
+    {
+      "id": 430,
+      "perkType": "Accretion",
+      "description": "Skill",
+      "universalPart": "{259:430}"
+    },
+    {
+      "id": 431,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:431}"
+    },
+    {
+      "id": 432,
+      "perkType": "Distribution Function",
+      "description": "Skill",
+      "universalPart": "{259:432}"
+    },
+    {
+      "id": 433,
+      "perkType": "Pencils Down",
+      "description": "Skill",
+      "universalPart": "{259:433}"
+    },
+    {
+      "id": 434,
+      "perkType": "Annihilation",
+      "description": "Skill",
+      "universalPart": "{259:434}"
+    },
+    {
+      "id": 435,
+      "perkType": "Practical Applications",
+      "description": "Skill",
+      "universalPart": "{259:435}"
+    },
+    {
+      "id": 436,
+      "perkType": "Carry the One",
+      "description": "Skill",
+      "universalPart": "{259:436}"
+    },
+    {
+      "id": 437,
+      "perkType": "Core Sample",
+      "description": "Skill",
+      "universalPart": "{259:437}"
+    },
+    {
+      "id": 438,
+      "perkType": "Break the Ice",
+      "description": "Skill",
+      "universalPart": "{259:438}"
+    },
+    {
+      "id": 439,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:439}"
+    },
+    {
+      "id": 440,
+      "perkType": "Opposing Force",
+      "description": "Skill",
+      "universalPart": "{259:440}"
+    },
+    {
+      "id": 441,
+      "perkType": "Cold Welding",
+      "description": "Skill",
+      "universalPart": "{259:441}"
+    },
+    {
+      "id": 442,
+      "perkType": "Poisoned Sun",
+      "description": "Skill",
+      "universalPart": "{259:442}"
+    },
+    {
+      "id": 443,
+      "perkType": "Glow Up",
+      "description": "Skill",
+      "universalPart": "{259:443}"
+    },
+    {
+      "id": 444,
+      "perkType": "Fissile Launcher",
+      "description": "Skill",
+      "universalPart": "{259:444}"
+    },
+    {
+      "id": 445,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:445}"
+    },
+    {
+      "id": 446,
+      "perkType": "Chain Reactor",
+      "description": "Skill",
+      "universalPart": "{259:446}"
+    },
+    {
+      "id": 447,
+      "perkType": "Wasted",
+      "description": "Skill",
+      "universalPart": "{259:447}"
+    },
+    {
+      "id": 448,
+      "perkType": "Dirty Bomb",
+      "description": "Skill",
+      "universalPart": "{259:448}"
+    },
+    {
+      "id": 449,
+      "perkType": "Highly Efficient",
+      "description": "Skill",
+      "universalPart": "{259:449}"
+    },
+    {
+      "id": 450,
+      "perkType": "Mechanical Brilliance",
+      "description": "Skill",
+      "universalPart": "{259:450}"
+    },
+    {
+      "id": 451,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:451}"
+    },
+    {
+      "id": 452,
+      "perkType": "Eureka!",
+      "description": "Skill",
+      "universalPart": "{259:452}"
+    },
+    {
+      "id": 453,
+      "perkType": "Rounding Up",
+      "description": "Skill",
+      "universalPart": "{259:453}"
+    },
+    {
+      "id": 454,
+      "perkType": "Alternative Fuel Source",
+      "description": "Skill",
+      "universalPart": "{259:454}"
+    },
+    {
+      "id": 455,
+      "perkType": "QED",
+      "description": "Skill",
+      "universalPart": "{259:455}"
+    },
+    {
+      "id": 456,
+      "perkType": "Concurrence",
+      "description": "Skill",
+      "universalPart": "{259:456}"
+    },
+    {
+      "id": 457,
+      "perkType": "Force Of Will",
+      "description": "Skill",
+      "universalPart": "{259:457}"
+    },
+    {
+      "id": 458,
+      "perkType": "Control Group",
+      "description": "Skill",
+      "universalPart": "{259:458}"
+    },
+    {
+      "id": 459,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:459}"
+    },
+    {
+      "id": 460,
+      "perkType": "Slingshot",
+      "description": "Skill",
+      "universalPart": "{259:460}"
+    },
+    {
+      "id": 461,
+      "perkType": "Freeze Frame",
+      "description": "Skill",
+      "universalPart": "{259:461}"
+    },
+    {
+      "id": 462,
+      "perkType": "Stun Lock",
+      "description": "Skill",
+      "universalPart": "{259:462}"
+    },
+    {
+      "id": 463,
+      "perkType": "Unstable Ice-otope",
+      "description": "Skill",
+      "universalPart": "{259:463}"
+    },
+    {
+      "id": 464,
+      "perkType": "Keep Ice On That",
+      "description": "Skill",
+      "universalPart": "{259:464}"
+    },
+    {
+      "id": 465,
+      "perkType": "Endothermic Reaction",
+      "description": "Skill",
+      "universalPart": "{259:465}"
+    },
+    {
+      "id": 466,
+      "perkType": "Flash Freeze",
+      "description": "Skill",
+      "universalPart": "{259:466}"
+    },
+    {
+      "id": 467,
+      "perkType": "Heat Sink",
+      "description": "Skill",
+      "universalPart": "{259:467}"
+    },
+    {
+      "id": 468,
+      "perkType": "Triple Point",
+      "description": "Skill",
+      "universalPart": "{259:468}"
+    },
+    {
+      "id": 469,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:469}"
+    },
+    {
+      "id": 470,
+      "perkType": "Indiscrete Math",
+      "description": "Skill",
+      "universalPart": "{259:470}"
+    },
+    {
+      "id": 471,
+      "perkType": "Experimentation",
+      "description": "Skill",
+      "universalPart": "{259:471}"
+    },
+    {
+      "id": 472,
+      "perkType": "Domino Effect",
+      "description": "Skill",
+      "universalPart": "{259:472}"
+    },
+    {
+      "id": 473,
+      "perkType": "Sustained Reaction",
+      "description": "Skill",
+      "universalPart": "{259:473}"
+    },
+    {
+      "id": 474,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:474}"
+    },
+    {
+      "id": 475,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:475}"
+    },
+    {
+      "id": 476,
+      "perkType": "Gordian Knot",
+      "description": "Skill",
+      "universalPart": "{259:476}"
+    },
+    {
+      "id": 477,
+      "perkType": "Blue Shift",
+      "description": "Skill",
+      "universalPart": "{259:477}"
+    },
+    {
+      "id": 478,
+      "perkType": "Decoherence",
+      "description": "Skill",
+      "universalPart": "{259:478}"
+    },
+    {
+      "id": 479,
+      "perkType": "Latent Charge",
+      "description": "Skill",
+      "universalPart": "{259:479}"
+    },
+    {
+      "id": 480,
+      "perkType": "Feedback Loop",
+      "description": "Skill",
+      "universalPart": "{259:480}"
+    },
+    {
+      "id": 481,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:481}"
+    },
+    {
+      "id": 482,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:482}"
+    },
+    {
+      "id": 483,
+      "perkType": "Runaway Reaction",
+      "description": "Skill",
+      "universalPart": "{259:483}"
+    },
+    {
+      "id": 484,
+      "perkType": "Gamma Ray Burst",
+      "description": "Skill",
+      "universalPart": "{259:484}"
+    },
+    {
+      "id": 485,
+      "perkType": "Harlowe's Certainty Principle",
+      "description": "Skill",
+      "universalPart": "{259:485}"
+    },
+    {
+      "id": 486,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:486}"
+    },
+    {
+      "id": 487,
+      "perkType": "Jaunt",
+      "description": "Skill",
+      "universalPart": "{259:487}"
+    },
+    {
+      "id": 488,
+      "perkType": "Critical Funding",
+      "description": "Skill",
+      "universalPart": "{259:488}"
+    },
+    {
+      "id": 489,
+      "perkType": "Exposed Core",
+      "description": "Skill",
+      "universalPart": "{259:489}"
+    },
+    {
+      "id": 490,
+      "perkType": "MeltDown",
+      "description": "Skill",
+      "universalPart": "{259:490}"
+    },
+    {
+      "id": 491,
+      "perkType": "Refraction",
+      "description": "Skill",
+      "universalPart": "{259:491}"
+    },
+    {
+      "id": 492,
+      "perkType": "Excited State",
+      "description": "Skill",
+      "universalPart": "{259:492}"
+    },
+    {
+      "id": 493,
+      "perkType": "Accretion",
+      "description": "Skill",
+      "universalPart": "{259:493}"
+    },
+    {
+      "id": 494,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{259:494}"
+    },
+    {
+      "id": 495,
+      "perkType": "Distribution Function",
+      "description": "Skill",
+      "universalPart": "{259:495}"
+    },
+    {
+      "id": 496,
+      "perkType": "Pencils Down",
+      "description": "Skill",
+      "universalPart": "{259:496}"
+    },
+    {
+      "id": 497,
+      "perkType": "Annihilation",
+      "description": "Skill",
+      "universalPart": "{259:497}"
+    },
+    {
+      "id": 498,
+      "perkType": "Practical Applications",
+      "description": "Skill",
+      "universalPart": "{259:498}"
+    },
+    {
+      "id": 499,
+      "perkType": "Carry the One",
+      "description": "Skill",
+      "universalPart": "{259:499}"
+    },
+    {
+      "id": 500,
+      "perkType": "Core Sample",
+      "description": "Skill",
+      "universalPart": "{259:500}"
+    },
+    {
+      "id": 501,
+      "perkType": "Break the Ice",
+      "description": "Skill",
+      "universalPart": "{259:501}"
+    },
+    {
+      "id": 502,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:502}"
+    },
+    {
+      "id": 503,
+      "perkType": "Opposing Force",
+      "description": "Skill",
+      "universalPart": "{259:503}"
+    },
+    {
+      "id": 504,
+      "perkType": "Cold Welding",
+      "description": "Skill",
+      "universalPart": "{259:504}"
+    },
+    {
+      "id": 505,
+      "perkType": "Poisoned Sun",
+      "description": "Skill",
+      "universalPart": "{259:505}"
+    },
+    {
+      "id": 506,
+      "perkType": "Glow Up",
+      "description": "Skill",
+      "universalPart": "{259:506}"
+    },
+    {
+      "id": 507,
+      "perkType": "Fissile Launcher",
+      "description": "Skill",
+      "universalPart": "{259:507}"
+    },
+    {
+      "id": 508,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:508}"
+    },
+    {
+      "id": 509,
+      "perkType": "Chain Reactor",
+      "description": "Skill",
+      "universalPart": "{259:509}"
+    },
+    {
+      "id": 510,
+      "perkType": "Wasted",
+      "description": "Skill",
+      "universalPart": "{259:510}"
+    },
+    {
+      "id": 511,
+      "perkType": "Dirty Bomb",
+      "description": "Skill",
+      "universalPart": "{259:511}"
+    },
+    {
+      "id": 512,
+      "perkType": "Highly Efficient",
+      "description": "Skill",
+      "universalPart": "{259:512}"
+    },
+    {
+      "id": 513,
+      "perkType": "Mechanical Brilliance",
+      "description": "Skill",
+      "universalPart": "{259:513}"
+    },
+    {
+      "id": 514,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{259:514}"
+    },
+    {
+      "id": 515,
+      "perkType": "Eureka!",
+      "description": "Skill",
+      "universalPart": "{259:515}"
+    },
+    {
+      "id": 516,
+      "perkType": "Rounding Up",
+      "description": "Skill",
+      "universalPart": "{259:516}"
+    },
+    {
+      "id": 517,
+      "perkType": "Alternative Fuel Source",
+      "description": "Skill",
+      "universalPart": "{259:517}"
+    },
+    {
+      "id": 518,
+      "perkType": "QED",
+      "description": "Skill",
+      "universalPart": "{259:518}"
+    },
+    {
+      "id": 519,
+      "perkType": "Concurrence",
+      "description": "Skill",
+      "universalPart": "{259:519}"
+    },
+    {
+      "id": 520,
+      "perkType": "Force Of Will",
+      "description": "Skill",
+      "universalPart": "{259:520}"
+    },
+    {
+      "id": 521,
+      "perkType": "Control Group",
+      "description": "Skill",
+      "universalPart": "{259:521}"
+    },
+    {
+      "id": 522,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:522}"
+    },
+    {
+      "id": 523,
+      "perkType": "Slingshot",
+      "description": "Skill",
+      "universalPart": "{259:523}"
+    },
+    {
+      "id": 524,
+      "perkType": "Freeze Frame",
+      "description": "Skill",
+      "universalPart": "{259:524}"
+    },
+    {
+      "id": 525,
+      "perkType": "Stun Lock",
+      "description": "Skill",
+      "universalPart": "{259:525}"
+    },
+    {
+      "id": 526,
+      "perkType": "Unstable Ice-otope",
+      "description": "Skill",
+      "universalPart": "{259:526}"
+    },
+    {
+      "id": 527,
+      "perkType": "Keep Ice On That",
+      "description": "Skill",
+      "universalPart": "{259:527}"
+    },
+    {
+      "id": 528,
+      "perkType": "Endothermic Reaction",
+      "description": "Skill",
+      "universalPart": "{259:528}"
+    },
+    {
+      "id": 529,
+      "perkType": "Flash Freeze",
+      "description": "Skill",
+      "universalPart": "{259:529}"
+    },
+    {
+      "id": 530,
+      "perkType": "Heat Sink",
+      "description": "Skill",
+      "universalPart": "{259:530}"
+    },
+    {
+      "id": 531,
+      "perkType": "Triple Point",
+      "description": "Skill",
+      "universalPart": "{259:531}"
+    },
+    {
+      "id": 532,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:532}"
+    },
+    {
+      "id": 533,
+      "perkType": "Indiscrete Math",
+      "description": "Skill",
+      "universalPart": "{259:533}"
+    },
+    {
+      "id": 534,
+      "perkType": "Experimentation",
+      "description": "Skill",
+      "universalPart": "{259:534}"
+    },
+    {
+      "id": 535,
+      "perkType": "Domino Effect",
+      "description": "Skill",
+      "universalPart": "{259:535}"
+    },
+    {
+      "id": 536,
+      "perkType": "Sustained Reaction",
+      "description": "Skill",
+      "universalPart": "{259:536}"
+    },
+    {
+      "id": 537,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:537}"
+    },
+    {
+      "id": 538,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{259:538}"
+    },
+    {
+      "id": 539,
+      "perkType": "Gordian Knot",
+      "description": "Skill",
+      "universalPart": "{259:539}"
+    }
+  ]
+}

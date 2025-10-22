@@ -1,0 +1,29 @@
+{
+  "legendary_repkits": [
+    {
+      "universalPart": "{285:1}",
+      "effect": "Heart Pump",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{261:6}",
+      "effect": "Chrome",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{274:1}",
+      "effect": "Time Dialation",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{290:1}",
+      "effect": "Blood Siphon",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{277:1}",
+      "effect": "Pulsometer",
+      "meaning": ""
+    }
+  ]
+}

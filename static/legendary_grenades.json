@@ -1,0 +1,68 @@
+{
+  "legendary_grenades": [
+    {
+      "universalPart": "{278:10}",
+      "effect": "self replicating-jelly"
+    },
+    {
+      "universalPart": "{311:8}",
+      "effect": "death from above-uav"
+    },
+    {
+      "universalPart": "{272:7}",
+      "effect": "swoosh-swarm"
+    },
+    {
+      "universalPart": "{272:9}",
+      "effect": "incessant-chaumurky"
+    },
+    {
+      "universalPart": "{270:6}",
+      "effect": "makeshift-buzzaxe"
+    },
+    {
+      "universalPart": "{270:8}",
+      "effect": "fortified postion-fuse"
+    },
+    {
+      "universalPart": "{267:9}",
+      "effect": "juggler-spinning blade"
+    },
+    {
+      "universalPart": "{267:11}",
+      "effect": "ninja speed-sho kunai"
+    },
+    {
+      "universalPart": "{298:6}",
+      "effect": "spicy-firepot"
+    },
+    {
+      "universalPart": "{298:8}",
+      "effect": "swordfish-slippy"
+    },
+    {
+      "universalPart": "{291:8}",
+      "effect": "waterfall-waterfall"
+    },
+    {
+      "universalPart": "{291:6}",
+      "effect": "got you covered-blockbuster"
+    },
+    {
+      "universalPart": "{311:6}",
+      "effect": "sticky trigger-faulty detonator"
+    },
+    {
+      "universalPart": "{263:10}",
+      "effect": "groove-destructo disco"
+    },
+    {
+      "universalPart": "{263:12}",
+      "effect": "looping-recursive"
+    },
+    {
+      "universalPart": "{278:11}",
+      "effect": "buoyant-buoy"
+    }
+  ]
+}

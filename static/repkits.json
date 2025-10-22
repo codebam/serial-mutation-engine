@@ -1,0 +1,746 @@
+{
+  "repkits": [
+    {
+      "id": 1,
+      "effect": "God Killer",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:1}"
+    },
+    {
+      "id": 2,
+      "effect": "Reel Big Fist",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:2}"
+    },
+    {
+      "id": 3,
+      "effect": "Lifeblood",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:3}"
+    },
+    {
+      "id": 4,
+      "effect": "Airstrike",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:4}"
+    },
+    {
+      "id": 5,
+      "effect": "High Caliber",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:5}"
+    },
+    {
+      "id": 6,
+      "effect": "Gadget Ahoy",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:6}"
+    },
+    {
+      "id": 7,
+      "effect": "Baker",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:7}"
+    },
+    {
+      "id": 8,
+      "effect": "Oscar Mike",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:8}"
+    },
+    {
+      "id": 9,
+      "effect": "Rubberband Man",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:9}"
+    },
+    {
+      "id": 10,
+      "effect": "Deadeye",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:10}"
+    },
+    {
+      "id": 11,
+      "effect": "Action Fist",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:11}"
+    },
+    {
+      "id": 12,
+      "effect": "GooJFC",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:12}"
+    },
+    {
+      "id": 13,
+      "effect": "Atlas E.X.",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:13}"
+    },
+    {
+      "id": 14,
+      "effect": "Atlas Infinum",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:14}"
+    },
+    {
+      "id": 15,
+      "effect": "Trickshot",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:15}"
+    },
+    {
+      "id": 16,
+      "effect": "Jacked",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:16}"
+    },
+    {
+      "id": 17,
+      "effect": "Get Throwin'",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:17}"
+    },
+    {
+      "id": 18,
+      "effect": "Heating Up",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:18}"
+    },
+    {
+      "id": 19,
+      "effect": "Bullets to Spare",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:19}"
+    },
+    {
+      "id": 20,
+      "effect": "Daed-dy O'",
+      "meaning": "Firmware",
+      "description": "",
+      "universalPart": "{243:20}"
+    },
+    {
+      "id": 21,
+      "effect": "Nothing",
+      "meaning": "/",
+      "description": "",
+      "universalPart": "{243:21}"
+    },
+    {
+      "id": 22,
+      "effect": "Shock",
+      "meaning": "Resistance",
+      "description": "+50% Shock Resistance for 10s",
+      "universalPart": "{243:22}"
+    },
+    {
+      "id": 23,
+      "effect": "Radiation",
+      "meaning": "Resistance",
+      "description": "+50% Radiation Resistance for 10s",
+      "universalPart": "{243:23}"
+    },
+    {
+      "id": 24,
+      "effect": "Fire",
+      "meaning": "Resistance",
+      "description": "+50% Fire Resistance for 10s",
+      "universalPart": "{243:24}"
+    },
+    {
+      "id": 25,
+      "effect": "Cryo",
+      "meaning": "Resistance",
+      "description": "+50% Cryo Resistance for 10s",
+      "universalPart": "{243:25}"
+    },
+    {
+      "id": 26,
+      "effect": "Corrosive",
+      "meaning": "Resistance",
+      "description": "+50% Corrosive Resistance for 10s",
+      "universalPart": "{243:26}"
+    },
+    {
+      "id": 27,
+      "effect": "Shock",
+      "meaning": "Immunity",
+      "description": "Shock Immunity for 3s",
+      "universalPart": "{243:27}"
+    },
+    {
+      "id": 28,
+      "effect": "Radiation",
+      "meaning": "Immunity",
+      "description": "Radiation Immunity for 3s",
+      "universalPart": "{243:28}"
+    },
+    {
+      "id": 29,
+      "effect": "Fire",
+      "meaning": "Immunity",
+      "description": "Fire Immunity for 3s",
+      "universalPart": "{243:29}"
+    },
+    {
+      "id": 30,
+      "effect": "Cryo",
+      "meaning": "Immunity",
+      "description": "Cryo Immunity for 3s",
+      "universalPart": "{243:30}"
+    },
+    {
+      "id": 31,
+      "effect": "Corrosive",
+      "meaning": "Immunity",
+      "description": "Corrosive Immunity for 3s",
+      "universalPart": "{243:31}"
+    },
+    {
+      "id": 32,
+      "effect": "Shock Splat",
+      "meaning": "Splat",
+      "description": "",
+      "universalPart": "{243:32}"
+    },
+    {
+      "id": 33,
+      "effect": "Radiation Splat",
+      "meaning": "Splat",
+      "description": "",
+      "universalPart": "{243:33}"
+    },
+    {
+      "id": 34,
+      "effect": "Cryo Splat",
+      "meaning": "Splat",
+      "description": "",
+      "universalPart": "{243:34}"
+    },
+    {
+      "id": 35,
+      "effect": "Corrosive Splat",
+      "meaning": "Splat",
+      "description": "",
+      "universalPart": "{243:35}"
+    },
+    {
+      "id": 36,
+      "effect": "Fire Splat",
+      "meaning": "Splat",
+      "description": "",
+      "universalPart": "{243:36}"
+    },
+    {
+      "id": 37,
+      "effect": "Corrosive Nova",
+      "meaning": "Nova",
+      "description": "",
+      "universalPart": "{243:37}"
+    },
+    {
+      "id": 38,
+      "effect": "Cryo Nova",
+      "meaning": "Nova",
+      "description": "",
+      "universalPart": "{243:38}"
+    },
+    {
+      "id": 39,
+      "effect": "Fire Nova",
+      "meaning": "Nova",
+      "description": "",
+      "universalPart": "{243:39}"
+    },
+    {
+      "id": 40,
+      "effect": "Radiation Nova",
+      "meaning": "Nova",
+      "description": "",
+      "universalPart": "{243:40}"
+    },
+    {
+      "id": 41,
+      "effect": "Shock Nova",
+      "meaning": "Nova",
+      "description": "",
+      "universalPart": "{243:41}"
+    },
+    {
+      "id": 42,
+      "effect": "Shock",
+      "meaning": "Immunity",
+      "description": "Shock Immunity for 3s",
+      "universalPart": "{243:42}"
+    },
+    {
+      "id": 43,
+      "effect": "Radiation",
+      "meaning": "Immunity",
+      "description": "Radiation Immunity for 3s",
+      "universalPart": "{243:43}"
+    },
+    {
+      "id": 44,
+      "effect": "Fire",
+      "meaning": "Immunity",
+      "description": "Fire Immunity for 3s",
+      "universalPart": "{243:44}"
+    },
+    {
+      "id": 45,
+      "effect": "Cryo",
+      "meaning": "Immunity",
+      "description": "Cryo Immunity for 3s",
+      "universalPart": "{243:45}"
+    },
+    {
+      "id": 46,
+      "effect": "Corrosive",
+      "meaning": "Immunity",
+      "description": "Corrosive Immunity for 3s",
+      "universalPart": "{243:46}"
+    },
+    {
+      "id": 47,
+      "effect": "Shock",
+      "meaning": "Resistance",
+      "description": "+50% Shock Resistance for 10s",
+      "universalPart": "{243:47}"
+    },
+    {
+      "id": 48,
+      "effect": "Radiation",
+      "meaning": "Resistance",
+      "description": "+50% Radiation Resistance for 10s",
+      "universalPart": "{243:48}"
+    },
+    {
+      "id": 49,
+      "effect": "Fire",
+      "meaning": "Resistance",
+      "description": "+50% Fire Resistance for 10s",
+      "universalPart": "{243:49}"
+    },
+    {
+      "id": 50,
+      "effect": "Cryo",
+      "meaning": "Resistance",
+      "description": "+50% Cryo Resistance for 10s",
+      "universalPart": "{243:50}"
+    },
+    {
+      "id": 51,
+      "effect": "Corrosive",
+      "meaning": "Resistance",
+      "description": "+50% Corrosive Resistance for 10s",
+      "universalPart": "{243:51}"
+    },
+    {
+      "id": 52,
+      "effect": "Medic",
+      "meaning": "Perk",
+      "description": "Heals nearby allies for 50% of the healing amount",
+      "universalPart": "{243:52}"
+    },
+    {
+      "id": 53,
+      "effect": "Nothing",
+      "meaning": "Perk",
+      "description": "",
+      "universalPart": "{243:53}"
+    },
+    {
+      "id": 54,
+      "effect": "Overshield",
+      "meaning": "Perk",
+      "description": "Overshield of initial heal amount instead of healing",
+      "universalPart": "{243:54}"
+    },
+    {
+      "id": 55,
+      "effect": "Nothing",
+      "meaning": "Perk",
+      "description": "",
+      "universalPart": "{243:55}"
+    },
+    {
+      "id": 56,
+      "effect": "Health Burst",
+      "meaning": "Perk",
+      "description": "Additional burst of half initial value after 6s",
+      "universalPart": "{243:56}"
+    },
+    {
+      "id": 57,
+      "effect": "Power Cycle",
+      "meaning": "Perk",
+      "description": "Instantly start recharging Energy Shield",
+      "universalPart": "{243:57}"
+    },
+    {
+      "id": 58,
+      "effect": "Leech",
+      "meaning": "Perk",
+      "description": "30% Lifesteel for 6s",
+      "universalPart": "{243:58}"
+    },
+    {
+      "id": 59,
+      "effect": "Tank",
+      "meaning": "Perk",
+      "description": "-50% Damage Taken for 6s",
+      "universalPart": "{243:59}"
+    },
+    {
+      "id": 60,
+      "effect": "Everlasting",
+      "meaning": "Perk",
+      "description": "+20% Capacity and Duration",
+      "universalPart": "{243:60}"
+    },
+    {
+      "id": 61,
+      "effect": "Enrage",
+      "meaning": "Perk",
+      "description": "+30% Damage Dealth, +15% Damage Taken for 8s",
+      "universalPart": "{243:61}"
+    },
+    {
+      "id": 62,
+      "effect": "Accelerator",
+      "meaning": "Perk",
+      "description": "+50% Action Skill Cooldown Rate for 8s",
+      "universalPart": "{243:62}"
+    },
+    {
+      "id": 63,
+      "effect": "Elemental Affinity",
+      "meaning": "Perk",
+      "description": "+25% Elemental Damage for 8s",
+      "universalPart": "{243:63}"
+    },
+    {
+      "id": 64,
+      "effect": "Splash Damage",
+      "meaning": "Perk",
+      "description": "+25% Splash Damage for 8s",
+      "universalPart": "{243:64}"
+    },
+    {
+      "id": 65,
+      "effect": "Reload Speed",
+      "meaning": "Perk",
+      "description": "+25% Reload speed for 8s",
+      "universalPart": "{243:65}"
+    },
+    {
+      "id": 66,
+      "effect": "Lower healing, longer cooldown",
+      "meaning": "Perk",
+      "description": "",
+      "universalPart": "{243:66}"
+    },
+    {
+      "id": 67,
+      "effect": "Speed",
+      "meaning": "Perk",
+      "description": "+40% Movement Speed for 6s",
+      "universalPart": "{243:67}"
+    },
+    {
+      "id": 68,
+      "effect": "Go Go Gadget",
+      "meaning": "Perk",
+      "description": "+50% Ordnance Cooldown Rate for 8s",
+      "universalPart": "{243:68}"
+    },
+    {
+      "id": 69,
+      "effect": "Hard Hitter",
+      "meaning": "Perk",
+      "description": "+40% Melee Damage for 8s",
+      "universalPart": "{243:69}"
+    },
+    {
+      "id": 70,
+      "effect": "Overdose",
+      "meaning": "Perk",
+      "description": "+45% All Healing Recieved for 6s",
+      "universalPart": "{243:70}"
+    },
+    {
+      "id": 71,
+      "effect": "Fire Rate",
+      "meaning": "Perk",
+      "description": "+15% Fire Rate for 8s",
+      "universalPart": "{243:71}"
+    },
+    {
+      "id": 72,
+      "effect": "Nothing",
+      "meaning": "Perk",
+      "description": "",
+      "universalPart": "{243:72}"
+    },
+    {
+      "id": 73,
+      "effect": "Amp",
+      "meaning": "Perk",
+      "description": "+200% Damage for next shot",
+      "universalPart": "{243:73}"
+    },
+    {
+      "id": 74,
+      "effect": "Repkit Cooling",
+      "meaning": "Perk",
+      "description": "-33% Repkit Cooldown Duration",
+      "universalPart": "{243:74}"
+    },
+    {
+      "id": 75,
+      "effect": "Medic",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:75}"
+    },
+    {
+      "id": 76,
+      "effect": "Nothing",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:76}"
+    },
+    {
+      "id": 77,
+      "effect": "Overshield",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:77}"
+    },
+    {
+      "id": 78,
+      "effect": "Nothing",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:78}"
+    },
+    {
+      "id": 79,
+      "effect": "Health Burst",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:79}"
+    },
+    {
+      "id": 80,
+      "effect": "Power Cycle",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:80}"
+    },
+    {
+      "id": 81,
+      "effect": "Leech",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:81}"
+    },
+    {
+      "id": 82,
+      "effect": "Tank",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:82}"
+    },
+    {
+      "id": 83,
+      "effect": "Everlasting",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:83}"
+    },
+    {
+      "id": 84,
+      "effect": "Enrage",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:84}"
+    },
+    {
+      "id": 85,
+      "effect": "Accelerator",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:85}"
+    },
+    {
+      "id": 86,
+      "effect": "Elemental Affinity",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:86}"
+    },
+    {
+      "id": 87,
+      "effect": "Splash Damage",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:87}"
+    },
+    {
+      "id": 88,
+      "effect": "Reload Speed",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:88}"
+    },
+    {
+      "id": 89,
+      "effect": "Lower healing, longer cooldown",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:89}"
+    },
+    {
+      "id": 90,
+      "effect": "Speed",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:90}"
+    },
+    {
+      "id": 91,
+      "effect": "Go Go Gadget",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:91}"
+    },
+    {
+      "id": 92,
+      "effect": "Hard Hitter",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:92}"
+    },
+    {
+      "id": 93,
+      "effect": "Overdose",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:93}"
+    },
+    {
+      "id": 94,
+      "effect": "Fire Rate",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:94}"
+    },
+    {
+      "id": 95,
+      "effect": "Nothing",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:95}"
+    },
+    {
+      "id": 96,
+      "effect": "Amp",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:96}"
+    },
+    {
+      "id": 97,
+      "effect": "Repkit Cooling",
+      "meaning": "repeat",
+      "description": "different look",
+      "universalPart": "{243:97}"
+    },
+    {
+      "id": 98,
+      "effect": "Nothing",
+      "meaning": "/",
+      "description": "",
+      "universalPart": "{243:98}"
+    },
+    {
+      "id": 99,
+      "effect": "Nothing",
+      "meaning": "/",
+      "description": "",
+      "universalPart": "{243:99}"
+    },
+    {
+      "id": 100,
+      "effect": "Nothing",
+      "meaning": "/",
+      "description": "",
+      "universalPart": "{243:100}"
+    },
+    {
+      "id": 101,
+      "effect": "Nothing",
+      "meaning": "/",
+      "description": "",
+      "universalPart": "{243:101}"
+    },
+    {
+      "id": 102,
+      "effect": "Nothing",
+      "meaning": "/",
+      "description": "",
+      "universalPart": "{243:102}"
+    },
+    {
+      "id": 103,
+      "effect": "Mini",
+      "meaning": "Perk",
+      "description": "Lower healing amount and cooldown",
+      "universalPart": "{243:103}"
+    },
+    {
+      "id": 104,
+      "effect": "Standard",
+      "meaning": "Perk",
+      "description": "",
+      "universalPart": "{243:104}"
+    },
+    {
+      "id": 105,
+      "effect": "Large",
+      "meaning": "Perk",
+      "description": "More healing, longer cooldown",
+      "universalPart": "{243:105}"
+    },
+    {
+      "id": 106,
+      "effect": "Mega",
+      "meaning": "Perk",
+      "description": "Even more healing, even longer cooldown",
+      "universalPart": "{243:106}"
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "heavy_ordnance_firmware": [
+    {
+      "id": 1,
+      "name": "God Killer",
+      "screenshot": "/",
+      "universalPart": "{244:1}"
+    },
+    {
+      "id": 2,
+      "name": "Reel Big Fist",
+      "screenshot": "/",
+      "universalPart": "{244:2}"
+    },
+    {
+      "id": 3,
+      "name": "Lifeblood",
+      "screenshot": "/",
+      "universalPart": "{244:3}"
+    },
+    {
+      "id": 4,
+      "name": "Airstrike",
+      "screenshot": "/",
+      "universalPart": "{244:4}"
+    },
+    {
+      "id": 5,
+      "name": "High Caliber",
+      "screenshot": "/",
+      "universalPart": "{244:5}"
+    },
+    {
+      "id": 6,
+      "name": "Gadget Ahoy",
+      "screenshot": "/",
+      "universalPart": "{244:6}"
+    },
+    {
+      "id": 7,
+      "name": "Baker",
+      "screenshot": "/",
+      "universalPart": "{244:7}"
+    },
+    {
+      "id": 8,
+      "name": "Oscar Mike",
+      "screenshot": "/",
+      "universalPart": "{244:8}"
+    },
+    {
+      "id": 9,
+      "name": "Rubberband Man",
+      "screenshot": "/",
+      "universalPart": "{244:9}"
+    },
+    {
+      "id": 10,
+      "name": "Dead Eye",
+      "screenshot": "/",
+      "universalPart": "{244:10}"
+    },
+    {
+      "id": 11,
+      "name": "Action Fist",
+      "screenshot": "/",
+      "universalPart": "{244:11}"
+    },
+    {
+      "id": 12,
+      "name": "GOOJFC",
+      "screenshot": "/",
+      "universalPart": "{244:12}"
+    },
+    {
+      "id": 13,
+      "name": "Atlas E.X",
+      "screenshot": "/",
+      "universalPart": "{244:13}"
+    },
+    {
+      "id": 14,
+      "name": "Atlas Infinum",
+      "screenshot": "/",
+      "universalPart": "{244:14}"
+    },
+    {
+      "id": 15,
+      "name": "Trickshot",
+      "screenshot": "/",
+      "universalPart": "{244:15}"
+    },
+    {
+      "id": 16,
+      "name": "Jacked",
+      "screenshot": "/",
+      "universalPart": "{244:16}"
+    },
+    {
+      "id": 17,
+      "name": "Get Throwin'",
+      "screenshot": "/",
+      "universalPart": "{244:17}"
+    },
+    {
+      "id": 18,
+      "name": "Heating Up",
+      "screenshot": "/",
+      "universalPart": "{244:18}"
+    },
+    {
+      "id": 19,
+      "name": "Bullet Spare",
+      "screenshot": "/",
+      "universalPart": "{244:19}"
+    },
+    {
+      "id": 20,
+      "name": "Dead-dy O'",
+      "screenshot": "/",
+      "universalPart": "{244:20}"
+    },
+    {
+      "id": 21,
+      "name": "Rarity",
+      "screenshot": "/",
+      "universalPart": "{244:21}"
+    },
+    {
+      "id": 22,
+      "name": "Rarity",
+      "screenshot": "/",
+      "universalPart": "{244:22}"
+    },
+    {
+      "id": 23,
+      "name": "Rarity",
+      "screenshot": "/",
+      "universalPart": "{244:23}"
+    },
+    {
+      "id": 24,
+      "name": "Rarity",
+      "screenshot": "/",
+      "universalPart": "{244:24}"
+    },
+    {
+      "id": 25,
+      "name": "Rarity",
+      "screenshot": "/",
+      "universalPart": "{244:25}"
+    },
+    {
+      "id": 26,
+      "name": "Risky Boots",
+      "screenshot": "/",
+      "universalPart": "{244:26}"
+    }
+  ]
+}

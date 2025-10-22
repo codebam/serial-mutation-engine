@@ -1,0 +1,84 @@
+{
+  "legendary_shields": [
+    {
+      "universalPart": "{279:1}",
+      "effect": "Nucleosynthesis",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{279:8}",
+      "effect": "Phyosis",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{283:6}",
+      "effect": "Refreshments",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{283:8}",
+      "effect": "Bareknuckle",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{287:6}",
+      "effect": "ShieldBoi",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{287:9}",
+      "effect": "Bininu",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{293:1}",
+      "effect": "Glass",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{293:2}",
+      "effect": "Direct Circuit",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{300:6}",
+      "effect": "Short Circuit",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{300:8}",
+      "effect": "Overshield Eater",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{306:7}",
+      "effect": "Vintage",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{306:8}",
+      "effect": "Shellot Shell",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{312:6}",
+      "effect": "Wings of Grace",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{312:8}",
+      "effect": "Powerplay",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{321:6}",
+      "effect": "Bundled",
+      "meaning": ""
+    },
+    {
+      "universalPart": "{321:9}",
+      "effect": "Sisyphusian",
+      "meaning": ""
+    }
+  ]
+}

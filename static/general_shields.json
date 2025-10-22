@@ -1,0 +1,388 @@
+{
+  "general_shields": [
+    {
+      "id": 1,
+      "effect": "God Killer",
+      "meaning": "Firmware",
+      "universalPart": "{246:[1 1]}"
+    },
+    {
+      "id": 2,
+      "effect": "Reel Big Fist",
+      "meaning": "Firmware",
+      "universalPart": "{246:[2 2]}"
+    },
+    {
+      "id": 3,
+      "effect": "Lifeblood",
+      "meaning": "Firmware",
+      "universalPart": "{246:[3 3]}"
+    },
+    {
+      "id": 4,
+      "effect": "Airstrike",
+      "meaning": "Firmware",
+      "universalPart": "{246:[4 4]}"
+    },
+    {
+      "id": 5,
+      "effect": "High Caliber",
+      "meaning": "Firmware",
+      "universalPart": "{246:[5 5]}"
+    },
+    {
+      "id": 6,
+      "effect": "Gadget Ahoy",
+      "meaning": "Firmware",
+      "universalPart": "{246:[6 6]}"
+    },
+    {
+      "id": 7,
+      "effect": "Baker",
+      "meaning": "Firmware",
+      "universalPart": "{246:[7 7]}"
+    },
+    {
+      "id": 8,
+      "effect": "Oscar Mike",
+      "meaning": "Firmware",
+      "universalPart": "{246:[8 8]}"
+    },
+    {
+      "id": 9,
+      "effect": "Rubberband Man",
+      "meaning": "Firmware",
+      "universalPart": "{246:[9 9]}"
+    },
+    {
+      "id": 10,
+      "effect": "Deadeye",
+      "meaning": "Firmware",
+      "universalPart": "{246:[10 10]}"
+    },
+    {
+      "id": 11,
+      "effect": "Action Fist",
+      "meaning": "Firmware",
+      "universalPart": "{246:[11 11]}"
+    },
+    {
+      "id": 12,
+      "effect": "GooJFC",
+      "meaning": "Firmware",
+      "universalPart": "{246:[12 12]}"
+    },
+    {
+      "id": 13,
+      "effect": "Atlas E.X.",
+      "meaning": "Firmware",
+      "universalPart": "{246:[13 13]}"
+    },
+    {
+      "id": 14,
+      "effect": "Atlas Infinum",
+      "meaning": "Firmware",
+      "universalPart": "{246:[14 14]}"
+    },
+    {
+      "id": 15,
+      "effect": "Trickshot",
+      "meaning": "Firmware",
+      "universalPart": "{246:[15 15]}"
+    },
+    {
+      "id": 16,
+      "effect": "Jacked",
+      "meaning": "Firmware",
+      "universalPart": "{246:[16 16]}"
+    },
+    {
+      "id": 17,
+      "effect": "Get Throwin'",
+      "meaning": "Firmware",
+      "universalPart": "{246:[17 17]}"
+    },
+    {
+      "id": 18,
+      "effect": "Heating Up",
+      "meaning": "Firmware",
+      "universalPart": "{246:[18 18]}"
+    },
+    {
+      "id": 19,
+      "effect": "Bullets to Spare",
+      "meaning": "Firmware",
+      "universalPart": "{246:[19 19]}"
+    },
+    {
+      "id": 20,
+      "effect": "Daed-dy O'",
+      "meaning": "Firmware",
+      "universalPart": "{246:[20 20]}"
+    },
+    {
+      "id": 21,
+      "effect": "Nothing",
+      "meaning": "/",
+      "universalPart": "{246:[21 21]}"
+    },
+    {
+      "id": 22,
+      "effect": "Corrosive",
+      "meaning": "Elemental Resistance",
+      "universalPart": "{246:[22 22]}"
+    },
+    {
+      "id": 23,
+      "effect": "Cryo",
+      "meaning": "Elemental Resistance",
+      "universalPart": "{246:[23 23]}"
+    },
+    {
+      "id": 24,
+      "effect": "Fire",
+      "meaning": "Elemental Resistance",
+      "universalPart": "{246:[24 24]}"
+    },
+    {
+      "id": 25,
+      "effect": "Rad",
+      "meaning": "Elemental Resistance",
+      "universalPart": "{246:[25 25]}"
+    },
+    {
+      "id": 26,
+      "effect": "Shock",
+      "meaning": "Elemental Resistance",
+      "universalPart": "{246:[26 26]}"
+    },
+    {
+      "id": 27,
+      "effect": "Utility 20%/10%",
+      "meaning": "Perk",
+      "universalPart": "{246:[27 27]}"
+    },
+    {
+      "id": 28,
+      "effect": "Utility 28%/15%",
+      "meaning": "Perk",
+      "universalPart": "{246:[28 28]}"
+    },
+    {
+      "id": 29,
+      "effect": "Turtle 40%/10%",
+      "meaning": "Perk",
+      "universalPart": "{246:[29 29]}"
+    },
+    {
+      "id": 30,
+      "effect": "Turtle 65%/15%",
+      "meaning": "Perk",
+      "universalPart": "{246:[30 30]}"
+    },
+    {
+      "id": 31,
+      "effect": "Sturdy 5%/20%",
+      "meaning": "Perk",
+      "universalPart": "{246:[31 31]}"
+    },
+    {
+      "id": 32,
+      "effect": "Sturdy 8%/28%",
+      "meaning": "Perk",
+      "universalPart": "{246:[32 32]}"
+    },
+    {
+      "id": 33,
+      "effect": "Spike Thorns effect damage",
+      "meaning": "Perk",
+      "universalPart": "{246:[33 33]}"
+    },
+    {
+      "id": 34,
+      "effect": "Spike Thorns effect damage x2",
+      "meaning": "Perk",
+      "universalPart": "{246:[34 34]}"
+    },
+    {
+      "id": 35,
+      "effect": "Resistance 17%",
+      "meaning": "Perk",
+      "universalPart": "{246:[35 35]}"
+    },
+    {
+      "id": 36,
+      "effect": "Resistance 22%",
+      "meaning": "Perk",
+      "universalPart": "{246:[36 36]}"
+    },
+    {
+      "id": 37,
+      "effect": "Reflect 15%",
+      "meaning": "Perk",
+      "universalPart": "{246:[37 37]}"
+    },
+    {
+      "id": 38,
+      "effect": "Reflect 30%",
+      "meaning": "Perk",
+      "universalPart": "{246:[38 38]}"
+    },
+    {
+      "id": 39,
+      "effect": "Power Booster 20%/10%",
+      "meaning": "Perk",
+      "universalPart": "{246:[39 39]}"
+    },
+    {
+      "id": 40,
+      "effect": "Power Booster 30%/20%",
+      "meaning": "Perk",
+      "universalPart": "{246:[40 40]}"
+    },
+    {
+      "id": 41,
+      "effect": "Pinpoint 20%/20%/25%",
+      "meaning": "Perk",
+      "universalPart": "{246:[41 41]}"
+    },
+    {
+      "id": 42,
+      "effect": "Pinpoint 28%/28%/35%",
+      "meaning": "Perk",
+      "universalPart": "{246:[42 42]}"
+    },
+    {
+      "id": 43,
+      "effect": "Overshield 10%",
+      "meaning": "Perk",
+      "universalPart": "{246:[43 43]}"
+    },
+    {
+      "id": 44,
+      "effect": "Overshield 15%",
+      "meaning": "Perk",
+      "universalPart": "{246:[44 44]}"
+    },
+    {
+      "id": 45,
+      "effect": "Mag Booster 10%",
+      "meaning": "Perk",
+      "universalPart": "{246:[45 45]}"
+    },
+    {
+      "id": 46,
+      "effect": "Mag Booster 15%",
+      "meaning": "Perk",
+      "universalPart": "{246:[46 46]}"
+    },
+    {
+      "id": 47,
+      "effect": "Health Booster 20%/15%",
+      "meaning": "Perk",
+      "universalPart": "{246:[47 47]}"
+    },
+    {
+      "id": 48,
+      "effect": "Health Booster 30%/25%",
+      "meaning": "Perk",
+      "universalPart": "{246:[48 48]}"
+    },
+    {
+      "id": 49,
+      "effect": "Healthy 10%",
+      "meaning": "Perk",
+      "universalPart": "{246:[49 49]}"
+    },
+    {
+      "id": 50,
+      "effect": "Healthy 25%",
+      "meaning": "Perk",
+      "universalPart": "{246:[50 50]}"
+    },
+    {
+      "id": 51,
+      "effect": "Evasive 5%/10%",
+      "meaning": "Perk",
+      "universalPart": "{246:[51 51]}"
+    },
+    {
+      "id": 52,
+      "effect": "Evasive 8%/15%",
+      "meaning": "Perk",
+      "universalPart": "{246:[52 52]}"
+    },
+    {
+      "id": 53,
+      "effect": "Capacity 25%",
+      "meaning": "Perk",
+      "universalPart": "{246:[53 53]}"
+    },
+    {
+      "id": 54,
+      "effect": "Capacity 50%",
+      "meaning": "Perk",
+      "universalPart": "{246:[54 54]}"
+    },
+    {
+      "id": 55,
+      "effect": "Adaptive 8%/20%",
+      "meaning": "Perk",
+      "universalPart": "{246:[55 55]}"
+    },
+    {
+      "id": 56,
+      "effect": "Adaptive 16%/40%",
+      "meaning": "Perk",
+      "universalPart": "{246:[56 56]}"
+    },
+    {
+      "id": 57,
+      "effect": "Absorb 15%",
+      "meaning": "Perk",
+      "universalPart": "{246:[57 57]}"
+    },
+    {
+      "id": 58,
+      "effect": "Absorb 30%",
+      "meaning": "Perk",
+      "universalPart": "{246:[58 58]}"
+    },
+    {
+      "id": 59,
+      "effect": "Nothing",
+      "meaning": "/",
+      "universalPart": "{246:[59 59]}"
+    },
+    {
+      "id": 60,
+      "effect": "Nothing",
+      "meaning": "/",
+      "universalPart": "{246:[60 60]}"
+    },
+    {
+      "id": 61,
+      "effect": "Nothing",
+      "meaning": "/",
+      "universalPart": "{246:[61 61]}"
+    },
+    {
+      "id": 62,
+      "effect": "Nothing",
+      "meaning": "/",
+      "universalPart": "{246:[62 62]}"
+    },
+    {
+      "id": 63,
+      "effect": "Nothing",
+      "meaning": "/",
+      "universalPart": "{246:[63 63]}"
+    },
+    {
+      "id": 64,
+      "effect": "Risky Boots",
+      "meaning": "Firmware",
+      "universalPart": "{246:[64 64]}"
+    }
+  ]
+}

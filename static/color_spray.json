@@ -1,0 +1,44 @@
+{
+  "color_spray": [
+    {
+      "elements": ["cryo", "incendiary", "shock"],
+      "universalPart": "{9:1}"
+    },
+    {
+      "elements": ["cryo", "incendiary", "radiation"],
+      "universalPart": "{9:16}"
+    },
+    {
+      "elements": ["corrosive", "radiation", "shock"],
+      "universalPart": "{9:71}"
+    },
+    {
+      "elements": ["corrosive", "incendiary", "shock"],
+      "universalPart": "{9:72}"
+    },
+    {
+      "elements": ["corrosive", "incendiary", "radiation"],
+      "universalPart": "{9:73}"
+    },
+    {
+      "elements": ["corrosive", "cryo", "shock"],
+      "universalPart": "{9:74}"
+    },
+    {
+      "elements": ["corrosive", "cryo", "radiation"],
+      "universalPart": "{9:75}"
+    },
+    {
+      "elements": ["corrosive", "cryo", "incendiary"],
+      "universalPart": "{9:76}"
+    },
+    {
+      "elements": ["incendiary", "radiation", "shock"],
+      "universalPart": "{9:77}"
+    },
+    {
+      "elements": ["cryo", "radiation", "shock"],
+      "universalPart": "{9:84}"
+    }
+  ]
+}
