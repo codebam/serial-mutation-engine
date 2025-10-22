@@ -51,7 +51,8 @@ self.onmessage = async function (e) {
                                 name: item.effect || item.perkType || item.name,
                                 subType,
                                 index,
-                                fileName: name
+                                fileName: name,
+                                code: item.universalPart
                             };
                             allParts.push(partInfo);
                             if (!partMap.has(subType)) partMap.set(subType, new Map());
@@ -69,7 +70,8 @@ self.onmessage = async function (e) {
                                 name: item.effect || item.perkType || item.name,
                                 subType,
                                 index,
-                                fileName: name
+                                fileName: name,
+                                code: item.universalPart
                             };
                             allParts.push(partInfo);
                             if (!partMap.has(subType)) partMap.set(subType, new Map());
@@ -88,7 +90,8 @@ self.onmessage = async function (e) {
                             name: item.effect || item.perkType || item.name,
                             subType,
                             index,
-                            fileName: name
+                            fileName: name,
+                            code: item.universalPart
                         };
                         allParts.push(partInfo);
                         if (!partMap.has(subType)) partMap.set(subType, new Map());
@@ -108,7 +111,8 @@ self.onmessage = async function (e) {
                                     name: item.perk || item.partName,
                                     subType,
                                     index,
-                                    fileName: name
+                                    fileName: name,
+                                    code: item.universalPart
                                 };
                                 allParts.push(partInfo);
                                 if (!partMap.has(subType)) partMap.set(subType, new Map());

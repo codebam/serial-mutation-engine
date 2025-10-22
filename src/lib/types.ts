@@ -16,6 +16,7 @@ export interface Part {
     index: number;
     value?: number;
     values?: { type: number, value: number }[];
+    code?: string;
 }
 
 export interface Block {
