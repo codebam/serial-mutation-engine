@@ -24,49 +24,23 @@ function encodeBase85(bytes: Uint8Array): string {
         encoded += block;
     }
 
-    if (i < bytes.length) {
-        const remaining = bytes.length - i;
-        let value = 0;
-
-        if (remaining >= 1) {
-            value |= bytes[i] << 24;
-        }
-        if (remaining >= 2) {
-            value |= bytes[i + 1] << 16;
-        }
-        if (remaining >= 3) {
-            value |= bytes[i + 2] << 8;
+    const remaining = bytes.length - i;
+    if (remaining > 0) {
+        const temp = new Uint8Array(4);
+        for (let j = 0; j < remaining; j++) {
+            temp[j] = bytes[i + j];
         }
 
-        // Shift to appropriate position
-        if (remaining === 3) {
-            value <<= 8;
-        } else if (remaining === 2) {
-            value <<= 16;
-        } else if (remaining === 1) {
-            value <<= 24;
-        }
-
-        value >>>= 0; // Ensure unsigned 32-bit
-
+        let value = (((temp[0] << 24) | (temp[1] << 16) | (temp[2] << 8) | temp[3]) >>> 0);
         let block = '';
-        block += BASE85_ALPHABET[Math.floor(value / _85_4)];
-        value %= _85_4;
-        block += BASE85_ALPHABET[Math.floor(value / _85_3)];
-        value %= _85_3;
-
-        if (remaining >= 2) {
-            block += BASE85_ALPHABET[Math.floor(value / _85_2)];
-            value %= _85_2;
-
-            if (remaining === 3) {
-                block += BASE85_ALPHABET[Math.floor(value / _85_1)];
-            }
+        for (let j = 0; j < 5; j++) {
+            block = BASE85_ALPHABET[value % 85] + block;
+            value = Math.floor(value / 85);
         }
-        encoded += block;
+        encoded += block.substring(0, remaining + 1);
     }
 
-    return '@U' + encoded;
+    return encoded;
 }
 
 function mirrorBytes(bytes: Uint8Array): Uint8Array {
