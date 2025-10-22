@@ -41,7 +41,6 @@ const dummyState: State = {
     },
     generateStats: false,
     debugMode: false,
-    bitSize: 6,
 };
 
 
