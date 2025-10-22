@@ -48,6 +48,7 @@
 
     let searchTerm = $state('');
     let copyText = $state('Copy');
+    let copiedEditorId = $state<number | null>(null);
 
     let worker: Worker;
 
@@ -281,6 +282,17 @@
             }
         };
         reader.readAsText(file);
+    }
+
+    async function copyUrl(editor: any) {
+        if (!editor.serial) return;
+        const url = new URL(window.location.href);
+        url.searchParams.set('serial', editor.serial);
+        await navigator.clipboard.writeText(url.toString());
+        copiedEditorId = editor.id;
+        setTimeout(() => {
+            copiedEditorId = null;
+        }, 2000);
     }
 
     function importAndMerge() {
@@ -585,14 +597,14 @@
                     <Accordion {title} open={true}>
                         <SerialEditor serial={editor.serial} onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)} rules={appState.rules} />
                         {#snippet actions()}
-                            <button onclick={(e) => { e.stopPropagation(); e.preventDefault(); toggleMaximize(editor.id); }} class="text-gray-400 hover:text-white transition-colors" aria-label="Maximize/Minimize Editor">
-                                {#if maximizedEditorId === editor.id}
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                            <button onclick={(e) => { e.stopPropagation(); e.preventDefault(); copyUrl(editor); }} class="text-gray-400 hover:text-white transition-colors" aria-label="Copy URL">
+                                {#if copiedEditorId === editor.id}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                     </svg>
                                 {:else}
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v16.5h16.5V3.75H3.75z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25v8.25A2.25 2.25 0 0 1 18 20.25h-8.25A2.25 2.25 0 0 1 7.5 18v-2.25m8.25-8.25h-6.75" />
                                     </svg>
                                 {/if}
                             </button>
@@ -615,6 +627,17 @@
                                         d="M6 18L18 6M6 6l12 12"
                                     ></path>
                                 </svg>
+                            </button>
+                            <button onclick={(e) => { e.stopPropagation(); e.preventDefault(); toggleMaximize(editor.id); }} class="text-gray-400 hover:text-white transition-colors" aria-label="Maximize/Minimize Editor">
+                                {#if maximizedEditorId === editor.id}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                                    </svg>
+                                {:else}
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v16.5h16.5V3.75H3.75z" />
+                                    </svg>
+                                {/if}
                             </button>
                         {/snippet}
                     </Accordion>
