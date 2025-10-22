@@ -83,24 +83,34 @@
         updateSerial();
     }
 
+    let copyUrlText = $state('Copy URL');
+    async function copyUrl() {
+        if (!serial) return;
+        const url = new URL(window.location.href);
+        url.searchParams.set('serial', serial);
+        await navigator.clipboard.writeText(url.toString());
+        copyUrlText = 'Copied!';
+        setTimeout(() => {
+            copyUrlText = 'Copy URL';
+        }, 2000);
+    }
+
 </script>
 
 
 
 <FormGroup label="Serial Input">
-
-    <textarea
-
-        class='w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm min-h-[80px]'
-
-        value={serial}
-
-        oninput={(e) => onSerialUpdate(e.currentTarget.value)}
-
-        placeholder="Paste serial here..."
-
-    ></textarea>
-
+    <div class="flex items-start gap-2">
+        <textarea
+            class='w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm min-h-[80px]'
+            value={serial}
+            oninput={(e) => onSerialUpdate(e.currentTarget.value)}
+            placeholder="Paste serial here..."
+        ></textarea>
+        <button onclick={copyUrl} class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all h-full">
+            {copyUrlText}
+        </button>
+    </div>
 </FormGroup>
 
 
