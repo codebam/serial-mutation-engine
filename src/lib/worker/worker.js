@@ -4,6 +4,7 @@ self.postMessage({ type: 'worker_loaded' });
 import { parseSerial } from '../parser';
 import { encodeSerial } from '../encoder';
 import * as coreMutations from '../mutations';
+import { mergeSerial } from '../mutations';
 
 self.onmessage = async function (e) {
     const { type, payload } = e.data;
@@ -66,10 +67,7 @@ self.onmessage = async function (e) {
 
                 if (!seenSerials.has(serial)) {
                     seenSerials.add(serial);
-                    generatedSerials.push({
-                        serial: serial,
-                        slot: generatedSerials.length
-                    });
+                    generatedSerials.push(serial);
                     selectedRepoSerials.push(serial);
                 }
                 if (i > 0 && i % 500 === 0)
@@ -79,18 +77,17 @@ self.onmessage = async function (e) {
                     });
             }
 
-            const fullLines = ['state:', '  inventory:', '    items:', '      backpack:'];
-            generatedSerials.forEach((item) => {
-                fullLines.push(`        slot_${item.slot}:`);
-                fullLines.push(`          serial: '${item.serial}'`);
-            });
-            const fullYaml = fullLines.join('\n');
+            let finalYaml = config.baseYaml;
+            for (const serial of generatedSerials) {
+                const result = mergeSerial(finalYaml, serial);
+                finalYaml = result.newYaml;
+            }
 
             self.postMessage({
                 type: 'complete',
                 payload: {
-                    yaml: fullYaml,
-                    truncatedYaml: fullYaml, // For now, no truncation
+                    yaml: finalYaml,
+                    truncatedYaml: finalYaml, // For now, no truncation
                     uniqueCount: generatedSerials.length,
                     totalRequested: totalRequested,
                 }
