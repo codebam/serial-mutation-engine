@@ -184,6 +184,7 @@
             repository: appState.repository,
             counts: JSON.parse(JSON.stringify(appState.counts)),
             rules: JSON.parse(JSON.stringify(appState.rules)),
+            difficulties: JSON.parse(JSON.stringify(appState.difficulties)),
             gpuBatchSize: 250000,
             generateStats: appState.generateStats,
             debugMode: appState.debugMode,
