@@ -1,6 +1,7 @@
 
 <script lang="ts">
-	let { value, onUpdate, onDelete, color = 'bg-gray-100', isVarInt = false, selected = false, onClick = () => {} } = $props<{
+    import { getValueColor } from '$lib/colors';
+	let { value, onUpdate, onDelete, color, isVarInt = false, selected = false, onClick = () => {} } = $props<{
 		value: number;
 		onUpdate: (newValue: number) => void;
         onDelete?: () => void;
@@ -45,6 +46,8 @@
         }
     }
 
+    const colorClass = color ? color : getValueColor(value);
+
 </script>
 
 <input
@@ -53,6 +56,6 @@
 	onchange={handleChange}
     oncontextmenu={handleDelete}
     onclick={onClick}
-	class={`border p-2.5 cursor-move min-w-[40px] text-center ${color} text-black w-16 rounded-md ${selected ? 'border-blue-500' : 'border-gray-300'}`}
+	class={`border p-2.5 cursor-move min-w-[40px] text-center ${colorClass} text-black w-16 rounded-md ${selected ? 'border-blue-500' : 'border-gray-300'}`}
 />
 

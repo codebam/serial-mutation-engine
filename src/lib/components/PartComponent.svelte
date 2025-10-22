@@ -40,7 +40,11 @@
 </script>
 
 <div class="flex items-center gap-2">
-    <Asset value={part.index} onUpdate={updateIndex} color="bg-blue-200" />
+    {#if part.subType === SUBTYPE_NONE}
+        <Asset value={part.index} onUpdate={updateIndex} />
+    {:else}
+        <Asset value={part.index} onUpdate={updateIndex} color="bg-blue-200" />
+    {/if}
     {#if part.subType === SUBTYPE_INT}
         <Asset value={part.value ?? 0} onUpdate={updateValue} color="bg-green-200" />
     {:else if part.subType === SUBTYPE_LIST}
