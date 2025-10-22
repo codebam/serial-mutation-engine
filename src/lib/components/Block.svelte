@@ -3,7 +3,7 @@
     import type { Block, Part } from '$lib/types';
     import BlockContent from './BlockContent.svelte';
 
-    let { block, onDelete, onAddBefore, onAddAfter, onUpdateBlockValue, onUpdatePart, onUpdatePartList, index } = $props<{
+    let { block, onDelete, onAddBefore, onAddAfter, onUpdateBlockValue, onUpdatePart, onUpdatePartList, index, ondragstart } = $props<{
         block: Block;
         onDelete: () => void;
         onAddBefore: () => void;
@@ -12,17 +12,14 @@
         onUpdatePart: (part: Part) => void;
         onUpdatePartList: (part: Part, index: number, value: number) => void;
         index: number;
+        ondragstart: (event: DragEvent) => void;
     }>();
 
     let showJson = $state(false);
 
-    function handleDragStart(event: DragEvent) {
-        event.dataTransfer!.setData('text/plain', index.toString());
-    }
-
 </script>
 
-<div class="flex flex-col gap-2 p-2 bg-gray-800 border border-gray-700 rounded-md" draggable="true" ondragstart={handleDragStart} role="listitem">
+<div class="flex flex-col gap-2 p-2 bg-gray-800 border border-gray-700 rounded-md" draggable="true" ondragstart={ondragstart} role="listitem">
     <div class="flex items-center gap-2">
         <button class="text-gray-400 hover:text-white">☰</button>
         <BlockContent {block} {onUpdateBlockValue} {onUpdatePart} {onUpdatePartList} />
