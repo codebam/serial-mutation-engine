@@ -111,13 +111,17 @@
     <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
         <div class="flex justify-between items-center">
             <h4 class="font-semibold">Deserialized</h4>
+            <button class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-600 rounded-md hover:bg-gray-500 transition-all" onclick={() => navigator.clipboard.writeText(customString)}>Copy</button>
         </div>
         <textarea class="text-xs text-gray-300 bg-gray-900 p-2 rounded-md mt-2 w-full h-24 font-mono" bind:value={customString}></textarea>
     </div>
     <div class="p-4 bg-gray-800 border border-gray-700 rounded-md">
         <div class="flex justify-between items-center">
             <h4 class="font-semibold">JSON</h4>
-            <button class="py-1 px-3 text-sm font-medium text-gray-300 bg-blue-700 rounded-md hover:bg-blue-600 transition-all" onclick={updateParsedFromJson}>Apply</button>
+            <div>
+                <button class="py-1 px-3 text-sm font-medium text-gray-300 bg-blue-700 rounded-md hover:bg-blue-600 transition-all mr-2" onclick={updateParsedFromJson}>Apply</button>
+                <button class="py-1 px-3 text-sm font-medium text-gray-300 bg-gray-600 rounded-md hover:bg-gray-500 transition-all" onclick={() => navigator.clipboard.writeText(jsonString)}>Copy</button>
+            </div>
         </div>
         <textarea class="text-xs text-gray-300 bg-gray-900 p-2 rounded-md mt-2 w-full h-48 font-mono" bind:value={jsonString}></textarea>
     </div>

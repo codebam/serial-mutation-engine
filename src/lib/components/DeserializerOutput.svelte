@@ -73,7 +73,15 @@
 </script>
 
 <div class="p-4 border border-gray-700 rounded-lg bg-gray-800/50" on:dragover={handleDragOver} role="list">
-    <h3 class="text-lg font-semibold mb-4">Deserialized Output</h3>
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">Deserialized Output</h3>
+        <button
+            class="bg-gray-600 hover:bg-gray-500 text-gray-200 px-3 py-1 rounded-md"
+            on:click={() => navigator.clipboard.writeText(deserializedText)}
+        >
+            Copy
+        </button>
+    </div>
     <div class="flex flex-wrap gap-2">
         {#each items as item, i (item.value + i)}
             <div
