@@ -51,42 +51,46 @@ function toCustomFormat(p: Serial): string {
     }
 
     let result = '';
-    for (let i = 0; i < parts.length; i++) {
-        const currentPart = parts[i];
-        const nextPart = i < parts.length - 1 ? parts[i+1] : null;
+	for (let i = 0; i < parts.length; i++) {
+		result += parts[i];
+		if (i < parts.length - 1) {
+			const current = parts[i];
+			const next = parts[i + 1];
 
-        const currentIsSeparator = currentPart === '|' || currentPart === ',';
-        const nextIsSeparator = nextPart === '|' || nextPart === ',';
-
-        result += currentPart;
-
-        if (i < parts.length - 1) {
-            if (currentIsSeparator && nextIsSeparator) {
-                // No space between consecutive separators
-                continue;
-            } else if (currentIsSeparator) {
-                // Space after a separator if not followed by another separator
-                result += ' ';
-            } else if (!nextIsSeparator) {
-                // Space between non-separator assets
-                result += ' ';
-            }
-        }
-    }
+			if (current === ',') {
+				result += ' ';
+			} else if (current === '|') {
+				if (next !== '|') {
+					result += ' ';
+				}
+			} else if (next === ',' || next === '|') {
+				// no space before separator
+			} else {
+				result += ' ';
+			}
+		}
+	}
 
     return result.trim();
 }
 
 function parseCustomFormat(custom: string): Serial {
-    // This function needs to be updated to handle the new spacing format
-    // For now, it will remain as is, assuming input will be space-separated
-    const tokens = custom.split(' ');
+    const tokens: string[] = [];
+    const regex = /(\d+)|(,)|(\|{1,2})|(\{[^}]+\})/g;
+    let match;
+    while ((match = regex.exec(custom)) !== null) {
+        tokens.push(match[0]);
+    }
+
     const newParsed: Serial = [];
     for (const token of tokens) {
         if (token === '|') {
             newParsed.push({ token: TOK_SEP1 });
-        } else if (token === ',') {
+        } else if (token === ',' ) {
             newParsed.push({ token: TOK_SEP2 });
+        } else if (token === '||') {
+            newParsed.push({ token: TOK_SEP1 });
+            newParsed.push({ token: TOK_SEP1 });
         } else if (token.startsWith('{') && token.endsWith('}')) {
             const content = token.slice(1, -1);
             if (content.includes(':')) {

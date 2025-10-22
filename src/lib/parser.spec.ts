@@ -79,45 +79,10 @@ function toBinary(serial: string): string {
 describe('parser and encoder roundtrip', () => {
     const serials = fs.readFileSync('./serials.txt', 'utf-8').split('\n').filter(s => s.length > 0);
 
-    const serial = '@Ugb)KvFme##l0zsbs!)x(i8_g@R2bA7)E!hF)GO34#KYKZ0R';
-    it.only(`should correctly parse and encode serial #1010`, () => {
+    it.each(serials)('should correctly parse and encode serial %s', (serial) => {
         const parsed = parseSerial(serial);
         const encoded = encodeSerial(parsed);
-
-        console.log('Original Serial:', serial);
-        console.log('Encoded Serial: ', encoded);
-        console.log('Parsed:', JSON.stringify(parsed, null, 2));
-
-        const originalBinary = toBinary(serial);
-        const encodedBinary = toBinary(encoded);
-
-        console.log('Original Binary:', originalBinary);
-        console.log('Encoded Binary: ', encodedBinary);
-
-        // Find the first differing bit
-        let diffIndex = -1;
-        for (let i = 0; i < originalBinary.length; i++) {
-            if (originalBinary[i] !== encodedBinary[i]) {
-                diffIndex = i;
-                break;
-            }
-        }
-        if (diffIndex !== -1) {
-            console.log(`Binary strings differ at index ${diffIndex}`);
-            console.log('Original:', originalBinary.substring(diffIndex - 10, diffIndex + 10));
-            console.log('Encoded: ', encodedBinary.substring(diffIndex - 10, diffIndex + 10));
-        }
-
-
         expect(encoded).toBe(serial);
-    });
-
-    serials.forEach((serial, index) => {
-        it(`should correctly parse and encode serial #${index + 1}`, () => {
-            const parsed = parseSerial(serial);
-            const encoded = encodeSerial(parsed);
-            expect(encoded).toBe(serial);
-        });
     });
 });
 
