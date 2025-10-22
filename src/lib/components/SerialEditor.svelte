@@ -1,177 +1,87 @@
-
-
-
 <script lang="ts">
-
     import { parseSerial } from '$lib/parser';
-
     import { encodeSerial } from '$lib/encoder';
-
     import type { Serial, Block, Part } from '$lib/types';
-
     import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, TOK_SEP2, SUBTYPE_NONE } from '$lib/types';
-
     import FormGroup from './FormGroup.svelte';
-
     import BlockComponent from './Block.svelte';
-
     import AddBlockMenu from './AddBlockMenu.svelte';
-
     import DebugView from './DebugView.svelte';
 
-
-
     let { serial, onSerialUpdate } = $props<{ serial: string; onSerialUpdate: (newSerial: string) => void; }>();
-
-
-
     let parsed: Serial = $state([]);
-
     let error: string | null = $state(null);
 
-
-
     function analyzeSerial() {
-
         if (!serial) {
-
             parsed = [];
-
             error = null;
-
             return;
-
         }
-
         try {
-
             parsed = parseSerial(serial);
-
             error = null;
-
         } catch (e: any) {
-
             parsed = [];
-
             error = e.message;
-
         }
-
     }
-
-
 
     function updateSerial() {
-
         if (parsed) {
-
             try {
-
                 const newSerial = encodeSerial(parsed);
-
                 onSerialUpdate(newSerial);
-
             } catch (e: any) {
-
                 error = e.message;
-
             }
-
         }
-
     }
-
-
 
     $effect(() => {
-
         analyzeSerial();
-
     });
 
-
-
     function onParsedUpdate(newParsed: Serial) {
-
         parsed = newParsed;
-
         updateSerial();
-
     }
-
-
 
     function addBlock(index: number, token: number) {
-
         const newBlock: Block = { token };
-
         if (token === TOK_VARINT || token === TOK_VARBIT) {
-
             newBlock.value = 0;
-
         } else if (token === TOK_PART) {
-
             newBlock.part = { subType: SUBTYPE_NONE, index: 0 };
-
         }
-
         parsed.splice(index, 0, newBlock);
-
         parsed = parsed; // Trigger reactivity
-
         updateSerial();
-
     }
-
-
 
     function deleteBlock(index: number) {
-
         parsed.splice(index, 1);
-
         parsed = parsed; // Trigger reactivity
-
         updateSerial();
-
     }
-
-
 
     let dragIndex = -1;
 
-
-
     function handleDragStart(index: number) {
-
         dragIndex = index;
-
     }
-
-
 
     function handleDrop(event: DragEvent, dropIndex: number) {
-
         event.preventDefault();
-
         if (dragIndex === -1) return;
 
-
-
         const draggedBlock = parsed[dragIndex];
-
         parsed.splice(dragIndex, 1);
-
         parsed.splice(dropIndex, 0, draggedBlock);
-
         parsed = parsed;
-
         dragIndex = -1;
-
         updateSerial();
-
     }
-
-
 
 </script>
 
