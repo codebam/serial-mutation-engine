@@ -1,7 +1,7 @@
 {
 	"name": "@codebam/u-serial",
 	
-	"version": "0.0.5",
+	"version": "0.0.7",
 	      "files": [
 	        "dist",
 	        "README.md"
