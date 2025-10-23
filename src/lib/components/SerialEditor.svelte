@@ -113,7 +113,8 @@
 
     function updateSerial() {
         if (parsed) {
-            worker.postMessage({ type: 'encode_serial', payload: parsed });
+            const plainParsed = JSON.parse(JSON.stringify(parsed));
+            worker.postMessage({ type: 'encode_serial', payload: plainParsed });
         }
     }
 
