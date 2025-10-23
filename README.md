@@ -32,13 +32,13 @@ Encodes a serial object into a Base85 encoded serial string.
 import { encodeSerial } from '@codebam/u-serial';
 
 const serialObject = [
-  { token: 4, value: 1 },
-  { token: 4, value: 100 },
-  { token: 4, value: 2 },
-  { token: 0 },
-  { token: 5, part: { subType: 0, index: 1 } },
-  { token: 5, part: { subType: 0, index: 8 } },
-  { token: 0 }
+	{ token: 4, value: 1 },
+	{ token: 4, value: 100 },
+	{ token: 4, value: 2 },
+	{ token: 0 },
+	{ token: 5, part: { subType: 0, index: 1 } },
+	{ token: 5, part: { subType: 0, index: 8 } },
+	{ token: 0 }
 ];
 const serialString = encodeSerial(serialObject);
 console.log(serialString); // @U4V5A0l*j.E6c
@@ -73,21 +73,25 @@ console.log(serialString); // @U4V5A0l*j.E6c
 You can use the CLI with `npx @codebam/u-serial`.
 
 **Decode a serial:**
+
 ```bash
 npx @codebam/u-serial -d "@U4V5A0l*j.E6c"
 ```
 
 **Encode a deserialized string:**
+
 ```bash
 npx @codebam/u-serial -e "1 100 2 | {1} {8} |"
 ```
 
 **Piping a serial for decoding:**
+
 ```bash
 echo "@U4V5A0l*j.E6c" | npx @codebam/u-serial
 ```
 
 **Piping a deserialized string for encoding:**
+
 ```bash
 echo "1 100 2 | {1} {8} |" | npx @codebam/u-serial -e
 ```
@@ -98,7 +102,10 @@ You can directly use the library in a standalone HTML page via a CDN like `jsdel
 
 ```html
 <script type="module">
-    import { base85_to_deserialized, deserialized_to_base85 } from 'https://cdn.jsdelivr.net/npm/@codebam/u-serial@latest/dist/api.js';
-    // your code goes here
+	import {
+		base85_to_deserialized,
+		deserialized_to_base85
+	} from 'https://cdn.jsdelivr.net/npm/@codebam/u-serial@latest/dist/api.js';
+	// your code goes here
 </script>
 ```

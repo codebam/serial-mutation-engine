@@ -13,9 +13,15 @@ import { getSerialTail } from './utils.js';
  * @param {function(number): void} onProgress - A callback to report progress.
  * @returns {[string, number][]} - A list of [substring, frequency] pairs.
  */
-export function calculateHighValuePartsStats(serials, minPartSize, maxPartSize, onProgress, debugMode) {
+export function calculateHighValuePartsStats(
+	serials,
+	minPartSize,
+	maxPartSize,
+	onProgress,
+	debugMode
+) {
 	if (onProgress) onProgress(0);
-    if (debugMode) console.log('[DEBUG] Starting high-value part stats calculation...');
+	if (debugMode) console.log('[DEBUG] Starting high-value part stats calculation...');
 
 	const tails = serials.map(getSerialTail).filter(Boolean);
 	const frequencyMap = new Map();
@@ -39,9 +45,7 @@ export function calculateHighValuePartsStats(serials, minPartSize, maxPartSize, 
 	}
 
 	// 4. Filter and consolidate the results
-	let parts = [...frequencyMap.entries()]
-		.filter(([, count]) => count > 1)
-		.map(([part]) => part);
+	let parts = [...frequencyMap.entries()].filter(([, count]) => count > 1).map(([part]) => part);
 
 	let changed = true;
 	while (changed) {
@@ -73,7 +77,7 @@ export function calculateHighValuePartsStats(serials, minPartSize, maxPartSize, 
 		finalParts.set(part, frequencyMap.get(part));
 	}
 
-    if (debugMode) console.log(`[DEBUG] Found ${finalParts.size} unique high-value parts.`);
+	if (debugMode) console.log(`[DEBUG] Found ${finalParts.size} unique high-value parts.`);
 
 	if (onProgress) onProgress(100);
 

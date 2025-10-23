@@ -1,9 +1,0 @@
-export var TOK_SEP1 = 0;
-export var TOK_SEP2 = 1;
-export var TOK_VARINT = 4;
-export var TOK_VARBIT = 6;
-export var TOK_PART = 5;
-export var TOK_UNSUPPORTED_111 = 7;
-export var SUBTYPE_NONE = 0;
-export var SUBTYPE_INT = 1;
-export var SUBTYPE_LIST = 2;

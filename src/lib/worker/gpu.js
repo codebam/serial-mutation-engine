@@ -10,7 +10,7 @@ let randomIndex = 0;
  * @param {number} margin
  */
 export function needsRandomNumberGeneration(margin) {
-    return randomIndex >= randomBuffer.length - margin;
+	return randomIndex >= randomBuffer.length - margin;
 }
 
 export function getNextRandom() {
@@ -23,7 +23,7 @@ export function getNextRandom() {
 
 // --- WebGPU & UTILITY FUNCTIONS ---
 export async function setupWebGPU() {
-    console.log('[DEBUG] Attempting to set up WebGPU...');
+	console.log('[DEBUG] Attempting to set up WebGPU...');
 	if (typeof navigator === 'undefined' || !navigator.gpu) {
 		console.warn('WebGPU not supported. Falling back to crypto.getRandomValues.');
 		return null;
@@ -35,7 +35,7 @@ export async function setupWebGPU() {
 			return null;
 		}
 		const device = await adapter.requestDevice();
-        console.log('[DEBUG] WebGPU device successfully initialized.');
+		console.log('[DEBUG] WebGPU device successfully initialized.');
 		gpuDevice = device;
 		return device;
 	} catch (error) {
@@ -75,7 +75,7 @@ export async function generateRandomNumbersOnGPU(count) {
         @group(0) @binding(1) var<uniform> uniforms: Uniforms;
 
         fn pcg(seed_in: u32) -> u32 {
-            var state = seed_in * 747796405u + 2891336453u;
+            let state = seed_in * 747796405u + 2891336453u;
             let word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
             return (word >> 22u) ^ word;
         }
@@ -91,24 +91,24 @@ export async function generateRandomNumbersOnGPU(count) {
 	const shaderModule = gpuDevice.createShaderModule({ code: shaderCode });
 	const pipeline = gpuDevice.createComputePipeline({
 		layout: 'auto',
-		compute: { module: shaderModule, entryPoint: 'main' },
+		compute: { module: shaderModule, entryPoint: 'main' }
 	});
 	const outputBufferSize = count * Float32Array.BYTES_PER_ELEMENT;
 	const outputGPUBuffer = gpuDevice.createBuffer({
 		size: outputBufferSize,
-		usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+		usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
 	});
 	const uniformBuffer = gpuDevice.createBuffer({
 		size: 4,
-		usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+		usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
 	});
 	gpuDevice.queue.writeBuffer(uniformBuffer, 0, new Float32Array([performance.now()]));
 	const bindGroup = gpuDevice.createBindGroup({
 		layout: pipeline.getBindGroupLayout(0),
 		entries: [
 			{ binding: 0, resource: { buffer: outputGPUBuffer } },
-			{ binding: 1, resource: { buffer: uniformBuffer } },
-		],
+			{ binding: 1, resource: { buffer: uniformBuffer } }
+		]
 	});
 	const commandEncoder = gpuDevice.createCommandEncoder();
 	const passEncoder = commandEncoder.beginComputePass();
@@ -119,7 +119,7 @@ export async function generateRandomNumbersOnGPU(count) {
 	passEncoder.end();
 	const readbackBuffer = gpuDevice.createBuffer({
 		size: outputBufferSize,
-		usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+		usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
 	});
 	commandEncoder.copyBufferToBuffer(outputGPUBuffer, 0, readbackBuffer, 0, outputBufferSize);
 	await gpuDevice.queue.submit([commandEncoder.finish()]);

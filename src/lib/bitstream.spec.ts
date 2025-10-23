@@ -1,15 +1,5 @@
-
 import { describe, it, expect } from 'vitest';
-import { Bitstream, UINT4_MIRROR, UINT5_MIRROR } from './bitstream';
-
-// Helper function to convert hex string to Uint8Array
-function hexToBytes(hex: string): Uint8Array {
-    const bytes = new Uint8Array(Math.ceil(hex.length / 2));
-    for (let i = 0; i < hex.length; i += 2) {
-        bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
-    }
-    return bytes;
-}
+import { Bitstream } from './bitstream';
 
 // Go output data (truncated for brevity, will be filled with actual data)
 const goOutput = `
@@ -2016,49 +2006,60 @@ varbit,999,573e
 `;
 
 const goData: { type: string; value: number; hex: string }[] = [];
-goOutput.trim().split('\n').forEach(line => {
-    const [type, value, hex] = line.split(',');
-    goData.push({ type, value: parseInt(value, 10), hex });
-});
+goOutput
+	.trim()
+	.split('\n')
+	.forEach((line) => {
+		const [type, value, hex] = line.split(',');
+		goData.push({ type, value: parseInt(value, 10), hex });
+	});
 
 // Mock Bitstream for testing write functions
 class MockBitstream extends Bitstream {
-    public writtenBits: number[] = [];
+	public writtenBits: number[] = [];
 
-    writeBit(bit: number) {
-        this.writtenBits.push(bit);
-        super.writeBit(bit);
-    }
+	writeBit(bit: number) {
+		this.writtenBits.push(bit);
+		super.writeBit(bit);
+	}
 
-    write(value: number, n: number) {
-        for (let i = 0; i < n; i++) {
-            this.writtenBits.push((value >> (n - 1 - i)) & 1);
-        }
-        super.write(value, n);
-    }
+	write(value: number, n: number) {
+		for (let i = 0; i < n; i++) {
+			this.writtenBits.push((value >> (n - 1 - i)) & 1);
+		}
+		super.write(value, n);
+	}
 }
 
 // Import the functions to test
-import { writeVarint, writeVarbit, getVarintNumBits, getVarbitNumBits } from './encoder';
+import { writeVarint, writeVarbit } from './encoder';
 
 describe('Varint and Varbit Encoding Comparison with Go', () => {
-    goData.filter(d => d.type === 'varint').forEach(data => {
-        it(`should encode varint ${data.value} correctly`, () => {
-            const stream = new MockBitstream(new Uint8Array(10));
-            writeVarint(stream, data.value);
-            const encodedBytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
-            const encodedHex = Array.from(encodedBytes).map(b => b.toString(16).padStart(2, '0')).join('');
-            expect(encodedHex).toBe(data.hex);
-        });
-    });
+	goData
+		.filter((d) => d.type === 'varint')
+		.forEach((data) => {
+			it(`should encode varint ${data.value} correctly`, () => {
+				const stream = new MockBitstream(new Uint8Array(10));
+				writeVarint(stream, data.value);
+				const encodedBytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
+				const encodedHex = Array.from(encodedBytes)
+					.map((b) => b.toString(16).padStart(2, '0'))
+					.join('');
+				expect(encodedHex).toBe(data.hex);
+			});
+		});
 
-    goData.filter(d => d.type === 'varbit').forEach(data => {
-        it(`should encode varbit ${data.value} correctly`, () => {
-            const stream = new MockBitstream(new Uint8Array(10));
-            writeVarbit(stream, data.value);
-            const encodedBytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
-            const encodedHex = Array.from(encodedBytes).map(b => b.toString(16).padStart(2, '0')).join('');
-            expect(encodedHex).toBe(data.hex);
-        });
-    });
+	goData
+		.filter((d) => d.type === 'varbit')
+		.forEach((data) => {
+			it(`should encode varbit ${data.value} correctly`, () => {
+				const stream = new MockBitstream(new Uint8Array(10));
+				writeVarbit(stream, data.value);
+				const encodedBytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
+				const encodedHex = Array.from(encodedBytes)
+					.map((b) => b.toString(16).padStart(2, '0'))
+					.join('');
+				expect(encodedHex).toBe(data.hex);
+			});
+		});
 });
