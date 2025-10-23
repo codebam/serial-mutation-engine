@@ -22,7 +22,7 @@ async function batchOperations() {
     payload.push(operation);
   }
 
-  const batch_payload = payload.slice(0,4000);
+  const batch_payload = payload.slice(1,501);
 
   console.log(`Sending ${batch_payload.length} serials...`)
   // console.log("Payload to be sent:", batch_payload);
@@ -39,14 +39,15 @@ async function batchOperations() {
     }
 
     const executionTime = response.headers.get('X-Execution-Time');
+    const data = await response.json();
+    console.log("Batch Results:", data);
+
     if (executionTime) {
       console.log("API Execution Time:", executionTime);
     } else {
       console.log("X-Execution-Time header not found.");
     }
 
-    const data = await response.json();
-    // console.log("Batch Results:", data);
   } catch (error) {
     console.error("Error during fetch:", error);
   }
