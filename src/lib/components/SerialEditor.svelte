@@ -30,9 +30,10 @@
         loadPartData() { return Promise.resolve(); }
         findPartName(part) { return null; }
         getParts(itemType) { return []; }
+        determineItemType(parsed) { return 'UNKNOWN'; }
     }
 
-    let partService = $state(new DummyPartService());
+    let partService: PartService | DummyPartService = $state(new DummyPartService());
     let worker: Worker | undefined;
 
     if (browser) {
@@ -47,7 +48,7 @@
             const { type, payload } = e.data;
             if (type === 'parsed_serial') {
                 parsed = payload.parsed;
-                itemType = detectItemType(parsed);
+                itemType = partService.determineItemType(payload.parsed);
                 error = payload.error;
             } else if (type === 'encoded_serial') {
                 if (payload.serial !== serial) {
@@ -65,39 +66,6 @@
                 }
             }
         };
-    }
-
-    function detectItemType(parsed: Serial): string {
-        if (!parsed || parsed.length === 0) {
-            return 'UNKNOWN';
-        }
-
-        const firstBlock = parsed[0];
-        if (firstBlock.token === TOK_VARINT) {
-            switch (firstBlock.value) {
-                case 254:
-                    return 'VEX_CLASS_MOD';
-                case 256:
-                    return 'RAFA_CLASS_MOD';
-                case 259:
-                    return 'HARLOWE_CLASS_MOD';
-            }
-        }
-
-        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 244)) {
-            return 'HEAVY_ORDNANCE';
-        }
-        if (parsed.some(b => b.token === TOK_PART && b.part && (b.part.subType === 246 || b.part.subType === 248 || b.part.subType === 237))) {
-            return 'SHIELD';
-        }
-        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 243)) {
-            return 'REPKIT';
-        }
-        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 245)) {
-            return 'GRENADE';
-        }
-
-        return 'UNKNOWN'; // Default to unknown
     }
 
     function analyzeSerial() {
@@ -205,15 +173,15 @@
     <div class="mt-4 p-4 bg-gray-800 border border-gray-700 text-gray-200 rounded-md">
         <p>Detected Item Type: <span class="font-semibold text-green-400">{itemType}</span></p>
         <select onchange={(e) => itemType = e.currentTarget.value} class="mt-2 p-2 bg-gray-700 text-white rounded-md" value={itemType}>
-            <option value="UNKNOWN">Select Item Type</option>
-            <option value="WEAPON">Weapon</option>
-            <option value="SHIELD">Shield</option>
-            <option value="GRENADE">Grenade</option>
-            <option value="REPKIT">Repkit</option>
-            <option value="HEAVY_ORDNANCE">Heavy Ordnance</option>
-            <option value="VEX_CLASS_MOD">Vex Class Mod</option>
-            <option value="RAFA_CLASS_MOD">Rafa Class Mod</option>
-            <option value="HARLOWE_CLASS_MOD">Harlowe Class Mod</option>
+            <option value="Unknown">Select Item Type</option>
+            <option value="Weapon">Weapon</option>
+            <option value="Shield">Shield</option>
+            <option value="Grenade">Grenade</option>
+            <option value="Repkit">Repkit</option>
+            <option value="Heavy Ordnance">Heavy Ordnance</option>
+            <option value="Vex Class Mod">Vex Class Mod</option>
+            <option value="Rafa Class Mod">Rafa Class Mod</option>
+            <option value="Harlowe Class Mod">Harlowe Class Mod</option>
         </select>
     </div>
     <DebugView {parsed} {onParsedUpdate} {isMaximized} />

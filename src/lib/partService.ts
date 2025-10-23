@@ -1,6 +1,8 @@
 import { parsePartString } from './custom_parser';
-import { SUBTYPE_INT, SUBTYPE_LIST, TOK_PART } from './types';
+import { SUBTYPE_INT, SUBTYPE_LIST, TOK_PART, TOK_VARINT, type Serial } from './types';
 import { toCustomFormat } from './custom_parser';
+import { GetKindEnums, Kind, kindToString } from './item-type-lookup';
+
 export class PartService {
     worker: Worker;
     allParts = [];
@@ -64,16 +66,63 @@ export class PartService {
         return this.partMap.get(key);
     }
 
-    getParts(itemType) {
+    getParts(itemType: string) {
         if (itemType === 'UNKNOWN') return [];
-        if (itemType === 'WEAPON') return this.allParts.filter(p => !p.fileName.includes('_mods') && !p.fileName.includes('_shields') && !p.fileName.includes('_repkits') && !p.fileName.includes('_grenades'));
-        if (itemType === 'VEX_CLASS_MOD') return this.allParts.filter(p => p.fileName === 'vex_class_mods');
-        if (itemType === 'RAFA_CLASS_MOD') return this.allParts.filter(p => p.fileName === 'rafa_class_mods');
-        if (itemType === 'HARLOWE_CLASS_MOD') return this.allParts.filter(p => p.fileName === 'harlowe_class_mods');
-        if (itemType === 'HEAVY_ORDNANCE') return this.allParts.filter(p => p.fileName === 'heavy_ordnance_firmware');
-        if (itemType === 'SHIELD') return this.allParts.filter(p => p.fileName.includes('_shields'));
-        if (itemType === 'REPKIT') return this.allParts.filter(p => p.fileName.includes('_repkits'));
-        if (itemType === 'GRENADE') return this.allParts.filter(p => p.fileName.includes('_grenades'));
+        if (itemType.includes('Weapon')) return this.allParts.filter(p => !p.fileName.includes('_mods') && !p.fileName.includes('_shields') && !p.fileName.includes('_repkits') && !p.fileName.includes('_grenades'));
+        if (itemType === 'Vex Class Mod') return this.allParts.filter(p => p.fileName === 'vex_class_mods');
+        if (itemType === 'Rafa Class Mod') return this.allParts.filter(p => p.fileName === 'rafa_class_mods');
+        if (itemType === 'Harlowe Class Mod') return this.allParts.filter(p => p.fileName === 'harlowe_class_mods');
+        if (itemType === 'Heavy Ordnance') return this.allParts.filter(p => p.fileName === 'heavy_ordnance_firmware');
+        if (itemType === 'Shield') return this.allParts.filter(p => p.fileName.includes('_shields'));
+        if (itemType === 'Repkit') return this.allParts.filter(p => p.fileName.includes('_repkits'));
+        if (itemType === 'Grenade') return this.allParts.filter(p => p.fileName.includes('_grenades'));
         return this.allParts;
+    }
+
+    getItemTypeProperties(id: number): { first: string, second: string } | null {
+        const [first, second, found] = GetKindEnums(id);
+        if (found) {
+            return {
+                first: kindToString(first),
+                second: kindToString(second),
+            };
+        }
+        return null;
+    }
+
+    determineItemType(parsed: Serial): string {
+        if (!parsed || parsed.length === 0) {
+            return 'Unknown';
+        }
+
+        const firstBlock = parsed[0];
+        if (firstBlock.token === TOK_VARINT) {
+            const itemTypeProps = this.getItemTypeProperties(firstBlock.value);
+            if (itemTypeProps) {
+                if (itemTypeProps.second === 'Class Mod') {
+                    return `${itemTypeProps.first} ${itemTypeProps.second}`;
+                }
+                const weaponTypes = ['Pistol', 'Shotgun', 'SMG', 'Sniper', 'Assault Rifle', 'Heavy Weapon'];
+                if (weaponTypes.includes(itemTypeProps.second)) {
+                    return `${itemTypeProps.first} ${itemTypeProps.second} (Weapon)`
+                }
+                return `${itemTypeProps.first} ${itemTypeProps.second}`;
+            }
+        }
+
+        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 244)) {
+            return 'Heavy Ordnance';
+        }
+        if (parsed.some(b => b.token === TOK_PART && b.part && (b.part.subType === 246 || b.part.subType === 248 || b.part.subType === 237))) {
+            return 'Shield';
+        }
+        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 243)) {
+            return 'Repkit';
+        }
+        if (parsed.some(b => b.token === TOK_PART && b.part && b.part.subType === 245)) {
+            return 'Grenade';
+        }
+
+        return 'Unknown'; // Default to unknown
     }
 }
