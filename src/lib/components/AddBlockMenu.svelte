@@ -14,9 +14,13 @@
 
     function handleAddPart(event: Event) {
         const select = event.currentTarget as HTMLSelectElement;
-        const [subType, index] = select.value.split(':').map(Number);
+        const [subType, index, value] = select.value.split(':').map(Number);
         if (!isNaN(subType) && !isNaN(index)) {
-            onAdd(TOK_PART, { subType, index });
+            const newPart: Part = { subType, index };
+            if (value !== undefined && !isNaN(value)) {
+                newPart.value = value;
+            }
+            onAdd(TOK_PART, newPart);
         }
         select.value = "";
     }
@@ -28,7 +32,7 @@
     <select class="py-2 px-4 text-sm font-medium text-gray-300 bg-green-700 rounded-md hover:bg-green-600 transition-all max-w-xs" onchange={handleAddPart}>
         <option value="">+PART</option>
         {#each parts as part}
-            <option value={`${part.subType}:${part.index}`}>{part.name} ({part.code})</option>
+            <option value={`${part.subType}:${part.index}${part.value !== undefined ? ':' + part.value : ''}`}>{part.name} ({part.code})</option>
         {/each}
     </select>
     <button class="py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all" onclick={() => onAdd(TOK_SEP1)}>+SEP1</button>
