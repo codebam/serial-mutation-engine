@@ -1,7 +1,10 @@
 {
 	"name": "@codebam/u-serial",
 	
-	"version": "0.0.7",
+	"version": "0.0.10",
+	"bin": {
+		"@codebam/u-serial": "./dist/cli.js"
+	},
 	      "files": [
 	        "dist",
 	        "README.md"
@@ -19,7 +22,7 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
 		"test": "vitest --run",
-		"build:lib": "tsup src/lib/api.ts --format esm --dts --tsconfig tsconfig.lib.json"
+		"build:lib": "tsup src/lib/{api,cli}.ts --format esm --dts --tsconfig tsconfig.lib.json"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.0",
