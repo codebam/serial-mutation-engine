@@ -4,7 +4,7 @@ import { parseSerial} from './parser';
 export function getInitialState(): any {
     return {
         repository: '',
-        seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
+        seed: '',
         counts: {
             appendRandomAsset: 0,
             injectRepeatingPart: 0,
