@@ -41,7 +41,7 @@ async function processOperation(op: Operation): Promise<any> {
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-    const start = Date.now();
+    const start = performance.now(); // Use high-resolution timer
     let response: Response;
     let debug = false;
 
@@ -73,8 +73,9 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     if (debug) {
-        const duration = Date.now() - start;
-        response.headers.set('X-Execution-Time', `${duration}ms`);
+        const durationMs = performance.now() - start;
+        const durationUs = durationMs * 1000;
+        response.headers.set('X-Execution-Time', `${durationUs.toFixed(2)}µs`);
     }
 
     return response;
