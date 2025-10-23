@@ -25,9 +25,6 @@
 		"build:lib": "tsup src/lib/{api,cli}.ts --format esm --dts --tsconfig tsconfig.lib.json"
 	},
 	"devDependencies": {
-		"chart.js": "^4.5.1",
-		"js-yaml": "^4.1.0",
-		"svelte-awesome-icons": "^3.0.0",
 		"@eslint/compat": "^1.4.0",
 		"@eslint/js": "^9.38.0",
 		"@sveltejs/adapter-cloudflare": "^7.2.4",
@@ -44,10 +41,12 @@
 		"@vitest/web-worker": "^3.2.4",
 		"@webgpu/types": "^0.1.66",
 		"autoprefixer": "^10.4.21",
+		"chart.js": "^4.5.1",
 		"eslint": "^9.38.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.12.5",
 		"globals": "^16.4.0",
+		"js-yaml": "^4.1.0",
 		"jsdom": "^27.0.1",
 		"playwright": "^1.56.1",
 		"postcss": "^8.5.6",
@@ -55,6 +54,7 @@
 		"prettier-plugin-svelte": "^3.4.0",
 		"prettier-plugin-tailwindcss": "^0.7.1",
 		"svelte": "^5.41.1",
+		"svelte-awesome-icons": "^3.0.0",
 		"svelte-check": "^4.3.3",
 		"tailwindcss": "^4.1.15",
 		"tsup": "^8.5.0",
@@ -62,9 +62,9 @@
 		"typescript-eslint": "^8.46.2",
 		"vite": "^7.1.11",
 		"vitest": "^3.2.4",
-		"vitest-browser-svelte": "^1.1.0"
+		"vitest-browser-svelte": "^1.1.0",
+		"xxhash-wasm": "^1.1.0"
 	},
-
 	"optionalDependencies": {
 		"@cloudflare/workerd-darwin-64": "1.20251008.0",
 		"@cloudflare/workerd-darwin-arm64": "1.20251008.0",

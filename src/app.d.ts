@@ -7,7 +7,9 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 		interface Platform {
-			env: {};
+			env: {
+				SERIAL_CACHE: KVNamespace;
+			};
 		}
 	}
 

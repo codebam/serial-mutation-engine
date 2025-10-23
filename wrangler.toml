@@ -1,2 +1,6 @@
 name = "serial-mutation-engine"
 pages_build_output_dir = "build"
+
+[[kv_namespaces]]
+binding = "SERIAL_CACHE"
+id = "dd0a482ea34e4d56aaf32390502ffe4e"
