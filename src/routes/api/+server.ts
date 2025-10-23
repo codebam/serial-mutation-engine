@@ -74,8 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (debug) {
         const durationMs = performance.now() - start;
-        const durationUs = durationMs * 1000;
-        response.headers.set('X-Execution-Time', `${durationUs.toFixed(2)}µs`);
+        response.headers.set('X-Execution-Time', `${durationMs.toFixed(10)}ms`);
     }
 
     return response;
