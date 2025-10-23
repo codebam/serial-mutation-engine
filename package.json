@@ -1,6 +1,6 @@
 {
 	"name": "@codebam/u-serial",
-	"version": "0.0.14",
+	"version": "0.0.15",
 	"bin": {
 		"u-serial": "dist/cli.js"
 	},
@@ -25,6 +25,9 @@
 		"build:lib": "tsup src/lib/{api,cli}.ts --format esm --dts --tsconfig tsconfig.lib.json"
 	},
 	"devDependencies": {
+		"chart.js": "^4.5.1",
+		"js-yaml": "^4.1.0",
+		"svelte-awesome-icons": "^3.0.0",
 		"@eslint/compat": "^1.4.0",
 		"@eslint/js": "^9.38.0",
 		"@sveltejs/adapter-cloudflare": "^7.2.4",
@@ -61,11 +64,7 @@
 		"vitest": "^3.2.4",
 		"vitest-browser-svelte": "^1.1.0"
 	},
-	"dependencies": {
-		"chart.js": "^4.5.1",
-		"js-yaml": "^4.1.0",
-		"svelte-awesome-icons": "^3.0.0"
-	},
+
 	"optionalDependencies": {
 		"@cloudflare/workerd-darwin-64": "1.20251008.0",
 		"@cloudflare/workerd-darwin-arm64": "1.20251008.0",
