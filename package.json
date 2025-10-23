@@ -1,18 +1,18 @@
 {
 	"name": "@codebam/u-serial",
-	
-	"version": "0.0.10",
+	"version": "0.0.12",
 	"bin": {
-		"@codebam/u-serial": "./dist/cli.js"
+		"u-serial": "dist/cli.js"
 	},
-	      "files": [
-	        "dist",
-	        "README.md"
-	      ],
-	      "exports": {
-	        ".": "./dist/api.js"
-	      },
-	      "type": "module",	"scripts": {
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"exports": {
+		".": "./dist/api.js"
+	},
+	"type": "module",
+	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",

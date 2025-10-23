@@ -67,3 +67,27 @@ const deserialized = '1 100 2 | {1} {8} |';
 const serialString = deserialized_to_base85(deserialized);
 console.log(serialString); // @U4V5A0l*j.E6c
 ```
+
+## CLI Usage
+
+You can use the CLI with `npx @codebam/u-serial`.
+
+**Decode a serial:**
+```bash
+npx @codebam/u-serial -d "@U4V5A0l*j.E6c"
+```
+
+**Encode a deserialized string:**
+```bash
+npx @codebam/u-serial -e "1 100 2 | {1} {8} |"
+```
+
+**Piping a serial for decoding:**
+```bash
+echo "@U4V5A0l*j.E6c" | npx @codebam/u-serial
+```
+
+**Piping a deserialized string for encoding:**
+```bash
+echo "1 100 2 | {1} {8} |" | npx @codebam/u-serial -e
+```
