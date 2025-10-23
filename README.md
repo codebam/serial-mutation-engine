@@ -91,3 +91,14 @@ echo "@U4V5A0l*j.E6c" | npx @codebam/u-serial
 ```bash
 echo "1 100 2 | {1} {8} |" | npx @codebam/u-serial -e
 ```
+
+## CDN Usage
+
+You can directly use the library in a standalone HTML page via a CDN like `jsdelivr`.
+
+```html
+<script type="module">
+    import { base85_to_deserialized, deserialized_to_base85 } from 'https://cdn.jsdelivr.net/npm/@codebam/u-serial@latest/dist/api.js';
+    // your code goes here
+</script>
+```
