@@ -8,9 +8,9 @@ import {
 } from '$lib/api';
 import xxhash from 'xxhash-wasm';
 
-let h128: (input: string) => Promise<string>;
+let h64: (input: string) => string;
 xxhash().then(hasher => {
-    h128 = hasher.h128;
+    h64 = hasher.h64;
 });
 
 interface Operation {
@@ -37,8 +37,8 @@ async function processOperation(op: Operation, cache?: KVNamespace): Promise<any
     } else {
         switch (op.action) {
             case 'decode':
-                if (cache && h128) {
-                    const hash = await h128(op.content);
+                if (cache && h64) {
+                    const hash = h64(op.content);
                     const cached = await cache.get(hash);
                     if (cached) {
                         return JSON.parse(cached);
