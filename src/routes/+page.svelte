@@ -340,7 +340,7 @@
 <div class="p-4 md:p-8 pt-0 md:pt-0">
     <main class="grid grid-cols-1 xl:grid-cols-3 gap-8 max-w-screen-3xl mx-auto">
         {#if maximizedEditorId === null}
-        <div class="flex flex-col gap-4 xl:order-3">
+        <div class="flex flex-col gap-4 order-3">
             <Accordion title="📦 Repository & Base Seed" open={true}>
                 <FormGroup label="Repository">
                     <textarea
@@ -500,7 +500,7 @@
                 </div>
             </Accordion>
         </div>
-        <div class="flex flex-col gap-4 xl:order-2">
+        <div class="flex flex-col gap-4 order-2">
             <Accordion title="📊 Statistics">
                 <div class="overflow-x-auto">
                     <div id="chartContainer" style="position: relative; height: 400px;">
@@ -590,7 +590,7 @@
             </div>
         </div>
         {/if}
-        <div class="flex flex-col gap-4 h-full {maximizedEditorId !== null ? 'col-span-3' : 'xl:col-span-2 2xl:col-span-1'} xl:order-1">
+        <div class="flex flex-col gap-4 h-full {maximizedEditorId !== null ? 'col-span-3' : 'xl:col-span-2 2xl:col-span-1'} order-1">
             {#each serialEditors as editor (editor.id)}
                 {#if maximizedEditorId === null || maximizedEditorId === editor.id}
                     {@const title = `⚙️ Serial Editor #${editor.id}`}
