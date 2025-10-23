@@ -22,7 +22,7 @@ async function batchOperations() {
     payload.push(operation);
   }
 
-  const batch_payload = payload.slice(1,501);
+  const batch_payload = payload.slice(0,4000);
 
   console.log(`Sending ${batch_payload.length} serials...`)
   // console.log("Payload to be sent:", batch_payload);
@@ -32,6 +32,7 @@ async function batchOperations() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(batch_payload),
+      cache: 'no-store' // Add this line to prevent caching
     });
 
     if (!response.ok) {
