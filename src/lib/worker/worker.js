@@ -5,6 +5,7 @@ import { parseSerial } from '../parser';
 import { encodeSerial } from '../encoder';
 import * as coreMutations from '../mutations';
 import { mergeSerials } from '../mutations';
+import { parseCustomFormat } from '../custom_parser';
 
 self.onmessage = async function (e) {
     const { type, payload } = e.data;
@@ -85,6 +86,31 @@ self.onmessage = async function (e) {
         } catch (e) {
             self.postMessage({ type: 'encoded_serial', payload: { error: e.message } });
         }
+    } else if (type === 'parse_pasted_content') {
+        const content = payload;
+        try {
+            // 1. Try JSON
+            const newParsed = JSON.parse(content);
+            if (Array.isArray(newParsed) && newParsed.every(item => typeof item === 'object' && 'token' in item)) {
+                self.postMessage({ type: 'pasted_content_parsed', payload: { parsed: newParsed } });
+                return;
+            }
+        } catch (e) {
+            // Not JSON
+        }
+
+        // 2. Try Custom Format
+        try {
+            const newParsed = parseCustomFormat(content);
+            if (newParsed && newParsed.length > 0) {
+                self.postMessage({ type: 'pasted_content_parsed', payload: { parsed: newParsed } });
+                return;
+            }
+        } catch (e) {
+            // Not custom format
+        }
+
+        self.postMessage({ type: 'pasted_content_parsed', payload: { error: 'Invalid format. Please paste valid JSON or Custom Format.' } });
     } else if (type === 'generate') {
         const config = e.data.payload;
         try {

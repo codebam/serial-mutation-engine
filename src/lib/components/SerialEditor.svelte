@@ -18,39 +18,13 @@
     let itemType = $state('UNKNOWN');
     let pastedContent = $state('');
 
-    function applyPastedContent() {
-        if (!pastedContent) return;
-
-        // 1. Try JSON
-        try {
-            const newParsed = JSON.parse(pastedContent);
-            if (Array.isArray(newParsed) && newParsed.every(item => typeof item === 'object' && 'token' in item)) {
-                parsed = newParsed;
-                updateSerial();
-                error = null;
-                pastedContent = '';
-                return;
+    $effect(() => {
+        if (pastedContent) {
+            if (worker) {
+                worker.postMessage({ type: 'parse_pasted_content', payload: pastedContent });
             }
-        } catch (e) {
-            // Not JSON, proceed to next format
         }
-
-        // 2. Try Custom Format
-        try {
-            const newParsed = parseCustomFormat(pastedContent);
-            if (newParsed && newParsed.length > 0) {
-                parsed = newParsed;
-                updateSerial();
-                error = null;
-                pastedContent = '';
-                return;
-            }
-        } catch (e) {
-            // Not custom format, fail
-        }
-
-        error = 'Invalid format. Please paste valid JSON or Custom Format.';
-    }
+    });
     
     class DummyPartService {
         loadPartData() { return Promise.resolve(); }
@@ -80,6 +54,15 @@
                     onSerialUpdate(payload.serial);
                 }
                 error = payload.error;
+            } else if (type === 'pasted_content_parsed') {
+                if (payload.error) {
+                    error = payload.error;
+                } else {
+                    parsed = payload.parsed;
+                    updateSerial();
+                    error = null;
+                    pastedContent = '';
+                }
             }
         };
     }
@@ -213,7 +196,6 @@
         bind:value={pastedContent}
         placeholder="Paste deserialized JSON or Custom Format here..."
     ></textarea>
-    <button onclick={applyPastedContent} class="mt-2 py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all">Apply</button>
 </FormGroup>
 
 
