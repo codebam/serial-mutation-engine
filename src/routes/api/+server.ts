@@ -1,73 +1,68 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { api } from '$lib/api';
+import { 
+    base85_to_deserialized, 
+    deserialized_to_base85, 
+    parseSerial, 
+    encodeSerial 
+} from '$lib/api';
 
-interface ApiRequest {
-  method: keyof typeof api | 'batch';
-  params: unknown[];
+interface Operation {
+    content: any;
+    action: 'decode' | 'encode';
+    format?: 'JSON';
 }
 
-interface BatchOperation {
-    method: keyof typeof api;
-    params: unknown[];
+async function processOperation(op: Operation): Promise<any> {
+    if (!op.action || op.content === undefined) {
+        throw new Error('Each operation must include "action" and "content" fields.');
+    }
+
+    if (op.format === 'JSON') {
+        switch (op.action) {
+            case 'decode':
+                return parseSerial(op.content);
+            case 'encode':
+                return encodeSerial(op.content);
+            default:
+                throw new Error(`Invalid action for format JSON: ${op.action}`);
+        }
+    } else {
+        switch (op.action) {
+            case 'decode':
+                return base85_to_deserialized(op.content);
+            case 'encode':
+                return deserialized_to_base85(op.content);
+            default:
+                throw new Error(`Invalid action: ${op.action}`);
+        }
+    }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const body: Partial<ApiRequest> = await request.json();
+    try {
+        const body = await request.json();
 
-    if (!body.method || !Array.isArray(body.params)) {
-      return json({ error: 'Invalid request body, expected { method: "decode" | "encode" | "batch", params: any[] }' }, { status: 400 });
-    }
+        if (Array.isArray(body)) {
+            // Batch processing
+            const promises = body.map(op => processOperation(op));
+            const results = await Promise.all(promises);
+            return json(results);
+        } else if (typeof body === 'object' && body !== null) {
+            // Single operation
+            const result = await processOperation(body as Operation);
+            return json(result);
+        } else {
+            return json({ error: 'Invalid request body. Expecting an object or an array of objects.' }, { status: 400 });
+        }
 
-    switch (body.method) {
-      case 'decode': {
-        if (typeof body.params[0] !== 'string') {
-          return json({ error: 'Invalid params for "decode", expected [string]' }, { status: 400 });
-        }
-        const result = await api.decode(body.params[0]);
-        return json(result);
-      }
-      case 'encode': {
-         if (typeof body.params[0] !== 'object' || body.params[0] === null) {
-          return json({ error: 'Invalid params for "encode", expected [object]' }, { status: 400 });
-        }
-        const result = await api.encode(body.params[0]);
-        return json(result);
-      }
-      case 'batch': {
-        const operations = body.params[0] as BatchOperation[];
-        if (!Array.isArray(operations)) {
-          return json({ error: 'Invalid params for "batch", expected [[{method, params}]]' }, { status: 400 });
-        }
-  
-        const promises = operations.map(op => {
-          if (op.method === 'decode' && typeof op.params[0] === 'string') {
-            return api.decode(op.params[0]);
-          } else if (op.method === 'encode' && typeof op.params[0] === 'object' && op.params[0] !== null) {
-            return api.encode(op.params[0]);
-          } else {
-            return Promise.reject(new Error(`Invalid operation in batch: ${op.method} with params ${JSON.stringify(op.params)}`));
-          }
-        });
-  
-        try {
-          const results = await Promise.all(promises);
-          return json(results);
-        } catch (batchError) {
-            const errorMessage = batchError instanceof Error ? batchError.message : 'An error occurred during batch processing.';
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
+        // Distinguish between user error (e.g., bad input) and server error
+        if (errorMessage.startsWith('Invalid') || errorMessage.startsWith('Each')) {
             return json({ error: errorMessage }, { status: 400 });
         }
-      }
-      default:
-        return json({ error: `Method "${body.method}" not found on API.` }, { status: 404 });
+        console.error(error);
+        return json({ error: errorMessage }, { status: 500 });
     }
-  } catch (error) {
-    if (error instanceof SyntaxError) {
-        return json({ error: 'Invalid JSON in request body.' }, { status: 400 });
-    }
-    console.error(error);
-    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
-    return json({ error: errorMessage }, { status: 500 });
-  }
 };
