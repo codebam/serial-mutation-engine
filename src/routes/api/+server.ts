@@ -72,16 +72,16 @@ export const GET: RequestHandler = async ({ url }) => {
 # Serial Mutation Engine API Usage
 
 This API allows you to decode and encode serial strings. All operations are performed via 
-POST requests to https://serial-mutation-engine.pages.dev/api.
+\`POST\` requests to \`https://serial-mutation-engine.pages.dev/api\`.
 
 ## Request Structure
 
 You can send either a single operation object or an array of operation objects for batch processing.
 
 Each operation object must contain:
-- content: The data to be processed (string for decode, object/array for encode).
-- action: Either "decode" or "encode".
-- format (optional): If set to "JSON", parseSerial (for decode) or encodeSerial (for encode) will be used. Otherwise, base85_to_deserialized or deserialized_to_base85 will be used.
+- \`content\`: The data to be processed (string for decode, object/array for encode).
+- \`action\`: Either "decode" or "encode".
+- \`format\` (optional): If set to "JSON", \`parseSerial\` (for decode) or \`encodeSerial\` (for encode) will be used. Otherwise, \`base85_to_deserialized\` or \`deserialized_to_base85\` will be used.
 
 ---
 
@@ -91,19 +91,21 @@ Each operation object must contain:
 
 #### cURL Example
 
-	# Decode (default format)
-curl -X POST https://serial-mutation-engine.pages.dev/api \
--H "Content-Type: application/json" \
+\`\`\`bash
+# Decode (default format)
+curl -X POST https://serial-mutation-engine.pages.dev/api \\
+-H "Content-Type: application/json" \\
 -d '{"content": "your-base85-string", "action": "decode"}'
 
-	# Encode (JSON format)
-curl -X POST https://serial-mutation-engine.pages.dev/api \
--H "Content-Type: application/json" \
+# Encode (JSON format)
+curl -X POST https://serial-mutation-engine.pages.dev/api \\
+-H "Content-Type: application/json" \\
 -d '{"content": {"some": "object"}, "action": "encode", "format": "JSON"}'
+\`\`\`
 
 #### Python Example
 
-	```python
+\`\`\`python
 import requests
 import json
 
@@ -119,11 +121,11 @@ print("Decode (default):", response.json())
 payload_encode_json = {"content": {"some": "object"}, "action": "encode", "format": "JSON"}
 response = requests.post(api_url, headers=headers, data=json.dumps(payload_encode_json))
 print("Encode (JSON):", response.json())
-	```
+\`\`\`
 
 #### JavaScript Example (Node.js or Browser)
 
-	```javascript
+\`\`\`javascript
 const api_url = "https://serial-mutation-engine.pages.dev/api";
 
 // Decode (default format)
@@ -152,25 +154,26 @@ async function encodeJson() {
 
 decodeDefault();
 encodeJson();
-	```
+\`\`\`
 
 ### 2. Batch Operations (POST Request with Array Body)
 
 #### cURL Example
 
-	```bash
+\`\`\`bash
 curl -X POST https://serial-mutation-engine.pages.dev/api \
 -H "Content-Type: application/json" \
--d '[
+-d 
+'[
   {"content": "some-base85-string", "action": "decode"},
   {"content": {"some": "object"}, "action": "encode", "format": "JSON"},
   {"content": [1,2,3], "action": "encode"}
 ]'
-	```
+\`\`\`
 
 #### Python Example
 
-	```python
+\`\`\`python
 import requests
 import json
 
@@ -185,11 +188,11 @@ batch_payload = [
 
 response = requests.post(api_url, headers=headers, data=json.dumps(batch_payload))
 print("Batch Results:", response.json())
-	```
+\`\`\`
 
 #### JavaScript Example (Node.js or Browser)
 
-	```javascript
+\`\`\`javascript
 const api_url = "https://serial-mutation-engine.pages.dev/api";
 
 async function batchOperations() {
@@ -209,7 +212,7 @@ async function batchOperations() {
 }
 
 batchOperations();
-	```
+\`\`\`
 `;
     return new Response(helpMessage, {
         headers: {
