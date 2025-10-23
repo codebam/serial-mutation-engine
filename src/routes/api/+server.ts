@@ -12,6 +12,7 @@ interface Operation {
     action: 'decode' | 'encode';
     format?: 'JSON';
     debug?: boolean;
+    cache?: boolean;
 }
 
 async function processOperation(op: Operation, cache: KVNamespace | undefined, sha256: ((message: string) => Promise<string>) | undefined): Promise<any> {
@@ -31,7 +32,7 @@ async function processOperation(op: Operation, cache: KVNamespace | undefined, s
     } else {
         switch (op.action) {
             case 'decode':
-                if (cache && sha256) {
+                if (op.cache && cache && sha256) {
                     const hash = await sha256(op.content);
                     const cached = await cache.get(hash);
                     if (cached) {
@@ -57,11 +58,6 @@ export const POST: RequestHandler = async ({ request, platform }) => {
     const cache = platform?.env?.SERIAL_CACHE;
     let sha256: ((message: string) => Promise<string>) | undefined;
 
-    if (cache) {
-        const { sha256: sha256Func } = await import('$lib/crypto');
-        sha256 = sha256Func;
-    }
-
     try {
         const body = await request.json();
 
@@ -70,6 +66,10 @@ export const POST: RequestHandler = async ({ request, platform }) => {
             if (body.some(op => op.debug === true)) {
                 debug = true;
             }
+            if (cache && body.some(op => op.cache === true)) {
+                const { sha256: sha256Func } = await import('$lib/crypto');
+                sha256 = sha256Func;
+            }
             const promises = body.map(op => processOperation(op, cache, sha256));
             const results = await Promise.all(promises);
             response = json(results);
@@ -77,6 +77,10 @@ export const POST: RequestHandler = async ({ request, platform }) => {
             // Single operation
             if ((body as Operation).debug === true) {
                 debug = true;
+            }
+            if (cache && (body as Operation).cache === true) {
+                const { sha256: sha256Func } = await import('$lib/crypto');
+                sha256 = sha256Func;
             }
             const result = await processOperation(body as Operation, cache, sha256);
             response = json(result);
