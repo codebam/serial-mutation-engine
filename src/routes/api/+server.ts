@@ -11,6 +11,7 @@ interface Operation {
     content: any;
     action: 'decode' | 'encode';
     format?: 'JSON';
+    debug?: boolean;
 }
 
 async function processOperation(op: Operation): Promise<any> {
@@ -40,31 +41,43 @@ async function processOperation(op: Operation): Promise<any> {
 }
 
 export const POST: RequestHandler = async ({ request }) => {
+    const start = Date.now();
+    let response: Response;
+    let debug = false;
+
     try {
         const body = await request.json();
 
         if (Array.isArray(body)) {
             // Batch processing
+            if (body.some(op => op.debug === true)) {
+                debug = true;
+            }
             const promises = body.map(op => processOperation(op));
             const results = await Promise.all(promises);
-            return json(results);
+            response = json(results);
         } else if (typeof body === 'object' && body !== null) {
             // Single operation
+            if ((body as Operation).debug === true) {
+                debug = true;
+            }
             const result = await processOperation(body as Operation);
-            return json(result);
+            response = json(result);
         } else {
-            return json({ error: 'Invalid request body. Expecting an object or an array of objects.' }, { status: 400 });
+            throw new Error('Invalid request body. Expecting an object or an array of objects.');
         }
-
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
-        // Distinguish between user error (e.g., bad input) and server error
-        if (errorMessage.startsWith('Invalid') || errorMessage.startsWith('Each')) {
-            return json({ error: errorMessage }, { status: 400 });
-        }
-        console.error(error);
-        return json({ error: errorMessage }, { status: 500 });
+        const status = (errorMessage.startsWith('Invalid') || errorMessage.startsWith('Each')) ? 400 : 500;
+        response = json({ error: errorMessage }, { status });
     }
+
+    if (debug) {
+        const duration = Date.now() - start;
+        response.headers.set('X-Execution-Time', `${duration}ms`);
+    }
+
+    return response;
 };
 
 export const GET: RequestHandler = async ({ url }) => {
