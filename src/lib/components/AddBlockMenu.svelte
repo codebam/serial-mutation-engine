@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, TOK_SEP2 } from '$lib/types';
+	import { TOK_VARINT, TOK_VARBIT, TOK_PART } from '../types';
 	import type { Part } from '$lib/types';
 	import type { PartService } from '$lib/partService';
 

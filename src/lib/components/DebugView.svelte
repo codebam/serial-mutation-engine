@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Serial } from '$lib/types';
-	import { toCustomFormat, parseCustomFormat } from '$lib/custom_parser';
+	import { toCustomFormat } from '$lib/custom_parser';
 
 	let { parsed, onParsedUpdate, isMaximized } = $props<{
 		parsed: Serial;
@@ -22,15 +22,6 @@
 			onParsedUpdate(newParsed);
 		} catch (e) {
 			console.error('Invalid JSON', e);
-		}
-	}
-
-	function updateParsedFromCustom() {
-		try {
-			const newParsed = parseCustomFormat(customString);
-			onParsedUpdate(newParsed);
-		} catch (e) {
-			console.error('Invalid custom format', e);
 		}
 	}
 </script>

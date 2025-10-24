@@ -1,5 +1,5 @@
 import { parsePartString } from './custom_parser';
-import { SUBTYPE_INT, SUBTYPE_LIST, TOK_PART, TOK_VARINT, type Serial } from './types';
+import { TOK_PART, TOK_VARINT, type Serial } from './types';
 import { GetKindEnums, kindToString } from './item-type-lookup';
 
 export class PartService {

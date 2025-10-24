@@ -109,11 +109,6 @@
 		}
 	});
 
-	function onParsedUpdate(newParsed: Serial) {
-		parsed = newParsed;
-		updateSerial();
-	}
-
 	function addBlock(index: number, token: number, part?: Part) {
 		const newBlock: Block = { token };
 		if (token === TOK_VARINT || token === TOK_VARBIT) {
