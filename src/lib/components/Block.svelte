@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Block, Part } from '$lib/types';
 	import BlockContent from './BlockContent.svelte';
+	import type { PartService } from '$lib/partService';
 
 	let {
 		block,

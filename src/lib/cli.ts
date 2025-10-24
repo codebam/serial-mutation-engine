@@ -33,7 +33,7 @@ function run() {
 				const deserialized = base85_to_deserialized(input);
 				console.log(deserialized);
 			} catch (error) {
-				console.error('Error decoding:', error.message);
+				console.error('Error decoding:', (error as Error).message);
 				process.exit(1);
 			}
 		});
@@ -43,7 +43,7 @@ function run() {
 				const serial = deserialized_to_base85(input);
 				console.log(serial);
 			} catch (error) {
-				console.error('Error encoding:', error.message);
+				console.error('Error encoding:', (error as Error).message);
 				process.exit(1);
 			}
 		});

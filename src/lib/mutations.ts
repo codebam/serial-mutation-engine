@@ -1,4 +1,4 @@
-import { TOK_VARINT, TOK_VARBIT } from './types';
+import { TOK_VARINT, TOK_VARBIT, type Serial, type Block, type State } from './types';
 import { parseSerial } from './parser';
 
 export function getInitialState(): State {
@@ -48,7 +48,7 @@ export function getInitialState(): State {
 }
 
 export interface Mutation {
-	(serial: Serial, state?: State): Serial;
+	(serial: Serial, state: State): Serial;
 }
 
 function randomInt(min: number, max: number): number {
@@ -81,7 +81,7 @@ function valuesToBlocks(values: number[]): Block[] {
 }
 
 export const appendRandomAsset: Mutation = (serial, state) => {
-	const difficulty = state.difficulties.appendRandomAsset || 1;
+	const difficulty = state!.difficulties.appendRandomAsset || 1;
 	const numberOfAppends = Math.floor(difficulty);
 	const newBlocks: Block[] = [];
 	for (let i = 0; i < numberOfAppends; i++) {
@@ -118,8 +118,8 @@ function createRandomRepeatingPart(
 export const injectRepeatingPart: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
-	const { minPart, maxPart } = state.rules;
-	const difficulty = state.difficulties.injectRepeatingPart || 1;
+	const { minPart, maxPart } = state!.rules;
+	const difficulty = state!.difficulties.injectRepeatingPart || 1;
 	const assetPool = Array.from(Array(64).keys()); // Full range of assets
 
 	const numberOfParts = 2 + Math.floor(difficulty / 100);
@@ -135,8 +135,8 @@ export const injectRepeatingPart: Mutation = (serial, state) => {
 export const scrambleAndAppendFromRepo: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
-	const { minChunk, maxChunk, targetOffset } = state.rules;
-	const difficulty = state.difficulties.scrambleAndAppendFromRepo || 1;
+	const { minChunk, maxChunk, targetOffset } = state!.rules;
+	const difficulty = state!.difficulties.scrambleAndAppendFromRepo || 1;
 
 	// Segment Scramble
 	const chunkSize = randomInt(minChunk, maxChunk);
@@ -148,9 +148,9 @@ export const scrambleAndAppendFromRepo: Mutation = (serial, state) => {
 	}
 
 	// Append assets from repository
-	const repository = state.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
+	const repository = state!.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
 	if (repository.length > 0) {
-		const otherSerialStr = randomChoice(repository);
+		const otherSerialStr = randomChoice(repository) as string;
 		const otherSerialAssets = blocksToValues(parseSerial(otherSerialStr));
 		const quarterLength = Math.floor(otherSerialAssets.length * 0.25);
 		const lastQuarter = otherSerialAssets.slice(otherSerialAssets.length - quarterLength);
@@ -176,8 +176,8 @@ export const scrambleAndAppendFromRepo: Mutation = (serial, state) => {
 export const injectRepeatingPartFull: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
-	const { minPart, maxPart } = state.rules;
-	const difficulty = state.difficulties.injectRepeatingPartFull || 1;
+	const { minPart, maxPart } = state!.rules;
+	const difficulty = state!.difficulties.injectRepeatingPartFull || 1;
 
 	const assetPool = Array.from(Array(85).keys()); // Full range of assets
 
@@ -193,7 +193,7 @@ export const injectRepeatingPartFull: Mutation = (serial, state) => {
 export const injectRandomAsset: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
-	const difficulty = state.difficulties.injectRandomAsset || 1;
+	const difficulty = state!.difficulties.injectRandomAsset || 1;
 	const numberOfFlips = Math.floor(difficulty);
 
 	for (let i = 0; i < numberOfFlips; i++) {
@@ -206,8 +206,8 @@ export const injectRandomAsset: Mutation = (serial, state) => {
 export const reverseRandomSegments: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
-	const { minChunk, maxChunk } = state.rules;
-	const difficulty = state.difficulties.reverseRandomSegments || 1;
+	const { minChunk, maxChunk } = state!.rules;
+	const difficulty = state!.difficulties.reverseRandomSegments || 1;
 	const numberOfReversals = 1 + Math.floor(difficulty / 100);
 
 	for (let i = 0; i < numberOfReversals; i++) {
@@ -279,11 +279,11 @@ export const injectHighValuePart: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
 
-	const { legendaryChance, minPart, maxPart } = state.rules;
-	const difficulty = state.difficulties.injectHighValuePart || 1;
+	const { legendaryChance, minPart, maxPart } = state!.rules;
+	const difficulty = state!.difficulties.injectHighValuePart || 1;
 	const numberOfInjections = 1 + Math.floor(difficulty / 100);
 
-	const repository = state.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
+	const repository = state!.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
 
 	if (Math.random() < legendaryChance / 100 && repository.length > 0) {
 		const highValueParts = extractHighValueParts(repository, minPart, maxPart);
@@ -301,8 +301,8 @@ export const injectHighValuePart: Mutation = (serial, state) => {
 };
 
 export const crossoverWithRepository: Mutation = (serial, state) => {
-	const repository = state.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
-	const difficulty = state.difficulties.crossoverWithRepository || 1;
+	const repository = state!.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
+	const difficulty = state!.difficulties.crossoverWithRepository || 1;
 	const sliceSize = 5 + Math.floor(difficulty / 100);
 
 	if (repository.length > 0) {
@@ -327,7 +327,7 @@ export const crossoverWithRepository: Mutation = (serial, state) => {
 export const shuffleAssets: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
-	const difficulty = state.difficulties.shuffleAssets || 1;
+	const difficulty = state!.difficulties.shuffleAssets || 1;
 	const shufflePercentage = Math.min(10 + difficulty, 100) / 100;
 	const numberToShuffle = Math.floor(newAssets.length * shufflePercentage);
 
@@ -341,7 +341,7 @@ export const shuffleAssets: Mutation = (serial, state) => {
 export const randomizeAssets: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
-	const difficulty = state.difficulties.randomizeAssets || 1;
+	const difficulty = state!.difficulties.randomizeAssets || 1;
 	const randomizePercentage = Math.min(10 + difficulty, 100) / 100;
 	const numberToRandomize = Math.floor(newAssets.length * randomizePercentage);
 
@@ -384,7 +384,7 @@ export const repeatHighValuePart: Mutation = (serial, state) => {
 		const bitsPerCharacter = 8;
 		const bitsPerAsset = 8;
 		const maxNumberOfRepeats = Math.floor(
-			((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset
+			((state!.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset
 		);
 		const repeatCount = randomInt(1, Math.max(1, maxNumberOfRepeats));
 		const insertIndex = placeBefore ? indexToModify : indexToModify + 1;
@@ -418,7 +418,7 @@ export const repeatHighValuePart: Mutation = (serial, state) => {
 
 	const bitsPerCharacter = 8;
 	const bitsPerAsset = 8;
-	const difficulty = state.difficulties.repeatHighValuePart || 1;
+	const difficulty = state!.difficulties.repeatHighValuePart || 1;
 	const maxNumberOfRepeats = Math.floor(
 		((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset
 	);
@@ -463,9 +463,9 @@ export const appendHighValuePart: Mutation = (serial, state) => {
 	// 2. Determine number of appends.
 	const bitsPerCharacter = 8; // Approximate bits per character in the final encoded string
 	const bitsPerAsset = 8;
-	const difficulty = state.difficulties.appendHighValuePart || 1;
+	const difficulty = state!.difficulties.appendHighValuePart || 1;
 	const maxNumberOfAppends = Math.floor(
-		((state.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset
+		((state!.rules.targetOffset || 0) * bitsPerCharacter) / bitsPerAsset
 	);
 	const numberOfAppends = randomInt(1, Math.max(1, maxNumberOfAppends)) * Math.floor(difficulty);
 
@@ -480,7 +480,7 @@ export const appendHighValuePart: Mutation = (serial, state) => {
 	return valuesToBlocks(newAssets);
 };
 export const appendSelectedAssetMutation: Mutation = (serial, state) => {
-	if (!state.selectedAsset) {
+	if (!state!.selectedAsset) {
 		return serial;
 	}
 	const assetList = blocksToValues(serial);
@@ -490,7 +490,7 @@ export const appendSelectedAssetMutation: Mutation = (serial, state) => {
 	return valuesToBlocks(newAssets);
 };
 export const repeatSelectedAssetMutation: Mutation = (serial, state) => {
-	if (!state.selectedAsset) {
+	if (!state!.selectedAsset) {
 		return serial;
 	}
 	const assetList = blocksToValues(serial);

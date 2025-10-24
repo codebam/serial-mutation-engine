@@ -1,13 +1,37 @@
-console.log('[DEBUG] Worker script loaded.');
-self.postMessage({ type: 'worker_loaded' });
-
 import { parseSerial } from '../parser';
 import { encodeSerial } from '../encoder';
 import * as coreMutations from '../mutations';
-import { mergeSerials } from '../mutations';
+import { mergeSerials, type Mutation } from '../mutations';
 import { parseCustomFormat } from '../custom_parser';
+import type { RawPart, State } from '../types';
 
-self.onmessage = async function (e) {
+interface PartItem {
+	name?: string;
+	perk?: string;
+	partName?: string;
+	effect?: string;
+	perkType?: string;
+	universalPart: string;
+}
+
+interface PartJson {
+	[key: string]: PartItem[] | { [manufacturer: string]: PartItem[] };
+}
+
+const mutationFunctions: Record<string, Mutation> = {};
+for (const key in coreMutations) {
+	const mutation = (coreMutations as any)[key];
+	if (
+		typeof mutation === 'function' &&
+		key !== 'getInitialState' &&
+		key !== 'mergeSerial' &&
+		key !== 'mergeSerials'
+	) {
+		mutationFunctions[key] = mutation;
+	}
+}
+
+self.onmessage = async function (e: MessageEvent<{ type: string; payload: any }>) {
 	const { type, payload } = e.data;
 
 	if (type === 'load_part_data') {
@@ -30,21 +54,21 @@ self.onmessage = async function (e) {
 			'legendary_barrels.json'
 		];
 
-		const allParts = [];
+		const allParts: RawPart[] = [];
 
 		for (const file of files) {
 			const response = await fetch(`/${file}`);
-			const data = await response.json();
+			const data = (await response.json()) as PartJson;
 			const name = file.replace('.json', '');
 
 			const key = Object.keys(data)[0];
-			let items = data[key];
+			const items = data[key];
 
 			if (Array.isArray(items)) {
-				items.forEach((item) => {
+				items.forEach((item: PartItem) => {
 					if (!item.universalPart) return;
 					allParts.push({
-						name: item.effect || item.perkType || item.name,
+						name: item.effect || item.perkType || item.name || '',
 						universalPart: item.universalPart,
 						fileName: name
 					});
@@ -52,10 +76,10 @@ self.onmessage = async function (e) {
 			} else if (typeof items === 'object') {
 				for (const manufacturer in items) {
 					if (Array.isArray(items[manufacturer])) {
-						items[manufacturer].forEach((item) => {
+						items[manufacturer].forEach((item: PartItem) => {
 							if (!item.universalPart) return;
 							allParts.push({
-								name: item.name || item.perk || item.partName,
+								name: item.name || item.perk || item.partName || '',
 								universalPart: item.universalPart,
 								fileName: name
 							});
@@ -76,14 +100,14 @@ self.onmessage = async function (e) {
 			const parsed = parseSerial(payload);
 			self.postMessage({ type: 'parsed_serial', payload: { parsed } });
 		} catch (_e) {
-			self.postMessage({ type: 'parsed_serial', payload: { error: _e.message } });
+			self.postMessage({ type: 'parsed_serial', payload: { error: (_e as Error).message } });
 		}
 	} else if (type === 'encode_serial') {
 		try {
 			const serial = encodeSerial(payload);
 			self.postMessage({ type: 'encoded_serial', payload: { serial } });
 		} catch (_e) {
-			self.postMessage({ type: 'encoded_serial', payload: { error: _e.message } });
+			self.postMessage({ type: 'encoded_serial', payload: { error: (_e as Error).message } });
 		}
 	} else if (type === 'parse_pasted_content') {
 		const content = payload;
@@ -119,9 +143,12 @@ self.onmessage = async function (e) {
 			payload: { error: 'Invalid format. Please paste valid JSON or Custom Format.' }
 		});
 	} else if (type === 'generate') {
-		const config = e.data.payload;
+		const config = e.data.payload as State;
 		try {
-			const totalRequested = Object.values(config.counts).reduce((sum, count) => sum + count, 0);
+			const totalRequested = Object.values(config.counts).reduce(
+				(sum: number, count: number) => sum + (count || 0),
+				0
+			);
 			if (totalRequested === 0) {
 				self.postMessage({
 					type: 'complete',
@@ -135,21 +162,21 @@ self.onmessage = async function (e) {
 			}
 
 			const repository = config.repository || '';
-			const selectedRepoSerials = repository.split(/\s+/).filter((s) => s.startsWith('@U'));
+			const selectedRepoSerials = repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
 
 			if (selectedRepoSerials.length === 0) {
 				selectedRepoSerials.push(config.seed);
 			}
 
-			const serialsToGenerate = [];
+			const serialsToGenerate: { tg: string }[] = [];
 			for (const [mutationName, count] of Object.entries(config.counts)) {
-				for (let i = 0; i < count; i++) {
+				for (let i = 0; i < (count || 0); i++) {
 					serialsToGenerate.push({ tg: mutationName });
 				}
 			}
 
 			const seenSerials = new Set();
-			const generatedSerials = [];
+			const generatedSerials: string[] = [];
 
 			self.postMessage({
 				type: 'progress',
@@ -161,21 +188,22 @@ self.onmessage = async function (e) {
 				let serial = '';
 				let innerAttempts = 0;
 
-				if ((config.difficulties[item.tg] || 1) >= 1000) {
+				if ((config.difficulties[item.tg as keyof typeof config.difficulties] || 1) >= 1000) {
 					continue;
 				}
 
 				do {
 					if (innerAttempts > 0) {
-						config.difficulties[item.tg] =
-							(config.difficulties[item.tg] || 1) + (config.rules.difficultyIncrement || 0.1);
+						config.difficulties[item.tg as keyof typeof config.difficulties] =
+							(config.difficulties[item.tg as keyof typeof config.difficulties] || 1) +
+							(config.rules.difficultyIncrement || 0.1);
 					}
 
 					const parentSerialStr =
 						selectedRepoSerials[Math.floor(Math.random() * selectedRepoSerials.length)];
 					const parentSerial = parseSerial(parentSerialStr);
 
-					const mutationFunc = coreMutations[item.tg];
+					const mutationFunc: Mutation = mutationFunctions[item.tg];
 					if (!mutationFunc) {
 						serial = parentSerialStr;
 						break;
@@ -200,14 +228,14 @@ self.onmessage = async function (e) {
 							processed: i + 1,
 							total: totalRequested,
 							mutation: item.tg,
-							difficulty: config.difficulties[item.tg]
+							difficulty: config.difficulties[item.tg as keyof typeof config.difficulties]
 						}
 					});
 				}
 			}
 
 			self.postMessage({ type: 'progress', payload: { stage: 'merging', processed: 0, total: 1 } });
-			const { newYaml: finalYaml } = mergeSerials(config.baseYaml, generatedSerials);
+			const { newYaml: finalYaml } = mergeSerials(config.baseYaml!, generatedSerials);
 			self.postMessage({ type: 'progress', payload: { stage: 'merging', processed: 1, total: 1 } });
 
 			self.postMessage({
@@ -223,7 +251,7 @@ self.onmessage = async function (e) {
 			console.error('Worker Error:', error);
 			self.postMessage({
 				type: 'error',
-				payload: { message: error.message }
+				payload: { message: (error as Error).message }
 			});
 		}
 	}

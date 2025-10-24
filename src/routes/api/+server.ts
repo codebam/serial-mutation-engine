@@ -6,6 +6,7 @@ import {
 	parseSerial,
 	encodeSerial
 } from '$lib/api';
+import type { Serial } from '$lib/types';
 
 interface Operation {
 	content: string | object;
@@ -27,9 +28,9 @@ async function processOperation(
 	if (op.format === 'JSON') {
 		switch (op.action) {
 			case 'decode':
-				return parseSerial(op.content);
+				return parseSerial(op.content as string);
 			case 'encode':
-				return encodeSerial(op.content);
+				return encodeSerial(op.content as Serial);
 			default:
 				throw new Error(`Invalid action for format JSON: ${op.action}`);
 		}
@@ -37,18 +38,18 @@ async function processOperation(
 		switch (op.action) {
 			case 'decode':
 				if (op.cache && cache && sha256) {
-					const hash = await sha256(op.content);
+					const hash = await sha256(op.content as string);
 					const cached = await cache.get(hash);
 					if (cached) {
 						return JSON.parse(cached);
 					}
-					const result = base85_to_deserialized(op.content);
+					const result = base85_to_deserialized(op.content as string);
 					await cache.put(hash, JSON.stringify(result));
 					return result;
 				}
-				return base85_to_deserialized(op.content);
+				return base85_to_deserialized(op.content as string);
 			case 'encode':
-				return deserialized_to_base85(op.content);
+				return deserialized_to_base85(op.content as string);
 			default:
 				throw new Error(`Invalid action: ${op.action}`);
 		}

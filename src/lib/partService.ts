@@ -1,11 +1,11 @@
 import { parsePartString } from './custom_parser';
-import { TOK_PART, TOK_VARINT, type Serial } from './types';
+import { TOK_PART, TOK_VARINT, type Serial, type PartInfo, type Part } from './types';
 import { GetKindEnums, kindToString } from './item-type-lookup';
 
 export class PartService {
 	worker: Worker;
-	allParts = [];
-	partMap = new Map();
+	allParts: PartInfo[] = [];
+	partMap = new Map<string, PartInfo>();
 
 	isDataLoaded = false;
 
@@ -19,33 +19,33 @@ export class PartService {
 				const { type, payload } = e.data;
 				if (type === 'part_data_loaded') {
 					this.allParts = [];
-					this.partMap = new Map();
+					this.partMap = new Map<string, PartInfo>();
 
-					                    const partKeys = new Set();
-					                    for (const rawPart of payload.rawParts) {
-					                        const partBlock = parsePartString(rawPart.universalPart);
-					                        if (partBlock && partBlock.part) {
-					                            const key = `${partBlock.part.subType}:${partBlock.part.index}:${partBlock.part.value}`;
-					                            if (!partKeys.has(key)) {
-					                                partKeys.add(key);
-					                                const partInfo: any = {
-					                                    name: rawPart.name,
-					                                    subType: partBlock.part.subType,
-					                                    index: partBlock.part.index,
-					                                    fileName: rawPart.fileName,
-					                                    code: rawPart.universalPart
-					                                };
-					                                if (partBlock.part.value !== undefined) {
-					                                    partInfo.value = partBlock.part.value;
-					                                }
-					                                if (partBlock.part.values !== undefined) {
-					                                    partInfo.values = partBlock.part.values;
-					                                }
-					                                this.allParts.push(partInfo);
-					                                this.partMap.set(key, partInfo);
-					                            }
-					                        }
-					                    }					// Sort allParts here
+					const partKeys = new Set();
+					for (const rawPart of payload.rawParts) {
+						const partBlock = parsePartString(rawPart.universalPart);
+						if (partBlock && partBlock.part) {
+							const key = `${partBlock.part.subType}:${partBlock.part.index}:${partBlock.part.value}`;
+							if (!partKeys.has(key)) {
+								partKeys.add(key);
+								const partInfo: PartInfo = {
+									name: rawPart.name,
+									subType: partBlock.part.subType,
+									index: partBlock.part.index,
+									fileName: rawPart.fileName,
+									code: rawPart.universalPart
+								};
+								if (partBlock.part.value !== undefined) {
+									partInfo.value = partBlock.part.value;
+								}
+								if (partBlock.part.values !== undefined) {
+									partInfo.values = partBlock.part.values;
+								}
+								this.allParts.push(partInfo);
+								this.partMap.set(key, partInfo);
+							}
+						}
+					} // Sort allParts here
 					this.allParts.sort((a, b) => {
 						if (a.name && b.name) {
 							return a.name.localeCompare(b.name);
@@ -62,12 +62,12 @@ export class PartService {
 		});
 	}
 
-	findPartInfo(part) {
+	findPartInfo(part: Part): PartInfo | undefined {
 		const key = `${part.subType}:${part.index}:${part.value}`;
 		return this.partMap.get(key);
 	}
 
-	getParts(itemType: string) {
+	getParts(itemType: string): PartInfo[] {
 		if (itemType === 'UNKNOWN') return [];
 		if (itemType.includes('Weapon'))
 			return this.allParts.filter(
@@ -110,16 +110,25 @@ export class PartService {
 
 		const firstBlock = parsed[0];
 		if (firstBlock.token === TOK_VARINT) {
-			const itemTypeProps = this.getItemTypeProperties(firstBlock.value);
-			if (itemTypeProps) {
-				if (itemTypeProps.second === 'Class Mod') {
+			if (firstBlock.value !== undefined) {
+				const itemTypeProps = this.getItemTypeProperties(firstBlock.value);
+				if (itemTypeProps) {
+					if (itemTypeProps.second === 'Class Mod') {
+						return `${itemTypeProps.first} ${itemTypeProps.second}`;
+					}
+					const weaponTypes = [
+						'Pistol',
+						'Shotgun',
+						'SMG',
+						'Sniper',
+						'Assault Rifle',
+						'Heavy Weapon'
+					];
+					if (weaponTypes.includes(itemTypeProps.second)) {
+						return `${itemTypeProps.first} ${itemTypeProps.second} (Weapon)`;
+					}
 					return `${itemTypeProps.first} ${itemTypeProps.second}`;
 				}
-				const weaponTypes = ['Pistol', 'Shotgun', 'SMG', 'Sniper', 'Assault Rifle', 'Heavy Weapon'];
-				if (weaponTypes.includes(itemTypeProps.second)) {
-					return `${itemTypeProps.first} ${itemTypeProps.second} (Weapon)`;
-				}
-				return `${itemTypeProps.first} ${itemTypeProps.second}`;
 			}
 		}
 

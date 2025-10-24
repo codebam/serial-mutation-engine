@@ -9,7 +9,7 @@ export const SUBTYPE_NONE = 0;
 export const SUBTYPE_INT = 1;
 export const SUBTYPE_LIST = 2;
 
-export type SubType = typeof SUBTYPE_NONE | typeof SUBTYPE_INT | typeof SUBTYPE_LIST;
+export type SubType = number;
 
 export interface Part {
 	subType: SubType;
@@ -19,6 +19,12 @@ export interface Part {
 	code?: string;
 }
 
+export interface PartInfo extends Part {
+	name: string;
+	fileName: string;
+	code: string;
+}
+
 export interface Block {
 	token: number;
 	value?: number;
@@ -26,3 +32,78 @@ export interface Block {
 }
 
 export type Serial = Block[];
+
+export interface RawPart {
+	name: string;
+	universalPart: string;
+	fileName: string;
+}
+
+export interface Counts {
+	appendRandomAsset: number;
+	injectRepeatingPart: number;
+	injectRepeatingPartFull: number;
+	scrambleAndAppendFromRepo: number;
+	injectRandomAsset: number;
+	reverseRandomSegments: number;
+	injectHighValuePart: number;
+	crossoverWithRepository: number;
+	shuffleAssets: number;
+	randomizeAssets: number;
+	repeatHighValuePart: number;
+	appendHighValuePart: number;
+	// Additional properties from worker.spec.ts
+	appendMutation?: number;
+	stackedPartMutationV1?: number;
+	stackedPartMutationV2?: number;
+	evolvingMutation?: number;
+	characterFlipMutation?: number;
+	segmentReversalMutation?: number;
+	partManipulationMutation?: number;
+	repositoryCrossoverMutation?: number;
+	shuffleAssetsMutation?: number;
+	randomizeAssetsMutation?: number;
+	repeatHighValuePartMutation?: number;
+	appendHighValuePartMutation?: number;
+}
+
+export interface Rules {
+	targetOffset: number;
+	minChunk: number;
+	maxChunk: number;
+	minPart: number;
+	maxPart: number;
+	legendaryChance: number;
+	difficultyIncrement: number;
+	// Additional properties from worker.spec.ts
+	mutableStart?: number;
+	mutableEnd?: number;
+	targetChunk?: number;
+}
+
+export interface Difficulties {
+	appendRandomAsset: number;
+	injectRepeatingPart: number;
+	injectRepeatingPartFull: number;
+	scrambleAndAppendFromRepo: number;
+	injectRandomAsset: number;
+	reverseRandomSegments: number;
+	injectHighValuePart: number;
+	crossoverWithRepository: number;
+	shuffleAssets: number;
+	randomizeAssets: number;
+	repeatHighValuePart: number;
+	appendHighValuePart: number;
+}
+
+export interface State {
+	repository: string;
+	seed: string;
+	counts: Counts;
+	rules: Rules;
+	difficulties: Difficulties;
+	generateStats: boolean;
+	debugMode: boolean;
+	selectedAsset?: number;
+	baseYaml?: string;
+}

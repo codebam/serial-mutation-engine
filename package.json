@@ -25,6 +25,7 @@
 		"build:lib": "tsup src/lib/{api,cli}.ts --format esm --dts --tsconfig tsconfig.lib.json"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20251014.0",
 		"@eslint/compat": "^1.4.0",
 		"@eslint/js": "^9.38.0",
 		"@sveltejs/adapter-cloudflare": "^7.2.4",

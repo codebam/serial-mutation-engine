@@ -52,7 +52,7 @@
 	{/each}
 </main>
 
-<div class="fixed bottom-4 right-4">
+<div class="fixed right-4 bottom-4">
 	<button onclick={copyJson} class="text-sm text-gray-500">JSON</button>
 </div>
 

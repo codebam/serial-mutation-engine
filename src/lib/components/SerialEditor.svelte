@@ -1,8 +1,15 @@
 <script lang="ts">
-	import { type Serial, type Block, TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, SUBTYPE_NONE } from '$lib/types.js';
+	import {
+		type Serial,
+		type Block,
+		TOK_VARINT,
+		TOK_VARBIT,
+		TOK_PART,
+		SUBTYPE_NONE,
+		type Part
+	} from '$lib/types.js';
 	import { toCustomFormat, parseCustomFormat } from '../custom_parser';
 	import FormGroup from './FormGroup.svelte';
-	import BlockComponent from './Block.svelte';
 	import AddBlockMenu from './AddBlockMenu.svelte';
 
 	import { browser } from '$app/environment';
@@ -19,7 +26,7 @@
 	let itemType = $state('UNKNOWN');
 	let jsonOutput = $state('');
 
-	let debounceTimeout: number;
+	let debounceTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	$effect(() => {
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
@@ -36,15 +43,15 @@
 			return Promise.resolve();
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		findPartName(part) {
+		findPartName(part: Part) {
 			return null;
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		getParts(itemType) {
+		getParts(itemType: string) {
 			return [];
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		determineItemType(parsed) {
+		determineItemType(parsed: Serial) {
 			return 'UNKNOWN';
 		}
 	}
@@ -96,7 +103,7 @@
 		}
 	}
 
-	function debounceParse(callback: (value: any) => void, value: any) {
+	function debounceParse<T>(callback: (value: T) => void, value: T) {
 		console.log('debounceParse called for:', callback.name);
 		clearTimeout(debounceTimeout);
 		debounceTimeout = setTimeout(() => {
@@ -139,45 +146,6 @@
 		updateSerial();
 	}
 
-	function deleteBlock(index: number) {
-		parsed.splice(index, 1);
-		parsed = parsed; // Trigger reactivity
-		updateSerial();
-	}
-
-	function updateBlockValue(block: Block, value: number) {
-		if (block.token === TOK_VARINT || block.token === TOK_VARBIT) {
-			block.value = value;
-		}
-		updateSerial();
-	}
-
-	function updatePartListValue(part: Part, index: number, value: number) {
-		if (part.values) {
-			part.values[index].value = value;
-			updateSerial();
-		}
-	}
-
-	let dragIndex = $state(-1);
-	let isHorizontal = $state(false);
-
-	function handleDragStart(index: number) {
-		dragIndex = index;
-	}
-
-	function handleDrop(event: DragEvent, dropIndex: number) {
-		event.preventDefault();
-		if (dragIndex === -1) return;
-
-		const draggedBlock = parsed[dragIndex];
-		parsed.splice(dragIndex, 1);
-		parsed.splice(dropIndex, 0, draggedBlock);
-		parsed = parsed;
-		dragIndex = -1;
-		updateSerial();
-	}
-
 	function onJsonOutputChange(e: Event) {
 		const newJson = (e.target as HTMLTextAreaElement).value;
 		console.log('onJsonOutputChange called. New Custom Format:', newJson);
@@ -209,32 +177,32 @@
 	<textarea
 		class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 		oninput={(e) => onSerialUpdate(e.currentTarget.value)}
-		placeholder="Paste serial here..."
-	>{serial}</textarea>
+		placeholder="Paste serial here...">{serial}</textarea
+	>
 </FormGroup>
 
-	<FormGroup label="Detected Item Type">
-		<p>
-			<span class="font-semibold text-green-600 dark:text-green-400">
-				{itemType}
-			</span>
-		</p>
-		<select
-			onchange={(e) => (itemType = e.currentTarget.value)}
-			class="mt-2 rounded-md bg-gray-200 p-2 text-gray-900 dark:bg-gray-700 dark:text-white"
-			value={itemType}
-		>
-			<option value="Unknown">Select Item Type</option>
-			<option value="Weapon">Weapon</option>
-			<option value="Shield">Shield</option>
-			<option value="Grenade">Grenade</option>
-			<option value="Repkit">Repkit</option>
-			<option value="Heavy Ordnance">Heavy Ordnance</option>
-			<option value="Vex Class Mod">Vex Class Mod</option>
-			<option value="Rafa Class Mod">Rafa Class Mod</option>
-			<option value="Harlowe Class Mod">Harlowe Class Mod</option>
-		</select>
-	</FormGroup>
+<FormGroup label="Detected Item Type">
+	<p>
+		<span class="font-semibold text-green-600 dark:text-green-400">
+			{itemType}
+		</span>
+	</p>
+	<select
+		onchange={(e) => (itemType = e.currentTarget.value)}
+		class="mt-2 rounded-md bg-gray-200 p-2 text-gray-900 dark:bg-gray-700 dark:text-white"
+		value={itemType}
+	>
+		<option value="Unknown">Select Item Type</option>
+		<option value="Weapon">Weapon</option>
+		<option value="Shield">Shield</option>
+		<option value="Grenade">Grenade</option>
+		<option value="Repkit">Repkit</option>
+		<option value="Heavy Ordnance">Heavy Ordnance</option>
+		<option value="Vex Class Mod">Vex Class Mod</option>
+		<option value="Rafa Class Mod">Rafa Class Mod</option>
+		<option value="Harlowe Class Mod">Harlowe Class Mod</option>
+	</select>
+</FormGroup>
 
 <FormGroup label="Deserialized Output">
 	<textarea
@@ -245,7 +213,6 @@
 	></textarea>
 </FormGroup>
 
-
 {#if error}
 	<div
 		class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200"
@@ -255,11 +222,11 @@
 {/if}
 
 <div class="mt-4" role="list">
-
-
-	<AddBlockMenu
-		{partService}
-		{itemType}
-		onAdd={(token, part) => addBlock(parsed.length, token, part)}
-	/>
+	{#if partService instanceof PartService}
+		<AddBlockMenu
+			{partService}
+			{itemType}
+			onAdd={(token, part) => addBlock(parsed.length, token, part)}
+		/>
+	{/if}
 </div>

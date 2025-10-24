@@ -1,29 +1,14 @@
-import { getSerialTail } from './utils.js';
-
-// --- STATS FUNCTIONS (MOVED FROM UI) ---
-
-/**
- * Finds the most frequent substrings in a set of serials.
- * This implementation uses a suffix-array-based approach, which is more efficient
- * for large datasets than the previous brute-force method.
- *
- * @param {string[]} serials - A list of serial numbers.
- * @param {number} minPartSize - The minimum length of substrings to consider.
- * @param {number} maxPartSize - The maximum length of substrings to consider.
- * @param {function(number): void} onProgress - A callback to report progress.
- * @returns {[string, number][]} - A list of [substring, frequency] pairs.
- */
 export function calculateHighValuePartsStats(
-	serials,
-	minPartSize,
-	maxPartSize,
-	onProgress,
-	debugMode
+	serials: string[],
+	minPartSize: number,
+	maxPartSize: number,
+	onProgress: (progress: number) => void,
+	debugMode: boolean
 ) {
 	if (onProgress) onProgress(0);
 	if (debugMode) console.log('[DEBUG] Starting high-value part stats calculation...');
 
-	const tails = serials.map(getSerialTail).filter(Boolean);
+	const tails = serials;
 	const frequencyMap = new Map();
 	const totalSerials = tails.length;
 
@@ -50,7 +35,7 @@ export function calculateHighValuePartsStats(
 	let changed = true;
 	while (changed) {
 		changed = false;
-		const consolidated = new Set();
+		const consolidated = new Set<string>();
 		parts.sort((a, b) => b.length - a.length);
 
 		for (const part of parts) {

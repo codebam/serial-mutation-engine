@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 
 vi.stubGlobal('crypto', {
-	getRandomValues: (arr) => {
+	getRandomValues: (arr: Uint32Array) => {
 		for (let i = 0; i < arr.length; i++) {
 			arr[i] = Math.floor(Math.random() * 4294967295);
 		}
@@ -10,34 +10,51 @@ vi.stubGlobal('crypto', {
 import Worker from './worker.js?worker';
 import type { State } from '../types';
 
+interface WorkerResult {
+	uniqueCount: number;
+	totalRequested: number;
+	yaml: string;
+}
+
 const dummyState: State = {
 	repository: '',
 	seed: '@Uge9B?m/)}}!ffxLNwtrrhUgJFvP19)9>F7c1drg69->2ZNDt8=I>e4x5g)=u;D`>fBRx?3?tmf{sYpdCQjv<(7NJN*DpHY(R3rc',
-	itemType: 'GUN',
 	counts: {
-		appendMutation: 10,
-		stackedPartMutationV1: 0,
-		stackedPartMutationV2: 0,
-		evolvingMutation: 0,
-		characterFlipMutation: 0,
-		segmentReversalMutation: 0,
-		partManipulationMutation: 0,
-		repositoryCrossoverMutation: 0,
-		shuffleAssetsMutation: 0,
-		randomizeAssetsMutation: 0,
-		repeatHighValuePartMutation: 0,
-		appendHighValuePartMutation: 0
+		appendRandomAsset: 0,
+		injectRepeatingPart: 0,
+		injectRepeatingPartFull: 0,
+		scrambleAndAppendFromRepo: 0,
+		injectRandomAsset: 0,
+		reverseRandomSegments: 0,
+		injectHighValuePart: 0,
+		crossoverWithRepository: 0,
+		shuffleAssets: 0,
+		randomizeAssets: 0,
+		repeatHighValuePart: 0,
+		appendHighValuePart: 0
 	},
 	rules: {
 		targetOffset: 200,
-		mutableStart: 13,
-		mutableEnd: 13,
 		minChunk: 3,
 		maxChunk: 7,
-		targetChunk: 5,
 		minPart: 4,
 		maxPart: 8,
-		legendaryChance: 100
+		legendaryChance: 100,
+		difficultyIncrement: 0.1
+	},
+	difficulties: {
+		appendRandomAsset: 1,
+		injectRepeatingPart: 1,
+		injectRepeatingPartFull: 1,
+		scrambleAndAppendFromRepo: 1,
+		injectRandomAsset: 1,
+		reverseRandomSegments: 1,
+		injectHighValuePart: 1,
+		crossoverWithRepository: 1,
+		shuffleAssets: 1,
+		randomizeAssets: 1,
+		repeatHighValuePart: 1,
+		appendHighValuePart: 1
 	},
 	generateStats: false,
 	debugMode: false
@@ -56,7 +73,7 @@ describe('Web Worker Generation', () => {
 
 		worker.postMessage({ type: 'generate', payload: config });
 
-		const result = await new Promise((resolve, reject) => {
+		const result = await new Promise<WorkerResult>((resolve, reject) => {
 			const timeout = setTimeout(() => {
 				reject(new Error('Worker test timed out'));
 			}, 10000); // 10 second timeout

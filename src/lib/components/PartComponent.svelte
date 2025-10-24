@@ -3,11 +3,11 @@
 	import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_VARINT } from '$lib/types';
 	import Asset from './Asset.svelte';
 	import PartName from './PartName.svelte';
+	import type { PartService } from '$lib/partService';
 
-	let { part, partService, itemType, onUpdatePart, onUpdatePartList } = $props<{
+	let { part, partService, onUpdatePart, onUpdatePartList } = $props<{
 		part: Part;
 		partService: PartService;
-		itemType: string;
 		onUpdatePart: (part: Part) => void;
 		onUpdatePartList: (part: Part, index: number, value: number) => void;
 	}>();
@@ -45,7 +45,7 @@
 </script>
 
 <div class="flex items-center gap-2">
-	<PartName {part} {partService} {itemType} />
+	<PartName {part} {partService} />
 	{#if part.subType === SUBTYPE_NONE}
 		<Asset value={part.index} onUpdate={updateIndex} />
 	{:else}
@@ -60,7 +60,7 @@
 					<Asset
 						value={v.value}
 						onUpdate={(newValue) => updateListValue(j, newValue)}
-						isVarInt={v.type === TOK_VARINT}
+						color={v.type === TOK_VARINT ? 'bg-blue-200 dark:bg-blue-800' : undefined}
 						onDelete={() => removeListValue(j)}
 					/>
 				{/each}

@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
 	import '../app.css';
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 
 	onMount(() => {
 		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-		const handleChange = (e) => {
+		const handleChange = (e: MediaQueryList | MediaQueryListEvent) => {
 			if (e.matches) {
 				document.documentElement.classList.add('dark');
 			} else {

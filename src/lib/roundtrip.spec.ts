@@ -33,7 +33,7 @@ describe('roundtrip', () => {
 				}
 			} catch (e) {
 				failed_count++;
-				failed_serials.push(`Exception for ${serial}: ${e.message}`);
+				failed_serials.push(`Exception for ${serial}: ${(e as Error).message}`);
 			}
 		}
 
