@@ -66,7 +66,10 @@
 	}
 </script>
 
-<main class="mx-auto my-8 flex h-full w-full max-w-4xl flex-col gap-4">
+<div class="background-container">
+	<BitstreamMatrix bits={bits} />
+</div>
+<main class="main-content mx-auto my-8 flex h-full w-full max-w-4xl flex-col gap-4">
 	<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
 		{#each serialEditors as editor (editor.id)}
 			<div>
@@ -79,9 +82,6 @@
 				/>
 			</div>
 		{/each}
-		<div>
-			<BitstreamMatrix bits={bits} />
-		</div>
 	</div>
 </main>
 
@@ -90,3 +90,19 @@
 </div>
 
 <Toast message={toastMessage} show={showToast} />
+
+<style>
+	.background-container {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+	}
+
+	.main-content {
+		position: relative;
+		z-index: 1;
+	}
+</style>

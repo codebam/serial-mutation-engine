@@ -18,7 +18,7 @@
 		padding: 1rem;
 		overflow: hidden;
 		position: relative;
-		height: 300px; /* Or adjust as needed */
+		height: 100%;
 	}
 
 	.grid-container {

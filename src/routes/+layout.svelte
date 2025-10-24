@@ -34,6 +34,6 @@
 		</div>
 	</div>
 </header>
-<main class="bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-50">
+<main class="bg-gray-50 text-gray-900 bg-transparent">
 	<slot />
 </main>

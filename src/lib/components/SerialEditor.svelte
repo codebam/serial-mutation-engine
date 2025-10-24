@@ -234,17 +234,17 @@
 
 	{#if detectedParts.length > 0}
 		<FormGroup label="Detected Parts">
-			<ul class="list-inside list-disc text-sm text-gray-700 dark:text-gray-300">
+			<ul class="list-inside list-disc text-sm text-gray-700 dark:text-gray-300 bg-transparent">
 				{#each detectedParts as part (part.code)}
-					<li>{part.code} - {part.name}</li>
+					<li class="bg-transparent">{part.code} - {part.name}</li>
 				{/each}
 			</ul>
 		</FormGroup>
 	{/if}
 
 	<FormGroup label="Detected Item Type">
-		<p>
-			<span class="font-semibold text-green-600 dark:text-green-400">
+		<p class="bg-transparent">
+			<span class="font-semibold text-green-600 dark:text-green-400 bg-transparent">
 				{itemType}
 			</span>
 		</p>
@@ -276,13 +276,13 @@
 
 	{#if error}
 		<div
-			class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200"
+			class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200 bg-transparent"
 		>
-			<p>{error}</p>
+			<p class="bg-transparent">{error}</p>
 		</div>
 	{/if}
 
-	<div class="mt-4" role="list">
+	<div class="mt-4 bg-transparent" role="list">
 		{#if partService instanceof PartService}
 			<AddBlockMenu
 				{partService}
@@ -292,7 +292,7 @@
 		{/if}
 	</div>
 
-	<div class="mt-4">
+	<div class="mt-4 bg-transparent">
 		<input
 			type="file"
 			onchange={handleFileSelect}
