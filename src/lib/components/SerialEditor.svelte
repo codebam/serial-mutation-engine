@@ -9,9 +9,10 @@
 	import { PartService } from '$lib/partService';
 	import Worker from '$lib/worker/worker.js?worker';
 
-	let { serial, onSerialUpdate } = $props<{
+	let { serial, onSerialUpdate, onJsonOutputUpdate } = $props<{
 		serial: string;
 		onSerialUpdate: (newSerial: string) => void;
+		onJsonOutputUpdate?: (newJson: string) => void;
 	}>();
 	let parsed: Serial = $state([]);
 	let error: string | null = $state(null);
@@ -24,6 +25,9 @@
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
 		if (parsed) {
 			jsonOutput = toCustomFormat(parsed);
+			if (onJsonOutputUpdate) {
+				onJsonOutputUpdate(jsonOutput);
+			}
 		}
 	});
 
