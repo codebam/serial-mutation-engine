@@ -21,7 +21,7 @@
 	let debounceTimeout: number;
 
 	$effect(() => {
-		console.log('Effect: parsed changed', parsed);
+		console.log('Effect: parsed changed', $state.snapshot(parsed));
 		if (parsed) {
 			jsonOutput = toCustomFormat(parsed);
 		}
@@ -107,7 +107,7 @@
 	});
 
 	$effect(() => {
-		console.log('Effect: parsed changed for itemType detection', parsed);
+		console.log('Effect: parsed changed for itemType detection', $state.snapshot(parsed));
 		if (parsed && parsed.length > 0) {
 			itemType = partService.determineItemType(parsed);
 		} else {
