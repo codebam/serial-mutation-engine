@@ -85,7 +85,7 @@ async function processOperation(
  *   },
  *   {
  *     "action": "encode",
- *     "content": {/** ... a valid serial object ... */}
+ *     "content": { ... a valid serial object ... }
  *   }
  * ]
  */
