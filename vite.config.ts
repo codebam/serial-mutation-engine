@@ -2,8 +2,10 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
 import { sveltekit } from '@sveltejs/kit/vite';
 
+import sveltekitApiGenerator from 'vite-plugin-sveltekit-api-generator';
+
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
+	plugins: [tailwindcss(), sveltekit(), sveltekitApiGenerator()],
 	test: {
 		expect: { requireAssertions: true },
 		projects: [

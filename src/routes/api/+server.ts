@@ -56,6 +56,24 @@ async function processOperation(
 	}
 }
 
+/**
+ * @typedef {object} Operation
+ * @property {string | object} content - The content to process.
+ * @property {'decode' | 'encode'} action - The action to perform.
+ * @property {'JSON'} [format] - The format of the content.
+ * @property {boolean} [debug] - Enable debug mode to get execution time.
+ * @property {boolean} [cache] - Enable caching for decode operations.
+ */
+
+/**
+ * Handles POST requests to process serials.
+ * @route POST /api
+ * @param {Request} request - The incoming request object.
+ * @body {Operation | Operation[]} - A single operation or an array of operations.
+ * @returns {Response<object|object[]>} The result of the operation(s).
+ * @throws {400} If the request body is invalid.
+ * @throws {500} If an unexpected error occurs.
+ */
 export const POST: RequestHandler = async ({ request, platform }) => {
 	const start = performance.now(); // Use high-resolution timer
 	let response: Response;
