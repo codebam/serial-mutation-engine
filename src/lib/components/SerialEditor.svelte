@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Serial, Block, TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, SUBTYPE_NONE  } from '$lib/types.js';
+	import { type Serial, type Block, TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, SUBTYPE_NONE } from '$lib/types.js';
 	import { toCustomFormat, parseCustomFormat } from '../custom_parser';
 	import FormGroup from './FormGroup.svelte';
 	import BlockComponent from './Block.svelte';
@@ -77,31 +77,33 @@
 		};
 	}
 
-	function analyzeSerial() {
-		console.log('analyzeSerial called. Current serial:', serial);
-		if (!serial && parsed.length > 0) {
-			parsed = [];
+	function analyzeSerial(currentSerial: string) {
+		console.log('analyzeSerial called. Current serial:', currentSerial);
+		if (!currentSerial) {
+			if (parsed.length > 0) {
+				parsed = [];
+			}
 			error = null;
 			return;
 		}
 		if (worker) {
-			console.log('Posting parse_serial message to worker with payload:', serial);
-			worker.postMessage({ type: 'parse_serial', payload: serial });
+			console.log('Posting parse_serial message to worker with payload:', currentSerial);
+			worker.postMessage({ type: 'parse_serial', payload: currentSerial });
 		}
 	}
 
-	function debounceParse(callback: () => void) {
+	function debounceParse(callback: (value: any) => void, value: any) {
 		console.log('debounceParse called for:', callback.name);
 		clearTimeout(debounceTimeout);
 		debounceTimeout = setTimeout(() => {
 			console.log('Debounced function executed:', callback.name);
-			callback();
+			callback(value);
 		}, 3000);
 	}
 
 	$effect(() => {
 		console.log('Effect: serial changed, debouncing analyzeSerial');
-		debounceParse(analyzeSerial);
+		debounceParse(analyzeSerial, serial);
 	});
 
 	$effect(() => {
@@ -112,6 +114,14 @@
 			itemType = 'UNKNOWN';
 		}
 	});
+
+	function updateSerial() {
+		if (worker) {
+			const plainParsed = JSON.parse(JSON.stringify(parsed));
+			console.log('Posting encode_serial message to worker with payload:', plainParsed);
+			worker.postMessage({ type: 'encode_serial', payload: plainParsed });
+		}
+	}
 
 	function addBlock(index: number, token: number, part?: Part) {
 		const newBlock: Block = { token };
@@ -187,7 +197,7 @@
 					error = 'An unknown error occurred while parsing the custom format.';
 				}
 			}
-		});
+		}, null);
 	}
 </script>
 
