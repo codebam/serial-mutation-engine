@@ -62,15 +62,6 @@ async function processOperation(
 }
 
 /**
- * @typedef {object} Operation
- * @property {string | object} content - The content to process.
- * @property {'decode' | 'encode'} action - The action to perform.
- * @property {'JSON'} [format] - The format of the content.
- * @property {boolean} [debug] - Enable debug mode to get execution time.
- * @property {boolean} [cache] - Enable caching for decode operations.
- */
-
-/**
  * Handles POST requests to process serials.
  * @route POST /api
  * @param {Request} request - The incoming request object.

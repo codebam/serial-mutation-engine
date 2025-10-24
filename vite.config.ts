@@ -5,7 +5,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import sveltekitApiGenerator from 'vite-plugin-sveltekit-api-generator';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), sveltekitApiGenerator()],
+	plugins: [tailwindcss(), sveltekit()],
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
