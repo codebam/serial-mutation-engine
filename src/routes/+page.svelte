@@ -32,7 +32,8 @@
 	function copyJson() {
 		const json = serialEditors[0].jsonOutput; // Assuming only one editor for now
 		navigator.clipboard.writeText(json);
-		toastMessage = 'did you know we have an <a href="/docs" class="underline">API documentation</a>?';
+		toastMessage =
+			'did you know we have an <a href="/docs" class="underline">API documentation</a>?';
 		showToast = true;
 		setTimeout(() => {
 			showToast = false;

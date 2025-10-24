@@ -1,11 +1,11 @@
 import { parse } from 'comment-parser';
 
 export async function load() {
-    const modules = import.meta.glob('../api/+server.ts', { query: '?raw', import: 'default' });
-    const fileContent = await modules['../api/+server.ts']();
-    const parsedComments = parse(fileContent);
+	const modules = import.meta.glob('../api/+server.ts', { query: '?raw', import: 'default' });
+	const fileContent = await modules['../api/+server.ts']();
+	const parsedComments = parse(fileContent);
 
-    return {
-        comments: parsedComments
-    };
+	return {
+		comments: parsedComments
+	};
 }

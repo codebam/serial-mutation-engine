@@ -230,15 +230,14 @@
 		<textarea
 			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 			oninput={(e) => onSerialUpdate(e.currentTarget.value)}
-			placeholder="Paste serial here..."
-		>{serial}</textarea
+			placeholder="Paste serial here...">{serial}</textarea
 		>
 	</FormGroup>
 
 	{#if detectedParts.length > 0}
 		<FormGroup label="Detected Parts">
-			<ul class="list-disc list-inside text-sm text-gray-700 dark:text-gray-300">
-				{#each detectedParts as part}
+			<ul class="list-inside list-disc text-sm text-gray-700 dark:text-gray-300">
+				{#each detectedParts as part (part.code)}
 					<li>{part.code} - {part.name}</li>
 				{/each}
 			</ul>
@@ -312,7 +311,7 @@
 		<button
 			onclick={mergeAndDownloadYaml}
 			disabled={!baseYaml}
-			class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 disabled:text-gray-400 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+			class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 disabled:text-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
 		>
 			Merge
 		</button>

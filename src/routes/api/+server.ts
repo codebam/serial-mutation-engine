@@ -75,7 +75,7 @@ async function processOperation(
  *   "action": "decode",
  *   "content": "some_encoded_string"
  * }
- * 
+ *
  * @example
  * // Batch of operations
  * [

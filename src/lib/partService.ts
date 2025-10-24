@@ -59,7 +59,7 @@ export class PartService {
 					});
 
 					this.isDataLoaded = true;
-					console.log('Manual lookup for {1:12}:', this.partMap.get(JSON.stringify({ subType: 1, index: 1, value: 12 })));
+
 					resolve();
 				}
 			});

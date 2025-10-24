@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP2, type SubType } from '../types';
+	import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP2 } from '../types';
 	import type { Part } from '$lib/types';
 	import type { PartService } from '$lib/partService';
 
@@ -14,7 +14,10 @@
 	function handleAddPart(event: Event) {
 		const select = event.currentTarget as HTMLSelectElement;
 		const selectedValue = select.value;
-		const selectedPart = parts.find(p => `${p.subType}:${p.index}${p.value !== undefined ? ':' + p.value : ''}` === selectedValue);
+		const selectedPart = parts.find(
+			(p) =>
+				`${p.subType}:${p.index}${p.value !== undefined ? ':' + p.value : ''}` === selectedValue
+		);
 
 		if (selectedPart) {
 			const newPart: Part = { subType: selectedPart.subType, index: selectedPart.index };
