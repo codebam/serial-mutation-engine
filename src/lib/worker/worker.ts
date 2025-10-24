@@ -3,7 +3,7 @@ import { encodeSerial } from '../encoder';
 import * as coreMutations from '../mutations';
 import { mergeSerials, type Mutation } from '../mutations';
 import { parseCustomFormat } from '../custom_parser';
-import type { RawPart, State } from '../types';
+import type { RawPart, State, Serial } from '../types';
 
 interface PartItem {
 	name?: string;
@@ -18,20 +18,31 @@ interface PartJson {
 	[key: string]: PartItem[] | { [manufacturer: string]: PartItem[] };
 }
 
+type GetInitialState = () => State;
+type MergeSerial = (yaml: string, serialToInsert: string) => { newYaml: string; message: string };
+type MergeSerials = (
+	yaml: string,
+	serialsToInsert: string[]
+) => { newYaml: string; message: string };
+
+type CoreMutationFunctions = Mutation | GetInitialState | MergeSerial | MergeSerials;
+
 const mutationFunctions: Record<string, Mutation> = {};
 for (const key in coreMutations) {
-	const mutation = (coreMutations as any)[key];
+	const mutation = (coreMutations as Record<string, CoreMutationFunctions>)[key];
 	if (
 		typeof mutation === 'function' &&
 		key !== 'getInitialState' &&
 		key !== 'mergeSerial' &&
 		key !== 'mergeSerials'
 	) {
-		mutationFunctions[key] = mutation;
+		mutationFunctions[key] = mutation as Mutation;
 	}
 }
 
-self.onmessage = async function (e: MessageEvent<{ type: string; payload: any }>) {
+type WorkerPayload = string | Serial | State;
+
+self.onmessage = async function (e: MessageEvent<{ type: string; payload: WorkerPayload }>) {
 	const { type, payload } = e.data;
 
 	if (type === 'load_part_data') {
