@@ -199,14 +199,11 @@
 	>{serial}</textarea>
 </FormGroup>
 
-{#if parsed && parsed.length > 0}
-	<div
-		class="mt-4 rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
-	>
+	<FormGroup label="Detected Item Type">
 		<p>
-			Detected Item Type: <span class="font-semibold text-green-600 dark:text-green-400"
-				>{itemType}</span
-			>
+			<span class="font-semibold text-green-600 dark:text-green-400">
+				{itemType}
+			</span>
 		</p>
 		<select
 			onchange={(e) => (itemType = e.currentTarget.value)}
@@ -223,8 +220,7 @@
 			<option value="Rafa Class Mod">Rafa Class Mod</option>
 			<option value="Harlowe Class Mod">Harlowe Class Mod</option>
 		</select>
-	</div>
-{/if}
+	</FormGroup>
 
 <FormGroup label="Deserialized Output">
 	<textarea
