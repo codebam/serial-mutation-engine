@@ -108,8 +108,13 @@ self.onmessage = async function (e: MessageEvent<{ type: string; payload: Worker
 		});
 	} else if (type === 'parse_serial') {
 		try {
-			const parsed = parseSerial(payload);
-			self.postMessage({ type: 'parsed_serial', payload: { parsed } });
+			const bitstreamBuffer: number[] = [];
+			const progressCallback = (bit: number) => {
+				bitstreamBuffer.push(bit);
+				self.postMessage({ type: 'bit_stream_update', payload: bit });
+			};
+			const { blocks: parsed, bitstream } = parseSerial(payload as string, progressCallback);
+			self.postMessage({ type: 'parsed_serial', payload: { parsed, bitstream } });
 		} catch (_e) {
 			self.postMessage({ type: 'parsed_serial', payload: { error: (_e as Error).message } });
 		}

@@ -186,7 +186,10 @@ function readPart(tokenizer: Tokenizer): Part {
 	throw new Error(`Unknown part flagType2: ${flagType2}`);
 }
 
-export function parseSerial(serial: string): Serial {
+export function parseSerial(
+	serial: string,
+	progressCallback?: (bit: number) => void
+): { blocks: Serial; bitstream: Uint8Array } {
 	const decoded = decodeBase85(serial);
 	const mirrored = mirrorBytes(decoded);
 
@@ -202,6 +205,16 @@ export function parseSerial(serial: string): Serial {
 	const blocks: Block[] = [];
 	let partBlocksFound = false;
 	let trailingTerminators = 0;
+
+	// Wrap stream.readBit to call progressCallback
+	const originalReadBit = stream.readBit.bind(stream);
+	stream.readBit = () => {
+		const bit = originalReadBit();
+		if (bit !== null && progressCallback) {
+			progressCallback(bit);
+		}
+		return bit;
+	};
 
 	while (true) {
 		const token = tokenizer.nextToken();
@@ -243,5 +256,5 @@ export function parseSerial(serial: string): Serial {
 		trailingTerminators--;
 	}
 
-	return blocks;
+	return { blocks, bitstream: mirrored };
 }

@@ -16,10 +16,9 @@
 	import { PartService } from '$lib/partService';
 	import Worker from '$lib/worker/worker.js?worker';
 
-	let { serial, onSerialUpdate, onCustomFormatOutputUpdate } = $props<{
+	let { serial, onSerialUpdate } = $props<{
 		serial: string;
 		onSerialUpdate: (newSerial: string) => void;
-		onCustomFormatOutputUpdate?: (newJson: string) => void;
 	}>();
 	let parsed: Serial = $state([]);
 	let error: string | null = $state(null);
@@ -29,6 +28,7 @@
 	let mergedYaml = $state('');
 	let fileInput: HTMLInputElement;
 	let detectedParts: { code: string; name: string }[] = $state([]);
+	let bitstreamDisplay = $state('');
 
 	let debounceTimeout: ReturnType<typeof setTimeout> | undefined;
 
@@ -36,9 +36,6 @@
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
 		if (parsed) {
 			customFormatOutput = toCustomFormat(parsed);
-			if (onCustomFormatOutputUpdate) {
-				onCustomFormatOutputUpdate(JSON.stringify(parsed, null, 2));
-			}
 
 			// Update detected parts
 			const newDetectedParts: { code: string; name: string }[] = [];
@@ -81,11 +78,9 @@
 	if (browser) {
 		worker = new Worker();
 		partService = new PartService(worker);
-
 		$effect(() => {
 			partService.loadPartData();
 		});
-
 		worker.onmessage = (e) => {
 			const { type, payload } = e.data;
 			console.log('Worker message received:', type, payload);
@@ -97,6 +92,9 @@
 				}
 				itemType = partService.determineItemType(payload.parsed);
 				error = payload.error;
+				bitstreamDisplay = ''; // Reset bitstream display on new serial parse
+			} else if (type === 'bit_stream_update') {
+				bitstreamDisplay += payload;
 			} else if (type === 'encoded_serial') {
 				console.log('Encoded serial from worker:', payload.serial);
 				if (payload.serial !== serial) {
