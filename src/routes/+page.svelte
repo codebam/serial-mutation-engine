@@ -22,7 +22,7 @@
 		}
 	}
 
-	function updateEditorJsonOutput(editorId: number, newJson: string) {
+	function updateEditorCustomFormatOutput(editorId: number, newJson: string) {
 		const editor = serialEditors.find((e) => e.id === editorId);
 		if (editor) {
 			editor.jsonOutput = newJson;
@@ -46,7 +46,7 @@
 			<SerialEditor
 				serial={editor.serial}
 				onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)}
-				onJsonOutputUpdate={(newJson) => updateEditorJsonOutput(editor.id, newJson)}
+				onCustomFormatOutputUpdate={(newJson) => updateEditorCustomFormatOutput(editor.id, newJson)}
 			/>
 		</div>
 	{/each}

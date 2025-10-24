@@ -16,28 +16,44 @@
 	import { PartService } from '$lib/partService';
 	import Worker from '$lib/worker/worker.js?worker';
 
-	let { serial, onSerialUpdate, onJsonOutputUpdate } = $props<{
+	let { serial, onSerialUpdate, onCustomFormatOutputUpdate } = $props<{
 		serial: string;
 		onSerialUpdate: (newSerial: string) => void;
-		onJsonOutputUpdate?: (newJson: string) => void;
+		onCustomFormatOutputUpdate?: (newJson: string) => void;
 	}>();
 	let parsed: Serial = $state([]);
 	let error: string | null = $state(null);
 	let itemType = $state('UNKNOWN');
-	let jsonOutput = $state('');
+	let customFormatOutput = $state('');
 	let baseYaml = $state('');
 	let mergedYaml = $state('');
 	let fileInput: HTMLInputElement;
+	let detectedParts: { code: string; name: string }[] = $state([]);
 
 	let debounceTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	$effect(() => {
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
 		if (parsed) {
-			jsonOutput = toCustomFormat(parsed);
-			if (onJsonOutputUpdate) {
-				onJsonOutputUpdate(jsonOutput);
+			customFormatOutput = toCustomFormat(parsed);
+			if (onCustomFormatOutputUpdate) {
+				onCustomFormatOutputUpdate(JSON.stringify(parsed, null, 2));
 			}
+
+			// Update detected parts
+			const newDetectedParts: { code: string; name: string }[] = [];
+			for (const block of parsed) {
+				if (block.token === TOK_PART && block.part) {
+					const partInfo = partService.findPartInfo(block.part);
+					if (partInfo) {
+						newDetectedParts.push({
+							code: `{${block.part.subType}:${block.part.index}}`,
+							name: partInfo.name
+						});
+					}
+				}
+			}
+			detectedParts = newDetectedParts;
 		}
 	});
 
@@ -46,7 +62,7 @@
 			return Promise.resolve();
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		findPartName(part: Part) {
+		findPartInfo(part: Part) {
 			return null;
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -97,10 +113,9 @@
 	function analyzeSerial(currentSerial: string) {
 		console.log('analyzeSerial called. Current serial:', currentSerial);
 		if (!currentSerial) {
-			if (parsed.length > 0) {
-				parsed = [];
-			}
+			parsed = [];
 			error = null;
+			detectedParts = [];
 			return;
 		}
 		if (worker) {
@@ -152,14 +167,14 @@
 		updateSerial();
 	}
 
-	function onJsonOutputChange(e: Event) {
-		const newJson = (e.target as HTMLTextAreaElement).value;
-		console.log('onJsonOutputChange called. New Custom Format:', newJson);
-		jsonOutput = newJson;
+	function onCustomFormatOutputChange(e: Event) {
+		const newCustomFormat = (e.target as HTMLTextAreaElement).value;
+		console.log('onCustomFormatOutputChange called. New Custom Format:', newCustomFormat);
+		customFormatOutput = newCustomFormat;
 		debounceParse(() => {
-			console.log('Attempting to parse custom format from onJsonOutputChange');
+			console.log('Attempting to parse custom format from onCustomFormatOutputChange');
 			try {
-				const newParsed = parseCustomFormat(newJson);
+				const newParsed = parseCustomFormat(newCustomFormat);
 				if (newParsed) {
 					parsed = newParsed;
 					updateSerial();
@@ -168,7 +183,7 @@
 					error = 'Invalid Custom Format';
 				}
 			} catch (err) {
-				console.error('Error parsing custom format from onJsonOutputChange:', err);
+				console.error('Error parsing custom format from onCustomFormatOutputChange:', err);
 				if (err instanceof Error) {
 					error = err.message;
 				} else {
@@ -220,6 +235,16 @@
 		>
 	</FormGroup>
 
+	{#if detectedParts.length > 0}
+		<FormGroup label="Detected Parts">
+			<ul class="list-disc list-inside text-sm text-gray-700 dark:text-gray-300">
+				{#each detectedParts as part}
+					<li>{part.code} - {part.name}</li>
+				{/each}
+			</ul>
+		</FormGroup>
+	{/if}
+
 	<FormGroup label="Detected Item Type">
 		<p>
 			<span class="font-semibold text-green-600 dark:text-green-400">
@@ -246,8 +271,8 @@
 	<FormGroup label="Deserialized Output">
 		<textarea
 			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-			bind:value={jsonOutput}
-			oninput={onJsonOutputChange}
+			bind:value={customFormatOutput}
+			oninput={onCustomFormatOutputChange}
 			placeholder="Paste deserialized here..."
 		></textarea>
 	</FormGroup>
@@ -271,27 +296,25 @@
 	</div>
 
 	<div class="mt-4">
-		<div class="flex flex-col gap-2">
-			<input
-				type="file"
-				onchange={handleFileSelect}
-				accept=".yaml,.yml"
-				class="hidden"
-				bind:this={fileInput}
-			/>
-			<button
-				onclick={() => fileInput.click()}
-				class="rounded-md bg-gray-200 p-2 text-gray-900 dark:bg-gray-700 dark:text-white"
-			>
-				Select YAML to Merge
-			</button>
-			<button
-				onclick={mergeAndDownloadYaml}
-				disabled={!baseYaml}
-				class="rounded-md bg-gray-200 p-2 text-gray-900 disabled:text-gray-400 dark:bg-gray-700 dark:text-white"
-			>
-				Merge
-			</button>
-		</div>
+		<input
+			type="file"
+			onchange={handleFileSelect}
+			accept=".yaml,.yml"
+			class="hidden"
+			bind:this={fileInput}
+		/>
+		<button
+			onclick={() => fileInput.click()}
+			class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+		>
+			Select YAML to Merge
+		</button>
+		<button
+			onclick={mergeAndDownloadYaml}
+			disabled={!baseYaml}
+			class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 disabled:text-gray-400 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+		>
+			Merge
+		</button>
 	</div>
 </div>
