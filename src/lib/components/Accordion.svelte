@@ -20,10 +20,10 @@
 
 <details
 	{open}
-	class={`flex flex-col overflow-hidden rounded-lg border border-gray-700 bg-gray-800/50 ${className}`}
+	class={`flex flex-col overflow-hidden rounded-lg border border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-800/50 ${className}`}
 >
 	<summary
-		class="accordion-summary flex cursor-pointer list-none items-center justify-between p-4 text-lg font-semibold hover:bg-gray-700/50"
+		class="accordion-summary flex cursor-pointer list-none items-center justify-between p-4 text-lg font-semibold text-gray-900 hover:bg-gray-200 dark:text-gray-100 dark:hover:bg-gray-700/50"
 	>
 		{title}
 		<div class="flex items-center gap-2">

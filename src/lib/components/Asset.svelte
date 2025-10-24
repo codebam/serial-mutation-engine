@@ -60,5 +60,5 @@
 	onchange={handleChange}
 	oncontextmenu={handleDelete}
 	onclick={onClick}
-	class={`min-w-[40px] cursor-move border p-2.5 text-center ${colorClass} rounded-md text-black ${selected ? 'border-blue-500' : 'border-gray-300'}`}
+	class={`min-w-[40px] cursor-move border p-2.5 text-center ${colorClass} rounded-md text-black ${selected ? 'border-blue-500' : 'border-gray-300 dark:border-gray-600'}`}
 />

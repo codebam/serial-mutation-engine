@@ -4,7 +4,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-	<label for={id} class="text-sm font-medium text-gray-400">{label}</label>
+	<label for={id} class="text-sm font-medium text-gray-700 dark:text-gray-400">{label}</label>
 	<div {id}>
 		{@render children()}
 	</div>

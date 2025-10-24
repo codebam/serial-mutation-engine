@@ -49,11 +49,11 @@
 </script>
 
 <FormGroup label="Mutable Character Range">
-	<div class="rounded-md border border-gray-700 bg-gray-900 p-3 font-mono text-xs break-all">
-		<span class="text-gray-500" title="Protected Prefix">{protectedPrefix}</span><span
-			class="rounded-sm bg-blue-900 text-blue-300"
+	<div class="rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-xs break-all dark:border-gray-700 dark:bg-gray-900">
+		<span class="text-gray-500 dark:text-gray-400" title="Protected Prefix">{protectedPrefix}</span><span
+			class="rounded-sm bg-blue-200 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
 			title="Mutable Part">{mutablePart}</span
-		><span class="text-gray-500" title="Protected Suffix">{protectedSuffix}</span>
+		><span class="text-gray-500 dark:text-gray-400" title="Protected Suffix">{protectedSuffix}</span>
 	</div>
 	<div class="mt-4 grid grid-cols-2 gap-4">
 		<FormGroup label="Start Index">

@@ -27,15 +27,15 @@
 
 <div class="flex gap-2">
 	<button
-		class="rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-blue-600"
+		class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
 		onclick={() => onAdd(TOK_VARINT)}>+VARINT</button
 	>
 	<button
-		class="rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-blue-600"
+		class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
 		onclick={() => onAdd(TOK_VARBIT)}>+VARBIT</button
 	>
 	<select
-		class="max-w-3xs rounded-md bg-green-700 px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-green-600"
+		class="max-w-3xs rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
 		onchange={handleAddPart}
 	>
 		<option value="">+PART</option>
@@ -47,11 +47,10 @@
 		{/each}
 	</select>
 	<button
-		class="rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-gray-600"
-		onclick={() => onAdd(TOK_SEP1)}>+SEP1</button
+		class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">+SEP1</button
 	>
 	<button
-		class="rounded-md bg-gray-700 px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-gray-600"
+		class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
 		onclick={() => onAdd(TOK_SEP2)}>+SEP2</button
 	>
 </div>

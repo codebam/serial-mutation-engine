@@ -11,5 +11,5 @@
 </script>
 
 {#if partInfo && partInfo.name}
-	<span class="ml-2 text-sm text-gray-400">({partInfo.name})</span>
+	<span class="ml-2 text-sm text-gray-500 dark:text-gray-400">({partInfo.name})</span>
 {/if}

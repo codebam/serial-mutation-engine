@@ -73,14 +73,14 @@
 </script>
 
 <div
-	class="rounded-lg border border-gray-700 bg-gray-800/50 p-4"
+	class="rounded-lg border border-gray-300 bg-gray-100 p-4 dark:border-gray-700 dark:bg-gray-800/50"
 	on:dragover={handleDragOver}
 	role="list"
 >
 	<div class="mb-4 flex items-center justify-between">
-		<h3 class="text-lg font-semibold">Deserialized Output</h3>
+		<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Deserialized Output</h3>
 		<button
-			class="rounded-md bg-gray-600 px-3 py-1 text-gray-200 hover:bg-gray-500"
+			class="rounded-md bg-gray-200 px-3 py-1 text-gray-900 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
 			on:click={() => navigator.clipboard.writeText(deserializedText)}
 		>
 			Copy
@@ -89,14 +89,14 @@
 	<div class="flex flex-wrap gap-2">
 		{#each items as item, i (item.value + i)}
 			<div
-				class="flex cursor-move items-center gap-2 rounded-md bg-gray-700 px-3 py-1 text-gray-200"
+				class="flex cursor-move items-center gap-2 rounded-md bg-gray-200 px-3 py-1 text-gray-900 dark:bg-gray-700 dark:text-gray-200"
 				draggable="true"
 				on:dragstart={(e) => handleDragStart(e, i)}
 				on:drop={(e) => handleDrop(e, i)}
 				role="listitem"
 			>
 				<span>{item.value}</span>
-				<button class="text-red-500 hover:text-red-400" on:click={() => handleDelete(i)}>
+				<button class="text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-400" on:click={() => handleDelete(i)}>
 					&times;
 				</button>
 			</div>

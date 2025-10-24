@@ -49,10 +49,10 @@
 	{#if part.subType === SUBTYPE_NONE}
 		<Asset value={part.index} onUpdate={updateIndex} />
 	{:else}
-		<Asset value={part.index} onUpdate={updateIndex} color="bg-blue-200" />
+		<Asset value={part.index} onUpdate={updateIndex} color="bg-blue-200 dark:bg-blue-800" />
 	{/if}
 	{#if part.subType === SUBTYPE_INT}
-		<Asset value={part.value ?? 0} onUpdate={updateValue} color="bg-green-200" />
+		<Asset value={part.value ?? 0} onUpdate={updateValue} color="bg-green-200 dark:bg-green-800" />
 	{:else if part.subType === SUBTYPE_LIST}
 		<div class="flex flex-wrap gap-2">
 			{#if part.values}
@@ -66,7 +66,7 @@
 				{/each}
 			{/if}
 			<button
-				class="rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-blue-600"
+				class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
 				onclick={addListValue}>+ Add</button
 			>
 		</div>

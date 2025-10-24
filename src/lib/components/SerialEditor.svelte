@@ -161,8 +161,7 @@
 
 <FormGroup label="Serial Input">
 	<textarea
-		class="min-h-[80px] w-full rounded-md border border-gray-700 bg-gray-900 p-3 font-mono text-sm text-gray-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-		value={serial}
+		class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 		oninput={(e) => onSerialUpdate(e.currentTarget.value)}
 		placeholder="Paste serial here..."
 	></textarea>
@@ -170,18 +169,18 @@
 
 <FormGroup label="Paste Deserialized JSON or Custom Format">
 	<textarea
-		class="min-h-[80px] w-full rounded-md border border-gray-700 bg-gray-900 p-3 font-mono text-sm text-gray-200 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+		class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 		bind:value={pastedContent}
 		placeholder="Paste deserialized JSON or Custom Format here..."
 	></textarea>
 </FormGroup>
 
 {#if parsed.length > 0}
-	<div class="mt-4 rounded-md border border-gray-700 bg-gray-800 p-4 text-gray-200">
-		<p>Detected Item Type: <span class="font-semibold text-green-400">{itemType}</span></p>
+	<div class="mt-4 rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+		<p>Detected Item Type: <span class="font-semibold text-green-600 dark:text-green-400">{itemType}</span></p>
 		<select
 			onchange={(e) => (itemType = e.currentTarget.value)}
-			class="mt-2 rounded-md bg-gray-700 p-2 text-white"
+			class="mt-2 rounded-md bg-gray-200 p-2 text-gray-900 dark:bg-gray-700 dark:text-white"
 			value={itemType}
 		>
 			<option value="Unknown">Select Item Type</option>
@@ -199,17 +198,17 @@
 {/if}
 
 {#if error}
-	<div class="mt-4 rounded-md border border-red-700 bg-red-900 p-4 text-red-200">
+	<div class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200">
 		<p>{error}</p>
 	</div>
 {/if}
 
 <div class="mt-4" role="list">
 	<div class="mb-2 flex items-center justify-between">
-		<h3 class="text-lg font-semibold">Parsed Blocks</h3>
+		<h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Parsed Blocks</h3>
 		<button
 			onclick={() => (isHorizontal = !isHorizontal)}
-			class="rounded-md p-1 text-gray-400 hover:bg-gray-700 hover:text-white"
+			class="rounded-md p-1 text-gray-500 hover:bg-gray-200 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 		>
 			{#if isHorizontal}
 				<svg

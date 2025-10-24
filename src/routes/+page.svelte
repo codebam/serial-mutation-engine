@@ -18,6 +18,8 @@
 		merged: boolean;
 	}
 
+	let showAdvanced = $state(false);
+
 	let appState = $state<State>(getInitialState());
 
 	let statusMessage = $state('Ready to generate.');
@@ -327,367 +329,366 @@
 	}
 
 	const inputClasses =
-		'w-full p-3 bg-gray-900 text-gray-200 border border-gray-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm';
+		'w-full p-3 bg-gray-50 text-gray-900 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none font-mono text-sm dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:focus:ring-blue-500 dark:focus:border-blue-500';
 	const btnClasses = {
 		primary:
-			'py-3 px-4 w-full font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all disabled:bg-gray-600 disabled:cursor-not-allowed',
+			'py-3 px-4 w-full font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed dark:disabled:bg-gray-600',
 		secondary:
-			'py-3 px-4 w-full font-semibold text-gray-300 bg-gray-600 rounded-md hover:bg-gray-700 transition-all disabled:opacity-50',
+			'py-3 px-4 w-full font-semibold text-gray-900 bg-gray-200 rounded-md hover:bg-gray-300 transition-all disabled:opacity-50 dark:text-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600',
 		tertiary:
-			'py-2 px-4 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-all'
+			'py-2 px-4 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-all dark:text-gray-900 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
 	};
 </script>
 
 <div class="">
 	<main class="grid grid-cols-1 gap-8 xl:grid-cols-3">
-		{#if maximizedEditorId === null}
-			<div class="order-3 flex flex-col gap-4">
-				<Accordion title="📦 Repository & Base Seed" open={true}>
-					<FormGroup label="Repository">
-						<textarea
-							class="{inputClasses} min-h-[120px]"
-							bind:value={appState.repository}
-							placeholder="Paste serials here..."
-						></textarea>
-					</FormGroup>
-					<FormGroup label="Search Serials">
-						<div class="flex gap-2">
-							<input
-								type="text"
-								name="searchTerm"
-								class={inputClasses}
-								placeholder="Enter search term..."
-								bind:value={searchTerm}
-							/>
-							<button onclick={searchSerials} class={btnClasses.secondary}>Search</button>
-						</div>
-					</FormGroup>
-					<FormGroup label="Base Serial Seed">
-						<textarea class="{inputClasses} h-24" bind:value={appState.seed}></textarea>
-					</FormGroup>
-
-					<div class="grid grid-cols-2 gap-4">
-						<button onclick={saveState} class={btnClasses.secondary}>Save State</button>
-						<label class="{btnClasses.secondary} cursor-pointer text-center">
-							Restore State
-							<input type="file" accept=".json" onchange={restoreState} class="hidden" />
-						</label>
-					</div>
-				</Accordion>
-				<Accordion title="🧬 Mutation Rules" open={true}>
-					<FormGroup label="Crossover Chunk Size">
-						<div class="grid grid-cols-2 gap-4">
-							<input
-								type="number"
-								name="rules.minChunk"
-								bind:value={appState.rules.minChunk}
-								class={inputClasses}
-								title="The smallest crossover segment size."
-							/>
-							<input
-								type="number"
-								name="rules.maxChunk"
-								bind:value={appState.rules.maxChunk}
-								class={inputClasses}
-								title="The largest crossover segment size."
-							/>
-						</div>
-					</FormGroup>
-					<FormGroup label="Legendary Part Chance ({appState.rules.legendaryChance}%)">
-						<input
-							type="range"
-							name="rules.legendaryChance"
-							min="0"
-							max="100"
-							bind:value={appState.rules.legendaryChance}
-							class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-700"
-						/>
-					</FormGroup>
-					<FormGroup label="High-Value Part Size Range">
-						<div class="grid grid-cols-2 gap-4">
-							<input
-								type="number"
-								name="rules.minPart"
-								bind:value={appState.rules.minPart}
-								class={inputClasses}
-							/>
-							<input
-								type="number"
-								name="rules.maxPart"
-								bind:value={appState.rules.maxPart}
-								class={inputClasses}
-							/>
-						</div>
-					</FormGroup>
-					<FormGroup label="Final Tail Length Offset">
-						<input
-							type="number"
-							name="rules.targetOffset"
-							bind:value={appState.rules.targetOffset}
-							class={inputClasses}
-						/>
-					</FormGroup>
-					<FormGroup label="Difficulty Increment">
-						<input
-							type="number"
-							name="rules.difficultyIncrement"
-							bind:value={appState.rules.difficultyIncrement}
-							class={inputClasses}
-							step="0.01"
-							min="0.01"
-						/>
-					</FormGroup>
-				</Accordion>
-				<Accordion title="🔢 Output Counts" open={true}>
-					<div class="flex flex-col gap-4">
-						<FormGroup label="Append Random Asset">
-							<input
-								type="number"
-								name="counts.appendRandomAsset"
-								bind:value={appState.counts.appendRandomAsset}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Appends one or more random assets (0-100) to the end of the serial. The number of
-								appended assets increases with difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Inject Repeating Part">
-							<input
-								type="number"
-								name="counts.injectRepeatingPart"
-								bind:value={appState.counts.injectRepeatingPart}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Injects two or more repeating parts into the serial. The number of injected parts
-								increases with difficulty. Uses a limited asset pool.
-							</p>
-						</FormGroup>
-						<FormGroup label="Inject Repeating Part (Full)">
-							<input
-								type="number"
-								name="counts.injectRepeatingPartFull"
-								bind:value={appState.counts.injectRepeatingPartFull}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Injects two or more repeating parts into the serial. The number of injected parts
-								increases with difficulty. Uses the full asset pool.
-							</p>
-						</FormGroup>
-						<FormGroup label="Scramble and Append from Repo">
-							<input
-								type="number"
-								name="counts.scrambleAndAppendFromRepo"
-								bind:value={appState.counts.scrambleAndAppendFromRepo}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Reverses a random segment of the serial and appends one or more assets from a random
-								repository serial's last 25%. The number of appended assets increases with
-								difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Inject Random Asset">
-							<input
-								type="number"
-								name="counts.injectRandomAsset"
-								bind:value={appState.counts.injectRandomAsset}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Injects one or more random assets (0-84) at a random position in the serial. The
-								number of injected assets increases with difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Reverse Random Segments">
-							<input
-								type="number"
-								name="counts.reverseRandomSegments"
-								bind:value={appState.counts.reverseRandomSegments}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Reverses one or more random segments of the serial. The number of reversed segments
-								increases with difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Inject High-Value Part">
-							<input
-								type="number"
-								name="counts.injectHighValuePart"
-								bind:value={appState.counts.injectHighValuePart}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Injects one or more high-value parts from the repository into the serial, based on
-								legendary chance. The number of injected parts increases with difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Crossover with Repository">
-							<input
-								type="number"
-								name="counts.crossoverWithRepository"
-								bind:value={appState.counts.crossoverWithRepository}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Overwrites a segment of the serial with a random segment from another serial in the
-								repository. The size of the segment increases with difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Shuffle Assets">
-							<input
-								type="number"
-								name="counts.shuffleAssets"
-								bind:value={appState.counts.shuffleAssets}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Shuffles a percentage of the serial's assets. The percentage increases with
-								difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Randomize Assets">
-							<input
-								type="number"
-								name="counts.randomizeAssets"
-								bind:value={appState.counts.randomizeAssets}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Randomizes a percentage of the serial's assets. The percentage increases with
-								difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Repeat High-Value Part">
-							<input
-								type="number"
-								name="counts.repeatHighValuePart"
-								bind:value={appState.counts.repeatHighValuePart}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Repeats a high-value part of the serial. The number of repetitions increases with
-								difficulty.
-							</p>
-						</FormGroup>
-						<FormGroup label="Append High-Value Part">
-							<input
-								type="number"
-								name="counts.appendHighValuePart"
-								bind:value={appState.counts.appendHighValuePart}
-								class={inputClasses}
-							/>
-							<p class="text-xs text-gray-400">
-								Appends a high-value part to the end of the serial. The number of appended parts
-								increases with difficulty.
-							</p>
-						</FormGroup>
-					</div>
-				</Accordion>
-			</div>
-			<div class="order-2 flex flex-col gap-4">
-				<Accordion title="📊 Statistics">
-					<div class="overflow-x-auto">
-						<div id="chartContainer" style="position: relative; height: 400px;">
-							<canvas id="statsChart"></canvas>
-						</div>
-					</div>
-				</Accordion>
-
-				<div class="flex flex-grow flex-col">
-					<div class="flex flex-wrap items-center justify-between border-b border-gray-700 p-4">
-						<h3 class="mb-2 text-lg font-semibold md:mb-0">📝 YAML Output (Read-Only)</h3>
-						<div class="flex flex-wrap gap-2">
-							<button onclick={copyToClipboard} class={btnClasses.tertiary}>
-								{copyText}
-							</button>
-							<button onclick={downloadYAML} class={btnClasses.tertiary}> Download </button>
-							<button onclick={importAndMerge} class={btnClasses.tertiary}>Merge Serial</button>
-							<label class="{btnClasses.tertiary} cursor-pointer">
-								Select Base YAML
-								<input type="file" accept=".yaml,.yml" onchange={selectBaseYaml} class="hidden" />
-							</label>
-							<button
-								onclick={() => {
-									outputYaml = '';
-									fullYaml = '';
-									filteredYaml = '';
-								}}
-								class={btnClasses.tertiary}
-							>
-								Clear
-							</button>
-						</div>
-					</div>
-					<div class="flex-grow p-5">
-						<textarea
-							class="{inputClasses} h-full w-full resize-none"
-							readonly
-							bind:value={outputYaml}
-						></textarea>
-					</div>
-				</div>
-				<div class="flex flex-col gap-4 p-5">
-					<div class="grid grid-cols-2 gap-4">
-						<button onclick={startGeneration} disabled={isGenerating} class={btnClasses.primary}>
-							Generate Serials
-						</button>
-						<button onclick={resetForm} disabled={isGenerating} class={btnClasses.secondary}>
-							Reset All
-						</button>
-					</div>
-					<div class="flex flex-col items-center justify-center gap-x-6 gap-y-2 sm:flex-row">
-						<div class="flex items-center">
-							<input
-								type="checkbox"
-								id="genStats"
-								name="generateStats"
-								bind:checked={appState.generateStats}
-								class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500"
-							/>
-							<label for="genStats" class="ml-2 text-sm font-medium text-gray-300">
-								Generate Part Statistics
-							</label>
-						</div>
-						<div class="flex items-center">
-							<input
-								type="checkbox"
-								id="debugMode"
-								name="debugMode"
-								bind:checked={appState.debugMode}
-								class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-red-600 focus:ring-red-500"
-							/>
-							<label for="debugMode" class="ml-2 text-sm font-medium text-gray-300">
-								Enable Debug Logging
-							</label>
-						</div>
-					</div>
-					<div
-						class="flex h-10 items-center justify-center text-center text-sm text-gray-400"
-						style="white-space: pre-line"
-					>
-						{#if statusMessage.startsWith('✅')}
-							<div
-								class="rounded-md border border-green-500/30 bg-green-500/10 p-3 text-center text-sm whitespace-pre-wrap text-green-300"
-							>
-								{statusMessage}
+		{#if showAdvanced}
+					<div class="order-3 flex flex-col gap-4">
+						<Accordion title="📦 Repository & Base Seed" open={true}>
+							<FormGroup label="Repository">
+								<textarea
+									class="{inputClasses} min-h-[120px]"
+									bind:value={appState.repository}
+									placeholder="Paste serials here..."
+								></textarea>
+							</FormGroup>
+							<FormGroup label="Search Serials">
+								<div class="flex gap-2">
+									<input
+										type="text"
+										name="searchTerm"
+										class={inputClasses}
+										placeholder="Enter search term..."
+										bind:value={searchTerm}
+									/>
+									<button onclick={searchSerials} class={btnClasses.secondary}>Search</button>
+								</div>
+							</FormGroup>
+							<FormGroup label="Base Serial Seed">
+								<textarea class="{inputClasses} h-24" bind:value={appState.seed}></textarea>
+							</FormGroup>
+		
+							<div class="grid grid-cols-2 gap-4">
+								<button onclick={saveState} class={btnClasses.secondary}>Save State</button>
+								<label class="{btnClasses.secondary} cursor-pointer text-center">
+									Restore State
+									<input type="file" accept=".json" onchange={restoreState} class="hidden" />
+								</label>
 							</div>
-						{:else}
-							{statusMessage}
-						{/if}
+						</Accordion>
+						<Accordion title="🧬 Mutation Rules" open={true}>
+							<FormGroup label="Crossover Chunk Size">
+								<div class="grid grid-cols-2 gap-4">
+									<input
+										type="number"
+										name="rules.minChunk"
+										bind:value={appState.rules.minChunk}
+										class={inputClasses}
+										title="The smallest crossover segment size."
+									/>
+									<input
+										type="number"
+										name="rules.maxChunk"
+										bind:value={appState.rules.maxChunk}
+										class={inputClasses}
+										title="The largest crossover segment size."
+									/>
+								</div>
+							</FormGroup>
+							<FormGroup label="Legendary Part Chance ({appState.rules.legendaryChance}%)">
+								<input
+									type="range"
+									name="rules.legendaryChance"
+									min="0"
+									max="100"
+									bind:value={appState.rules.legendaryChance}
+									class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700"
+								/>
+							</FormGroup>
+							<FormGroup label="High-Value Part Size Range">
+								<div class="grid grid-cols-2 gap-4">
+									<input
+										type="number"
+										name="rules.minPart"
+										bind:value={appState.rules.minPart}
+										class={inputClasses}
+									/>
+									<input
+										type="number"
+										name="rules.maxPart"
+										bind:value={appState.rules.maxPart}
+										class={inputClasses}
+									/>
+								</div>
+							</FormGroup>
+							<FormGroup label="Final Tail Length Offset">
+								<input
+									type="number"
+									name="rules.targetOffset"
+									bind:value={appState.rules.targetOffset}
+									class={inputClasses}
+								/>
+							</FormGroup>
+							<FormGroup label="Difficulty Increment">
+								<input
+									type="number"
+									name="rules.difficultyIncrement"
+									bind:value={appState.rules.difficultyIncrement}
+									class={inputClasses}
+									step="0.01"
+									min="0.01"
+								/>
+							</FormGroup>
+						</Accordion>
+						<Accordion title="🔢 Output Counts" open={true}>
+							<div class="flex flex-col gap-4">
+								<FormGroup label="Append Random Asset">
+									<input
+										type="number"
+										name="counts.appendRandomAsset"
+										bind:value={appState.counts.appendRandomAsset}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Appends one or more random assets (0-100) to the end of the serial. The number of
+										appended assets increases with difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Inject Repeating Part">
+									<input
+										type="number"
+										name="counts.injectRepeatingPart"
+										bind:value={appState.counts.injectRepeatingPart}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Injects two or more repeating parts into the serial. The number of injected parts
+										increases with difficulty. Uses a limited asset pool.
+									</p>
+								</FormGroup>
+								<FormGroup label="Inject Repeating Part (Full)">
+									<input
+										type="number"
+										name="counts.injectRepeatingPartFull"
+										bind:value={appState.counts.injectRepeatingPartFull}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Injects two or more repeating parts into the serial. The number of injected parts
+										increases with difficulty. Uses the full asset pool.
+									</p>
+								</FormGroup>
+								<FormGroup label="Scramble and Append from Repo">
+									<input
+										type="number"
+										name="counts.scrambleAndAppendFromRepo"
+										bind:value={appState.counts.scrambleAndAppendFromRepo}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Reverses a random segment of the serial and appends one or more assets from a random
+										repository serial's last 25%. The number of appended assets increases with
+										difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Inject Random Asset">
+									<input
+										type="number"
+										name="counts.injectRandomAsset"
+										bind:value={appState.counts.injectRandomAsset}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Injects one or more random assets (0-84) at a random position in the serial. The
+										number of injected assets increases with difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Reverse Random Segments">
+									<input
+										type="number"
+										name="counts.reverseRandomSegments"
+										bind:value={appState.counts.reverseRandomSegments}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Reverses one or more random segments of the serial. The number of reversed segments
+										increases with difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Inject High-Value Part">
+									<input
+										type="number"
+										name="counts.injectHighValuePart"
+										bind:value={appState.counts.injectHighValuePart}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Injects one or more high-value parts from the repository into the serial, based on
+										legendary chance. The number of injected parts increases with difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Crossover with Repository">
+									<input
+										type="number"
+										name="counts.crossoverWithRepository"
+										bind:value={appState.counts.crossoverWithRepository}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Overwrites a segment of the serial with a random segment from another serial in the
+										repository. The size of the segment increases with difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Shuffle Assets">
+									<input
+										type="number"
+										name="counts.shuffleAssets"
+										bind:value={appState.counts.shuffleAssets}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Shuffles a percentage of the serial's assets. The percentage increases with
+										difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Randomize Assets">
+									<input
+										type="number"
+										name="counts.randomizeAssets"
+										bind:value={appState.counts.randomizeAssets}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Randomizes a percentage of the serial's assets. The percentage increases with
+										difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Repeat High-Value Part">
+									<input
+										type="number"
+										name="counts.repeatHighValuePart"
+										bind:value={appState.counts.repeatHighValuePart}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Repeats a high-value part of the serial. The number of repetitions increases with
+										difficulty.
+									</p>
+								</FormGroup>
+								<FormGroup label="Append High-Value Part">
+									<input
+										type="number"
+										name="counts.appendHighValuePart"
+										bind:value={appState.counts.appendHighValuePart}
+										class={inputClasses}
+									/>
+									<p class="text-xs text-gray-600 dark:text-gray-400">
+										Appends a high-value part to the end of the serial. The number of appended parts
+										increases with difficulty.
+									</p>
+								</FormGroup>
+							</div>
+						</Accordion>
 					</div>
-					{#if isGenerating}
-						<div class="h-2.5 w-full rounded-full bg-gray-700">
-							<div class="h-2.5 rounded-full bg-blue-600" style="width: {progress}%;"></div>
+					<div class="order-2 flex flex-col gap-4">
+						<Accordion title="📊 Statistics">
+							<div class="overflow-x-auto">
+								<div id="chartContainer" style="position: relative; height: 400px;">
+									<canvas id="statsChart"></canvas>
+								</div>
+							</div>
+						</Accordion>
+		
+						<div class="flex flex-grow flex-col">
+							<div class="flex flex-wrap items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700">
+								<h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100 md:mb-0">📝 YAML Output (Read-Only)</h3>
+								<div class="flex flex-wrap gap-2">
+									<button onclick={copyToClipboard} class={btnClasses.tertiary}>
+										{copyText}
+									</button>
+									<button onclick={downloadYAML} class={btnClasses.tertiary}> Download </button>
+									<button onclick={importAndMerge} class={btnClasses.tertiary}>Merge Serial</button>
+									<label class="{btnClasses.tertiary} cursor-pointer">
+										Select Base YAML
+										<input type="file" accept=".yaml,.yml" onchange={selectBaseYaml} class="hidden" />
+									</label>
+									<button
+										onclick={() => {
+											outputYaml = '';
+											fullYaml = '';
+											filteredYaml = '';
+										}}
+										class={btnClasses.tertiary}
+									>
+										Clear
+									</button>
+								</div>
+							</div>
+							<div class="flex-grow p-5">
+								<textarea
+									class="{inputClasses} h-full w-full resize-none"
+									readonly
+									bind:value={outputYaml}
+								></textarea>
+							</div>
 						</div>
-					{/if}
-				</div>
-			</div>
-		{/if}
-		<div
+						<div class="flex flex-col gap-4 p-5">
+							<div class="grid grid-cols-2 gap-4">
+								<button onclick={startGeneration} disabled={isGenerating} class={btnClasses.primary}>
+									Generate Serials
+								</button>
+								<button onclick={resetForm} disabled={isGenerating} class={btnClasses.secondary}>
+									Reset All
+								</button>
+							</div>
+							<div class="flex flex-col items-center justify-center gap-x-6 gap-y-2 sm:flex-row">
+								<div class="flex items-center">
+									<input
+										type="checkbox"
+										id="genStats"
+										name="generateStats"
+										bind:checked={appState.generateStats}
+										class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-blue-600"
+									/>
+									<label for="genStats" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+										Generate Part Statistics
+									</label>
+								</div>
+								<div class="flex items-center">
+									<input
+										type="checkbox"
+										id="debugMode"
+										name="debugMode"
+										bind:checked={appState.debugMode}
+										class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-red-600 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:ring-red-600"
+									/>
+									<label for="debugMode" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+										Enable Debug Logging
+									</label>
+								</div>
+							</div>
+							<div
+								class="flex h-10 items-center justify-center text-center text-sm text-gray-600 dark:text-gray-400"
+								style="white-space: pre-line"
+							>
+								{#if statusMessage.startsWith('✅')}
+									<div
+										class="rounded-md border border-green-500/30 bg-green-500/10 p-3 text-center text-sm whitespace-pre-wrap text-green-700 dark:text-green-300"
+									>
+										{statusMessage}
+									</div>
+								{:else}
+									{statusMessage}
+								{/if}
+							</div>
+							{#if isGenerating}
+								<div class="h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+									<div class="h-2.5 rounded-full bg-blue-600" style="width: {progress}%;"></div>
+								</div>
+							{/if}
+						</div>
+					</div>
+				{/if}		<div
 			class="flex h-full flex-col gap-4 {maximizedEditorId !== null
 				? 'col-span-3'
 				: 'xl:col-span-2 2xl:col-span-1'} order-1"
@@ -709,8 +710,7 @@
 									e.preventDefault();
 									copyUrl(editor);
 								}}
-								class="text-gray-400 transition-colors hover:text-white"
-								aria-label="Copy URL"
+								class="text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
 							>
 								{#if copiedEditorId === editor.id}
 									<svg
@@ -750,8 +750,7 @@
 									e.preventDefault();
 									removeSerialEditor(editor.id);
 								}}
-								class="text-gray-400 transition-colors hover:text-white"
-								aria-label="Remove Serial Editor"
+								class="text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -771,7 +770,7 @@
 									e.preventDefault();
 									toggleMaximize(editor.id);
 								}}
-								class="text-gray-400 transition-colors hover:text-white"
+								class="text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
 								aria-label="Maximize/Minimize Editor"
 							>
 								{#if maximizedEditorId === editor.id}
@@ -813,4 +812,9 @@
 			</div>
 		</div>
 	</main>
+	<div class="mt-4 flex justify-center">
+		<button onclick={() => showAdvanced = !showAdvanced} class={btnClasses.secondary}>
+			{showAdvanced ? 'Hide Advanced' : 'Show Advanced'}
+		</button>
+	</div>
 </div>
