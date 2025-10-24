@@ -4,15 +4,14 @@
 	import FormGroup from './FormGroup.svelte';
 	import BlockComponent from './Block.svelte';
 	import AddBlockMenu from './AddBlockMenu.svelte';
-	import DebugView from './DebugView.svelte';
+	
 	import { browser } from '$app/environment';
 	import { PartService } from '$lib/partService';
 	import Worker from '$lib/worker/worker.js?worker';
 
-	let { serial, onSerialUpdate, isMaximized } = $props<{
+	let { serial, onSerialUpdate } = $props<{
 		serial: string;
 		onSerialUpdate: (newSerial: string) => void;
-		isMaximized: boolean;
 	}>();
 	let parsed: Serial = $state([]);
 	let error: string | null = $state(null);
@@ -194,7 +193,7 @@
 			<option value="Harlowe Class Mod">Harlowe Class Mod</option>
 		</select>
 	</div>
-	<DebugView {parsed} {onParsedUpdate} {isMaximized} />
+	
 {/if}
 
 {#if error}

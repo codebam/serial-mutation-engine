@@ -24,7 +24,7 @@
 {:else if block.token === TOK_PART && block.part}
 	<PartComponent part={block.part} {partService} {itemType} {onUpdatePart} {onUpdatePartList} />
 {:else if block.token === TOK_SEP1}
-	<div class="text-gray-500 dark:text-gray-400">
+	<div class="text-gray-500 dark:text-gray-400"></div>
 {:else if block.token === TOK_SEP2}
 	<div class="text-gray-500 dark:text-gray-400">SEP2</div>
 {:else}
