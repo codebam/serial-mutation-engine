@@ -115,27 +115,9 @@ export function parseCustomFormat(custom: string): Serial {
 			newParsed.push({ token: TOK_SEP1 });
 		} else if (token.startsWith('{') && token.endsWith('}')) {
 			const content = token.slice(1, -1);
-			if (content.includes(':')) {
-				const [indexStr, valueStr] = content.split(':');
-				const index = parseInt(indexStr, 10);
-				if (valueStr.startsWith('[') && valueStr.endsWith(']')) {
-					const valuesStr = valueStr.slice(1, -1);
-					const values =
-						valuesStr !== ''
-							? valuesStr
-									.split(' ')
-									.map((v) => ({ type: bestTypeForValue(parseInt(v, 10)), value: parseInt(v, 10) }))
-							: [];
-					newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_LIST, index, values } });
-				} else {
-					const value = parseInt(valueStr, 10);
-					newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_INT, index, value } });
-				}
-			} else {
-				const value = parseInt(content, 10);
-				if (!isNaN(value)) {
-					newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: value } });
-				}
+			const block = parsePartString(token);
+			if (block) {
+				newParsed.push(block);
 			}
 		} else {
 			const value = parseInt(token, 10);
@@ -169,24 +151,17 @@ export function parsePartString(partStr: string): Block | null {
 				return { token: TOK_PART, part: { subType: SUBTYPE_NONE, index } };
 			}
 		} else if (parts.length === 2) {
-			const index = parseInt(parts[0], 10);
-			const valueStr = parts[1];
-			if (valueStr.startsWith('[') && valueStr.endsWith(']')) {
-				// SUBTYPE_LIST: {index:[values]}
-				const valuesStr = valueStr.slice(1, -1);
-				const values =
-					valuesStr !== ''
-						? valuesStr
-								.split(' ')
-								.map((v) => ({ type: bestTypeForValue(parseInt(v, 10)), value: parseInt(v, 10) }))
-						: [];
-				return { token: TOK_PART, part: { subType: SUBTYPE_LIST, index, values } };
-			} else {
-				// SUBTYPE_INT: {index:value}
-				const value = parseInt(valueStr, 10);
-				if (!isNaN(index) && !isNaN(value)) {
-					return { token: TOK_PART, part: { subType: SUBTYPE_INT, index, value } };
-				}
+			const subType = parseInt(parts[0], 10);
+			const index = parseInt(parts[1], 10);
+			if (!isNaN(subType) && !isNaN(index)) {
+				return { token: TOK_PART, part: { subType, index } };
+			}
+		} else if (parts.length === 3) {
+			const subType = parseInt(parts[0], 10);
+			const index = parseInt(parts[1], 10);
+			const value = parseInt(parts[2], 10);
+			if (!isNaN(subType) && !isNaN(index) && !isNaN(value)) {
+				return { token: TOK_PART, part: { subType, index, value } };
 			}
 		}
 	}

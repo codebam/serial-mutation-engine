@@ -17,35 +17,33 @@ export class PartService {
 		return new Promise<void>((resolve) => {
 			this.worker.addEventListener('message', (e) => {
 				const { type, payload } = e.data;
+				const partMap = new Map<string, PartInfo>();
 				if (type === 'part_data_loaded') {
 					this.allParts = [];
 					this.partMap = new Map<string, PartInfo>();
 
-					const partKeys = new Set();
 					for (const rawPart of payload.rawParts) {
 						const partBlock = parsePartString(rawPart.universalPart);
 						if (partBlock && partBlock.part) {
-							const key = `${partBlock.part.subType}:${partBlock.part.index}:${partBlock.part.value}`;
-							if (!partKeys.has(key)) {
-								partKeys.add(key);
-								const partInfo: PartInfo = {
-									name: rawPart.name,
-									subType: partBlock.part.subType,
-									index: partBlock.part.index,
-									fileName: rawPart.fileName,
-									code: rawPart.universalPart
-								};
-								if (partBlock.part.value !== undefined) {
-									partInfo.value = partBlock.part.value;
-								}
-								if (partBlock.part.values !== undefined) {
-									partInfo.values = partBlock.part.values;
-								}
-								this.allParts.push(partInfo);
-								this.partMap.set(key, partInfo);
+							const key = JSON.stringify(partBlock.part);
+							const partInfo: PartInfo = {
+								name: rawPart.name,
+								subType: partBlock.part.subType,
+								index: partBlock.part.index,
+								fileName: rawPart.fileName,
+								code: rawPart.universalPart
+							};
+							if (partBlock.part.value !== undefined) {
+								partInfo.value = partBlock.part.value;
 							}
+							if (partBlock.part.values !== undefined) {
+								partInfo.values = partBlock.part.values;
+							}
+							this.partMap.set(key, partInfo);
 						}
-					} // Sort allParts here
+					}
+					this.allParts = Array.from(this.partMap.values());
+					// Sort allParts here
 					this.allParts.sort((a, b) => {
 						if (a.name && b.name) {
 							return a.name.localeCompare(b.name);
@@ -54,7 +52,7 @@ export class PartService {
 					});
 
 					this.isDataLoaded = true;
-					console.log('Manual lookup for {1:12}:', this.partMap.get('1:1:12'));
+					console.log('Manual lookup for {1:12}:', this.partMap.get(JSON.stringify({ subType: 1, index: 12 })) );
 					resolve();
 				}
 			});
@@ -63,7 +61,14 @@ export class PartService {
 	}
 
 	findPartInfo(part: Part): PartInfo | undefined {
-		const key = `${part.subType}:${part.index}:${part.value}`;
+		let key;
+		if (part.subType === 1 && part.value !== undefined) {
+			// For SUBTYPE_INT, the index from the part becomes the subType in the key,
+			// and the value from the part becomes the index in the key.
+			key = JSON.stringify({ subType: part.index, index: part.value });
+		} else {
+			key = JSON.stringify({ subType: part.subType, index: part.index });
+		}
 		return this.partMap.get(key);
 	}
 

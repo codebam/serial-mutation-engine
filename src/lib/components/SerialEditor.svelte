@@ -45,16 +45,15 @@
 			for (const block of parsed) {
 				if (block.token === TOK_PART && block.part) {
 					const partInfo = partService.findPartInfo(block.part);
-					if (partInfo) {
-						newDetectedParts.push({
-							code: `{${block.part.subType}:${block.part.index}}`,
-							name: partInfo.name
-						});
-					}
-				}
-			}
-			detectedParts = newDetectedParts;
-		}
+											if (partInfo) {
+												newDetectedParts.push({
+													code: partInfo.code,
+													name: partInfo.name
+												});
+											}
+										}
+									}
+									detectedParts = newDetectedParts;		}
 	});
 
 	class DummyPartService {
@@ -236,7 +235,7 @@
 	</FormGroup>
 
 	{#if detectedParts.length > 0}
-		<FormGroup label="Detected Parts">
+		<FormGroup label="Detected Parts" class="mt-4">
 			<ul class="list-disc list-inside text-sm text-gray-700 dark:text-gray-300">
 				{#each detectedParts as part}
 					<li>{part.code} - {part.name}</li>
@@ -245,7 +244,7 @@
 		</FormGroup>
 	{/if}
 
-	<FormGroup label="Detected Item Type">
+	<FormGroup label="Detected Item Type" class="mt-4">
 		<p>
 			<span class="font-semibold text-green-600 dark:text-green-400">
 				{itemType}
@@ -268,7 +267,7 @@
 		</select>
 	</FormGroup>
 
-	<FormGroup label="Deserialized Output">
+	<FormGroup label="Deserialized Output" class="mt-4">
 		<textarea
 			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 			bind:value={customFormatOutput}
