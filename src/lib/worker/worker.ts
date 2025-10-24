@@ -40,7 +40,7 @@ for (const key in coreMutations) {
 	}
 }
 
-type WorkerPayload = string | Serial | State;
+type WorkerPayload = string | Serial | State | { baseYaml: string; serials: string[] };
 
 self.onmessage = async function (e: MessageEvent<{ type: string; payload: WorkerPayload }>) {
 	const { type, payload } = e.data;
@@ -265,5 +265,9 @@ self.onmessage = async function (e: MessageEvent<{ type: string; payload: Worker
 				payload: { message: (error as Error).message }
 			});
 		}
+	} else if (type === 'merge_yaml') {
+		const { baseYaml, serials } = payload as { baseYaml: string; serials: string[] };
+		const { newYaml } = mergeSerials(baseYaml, serials);
+		self.postMessage({ type: 'merged_yaml', payload: { yaml: newYaml } });
 	}
 };
