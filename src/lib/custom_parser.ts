@@ -7,6 +7,7 @@ import {
 	TOK_VARINT,
 	TOK_VARBIT,
 	TOK_PART,
+	TOK_STRING,
 	SUBTYPE_INT,
 	SUBTYPE_LIST,
 	SUBTYPE_NONE
@@ -45,6 +46,13 @@ export function toCustomFormat(p: Serial): string {
 					}
 				} else {
 					blockStr = '{?}';
+				}
+				break;
+            case TOK_STRING:
+				if (block.valueStr !== undefined) {
+					blockStr = `"${block.valueStr.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+				} else {
+					blockStr = '""';
 				}
 				break;
 			default:
@@ -97,53 +105,87 @@ function bestTypeForValue(v: number): number {
 }
 
 export function parseCustomFormat(custom: string): Serial {
-	const tokens: string[] = [];
-	const regex = /(\d+)|(,)|(\|{1,2})|(\{[^}]+\})/g;
-	let match;
-	while ((match = regex.exec(custom)) !== null) {
-		tokens.push(match[0]);
+	const newParsed: Serial = [];
+	let i = 0;
+
+	while (i < custom.length) {
+		const char = custom[i];
+
+		if (/\s/.test(char)) {
+			i++;
+			continue;
+		}
+
+		if (char === '|') {
+			newParsed.push({ token: TOK_SEP1 });
+			i++;
+			continue;
+		}
+
+		if (char === ',') {
+			newParsed.push({ token: TOK_SEP2 });
+			i++;
+			continue;
+		}
+
+		if (char === '{') {
+			const end = custom.indexOf('}', i);
+			if (end === -1) {
+				throw new Error(`Unmatched '{' at position ${i}`);
+			}
+			const partStr = custom.substring(i, end + 1);
+			const partBlock = parsePartString(partStr); // Reusing existing helper
+			if (partBlock) {
+				newParsed.push(partBlock);
+			} else {
+				throw new Error(`Invalid part format: '${partStr}'`);
+			}
+			i = end + 1;
+			continue;
+		}
+
+		if (char >= '0' && char <= '9') {
+			let numStr = '';
+			while (i < custom.length && custom[i] >= '0' && custom[i] <= '9') {
+				numStr += custom[i];
+				i++;
+			}
+			const value = parseInt(numStr, 10);
+			newParsed.push({ token: bestTypeForValue(value), value });
+			continue;
+		}
+
+		if (char === '"') {
+			let end = i + 1;
+			let content = '';
+			while (end < custom.length) {
+				const current_char = custom[end];
+				if (current_char === '"') {
+					break; // end of string
+				}
+				if (current_char === '\\') {
+					if (end + 1 < custom.length) {
+						content += custom[end + 1];
+						end += 2;
+						continue;
+					}
+				}
+				content += current_char;
+				end++;
+			}
+
+			if (end >= custom.length || custom[end] !== '"') {
+				throw new Error(`Unmatched '"' at position ${i}`);
+			}
+
+			newParsed.push({ token: TOK_STRING, valueStr: content });
+			i = end + 1;
+			continue;
+		}
+
+		throw new Error(`Invalid character: '${char}' at position ${i}`);
 	}
 
-	const newParsed: Serial = [];
-	for (const token of tokens) {
-		if (token === '|') {
-			newParsed.push({ token: TOK_SEP1 });
-		} else if (token === ',') {
-			newParsed.push({ token: TOK_SEP2 });
-		} else if (token === '||') {
-			newParsed.push({ token: TOK_SEP1 });
-			newParsed.push({ token: TOK_SEP1 });
-		} else if (token.startsWith('{') && token.endsWith('}')) {
-			const content = token.slice(1, -1);
-			if (content.includes(':')) {
-				const [indexStr, valueStr] = content.split(':');
-				const index = parseInt(indexStr, 10);
-				if (valueStr.startsWith('[') && valueStr.endsWith(']')) {
-					const valuesStr = valueStr.slice(1, -1);
-					const values =
-						valuesStr !== ''
-							? valuesStr
-									.split(' ')
-									.map((v) => ({ type: bestTypeForValue(parseInt(v, 10)), value: parseInt(v, 10) }))
-							: [];
-					newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_LIST, index, values } });
-				} else {
-					const value = parseInt(valueStr, 10);
-					newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_INT, index, value } });
-				}
-			} else {
-				const value = parseInt(content, 10);
-				if (!isNaN(value)) {
-					newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: value } });
-				}
-			}
-		} else {
-			const value = parseInt(token, 10);
-			if (!isNaN(value)) {
-				newParsed.push({ token: bestTypeForValue(value), value });
-			}
-		}
-	}
 	return newParsed;
 }
 

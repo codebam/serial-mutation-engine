@@ -1,4 +1,4 @@
-import { parseSerial } from '../parser';
+import { parseSerial, decodeBase85, mirrorBytes } from '../parser';
 import { encodeSerial } from '../encoder';
 import * as coreMutations from '../mutations';
 import { mergeSerials, type Mutation } from '../mutations';
@@ -109,7 +109,7 @@ self.onmessage = async function (e: MessageEvent<{ type: string; payload: Worker
 	} else if (type === 'parse_serial') {
 		try {
 			const parsed = parseSerial(payload);
-			self.postMessage({ type: 'parsed_serial', payload: { parsed } });
+			self.postMessage({ type: 'parse_serial', payload: { parsed } });
 		} catch (_e) {
 			self.postMessage({ type: 'parsed_serial', payload: { error: (_e as Error).message } });
 		}
@@ -220,7 +220,7 @@ self.onmessage = async function (e: MessageEvent<{ type: string; payload: Worker
 						break;
 					}
 
-					const mutatedSerial = mutationFunc(parentSerial, config);
+					const mutatedSerial = mutationFunc(parentSerial.serial, config);
 					serial = encodeSerial(mutatedSerial);
 
 					innerAttempts++;

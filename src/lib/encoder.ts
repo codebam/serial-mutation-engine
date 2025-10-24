@@ -8,7 +8,8 @@ import {
 	TOK_SEP2,
 	TOK_VARINT,
 	TOK_VARBIT,
-	TOK_PART
+	TOK_PART,
+	TOK_STRING
 } from './types.js';
 
 const BASE85_ALPHABET =
@@ -59,6 +60,15 @@ function mirrorBytes(bytes: Uint8Array): Uint8Array {
 		mirrored[i] = mirroredByte;
 	}
 	return mirrored;
+}
+
+const UINT7_MIRROR = new Uint8Array(128);
+for (let i = 0; i < 128; i++) {
+	let mirrored = 0;
+	for (let j = 0; j < 7; j++) {
+		mirrored |= ((i >> j) & 1) << (6 - j);
+	}
+	UINT7_MIRROR[i] = mirrored;
 }
 
 function IntBitsSize(v: number, minSize: number, maxSize: number): number {
@@ -132,6 +142,14 @@ export function writeVarbit(stream: Bitstream, value: number) {
 	}
 }
 
+function writeString(stream: Bitstream, value: string) {
+	writeVarint(stream, value.length);
+	for (let i = 0; i < value.length; i++) {
+		const charCode = value.charCodeAt(i);
+		stream.write(UINT7_MIRROR[charCode], 7);
+	}
+}
+
 function writePart(stream: Bitstream, part: Part) {
 	writeVarint(stream, part.index);
 
@@ -166,7 +184,8 @@ const TOKEN_BIT_PATTERNS = {
 	[TOK_SEP2]: [0, 1],
 	[TOK_VARINT]: [1, 0, 0],
 	[TOK_VARBIT]: [1, 1, 0],
-	[TOK_PART]: [1, 0, 1]
+	[TOK_PART]: [1, 0, 1],
+	[TOK_STRING]: [1, 1, 1]
 };
 
 export function encodeSerial(serial: Serial): string {
@@ -197,6 +216,13 @@ export function encodeSerial(serial: Serial): string {
 				}
 				stream.writeBits(TOKEN_BIT_PATTERNS[TOK_PART]);
 				writePart(stream, block.part!);
+				break;
+			case TOK_STRING:
+				if (block.valueStr === undefined) {
+					throw new Error('TOK_STRING block is missing a valueStr property');
+				}
+				stream.writeBits(TOKEN_BIT_PATTERNS[TOK_STRING]);
+				writeString(stream, block.valueStr);
 				break;
 		}
 	}

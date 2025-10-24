@@ -9,7 +9,7 @@ import {
 	TOK_VARINT,
 	TOK_VARBIT,
 	TOK_PART,
-	TOK_UNSUPPORTED_111
+	TOK_STRING
 } from './types.js';
 
 const BASE85_ALPHABET =
@@ -72,6 +72,15 @@ function mirrorBytes(bytes: Uint8Array): Uint8Array {
 		mirrored[i] = mirroredByte;
 	}
 	return mirrored;
+}
+
+const UINT7_MIRROR = new Uint8Array(128);
+for (let i = 0; i < 128; i++) {
+	let mirrored = 0;
+	for (let j = 0; j < 7; j++) {
+		mirrored |= ((i >> j) & 1) << (6 - j);
+	}
+	UINT7_MIRROR[i] = mirrored;
 }
 
 class Tokenizer {
@@ -137,6 +146,19 @@ function readVarbit(stream: Bitstream): number {
 	return value;
 }
 
+function readString(stream: Bitstream): string {
+	const length = readVarint(stream);
+	if (length === null) throw new Error('Unexpected end of stream in string length');
+
+	let str = '';
+	for (let i = 0; i < length; i++) {
+		const charBits = stream.read(7);
+		if (charBits === null) throw new Error('Unexpected end of stream in string character');
+		str += String.fromCharCode(UINT7_MIRROR[charBits]);
+	}
+	return str;
+}
+
 function readPart(tokenizer: Tokenizer): Part {
 	const stream = tokenizer.stream;
 	const index = readVarint(stream);
@@ -200,20 +222,11 @@ export function parseSerial(serial: string): Serial {
 
 	const tokenizer = new Tokenizer(stream);
 	const blocks: Block[] = [];
-	let partBlocksFound = false;
 	let trailingTerminators = 0;
 
 	while (true) {
 		const token = tokenizer.nextToken();
 		if (token === null) break;
-
-		if (token === TOK_UNSUPPORTED_111) {
-			if (partBlocksFound) {
-				break;
-			} else {
-				throw new Error('Unsupported DLC item (TOK_UNSUPPORTED_111)');
-			}
-		}
 
 		if (token === TOK_SEP1) {
 			trailingTerminators++;
@@ -232,15 +245,16 @@ export function parseSerial(serial: string): Serial {
 				break;
 			case TOK_PART:
 				block.part = readPart(tokenizer);
-				partBlocksFound = true;
+				break;
+			case TOK_STRING:
+				block.valueStr = readString(stream);
 				break;
 		}
 		blocks.push(block);
 	}
 
-	while (trailingTerminators > 1) {
-		blocks.pop();
-		trailingTerminators--;
+	if (trailingTerminators > 1) {
+		blocks.splice(blocks.length - (trailingTerminators - 1));
 	}
 
 	return blocks;

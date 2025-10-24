@@ -3,7 +3,7 @@ export const TOK_SEP2 = 1;
 export const TOK_VARINT = 4;
 export const TOK_VARBIT = 6;
 export const TOK_PART = 5;
-export const TOK_UNSUPPORTED_111 = 7;
+export const TOK_STRING = 7;
 
 export const SUBTYPE_NONE = 0;
 export const SUBTYPE_INT = 1;
@@ -29,6 +29,7 @@ export interface PartInfo extends Part {
 export interface Block {
 	token: number;
 	value?: number;
+	valueStr?: string;
 	part?: Part;
 }
 
