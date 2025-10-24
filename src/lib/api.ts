@@ -6,13 +6,7 @@
 export default {
     api: {
         /**
-         * Handles POST requests to process serials.
-         * @route POST /api
-         * @param {Request} request - The incoming request object.
-         * @body {Operation | Operation[]} - A single operation or an array of operations.
-         * @returns {Response<object|object[]>} The result of the operation(s).
-         * @throws {400} If the request body is invalid.
-         * @throws {500} If an unexpected error occurs.
+         * POST /api
          */
         async POST(init?: RequestInit): Promise<any> {
             return fetch(`/api`, {

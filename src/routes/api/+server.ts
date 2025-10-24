@@ -5,6 +5,14 @@ import { encodeSerial } from '$lib/encoder';
 import { parseSerial } from '$lib/parser';
 import type { Serial } from '$lib/types';
 
+/**
+ * @typedef {object} Operation
+ * @property {string | object} content - The content to process.
+ * @property {'decode' | 'encode'} action - The action to perform.
+ * @property {'JSON'} [format] - The format of the content.
+ * @property {boolean} [debug] - Enable debug mode to get execution time.
+ * @property {boolean} [cache] - Enable caching for decode operations.
+ */
 interface Operation {
 	content: string | object;
 	action: 'decode' | 'encode';
@@ -70,6 +78,25 @@ async function processOperation(
  * @returns {Response<object|object[]>} The result of the operation(s).
  * @throws {400} If the request body is invalid.
  * @throws {500} If an unexpected error occurs.
+ * @example
+ * // Single operation
+ * {
+ *   "action": "decode",
+ *   "content": "some_encoded_string"
+ * }
+ * 
+ * @example
+ * // Batch of operations
+ * [
+ *   {
+ *     "action": "decode",
+ *     "content": "some_encoded_string"
+ *   },
+ *   {
+ *     "action": "encode",
+ *     "content": {/** ... a valid serial object ... */}
+ *   }
+ * ]
  */
 export const POST: RequestHandler = async ({ request, platform }) => {
 	const start = performance.now(); // Use high-resolution timer
