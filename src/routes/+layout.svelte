@@ -21,7 +21,9 @@
 	});
 </script>
 
-<header class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
+<header
+	class="border-b border-gray-200 bg-gray-100 text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+>
 	<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
 		<div class="flex items-center justify-between py-4 md:justify-start md:space-x-10">
 			<div class="flex justify-start lg:w-0 lg:flex-1">

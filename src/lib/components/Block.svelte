@@ -36,7 +36,9 @@
 	role="listitem"
 >
 	<div class="flex items-center gap-2">
-		<button class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">☰</button>
+		<button class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+			>☰</button
+		>
 		<BlockContent
 			{block}
 			{partService}
@@ -46,15 +48,27 @@
 			{onUpdatePartList}
 		/>
 		<div class="ml-auto flex gap-1">
-			<button class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white" onclick={() => (showJson = !showJson)}>JSON</button
+			<button
+				class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+				onclick={() => (showJson = !showJson)}>JSON</button
 			>
-			<button class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white" onclick={onAddBefore}>+</button>
-			<button class="text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-400" onclick={onDelete}>X</button>
-			<button class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white" onclick={onAddAfter}>+</button>
+			<button
+				class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+				onclick={onAddBefore}>+</button
+			>
+			<button
+				class="text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-400"
+				onclick={onDelete}>X</button
+			>
+			<button
+				class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+				onclick={onAddAfter}>+</button
+			>
 		</div>
 	</div>
 	{#if showJson}
-		<pre class="rounded-md bg-gray-200 p-2 text-xs text-gray-900 dark:bg-gray-900 dark:text-gray-300">{JSON.stringify(
+		<pre
+			class="rounded-md bg-gray-200 p-2 text-xs text-gray-900 dark:bg-gray-900 dark:text-gray-300">{JSON.stringify(
 				block,
 				null,
 				2

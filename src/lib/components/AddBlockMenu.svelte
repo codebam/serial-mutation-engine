@@ -47,7 +47,8 @@
 		{/each}
 	</select>
 	<button
-		class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">+SEP1</button
+		class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+		>+SEP1</button
 	>
 	<button
 		class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"

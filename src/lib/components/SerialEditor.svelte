@@ -4,7 +4,7 @@
 	import FormGroup from './FormGroup.svelte';
 	import BlockComponent from './Block.svelte';
 	import AddBlockMenu from './AddBlockMenu.svelte';
-	
+
 	import { browser } from '$app/environment';
 	import { PartService } from '$lib/partService';
 	import Worker from '$lib/worker/worker.js?worker';
@@ -101,6 +101,14 @@
 		analyzeSerial();
 	});
 
+	$effect(() => {
+		if (parsed && parsed.length > 0) {
+			itemType = partService.determineItemType(parsed);
+		} else {
+			itemType = 'UNKNOWN';
+		}
+	});
+
 	function onParsedUpdate(newParsed: Serial) {
 		parsed = newParsed;
 		updateSerial();
@@ -175,8 +183,14 @@
 </FormGroup>
 
 {#if parsed.length > 0}
-	<div class="mt-4 rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-		<p>Detected Item Type: <span class="font-semibold text-green-600 dark:text-green-400">{itemType}</span></p>
+	<div
+		class="mt-4 rounded-md border border-gray-300 bg-gray-100 p-4 text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+	>
+		<p>
+			Detected Item Type: <span class="font-semibold text-green-600 dark:text-green-400"
+				>{itemType}</span
+			>
+		</p>
 		<select
 			onchange={(e) => (itemType = e.currentTarget.value)}
 			class="mt-2 rounded-md bg-gray-200 p-2 text-gray-900 dark:bg-gray-700 dark:text-white"
@@ -193,11 +207,12 @@
 			<option value="Harlowe Class Mod">Harlowe Class Mod</option>
 		</select>
 	</div>
-	
 {/if}
 
 {#if error}
-	<div class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200">
+	<div
+		class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200"
+	>
 		<p>{error}</p>
 	</div>
 {/if}

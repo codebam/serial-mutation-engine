@@ -36,15 +36,20 @@
 </script>
 
 <div class="mt-4" class:flex={isMaximized} class:gap-2={isMaximized} class:space-y-2={!isMaximized}>
-	<div class="rounded-md border border-gray-300 bg-gray-100 p-4 dark:border-gray-700 dark:bg-gray-800" class:flex-1={isMaximized}>
+	<div
+		class="rounded-md border border-gray-300 bg-gray-100 p-4 dark:border-gray-700 dark:bg-gray-800"
+		class:flex-1={isMaximized}
+	>
 		<div class="flex items-center justify-between">
 			<h4 class="font-semibold text-gray-900 dark:text-gray-100">Deserialized</h4>
 			<div>
 				<button
-					class="mr-2 rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white transition-all hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600">Apply</button
+					class="mr-2 rounded-md bg-blue-600 px-3 py-1 text-sm font-medium text-white transition-all hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
+					>Apply</button
 				>
 				<button
-					class="rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-500">Copy</button
+					class="rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-500"
+					>Copy</button
 				>
 			</div>
 		</div>
@@ -53,7 +58,10 @@
 			bind:value={customString}
 		></textarea>
 	</div>
-	<div class="rounded-md border border-gray-300 bg-gray-100 p-4 dark:border-gray-700 dark:bg-gray-800" class:flex-1={isMaximized}>
+	<div
+		class="rounded-md border border-gray-300 bg-gray-100 p-4 dark:border-gray-700 dark:bg-gray-800"
+		class:flex-1={isMaximized}
+	>
 		<div class="flex items-center justify-between">
 			<h4 class="font-semibold text-gray-900 dark:text-gray-100">JSON</h4>
 			<div>

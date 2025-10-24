@@ -96,7 +96,10 @@
 				role="listitem"
 			>
 				<span>{item.value}</span>
-				<button class="text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-400" on:click={() => handleDelete(i)}>
+				<button
+					class="text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-400"
+					on:click={() => handleDelete(i)}
+				>
 					&times;
 				</button>
 			</div>
