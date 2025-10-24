@@ -109,7 +109,7 @@
 		debounceTimeout = setTimeout(() => {
 			console.log('Debounced function executed:', callback.name);
 			callback(value);
-		}, 3000);
+		}, 0);
 	}
 
 	$effect(() => {

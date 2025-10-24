@@ -36,7 +36,7 @@
 		showToast = true;
 		setTimeout(() => {
 			showToast = false;
-		}, 3000);
+		}, 5000);
 	}
 </script>
 
