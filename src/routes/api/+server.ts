@@ -1,11 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import {
-	base85_to_deserialized,
-	deserialized_to_base85,
-	parseSerial,
-	encodeSerial
-} from '$lib/api';
+import { base85_to_deserialized, deserialized_to_base85 } from '$lib/custom_parser';
+import { encodeSerial } from '$lib/encoder';
+import { parseSerial } from '$lib/parser';
 import type { Serial } from '$lib/types';
 
 interface Operation {
