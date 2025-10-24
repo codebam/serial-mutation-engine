@@ -13,11 +13,13 @@
 
 	function handleAddPart(event: Event) {
 		const select = event.currentTarget as HTMLSelectElement;
-		const [subType, index, value] = select.value.split(':').map(Number);
-		if (!isNaN(subType) && !isNaN(index)) {
-			const newPart: Part = { subType: subType as SubType, index };
-			if (value !== undefined && !isNaN(value)) {
-				newPart.value = value;
+		const selectedValue = select.value;
+		const selectedPart = parts.find(p => `${p.subType}:${p.index}${p.value !== undefined ? ':' + p.value : ''}` === selectedValue);
+
+		if (selectedPart) {
+			const newPart: Part = { subType: selectedPart.subType, index: selectedPart.index };
+			if (selectedPart.value !== undefined) {
+				newPart.value = selectedPart.value;
 			}
 			onAdd(TOK_PART, newPart);
 		}

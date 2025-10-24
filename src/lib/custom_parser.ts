@@ -157,6 +157,22 @@ export function deserialized_to_base85(custom: string): string {
 	return encodeSerial(parsed);
 }
 
+export function parseHeavyOrdnancePartString(partStr: string): Block | null {
+	if (partStr.startsWith('{') && partStr.endsWith('}')) {
+		const content = partStr.slice(1, -1);
+		const parts = content.split(':');
+
+		if (parts.length === 2) {
+			const subType = parseInt(parts[0], 10);
+			const value = parseInt(parts[1], 10);
+			if (!isNaN(subType) && !isNaN(value)) {
+				return { token: TOK_PART, part: { subType: subType, index: 1, value } };
+			}
+		}
+	}
+	return null;
+}
+
 export function parsePartString(partStr: string): Block | null {
 	if (partStr.startsWith('{') && partStr.endsWith('}')) {
 		const content = partStr.slice(1, -1);

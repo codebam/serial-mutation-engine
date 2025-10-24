@@ -23,6 +23,7 @@ export interface PartInfo extends Part {
 	name: string;
 	fileName: string;
 	code: string;
+	subType: SubType;
 }
 
 export interface Block {

@@ -1,4 +1,4 @@
-import { parsePartString } from './custom_parser';
+import { parsePartString, parseHeavyOrdnancePartString } from './custom_parser';
 import { TOK_PART, TOK_VARINT, type Serial, type PartInfo, type Part } from './types';
 import { GetKindEnums, kindToString } from './item-type-lookup';
 
@@ -23,9 +23,14 @@ export class PartService {
 
 					const partKeys = new Set();
 					for (const rawPart of payload.rawParts) {
-						const partBlock = parsePartString(rawPart.universalPart);
+						let partBlock;
+						if (rawPart.fileName === 'heavy_ordnance_firmware') {
+							partBlock = parseHeavyOrdnancePartString(rawPart.universalPart);
+						} else {
+							partBlock = parsePartString(rawPart.universalPart);
+						}
 						if (partBlock && partBlock.part) {
-							const key = `${partBlock.part.subType}:${partBlock.part.index}:${partBlock.part.value}`;
+							const key = JSON.stringify(partBlock.part);
 							if (!partKeys.has(key)) {
 								partKeys.add(key);
 								const partInfo: PartInfo = {
@@ -54,7 +59,7 @@ export class PartService {
 					});
 
 					this.isDataLoaded = true;
-					console.log('Manual lookup for {1:12}:', this.partMap.get('1:1:12'));
+					console.log('Manual lookup for {1:12}:', this.partMap.get(JSON.stringify({ subType: 1, index: 1, value: 12 })));
 					resolve();
 				}
 			});
@@ -63,7 +68,12 @@ export class PartService {
 	}
 
 	findPartInfo(part: Part): PartInfo | undefined {
-		const key = `${part.subType}:${part.index}:${part.value}`;
+		const key = JSON.stringify(part, (k, v) => {
+			if (k === 'name' || k === 'fileName' || k === 'code') {
+				return undefined;
+			}
+			return v;
+		});
 		return this.partMap.get(key);
 	}
 

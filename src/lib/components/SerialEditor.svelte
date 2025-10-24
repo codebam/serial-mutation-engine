@@ -47,7 +47,7 @@
 					const partInfo = partService.findPartInfo(block.part);
 					if (partInfo) {
 						newDetectedParts.push({
-							code: `{${block.part.subType}:${block.part.index}}`,
+							code: partInfo.code,
 							name: partInfo.name
 						});
 					}
