@@ -39,7 +39,7 @@
 		onchange={handleAddPart}
 	>
 		<option value="">+PART</option>
-		{#each parts as part (JSON.stringify(part))}
+		{#each parts as part (part.code)}
 			<option
 				value={`${part.subType}:${part.index}${part.value !== undefined ? ':' + part.value : ''}`}
 				>{part.name} ({part.code})</option
