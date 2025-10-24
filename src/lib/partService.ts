@@ -21,37 +21,31 @@ export class PartService {
 					this.allParts = [];
 					this.partMap = new Map();
 
-					for (const rawPart of payload.rawParts) {
-						const partBlock = parsePartString(rawPart.universalPart);
-						if (partBlock && partBlock.part) {
-							const partInfo: {
-								name: string;
-								subType: number;
-								index: number;
-								fileName: string;
-								code: string;
-								value?: number;
-								values?: { type: number; value: number }[];
-							} = {
-								name: rawPart.name,
-								subType: partBlock.part.subType,
-								index: partBlock.part.index,
-								fileName: rawPart.fileName,
-								code: rawPart.universalPart
-							};
-							if (partBlock.part.value !== undefined) {
-								partInfo.value = partBlock.part.value;
-							}
-							if (partBlock.part.values !== undefined) {
-								partInfo.values = partBlock.part.values;
-							}
-
-							this.allParts.push(partInfo);
-							const key = `${partInfo.subType}:${partInfo.index}:${partInfo.value}`;
-							this.partMap.set(key, partInfo);
-						}
-					}
-					// Sort allParts here
+					                    const partKeys = new Set();
+					                    for (const rawPart of payload.rawParts) {
+					                        const partBlock = parsePartString(rawPart.universalPart);
+					                        if (partBlock && partBlock.part) {
+					                            const key = `${partBlock.part.subType}:${partBlock.part.index}:${partBlock.part.value}`;
+					                            if (!partKeys.has(key)) {
+					                                partKeys.add(key);
+					                                const partInfo: any = {
+					                                    name: rawPart.name,
+					                                    subType: partBlock.part.subType,
+					                                    index: partBlock.part.index,
+					                                    fileName: rawPart.fileName,
+					                                    code: rawPart.universalPart
+					                                };
+					                                if (partBlock.part.value !== undefined) {
+					                                    partInfo.value = partBlock.part.value;
+					                                }
+					                                if (partBlock.part.values !== undefined) {
+					                                    partInfo.values = partBlock.part.values;
+					                                }
+					                                this.allParts.push(partInfo);
+					                                this.partMap.set(key, partInfo);
+					                            }
+					                        }
+					                    }					// Sort allParts here
 					this.allParts.sort((a, b) => {
 						if (a.name && b.name) {
 							return a.name.localeCompare(b.name);
