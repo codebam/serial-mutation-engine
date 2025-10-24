@@ -9,7 +9,10 @@
 		"README.md"
 	],
 	"exports": {
-		".": "./dist/api.js"
+		".": {
+			"import": "./dist/api.js",
+			"types": "./dist/api.d.ts"
+		}
 	},
 	"type": "module",
 	"scripts": {
