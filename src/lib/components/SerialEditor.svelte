@@ -49,9 +49,8 @@
 		}
 	}
 
-	let { serial, onSerialUpdate, onCustomFormatOutputUpdate } = $props<{
+	let { serial, onCustomFormatOutputUpdate } = $props<{
 		serial: string;
-		onSerialUpdate: (newSerial: string) => void;
 		onCustomFormatOutputUpdate?: (newJson: string) => void;
 	}>();
 	let parsed: Serial = $state([]);
@@ -131,9 +130,9 @@
 				itemType = partService.determineItemType(payload.parsed);
 				error = payload.error;
 			} else if (type === 'encoded_serial') {
-				console.log('Encoded serial from worker:', payload.serial);
+				console.log('Main thread: Received encoded_serial from worker. Payload:', payload);
 				if (payload.serial !== serial) {
-					onSerialUpdate(payload.serial);
+					serial = payload.serial;
 				}
 				error = payload.error;
 			} else if (type === 'merged_yaml') {
@@ -145,13 +144,13 @@
 
 	function analyzeSerial(currentSerial: string) {
 		console.log('analyzeSerial called. Current serial:', currentSerial);
-		// if (!currentSerial) { 
-		// 	console.log('analyzeSerial: currentSerial is empty, returning early.');
-		// 	parsed = [];
-		// 	error = null;
-		// 	detectedParts = [];
-		// 	return;
-		// }
+		if (!currentSerial) {
+			console.log('analyzeSerial: currentSerial is empty, returning early.');
+			parsed = [];
+			error = null;
+			detectedParts = [];
+			return;
+		}
 		if (worker) {
 			console.log('Posting parse_serial message to worker with payload:', currentSerial);
 			worker.postMessage({ type: 'parse_serial', payload: currentSerial });
