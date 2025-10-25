@@ -10,12 +10,16 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       python-with-packages = pkgs.python3.withPackages (ps: [
-        ps.base85
       ]);
     in
     {
       devShells.${system}.default = pkgs.mkShell {
-        buildInputs = [ python-with-packages ];
+        buildInputs = [
+          python-with-packages
+          pkgs.typescript-language-server
+          pkgs.prettier
+          pkgs.vscode-langservers-extracted
+        ];
       };
     };
 }

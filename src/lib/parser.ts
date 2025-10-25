@@ -208,6 +208,59 @@ function readPart(tokenizer: Tokenizer): Part {
 	throw new Error(`Unknown part flagType2: ${flagType2}`);
 }
 
+export function parseBytes(bytes: Uint8Array, no_header?: boolean): Serial {
+	const mirrored = mirrorBytes(bytes);
+	const stream = new Bitstream(mirrored);
+
+	// copied from parseSerial
+	// Magic header
+	if (!no_header) {
+		const magic = stream.read(7);
+		if (magic !== 0b0010000) {
+			throw new Error('Invalid magic header');
+		}
+	}
+
+	const tokenizer = new Tokenizer(stream);
+	const blocks: Block[] = [];
+	let trailingTerminators = 0;
+
+	while (true) {
+		const token = tokenizer.nextToken();
+		if (token === null) break;
+
+		if (token === TOK_SEP1) {
+			trailingTerminators++;
+		} else {
+			trailingTerminators = 0;
+		}
+
+		const block: Block = { token };
+
+		switch (token) {
+			case TOK_VARINT:
+				block.value = readVarint(stream);
+				break;
+			case TOK_VARBIT:
+				block.value = readVarbit(stream);
+				break;
+			case TOK_PART:
+				block.part = readPart(tokenizer);
+				break;
+			case TOK_STRING:
+				block.valueStr = readString(stream);
+				break;
+		}
+		blocks.push(block);
+	}
+
+	if (trailingTerminators > 1) {
+		blocks.splice(blocks.length - (trailingTerminators - 1));
+	}
+
+	return blocks;
+}
+
 export function parseSerial(serial: string): Serial {
 	const decoded = decodeBase85(serial);
 	const mirrored = mirrorBytes(decoded);
