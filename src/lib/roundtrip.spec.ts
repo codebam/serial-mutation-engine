@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { base85_to_deserialized, deserialized_to_base85 } from './api';
+import { base85_to_deserialized, deserialized_to_base85, parseCustomFormat } from './custom_parser';
 import { parseSerial } from './parser';
-import { parseCustomFormat } from './custom_parser';
+import { encodeSerial } from './encoder';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -19,16 +19,32 @@ describe('roundtrip', () => {
 				const deserialized = base85_to_deserialized(serial);
 				const new_serial = deserialized_to_base85(deserialized);
 
+				const parsed_serial_object = parseSerial(serial);
+				const encoded_from_parsed = encodeSerial(parsed_serial_object);
+
 				if (serial !== new_serial) {
 					failed_count++;
 					const original_parsed = parseSerial(serial);
 					const new_parsed = parseCustomFormat(deserialized);
 					if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {
 						failed_serials.push(
-							`Mismatch for ${serial}:\nOriginal parsed: ${JSON.stringify(original_parsed)}\nNew parsed: ${JSON.stringify(new_parsed)}`
+							`Mismatch for ${serial} (custom format roundtrip):\nOriginal parsed: ${JSON.stringify(original_parsed)}\nNew parsed: ${JSON.stringify(new_parsed)}`
 						);
 					} else {
-						failed_serials.push(`Encoding mismatch for ${serial}`);
+						failed_serials.push(`Encoding mismatch for ${serial} (custom format roundtrip)`);
+					}
+				}
+
+				if (serial !== encoded_from_parsed) {
+					failed_count++;
+					const original_parsed = parseSerial(serial);
+					const new_parsed = parseSerial(encoded_from_parsed);
+					if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {
+						failed_serials.push(
+							`Mismatch for ${serial} (direct encodeSerial):\nOriginal parsed: ${JSON.stringify(original_parsed)}\nNew parsed: ${JSON.stringify(new_parsed)}`
+						);
+					} else {
+						failed_serials.push(`Encoding mismatch for ${serial} (direct encodeSerial)`);
 					}
 				}
 			} catch (e) {
