@@ -69,7 +69,7 @@ describe('Phosphene Skin Deserialization', () => {
 
     for (const tt of skinTests) {
         it(`deserializes ${tt.name}`, () => {
-            const { serial: parsedSerial } = parseSerial(tt.serial);
+            const parsedSerial = parseSerial(tt.serial);
             const customFormat = toCustomFormat(parsedSerial);
             expect(customFormat).toEqual(tt.deserialized);
         });
@@ -99,8 +99,8 @@ describe('Phosphene Skin Deserialization', () => {
     }
 
     it('should handle strings with special characters', () => {
-        const customFormat = '"my name is \"The Boss\" and I use \\\\ in paths"|';
-        const { serial: parsedSerial } = parseSerial("@Uglo~xgWTbE8I+!bL{xMcBz({3B2d^(1/>oDc^Sk7rQINSn2w$U");
+        const customFormat = '"my name is \\"The Boss\\" and I use \\\\ in paths"|';
+        const parsedSerial = parseSerial("@Uglo~xgWTbE8I+!bL{xMcBz({3B2d^(1/>oDc^Sk7rQINSn2w$U");
         const reserialized = toCustomFormat(parsedSerial);
         expect(reserialized).toEqual(customFormat);
     });
