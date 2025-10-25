@@ -13,6 +13,23 @@ import {
 	SUBTYPE_NONE
 } from './types';
 
+let passives: Record<string, number> = {};
+let reversePassives: Record<number, string> = {};
+let showPassiveName = false;
+
+export function loadPassives(passivesData: Record<string, number>) {
+	passives = passivesData;
+	reversePassives = Object.fromEntries(Object.entries(passives).map(([key, value]) => [value, key]));
+}
+
+export function togglePassiveName(show: boolean) {
+	showPassiveName = show;
+}
+
+function idToPassiveName(id: number): string | undefined {
+	return reversePassives[id];
+}
+
 export function toCustomFormat(p: Serial): string {
 	if (!p) return '';
 	const parts: string[] = [];
@@ -38,7 +55,16 @@ export function toCustomFormat(p: Serial): string {
 						blockStr = `{${block.part.index}}`;
 					}
 					if (block.part.subType === SUBTYPE_INT) {
-						blockStr = `{${block.part.index}:${block.part.value}}`;
+						if (showPassiveName && block.part.index === 3) {
+							const passiveName = idToPassiveName(block.part.value || 0);
+							if (passiveName) {
+								blockStr = `{${block.part.index}:${passiveName}}`;
+							} else {
+								blockStr = `{${block.part.index}:${block.part.value}}`;
+							}
+						} else {
+							blockStr = `{${block.part.index}:${block.part.value}}`;
+						}
 					}
 					if (block.part.subType === SUBTYPE_LIST) {
 						const values = block.part.values?.map((v) => v.value).join(' ') || '';

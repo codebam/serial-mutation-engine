@@ -1,6 +1,12 @@
 <script lang="ts">
 	import SerialEditor from '$lib/components/SerialEditor.svelte';
 	import Toast from '$lib/components/Toast.svelte';
+	import { loadPassives } from '$lib/custom_parser.ts';
+
+	const { data } = $props();
+
+	// Initialize passives data
+	loadPassives(data.passives);
 
 	let serialEditors = $state([
 		{

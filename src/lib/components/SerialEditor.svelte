@@ -8,8 +8,15 @@
 		SUBTYPE_NONE,
 		type Part
 	} from '$lib/types.js';
-	import { toCustomFormat, parseCustomFormat } from '../custom_parser.js';
+	import { toCustomFormat, parseCustomFormat, togglePassiveName } from '../custom_parser.js';
 	import FormGroup from './FormGroup.svelte';
+
+	let showPassiveName = $state(false);
+
+	function handleShowPassiveNameChange() {
+		togglePassiveName(showPassiveName);
+		customFormatOutput = toCustomFormat(parsed);
+	}
 
 	import { browser } from '$app/environment';
 	import { PartService } from '$lib/partService.js';
@@ -294,16 +301,20 @@
 			<option value="Harlowe Class Mod">Harlowe Class Mod</option>
 		</select>
 	</FormGroup>
-
-	<FormGroup label="Deserialized Output">
-		<textarea
-			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-			bind:value={customFormatOutput}
-			placeholder="Paste deserialized here..."
-		></textarea>
-	</FormGroup>
-
-	{#if error}
+    <FormGroup label="Deserialized Output">
+        <div class="flex justify-end mb-2">
+            <label class="flex items-center">
+                <input type="checkbox" bind:checked={showPassiveName} onchange={handleShowPassiveNameChange} />
+                <span class="ml-2 text-sm text-gray-500">Show Strings</span>
+            </label>
+        </div>
+        <textarea
+            class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            bind:value={customFormatOutput}
+            placeholder="Paste deserialized here..."
+        ></textarea>
+    </FormGroup>
+  {#if error}
 		<div
 			class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200"
 		>
