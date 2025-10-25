@@ -52,19 +52,19 @@ export function toCustomFormat(p: Serial): string {
 			case TOK_PART:
 				if (block.part) {
 					if (block.part.subType === SUBTYPE_NONE) {
-						blockStr = `{${block.part.index}}`;
-					}
-					if (block.part.subType === SUBTYPE_INT) {
-						if (showPassiveName && block.part.index === 3) {
-							const passiveName = idToPassiveName(block.part.value || 0);
+						if (showPassiveName) {
+							const passiveName = idToPassiveName(block.part.index || 0);
 							if (passiveName) {
-								blockStr = `{${block.part.index}:${passiveName}}`;
+								blockStr = `"${passiveName}"`;
 							} else {
-								blockStr = `{${block.part.index}:${block.part.value}}`;
+								blockStr = `{${block.part.index}}`;
 							}
 						} else {
-							blockStr = `{${block.part.index}:${block.part.value}}`;
+							blockStr = `{${block.part.index}}`;
 						}
+					}
+					if (block.part.subType === SUBTYPE_INT) {
+							blockStr = `{${block.part.index}:${block.part.value}}`;
 					}
 					if (block.part.subType === SUBTYPE_LIST) {
 						const values = block.part.values?.map((v) => v.value).join(' ') || '';
