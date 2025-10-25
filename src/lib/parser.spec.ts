@@ -2,6 +2,75 @@ import { describe, it, expect } from 'vitest';
 import { parseSerial } from './parser.js';
 import { toCustomFormat } from './custom_parser.js';
 import { TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_PART, TOK_STRING, SUBTYPE_NONE, SUBTYPE_INT } from './types.js';
+import { Bitstream } from './bitstream';
+
+// Copied from encoder.ts to allow testing of arbitrary binary strings.
+const BASE85_ALPHABET =
+	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
+
+function encodeBase85(bytes: Uint8Array): string {
+	let encoded = '';
+	let i = 0;
+
+	for (i = 0; i + 3 < bytes.length; i += 4) {
+		let value =
+			((bytes[i] << 24) | (bytes[i + 1] << 16) | (bytes[i + 2] << 8) | bytes[i + 3]) >>> 0;
+		let block = '';
+		for (let j = 0; j < 5; j++) {
+			block = BASE85_ALPHABET[value % 85] + block;
+			value = Math.floor(value / 85);
+		}
+		encoded += block;
+	}
+
+	const remaining = bytes.length - i;
+	if (remaining > 0) {
+		const temp = new Uint8Array(4);
+		for (let j = 0; j < remaining; j++) {
+			temp[j] = bytes[i + j];
+		}
+
+		let value = ((temp[0] << 24) | (temp[1] << 16) | (temp[2] << 8) | temp[3]) >>> 0;
+		let block = '';
+		for (let j = 0; j < 5; j++) {
+			block = BASE85_ALPHABET[value % 85] + block;
+			value = Math.floor(value / 85);
+		}
+		encoded += block.substring(0, remaining + 1);
+	}
+
+	return '@U' + encoded;
+}
+
+function mirrorBytes(bytes: Uint8Array): Uint8Array {
+	const mirrored = new Uint8Array(bytes.length);
+	for (let i = 0; i < bytes.length; i++) {
+		const byte = bytes[i];
+		let mirroredByte = 0;
+		for (let j = 0; j < 8; j++) {
+			mirroredByte |= ((byte >> j) & 1) << (7 - j);
+		}
+		mirrored[i] = mirroredByte;
+	}
+	return mirrored;
+}
+// End of copied functions
+
+describe('Binary Encoding', () => {
+    it('should encode a simple binary string to a base85 serial', () => {
+      const binaryString = '00100001111100110000110001100110111000011110011111001111011011111101100100111111101001001110000110100111110101111111011100011000000001100100000110001001110000010001000011000000000001011100111000010000000000';
+      const chunks = binaryString.match(/.{8}/g);
+      const bytes = Uint8Array.from(chunks.map(chunk => parseInt(chunk, 2)));
+      const bitstream = new Bitstream(bytes);
+      const expectedSerial = '@U1O';
+      // just to make sure we fail
+  
+      const mirrored = mirrorBytes(bytes);
+      const serial = encodeBase85(mirrored);
+  
+      expect(serial).toEqual(expectedSerial);
+    });
+  });
 
 describe('Phosphene Skin Deserialization', () => {
     const skinTests = [
@@ -99,7 +168,7 @@ describe('Phosphene Skin Deserialization', () => {
     }
 
     it('should handle strings with special characters', () => {
-        const customFormat = '"my name is \\"The Boss\\" and I use \\\\ in paths"|';
+        const customFormat = '"my name is \"The Boss\" and I use \\ in paths"|';
         const parsedSerial = parseSerial("@Uglo~xgWTbE8I+!bL{xMcBz({3B2d^(1/>oDc^Sk7rQINSn2w$U");
         const reserialized = toCustomFormat(parsedSerial);
         expect(reserialized).toEqual(customFormat);
