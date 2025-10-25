@@ -52,13 +52,12 @@ export function toCustomFormat(p: Serial): string {
 			case TOK_PART:
 				if (block.part) {
 					if (block.part.subType === SUBTYPE_NONE) {
-						if (showPassiveName) {
-							const passiveName = idToPassiveName(block.part.index || 0);
-							if (passiveName) {
-								blockStr = `"${passiveName}"`;
-							} else {
-								blockStr = `{${block.part.index}}`;
-							}
+						const passiveIdentifier = idToPassiveName(block.part.index || 0);
+						if (showPassiveName && passiveIdentifier && passives[passiveIdentifier] && passives[passiveIdentifier].name) {
+							const passiveName = passives[passiveIdentifier].name;
+							blockStr = `"${passiveName}::${passiveIdentifier}"`;
+						} else if (showPassiveName && passiveIdentifier) {
+							blockStr = `"${passiveIdentifier}"`;
 						} else {
 							blockStr = `{${block.part.index}}`;
 						}
@@ -204,11 +203,28 @@ export function parseCustomFormat(custom: string): Serial {
 							throw new Error(`Unmatched '"' at position ${i}`);
 						}
 		
-						const passive = passives[content];
+						let finalContent = content;
+		
+										const separatorIndex = content.indexOf('::');
+		
+										if (separatorIndex !== -1) {
+		
+											finalContent = content.substring(separatorIndex + 2);
+		
+										}
+		
+						
+		
+										const passive = passives[finalContent];
+		
 										if (passive) {
+		
 											newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: passive.id } });
+		
 										} else {
+		
 											newParsed.push({ token: TOK_STRING, valueStr: content });
+		
 										}						i = end + 1;
 						continue;
 					}
