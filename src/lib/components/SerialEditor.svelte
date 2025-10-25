@@ -10,7 +10,6 @@
 	} from '$lib/types.js';
 	import { toCustomFormat, parseCustomFormat } from '../custom_parser.js';
 	import FormGroup from './FormGroup.svelte';
-	import AddBlockMenu from './AddBlockMenu.svelte';
 
 	import { browser } from '$app/environment';
 	import { PartService } from '$lib/partService.js';
@@ -311,16 +310,6 @@
 			<p>{error}</p>
 		</div>
 	{/if}
-
-	<div class="mt-4" role="list">
-		{#if partService instanceof PartService}
-			<AddBlockMenu
-				{partService}
-				{itemType}
-				onAdd={(token, part) => addBlock(parsed.length, token, part)}
-			/>
-		{/if}
-	</div>
 
 	<div class="mt-4">
 		<input
