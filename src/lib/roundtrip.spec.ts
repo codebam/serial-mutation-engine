@@ -61,13 +61,20 @@ describe('roundtrip', () => {
 		expect(failed_count).toBe(0);
 	});
 
-	it('should encode passive names and identifiers to the same serial', () => {
+	it('should encode passive names and identifiers to the same serial and deserialize to a normalized format', () => {
 		const customFormatWithName = '256, 0, 1, 50| 2, 4285|| {26} {10} {53} "passive_blue_2_5_tier_4" "passive_blue_1_2_tier_3" "passive_green_2_3_tier_2" "Cast Iron::passive_green_1_1_tier_1"|';
 		const customFormatWithoutName = '256, 0, 1, 50| 2, 4285|| {26} {10} {53} "passive_blue_2_5_tier_4" "passive_blue_1_2_tier_3" "passive_green_2_3_tier_2" "passive_green_1_1_tier_1"|';
+		const expectedNormalizedFormat = '256, 0, 1, 50| 2, 4285|| {26} {10} {53} "passive_blue_2_5_tier_4" "passive_blue_1_2_tier_3" "passive_green_2_3_tier_2" "passive_green_1_1_tier_1"|';
 
 		const serial1 = deserialized_to_base85(customFormatWithName);
 		const serial2 = deserialized_to_base85(customFormatWithoutName);
 
 		expect(serial1).toEqual(serial2);
+
+		const deserialized1 = base85_to_deserialized(serial1);
+		const deserialized2 = base85_to_deserialized(serial2);
+
+		expect(deserialized1).toEqual(expectedNormalizedFormat);
+		expect(deserialized2).toEqual(expectedNormalizedFormat);
 	});
 });

@@ -30,7 +30,7 @@ function idToPassiveName(id: number): string | undefined {
 	return reversePassives[id];
 }
 
-export function toCustomFormat(p: Serial): string {
+export function toCustomFormat(p: Serial, options?: { showPassiveName?: boolean; showIdentifierOnly?: boolean }): string {
 	if (!p) return '';
 	const parts: string[] = [];
 
@@ -53,10 +53,12 @@ export function toCustomFormat(p: Serial): string {
 				if (block.part) {
 					if (block.part.subType === SUBTYPE_NONE) {
 						const passiveIdentifier = idToPassiveName(block.part.index || 0);
-						if (showPassiveName && passiveIdentifier && passives[passiveIdentifier] && passives[passiveIdentifier].name) {
+						if (options?.showIdentifierOnly && passiveIdentifier) {
+							blockStr = `"${passiveIdentifier}"`;
+						} else if (options?.showPassiveName && passiveIdentifier && passives[passiveIdentifier] && passives[passiveIdentifier].name) {
 							const passiveName = passives[passiveIdentifier].name;
 							blockStr = `"${passiveName}::${passiveIdentifier}"`;
-						} else if (showPassiveName && passiveIdentifier) {
+						} else if (options?.showPassiveName && passiveIdentifier) {
 							blockStr = `"${passiveIdentifier}"`;
 						} else {
 							blockStr = `{${block.part.index}}`;
@@ -236,7 +238,7 @@ export function parseCustomFormat(custom: string): Serial {
 
 export function base85_to_deserialized(serial: string): string {
 	const parsed = parseSerial(serial);
-	return toCustomFormat(parsed);
+	return toCustomFormat(parsed, { showIdentifierOnly: true });
 }
 
 export function deserialized_to_base85(custom: string): string {
