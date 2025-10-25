@@ -322,21 +322,6 @@
 		{/if}
 	</div>
 
-	<div class="mt-4 flex gap-2">
-		<button
-			onclick={parseSerialDirect}
-			class="rounded-md bg-blue-500 px-4 py-2 text-center text-sm font-medium text-white transition-all hover:bg-blue-600"
-		>
-			Parse (Direct)
-		</button>
-		<button
-			onclick={encodeSerialDirect}
-			class="rounded-md bg-green-500 px-4 py-2 text-center text-sm font-medium text-white transition-all hover:bg-green-600"
-		>
-			Encode (Direct)
-		</button>
-	</div>
-
 	<div class="mt-4">
 		<input
 			type="file"
