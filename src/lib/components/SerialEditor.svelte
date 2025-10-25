@@ -15,6 +15,39 @@
 	import { browser } from '$app/environment';
 	import { PartService } from '$lib/partService';
 	import Worker from '$lib/worker/worker.js?worker';
+	import { parseSerial, encodeSerial } from '$lib/api';
+
+	// Add new functions for direct parsing/encoding
+	function parseSerialDirect() {
+		try {
+			const newParsed = parseSerial(serial);
+			parsed = newParsed;
+			error = null;
+			customFormatOutput = toCustomFormat(parsed); // Manually update output
+		} catch (err) {
+			console.error('Direct parse error:', err);
+			if (err instanceof Error) {
+				error = err.message;
+			} else {
+				error = 'An unknown error occurred during direct parsing.';
+			}
+		}
+	}
+
+	function encodeSerialDirect() {
+		try {
+			const newSerial = encodeSerial(parsed);
+			serial = newSerial;
+			error = null;
+		} catch (err) {
+			console.error('Direct encode error:', err);
+			if (err instanceof Error) {
+				error = err.message;
+			} else {
+				error = 'An unknown error occurred during direct encoding.';
+			}
+		}
+	}
 
 	let { serial, onSerialUpdate, onCustomFormatOutputUpdate } = $props<{
 		serial: string;
@@ -112,30 +145,53 @@
 
 	function analyzeSerial(currentSerial: string) {
 		console.log('analyzeSerial called. Current serial:', currentSerial);
-		if (!currentSerial) {
-			parsed = [];
-			error = null;
-			detectedParts = [];
-			return;
-		}
+		// if (!currentSerial) { 
+		// 	console.log('analyzeSerial: currentSerial is empty, returning early.');
+		// 	parsed = [];
+		// 	error = null;
+		// 	detectedParts = [];
+		// 	return;
+		// }
 		if (worker) {
 			console.log('Posting parse_serial message to worker with payload:', currentSerial);
 			worker.postMessage({ type: 'parse_serial', payload: currentSerial });
+		} else {
+			console.log('analyzeSerial: Worker is not initialized.');
 		}
 	}
 
-	function debounceParse<T>(callback: (value: T) => void, value: T) {
-		console.log('debounceParse called for:', callback.name);
-		clearTimeout(debounceTimeout);
-		debounceTimeout = setTimeout(() => {
-			console.log('Debounced function executed:', callback.name);
-			callback(value);
-		}, 0);
-	}
+	$effect(() => {
+		console.log('Effect: serial changed, analyzing serial');
+		analyzeSerial(serial);
+	});
 
 	$effect(() => {
-		console.log('Effect: serial changed, debouncing analyzeSerial');
-		debounceParse(analyzeSerial, serial);
+		const currentCustomFormat = toCustomFormat(parsed);
+		if (customFormatOutput !== currentCustomFormat) {
+			try {
+				const newParsed = parseCustomFormat(customFormatOutput);
+				if (newParsed) {
+					parsed = newParsed;
+					updateSerial();
+					error = null;
+				} else {
+					if (customFormatOutput.trim() !== '') {
+						error = 'Invalid Custom Format';
+					} else {
+						error = null;
+						parsed = [];
+						updateSerial();
+					}
+				}
+			} catch (err) {
+				console.error('Error parsing custom format:', err);
+				if (err instanceof Error) {
+					error = err.message;
+				} else {
+					error = 'An unknown error occurred while parsing the custom format.';
+				}
+			}
+		}
 	});
 
 	$effect(() => {
@@ -165,32 +221,6 @@
 		parsed.splice(index, 0, newBlock);
 		parsed = parsed; // Trigger reactivity
 		updateSerial();
-	}
-
-	function onCustomFormatOutputChange(e: Event) {
-		const newCustomFormat = (e.target as HTMLTextAreaElement).value;
-		console.log('onCustomFormatOutputChange called. New Custom Format:', newCustomFormat);
-		customFormatOutput = newCustomFormat;
-		debounceParse(() => {
-			console.log('Attempting to parse custom format from onCustomFormatOutputChange');
-			try {
-				const newParsed = parseCustomFormat(newCustomFormat);
-				if (newParsed) {
-					parsed = newParsed;
-					updateSerial();
-					error = null;
-				} else {
-					error = 'Invalid Custom Format';
-				}
-			} catch (err) {
-				console.error('Error parsing custom format from onCustomFormatOutputChange:', err);
-				if (err instanceof Error) {
-					error = err.message;
-				} else {
-					error = 'An unknown error occurred while parsing the custom format.';
-				}
-			}
-		}, null);
 	}
 
 	function handleFileSelect(event: Event) {
@@ -229,9 +259,9 @@
 	<FormGroup label="Serial Input">
 		<textarea
 			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-			oninput={(e) => onSerialUpdate(e.currentTarget.value)}
-			placeholder="Paste serial here...">{serial}</textarea
-		>
+			bind:value={serial}
+			placeholder="Paste serial here..."
+		></textarea>
 	</FormGroup>
 
 	{#if detectedParts.length > 0}
@@ -271,7 +301,6 @@
 		<textarea
 			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 			bind:value={customFormatOutput}
-			oninput={onCustomFormatOutputChange}
 			placeholder="Paste deserialized here..."
 		></textarea>
 	</FormGroup>
@@ -292,6 +321,21 @@
 				onAdd={(token, part) => addBlock(parsed.length, token, part)}
 			/>
 		{/if}
+	</div>
+
+	<div class="mt-4 flex gap-2">
+		<button
+			onclick={parseSerialDirect}
+			class="rounded-md bg-blue-500 px-4 py-2 text-center text-sm font-medium text-white transition-all hover:bg-blue-600"
+		>
+			Parse (Direct)
+		</button>
+		<button
+			onclick={encodeSerialDirect}
+			class="rounded-md bg-green-500 px-4 py-2 text-center text-sm font-medium text-white transition-all hover:bg-green-600"
+		>
+			Encode (Direct)
+		</button>
 	</div>
 
 	<div class="mt-4">

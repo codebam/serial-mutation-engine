@@ -14,14 +14,6 @@
 	let showToast = $state(false);
 	let toastMessage = $state('');
 
-	function updateEditorSerial(editorId: number, newSerial: string) {
-		const editor = serialEditors.find((e) => e.id === editorId);
-		if (editor) {
-			editor.serial = newSerial;
-			editor.merged = false;
-		}
-	}
-
 	function updateEditorCustomFormatOutput(editorId: number, newJson: string) {
 		const editor = serialEditors.find((e) => e.id === editorId);
 		if (editor) {
@@ -45,8 +37,7 @@
 	{#each serialEditors as editor (editor.id)}
 		<div>
 			<SerialEditor
-				serial={editor.serial}
-				onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)}
+				bind:serial={editor.serial}
 				onCustomFormatOutputUpdate={(newJson) => updateEditorCustomFormatOutput(editor.id, newJson)}
 			/>
 		</div>

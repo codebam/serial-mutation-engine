@@ -43,6 +43,7 @@ for (const key in coreMutations) {
 type WorkerPayload = string | Serial | State | { baseYaml: string; serials: string[] };
 
 self.onmessage = async function (e: MessageEvent<{ type: string; payload: WorkerPayload }>) {
+	console.log('Worker received message:', e.data.type);
 	const { type, payload } = e.data;
 
 	if (type === 'load_part_data') {
@@ -108,8 +109,9 @@ self.onmessage = async function (e: MessageEvent<{ type: string; payload: Worker
 		});
 	} else if (type === 'parse_serial') {
 		try {
-			const parsed = parseSerial(payload);
-			self.postMessage({ type: 'parse_serial', payload: { parsed } });
+			console.log('Parsing serial with payload:', typeof payload, payload);
+			const parsed = parseSerial(payload as string);
+			self.postMessage({ type: 'parsed_serial', payload: { parsed } });
 		} catch (_e) {
 			self.postMessage({ type: 'parsed_serial', payload: { error: (_e as Error).message } });
 		}
