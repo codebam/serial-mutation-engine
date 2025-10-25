@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Serial } from '$lib/types';
-	import { toCustomFormat } from '$lib/custom_parser';
+	import type { Serial } from '$lib/types.js';
+	import { toCustomFormat } from '$lib/custom_parser.js';
 
 	let { parsed, onParsedUpdate, isMaximized } = $props<{
 		parsed: Serial;

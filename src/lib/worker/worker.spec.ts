@@ -8,7 +8,7 @@ vi.stubGlobal('crypto', {
 	}
 });
 import Worker from './worker.js?worker';
-import type { State } from '../types';
+import type { State } from '../types.js';
 
 interface WorkerResult {
 	uniqueCount: number;

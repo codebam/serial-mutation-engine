@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Part } from '$lib/types';
-	import type { PartService } from '$lib/partService';
+	import type { Part } from '$lib/types.js';
+	import type { PartService } from '$lib/partService.js';
 
 	let { part, partService } = $props<{
 		part: Part;

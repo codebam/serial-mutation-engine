@@ -15,7 +15,7 @@ import {
 const BASE85_ALPHABET =
 	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
-function decodeBase85(encoded: string): Uint8Array {
+export function decodeBase85(encoded: string): Uint8Array {
 	if (encoded.startsWith('@U')) {
 		encoded = encoded.substring(2);
 	}
@@ -61,7 +61,7 @@ function decodeBase85(encoded: string): Uint8Array {
 	return new Uint8Array(decoded);
 }
 
-function mirrorBytes(bytes: Uint8Array): Uint8Array {
+export function mirrorBytes(bytes: Uint8Array): Uint8Array {
 	const mirrored = new Uint8Array(bytes.length);
 	for (let i = 0; i < bytes.length; i++) {
 		const byte = bytes[i];

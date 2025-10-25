@@ -1,6 +1,6 @@
-import { parsePartString, parseHeavyOrdnancePartString } from './custom_parser';
-import { TOK_PART, TOK_VARINT, type Serial, type PartInfo, type Part } from './types';
-import { GetKindEnums, kindToString } from './item-type-lookup';
+import { parsePartString, parseHeavyOrdnancePartString } from './custom_parser.js';
+import { TOK_PART, TOK_VARINT, type Serial, type PartInfo, type Part } from './types.js';
+import { GetKindEnums, kindToString } from './item-type-lookup.js';
 
 export class PartService {
 	worker: Worker;

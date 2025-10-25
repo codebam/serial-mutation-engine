@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { parseSerial } from './parser';
-import { toCustomFormat } from './custom_parser';
-import { TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_PART, TOK_STRING, SUBTYPE_NONE, SUBTYPE_INT } from './types';
+import { parseSerial } from './parser.js';
+import { toCustomFormat } from './custom_parser.js';
+import { TOK_SEP1, TOK_SEP2, TOK_VARINT, TOK_PART, TOK_STRING, SUBTYPE_NONE, SUBTYPE_INT } from './types.js';
 
 describe('Phosphene Skin Deserialization', () => {
     const skinTests = [

@@ -1,6 +1,6 @@
-import { parseSerial } from './parser';
-import { encodeSerial } from './encoder';
-import type { Serial, Block } from './types';
+import { parseSerial } from './parser.js';
+import { encodeSerial } from './encoder.js';
+import type { Serial, Block } from './types.js';
 import {
 	TOK_SEP1,
 	TOK_SEP2,

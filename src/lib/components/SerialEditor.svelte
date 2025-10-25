@@ -8,14 +8,14 @@
 		SUBTYPE_NONE,
 		type Part
 	} from '$lib/types.js';
-	import { toCustomFormat, parseCustomFormat } from '../custom_parser';
+	import { toCustomFormat, parseCustomFormat } from '../custom_parser.js';
 	import FormGroup from './FormGroup.svelte';
 	import AddBlockMenu from './AddBlockMenu.svelte';
 
 	import { browser } from '$app/environment';
-	import { PartService } from '$lib/partService';
+	import { PartService } from '$lib/partService.js';
 	import Worker from '$lib/worker/worker.js?worker';
-	import { parseSerial, encodeSerial } from '$lib/api';
+	import { parseSerial, encodeSerial } from '$lib/api.js';
 
 	// Add new functions for direct parsing/encoding
 	function parseSerialDirect() {

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Part } from '$lib/types';
-	import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_VARINT } from '$lib/types';
+	import type { Part } from '$lib/types.js';
+	import { SUBTYPE_INT, SUBTYPE_LIST, SUBTYPE_NONE, TOK_VARINT } from '$lib/types.js';
 	import Asset from './Asset.svelte';
 	import PartName from './PartName.svelte';
-	import type { PartService } from '$lib/partService';
+	import type { PartService } from '$lib/partService.js';
 
 	let { part, partService, onUpdatePart, onUpdatePartList } = $props<{
 		part: Part;

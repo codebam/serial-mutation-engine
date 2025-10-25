@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { base85_to_deserialized, deserialized_to_base85 } from '$lib/custom_parser';
-import { encodeSerial } from '$lib/encoder';
-import { parseSerial } from '$lib/parser';
-import type { Serial } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { base85_to_deserialized, deserialized_to_base85 } from '$lib/custom_parser.js';
+import { encodeSerial } from '$lib/encoder.js';
+import { parseSerial } from '$lib/parser.js';
+import type { Serial } from '$lib/types.js';
 
 /**
  * @typedef {object} Operation

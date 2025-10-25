@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP2 } from '../types';
-	import type { Part } from '$lib/types';
-	import type { PartService } from '$lib/partService';
+	import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP2 } from '../types.js';
+	import type { Part } from '$lib/types.js';
+	import type { PartService } from '$lib/partService.js';
 
 	let { onAdd, partService, itemType } = $props<{
 		onAdd: (token: number, part?: Part) => void;

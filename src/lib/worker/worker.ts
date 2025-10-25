@@ -1,9 +1,10 @@
-import { parseSerial, decodeBase85, mirrorBytes } from '../parser';
-import { encodeSerial } from '../encoder';
-import * as coreMutations from '../mutations';
-import { mergeSerials, type Mutation } from '../mutations';
-import { parseCustomFormat } from '../custom_parser';
-import type { RawPart, State, Serial } from '../types';
+console.log('Worker script evaluating...');
+import { parseSerial, decodeBase85, mirrorBytes } from '../parser.js';
+import { encodeSerial } from '../encoder.js';
+import * as coreMutations from '../mutations.js';
+import { mergeSerials, type Mutation } from '../mutations.js';
+import { parseCustomFormat } from '../custom_parser.js';
+import type { RawPart, State, Serial } from '../types.js';
 
 interface PartItem {
 	name?: string;
@@ -42,9 +43,13 @@ for (const key in coreMutations) {
 
 type WorkerPayload = string | Serial | State | { baseYaml: string; serials: string[] };
 
-self.onmessage = async function (e: MessageEvent<{ type: string; payload: WorkerPayload }>) {
-	console.log('Worker received message:', e.data.type);
-	const { type, payload } = e.data;
+self.onmessage = async function (e: MessageEvent) {
+	if (typeof e.data !== 'object' || e.data === null || !('type' in e.data)) {
+		console.error('Worker received message with invalid format', e.data);
+		return;
+	}
+	const { type, payload } = e.data as { type: string; payload: WorkerPayload };
+	console.log('Worker received message:', type);
 
 	if (type === 'load_part_data') {
 		const files = [
@@ -117,13 +122,13 @@ self.onmessage = async function (e: MessageEvent<{ type: string; payload: Worker
 		}
 	} else if (type === 'encode_serial') {
 		try {
-			const serial = encodeSerial(payload);
+			const serial = encodeSerial(payload as Serial);
 			self.postMessage({ type: 'encoded_serial', payload: { serial } });
 		} catch (_e) {
 			self.postMessage({ type: 'encoded_serial', payload: { error: (_e as Error).message } });
 		}
 	} else if (type === 'parse_pasted_content') {
-		const content = payload;
+		const content = payload as string;
 		try {
 			// 1. Try JSON
 			const newParsed = JSON.parse(content);
