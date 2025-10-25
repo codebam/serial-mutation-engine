@@ -13,13 +13,13 @@ import {
 	SUBTYPE_NONE
 } from './types';
 
-let passives: Record<string, number> = {};
+let passives: Record<string, { id: number; name?: string }> = {};
 let reversePassives: Record<number, string> = {};
 let showPassiveName = false;
 
-export function loadPassives(passivesData: Record<string, number>) {
+export function loadPassives(passivesData: Record<string, { id: number; name?: string }>) {
 	passives = passivesData;
-	reversePassives = Object.fromEntries(Object.entries(passives).map(([key, value]) => [value, key]));
+	reversePassives = Object.fromEntries(Object.entries(passives).map(([key, value]) => [value.id, key]));
 }
 
 export function togglePassiveName(show: boolean) {
@@ -181,34 +181,37 @@ export function parseCustomFormat(custom: string): Serial {
 			continue;
 		}
 
-		if (char === '"') {
-			let end = i + 1;
-			let content = '';
-			while (end < custom.length) {
-				const current_char = custom[end];
-				if (current_char === '"') {
-					break; // end of string
-				}
-				if (current_char === '\\') {
-					if (end + 1 < custom.length) {
-						content += custom[end + 1];
-						end += 2;
+					if (char === '"') {
+						let end = i + 1;
+						let content = '';
+						while (end < custom.length) {
+							const current_char = custom[end];
+							if (current_char === '"') {
+								break; // end of string
+							}
+							if (current_char === '\\') {
+								if (end + 1 < custom.length) {
+									content += custom[end + 1];
+									end += 2;
+									continue;
+								}
+							}
+							content += current_char;
+							end++;
+						}
+		
+						if (end >= custom.length || custom[end] !== '"') {
+							throw new Error(`Unmatched '"' at position ${i}`);
+						}
+		
+						const passive = passives[content];
+										if (passive) {
+											newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: passive.id } });
+										} else {
+											newParsed.push({ token: TOK_STRING, valueStr: content });
+										}						i = end + 1;
 						continue;
 					}
-				}
-				content += current_char;
-				end++;
-			}
-
-			if (end >= custom.length || custom[end] !== '"') {
-				throw new Error(`Unmatched '"' at position ${i}`);
-			}
-
-			newParsed.push({ token: TOK_STRING, valueStr: content });
-			i = end + 1;
-			continue;
-		}
-
 		throw new Error(`Invalid character: '${char}' at position ${i}`);
 	}
 
