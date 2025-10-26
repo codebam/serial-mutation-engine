@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { base85_to_deserialized, deserialized_to_base85 } from './custom_parser.ts';
+import { parseSerial } from './parser.ts';
+import { encodeSerial } from './encoder.ts';
 import packageJson from '../../package.json' with { type: 'json' };
 const { version } = packageJson;
 
@@ -56,10 +58,11 @@ async function run() {
 	if (decodeFlag) {
 		getInput(async (input) => {
 			try {
-				const deserialized = await base85_to_deserialized(input);
 				if (jsonFlag) {
+					const deserialized = await parseSerial(input);
 					console.log(JSON.stringify(deserialized, null, 2));
 				} else {
+					const deserialized = await base85_to_deserialized(input);
 					console.log(deserialized);
 				}
 			} catch (error) {
@@ -70,8 +73,13 @@ async function run() {
 	} else if (encodeFlag) {
 		getInput(async (input) => {
 			try {
-				const serial = await deserialized_to_base85(input);
-				console.log(serial);
+				if (jsonFlag) {
+					const serial = await encodeSerial(JSON.parse(input));
+					console.log(serial);
+				} else {
+					const serial = await deserialized_to_base85(input);
+					console.log(serial);
+				}
 			} catch (error) {
 				console.error('Error encoding:', (error as Error).message);
 				process.exit(1);
