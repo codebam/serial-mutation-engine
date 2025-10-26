@@ -2069,17 +2069,17 @@ describe('Varint and Varbit Encoding Comparison with Go', () => {
 });
 
 describe('BitstreamReader', () => {
-    it('should read bits correctly', async () => {
-        const writer = new BitstreamWriter();
-        writer.write(123, 8);
-        writer.write(45, 6);
-        const bytes = writer.getBytes();
+	it('should read bits correctly', async () => {
+		const writer = new BitstreamWriter();
+		writer.write(123, 8);
+		writer.write(45, 6);
+		const bytes = writer.getBytes();
 
-        const reader = new BitstreamReader(bytes);
-        const val1 = await reader.read(8);
-        const val2 = await reader.read(6);
+		const reader = new BitstreamReader(bytes);
+		const val1 = await reader.read(8);
+		const val2 = await reader.read(6);
 
-        expect(val1).toBe(123);
-        expect(val2).toBe(45);
-    });
+		expect(val1).toBe(123);
+		expect(val2).toBe(45);
+	});
 });
