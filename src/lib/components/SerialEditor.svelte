@@ -1,74 +1,73 @@
 <script lang="ts">
-	import {
-		type Serial,
-		type Block,
-		TOK_VARINT,
-		TOK_VARBIT,
-		TOK_PART,
-		SUBTYPE_NONE,
-		type Part,
-		classModIdToName
-	} from '../types';
+	import { type Serial, type Part, classModIdToName } from '../types';
+	import { browser } from '$app/environment';
 	import { toCustomFormat, parseCustomFormat } from '../custom_parser.js';
 	import FormGroup from './FormGroup.svelte';
+	import Worker from '$lib/worker/worker.js?worker';
+	import { PartService } from '$lib/partService.js';
+	import { TOK_PART } from '../types';
 
-	let passiveIdToName: { [key: number]: string } = {};
-	let passivesLoaded = $state(false);
+	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
+		serial: string;
+		onCustomFormatOutputUpdate?: (newJson: string) => void;
+		onSerialUpdate?: (newSerial: string) => void;
+	}>();
 
-	let weaponPartIdToName: { [key: number]: string } = {};
-	let weaponPartsLoaded = $state(false);
+	let parsed: Serial = $state([]);
+	let error: string | null = $state(null);
+	let itemType = $state('UNKNOWN');
+	let customFormatOutput = $state('');
+	let detectedParts: { code: string; name: string }[] = $state([]);
+	let baseYaml = $state('');
+	let mergedYaml = $state('');
+	let fileInput: HTMLInputElement = $state() as HTMLInputElement;
+	let useStringRepresentation = $state(false);
 
 	let isMounted = $state(false);
 	$effect(() => {
 		isMounted = true;
 	});
 
-	$effect(() => {
-		async function loadData() {
-			await (async function loadPassives() {
-				if (itemType.includes('Class Mod') && !passivesLoaded) {
-					const response = await fetch('/passives.json');
-					const passives: Record<string, { id: string } | string> = await response.json();
-					for (const key in passives) {
-						const passive = passives[key];
-						if (typeof passive === 'object') {
-							passiveIdToName[parseInt(passive.id)] = key;
-						} else {
-							passiveIdToName[parseInt(passive)] = key;
-						}
-					}
-					passivesLoaded = true;
+	let passiveIdToName: Record<number, string> = $state({});
+	let weaponPartIdToName: Record<number, string> = $state({});
+
+	const dataLoaded = $derived.by(async () => {
+		if (itemType.includes('Class Mod')) {
+			const response = await fetch('/passives.json');
+			const passives: Record<string, { id: string } | string> = await response.json();
+			for (const key in passives) {
+				const passive = passives[key];
+				if (typeof passive === 'object') {
+					passiveIdToName[parseInt(passive.id)] = key;
+				} else {
+					passiveIdToName[parseInt(passive)] = key;
 				}
-			})();
+			}
+			return { passivesLoaded: true, weaponPartsLoaded: false };
+		} else if (itemType.includes('Weapon')) {
+			const [womboComboResponse, universalResponse] = await Promise.all([
+				fetch('/wombo_combo_parts.json'),
+				fetch('/universal_weapon_parts.json')
+			]);
+			const womboComboParts: Record<string, { id: string } | string> =
+				await womboComboResponse.json();
+			const universalParts: Record<string, { id: string } | string> =
+				await universalResponse.json();
 
-			await (async function loadWeaponParts() {
-				if (itemType.includes('Weapon') && !weaponPartsLoaded) {
-					const [womboComboResponse, universalResponse] = await Promise.all([
-						fetch('/wombo_combo_parts.json'),
-						fetch('/universal_weapon_parts.json')
-					]);
-					const womboComboParts: Record<string, { id: string } | string> = await womboComboResponse.json();
-					const universalParts: Record<string, { id: string } | string> = await universalResponse.json();
+			const combinedParts = { ...womboComboParts, ...universalParts };
 
-					const combinedParts = { ...womboComboParts, ...universalParts };
-
-					for (const key in combinedParts) {
-						const part = combinedParts[key];
-						if (typeof part === 'object') {
-							weaponPartIdToName[parseInt(part.id)] = key;
-						} else {
-							weaponPartIdToName[parseInt(part)] = key;
-						}
-					}
-					weaponPartsLoaded = true;
+			for (const key in combinedParts) {
+				const part = combinedParts[key];
+				if (typeof part === 'object') {
+					weaponPartIdToName[parseInt(part.id)] = key;
+				} else {
+					weaponPartIdToName[parseInt(part)] = key;
 				}
-			})();
+			}
+			return { passivesLoaded: false, weaponPartsLoaded: true };
 		}
-
-		loadData();
+		return { passivesLoaded: false, weaponPartsLoaded: false };
 	});
-
-	let showPassiveName = $state(false);
 
 	function handleUseStringRepresentationChange() {
 		customFormatOutput = toCustomFormat(
@@ -80,58 +79,6 @@
 			itemType
 		);
 	}
-
-	import { browser } from '$app/environment';
-	import { PartService } from '$lib/partService.js';
-	import Worker from '$lib/worker/worker.js?worker';
-	import { parseSerial, encodeSerial } from '$lib/api.js';
-
-	// Add new functions for direct parsing/encoding
-	function parseSerialDirect() {
-		try {
-			const newParsed = parseSerial(serial);
-			parsed = newParsed;
-			error = null;
-			customFormatOutput = toCustomFormat(parsed); // Manually update output
-		} catch (err) {
-			console.error('Direct parse error:', err);
-			if (err instanceof Error) {
-				error = err.message;
-			} else {
-				error = 'An unknown error occurred during direct parsing.';
-			}
-		}
-	}
-
-	function encodeSerialDirect() {
-		try {
-			const newSerial = encodeSerial(parsed);
-			serial = newSerial;
-			error = null;
-		} catch (err) {
-			console.error('Direct encode error:', err);
-			if (err instanceof Error) {
-				error = err.message;
-			} else {
-				error = 'An unknown error occurred during direct encoding.';
-			}
-		}
-	}
-
-	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
-		serial: string;
-		onCustomFormatOutputUpdate?: (newJson: string) => void;
-		onSerialUpdate?: (newSerial: string) => void;
-	}>();
-	let parsed: Serial = $state([]);
-	let error: string | null = $state(null);
-	let itemType = $state('UNKNOWN');
-	let customFormatOutput = $state('');
-	let detectedParts: { code: string; name: string }[] = $state([]);
-	let baseYaml = $state('');
-	let mergedYaml = $state('');
-	let fileInput: HTMLInputElement = $state() as HTMLInputElement;
-	let useStringRepresentation = $state(false);
 
 	$effect(() => {
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
@@ -187,6 +134,7 @@
 	let worker: Worker | undefined;
 
 	if (browser) {
+		console.log(Worker);
 		worker = new Worker();
 		partService = new PartService(worker);
 
@@ -295,18 +243,6 @@
 		}
 	}
 
-	function addBlock(index: number, token: number, part?: Part) {
-		const newBlock: Block = { token };
-		if (token === TOK_VARINT || token === TOK_VARBIT) {
-			newBlock.value = 0;
-		} else if (token === TOK_PART) {
-			newBlock.part = part || { subType: SUBTYPE_NONE, index: 0 };
-		}
-		parsed.splice(index, 0, newBlock);
-		parsed = parsed; // Trigger reactivity
-		updateSerial();
-	}
-
 	function handleFileSelect(event: Event) {
 		const target = event.target as HTMLInputElement;
 		const file = target.files?.[0];
@@ -387,7 +323,7 @@
 					type="checkbox"
 					bind:checked={useStringRepresentation}
 					onchange={handleUseStringRepresentationChange}
-					disabled={!passivesLoaded}
+					disabled={!dataLoaded}
 				/>
 				<span class="ml-2 text-sm text-gray-500">Use String Representation</span>
 			</label>

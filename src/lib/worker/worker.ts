@@ -1,5 +1,5 @@
 console.log('Worker script evaluating...');
-import { parseSerial, decodeBase85, mirrorBytes } from '../parser.js';
+import { parseSerial } from '../parser.js';
 import { encodeSerial } from '../encoder.js';
 import * as coreMutations from '../mutations.js';
 import { mergeSerials, type Mutation } from '../mutations.js';

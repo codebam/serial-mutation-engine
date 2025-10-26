@@ -6,7 +6,6 @@
 	let {
 		block,
 		partService,
-		itemType,
 		onDelete,
 		onAddBefore,
 		onAddAfter,
@@ -17,7 +16,6 @@
 	} = $props<{
 		block: Block;
 		partService: PartService;
-		itemType: string;
 		onDelete: () => void;
 		onAddBefore: () => void;
 		onAddAfter: () => void;

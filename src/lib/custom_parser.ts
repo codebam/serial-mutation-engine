@@ -13,27 +13,6 @@ import {
 	SUBTYPE_NONE
 } from './types';
 
-let passives: Record<string, { id: number; name?: string }> = {};
-let reversePassives: Record<number, string> = {};
-let showPassiveName = false;
-
-export function loadPassives(passivesData: Record<string, { id: number; name?: string }>) {
-	passives = passivesData;
-	reversePassives = Object.fromEntries(
-		Object.entries(passives).map(([key, value]) => [value.id, key])
-	);
-}
-
-export function togglePassiveName(show: boolean) {
-	showPassiveName = show;
-}
-
-function idToPassiveName(id: number): string | undefined {
-	return reversePassives[id];
-}
-
-import { classModIdToName } from './types';
-
 export function toCustomFormat(
 	p: Serial,
 	useStringRepresentation?: boolean,

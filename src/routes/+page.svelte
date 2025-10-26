@@ -2,8 +2,6 @@
 	import SerialEditor from '$lib/components/SerialEditor.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 
-	const { data } = $props();
-
 	let serialEditors = $state([
 		{
 			id: 1,
