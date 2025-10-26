@@ -15,7 +15,7 @@ async function batchOperations() {
 
 	let first = true;
 	for await (const line of rl) {
-		const operation = { content: line, action: 'decode' };
+		const operation = { functionName: 'base85_to_deserialized', args: [line] };
 		if (first) {
 			operation.debug = true;
 			first = false;
