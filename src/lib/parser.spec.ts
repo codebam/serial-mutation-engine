@@ -67,8 +67,8 @@ describe('Phosphene Skin Deserialization', () => {
 	];
 
 	for (const tt of skinTests) {
-		it(`deserializes ${tt.name}`, () => {
-			const parsedSerial = parseSerial(tt.serial);
+		it(`deserializes ${tt.name}`, async () => {
+			const parsedSerial = await parseSerial(tt.serial);
 			const customFormat = toCustomFormat(parsedSerial);
 			expect(customFormat).toEqual(tt.deserialized);
 		});
@@ -88,18 +88,18 @@ describe('Phosphene Skin Deserialization', () => {
 	];
 
 	for (const tt of phospheneSkinTests) {
-		it(`deserializes ${tt.name} (normal)`, () => {
-			expect(() => parseSerial(tt.serialNormal)).not.toThrow();
+		it(`deserializes ${tt.name} (normal)`, async () => {
+			await expect(parseSerial(tt.serialNormal)).resolves.not.toThrow();
 		});
 
-		it(`deserializes ${tt.name} (phosphene)`, () => {
-			expect(() => parseSerial(tt.serialPhosphene)).not.toThrow();
+		it(`deserializes ${tt.name} (phosphene)`, async () => {
+			await expect(parseSerial(tt.serialPhosphene)).resolves.not.toThrow();
 		});
 	}
 
-	it('should handle strings with special characters', () => {
+	it('should handle strings with special characters', async () => {
 		const customFormat = '"my name is \\"The Boss\\" and I use \\\\ in paths"|';
-		const parsedSerial = parseSerial('@Uglo~xgWTbE8I+!bL{xMcBz({3B2d^(1/>oDc^Sk7rQINSn2w$U');
+		const parsedSerial = await parseSerial('@Uglo~xgWTbE8I+!bL{xMcBz({3B2d^(1/>oDc^Sk7rQINSn2w$U');
 		const reserialized = toCustomFormat(parsedSerial);
 		expect(reserialized).toEqual(customFormat);
 	});

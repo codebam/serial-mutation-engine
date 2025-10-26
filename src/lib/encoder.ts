@@ -1,4 +1,4 @@
-import { Bitstream } from './bitstream.js';
+import { BitstreamWriter } from './bitstream.js';
 import type { Serial, Part } from './types.js';
 import {
 	SUBTYPE_INT,
@@ -89,7 +89,7 @@ function IntBitsSize(v: number, minSize: number, maxSize: number): number {
 	return nBits;
 }
 
-export function writeVarint(stream: Bitstream, value: number) {
+export function writeVarint(stream: BitstreamWriter, value: number) {
 	const VARINT_BITS_PER_BLOCK = 4;
 	const VARINT_MAX_USABLE_BITS = 16;
 
@@ -123,7 +123,7 @@ export function writeVarint(stream: Bitstream, value: number) {
 	}
 }
 
-export function writeVarbit(stream: Bitstream, value: number) {
+export function writeVarbit(stream: BitstreamWriter, value: number) {
 	const VARBIT_LENGTH_BLOCK_SIZE = 5;
 	const nBits = IntBitsSize(value, 0, (1 << VARBIT_LENGTH_BLOCK_SIZE) - 1);
 
@@ -142,7 +142,7 @@ export function writeVarbit(stream: Bitstream, value: number) {
 	}
 }
 
-function writeString(stream: Bitstream, value: string) {
+function writeString(stream: BitstreamWriter, value: string) {
 	writeVarint(stream, value.length);
 	for (let i = 0; i < value.length; i++) {
 		const charCode = value.charCodeAt(i);
@@ -150,7 +150,7 @@ function writeString(stream: Bitstream, value: string) {
 	}
 }
 
-function writePart(stream: Bitstream, part: Part) {
+function writePart(stream: BitstreamWriter, part: Part) {
 	writeVarint(stream, part.index);
 
 	switch (part.subType) {
@@ -189,7 +189,7 @@ const TOKEN_BIT_PATTERNS = {
 };
 
 export function encodeSerial(serial: Serial): string {
-	const stream = new Bitstream(new Uint8Array(250));
+	const stream = new BitstreamWriter(250);
 
 	// Magic header
 	stream.write(0b0010000, 7);
@@ -227,7 +227,7 @@ export function encodeSerial(serial: Serial): string {
 		}
 	}
 
-	const bytes = stream.bytes.slice(0, Math.ceil(stream.bit_pos / 8));
+	const bytes = stream.getBytes();
 	const mirrored = mirrorBytes(bytes);
 	return encodeBase85(mirrored);
 }

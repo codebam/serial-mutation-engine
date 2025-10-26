@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 describe('roundtrip', () => {
-	it('should roundtrip all serials', () => {
+	it('should roundtrip all serials', async () => {
 		const serials_path = path.join(__dirname, '../../serials.txt');
 		const serials_text = fs.readFileSync(serials_path, 'utf-8');
 		const serials = serials_text.split('\n').filter((s) => s.length > 0);
@@ -16,15 +16,15 @@ describe('roundtrip', () => {
 
 		for (const serial of serials) {
 			try {
-				const deserialized = base85_to_deserialized(serial);
+				const deserialized = await base85_to_deserialized(serial);
 				const new_serial = deserialized_to_base85(deserialized);
 
-				const parsed_serial_object = parseSerial(serial);
+				const parsed_serial_object = await parseSerial(serial);
 				const encoded_from_parsed = encodeSerial(parsed_serial_object);
 
 				if (serial !== new_serial) {
 					failed_count++;
-					const original_parsed = parseSerial(serial);
+					const original_parsed = await parseSerial(serial);
 					const new_parsed = parseCustomFormat(deserialized);
 					if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {
 						failed_serials.push(
@@ -37,8 +37,8 @@ describe('roundtrip', () => {
 
 				if (serial !== encoded_from_parsed) {
 					failed_count++;
-					const original_parsed = parseSerial(serial);
-					const new_parsed = parseSerial(encoded_from_parsed);
+					const original_parsed = await parseSerial(serial);
+					const new_parsed = await parseSerial(encoded_from_parsed);
 					if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {
 						failed_serials.push(
 							`Mismatch for ${serial} (direct encodeSerial):\nOriginal parsed: ${JSON.stringify(original_parsed)}\nNew parsed: ${JSON.stringify(new_parsed)}`

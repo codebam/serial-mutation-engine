@@ -123,14 +123,14 @@ export function toCustomFormat(
 }
 
 import { writeVarint, writeVarbit } from './encoder';
-import { Bitstream } from './bitstream';
+import { BitstreamWriter } from './bitstream';
 
 function bestTypeForValue(v: number): number {
-	const streamVarint = new Bitstream(new Uint8Array(10));
+	const streamVarint = new BitstreamWriter(10);
 	writeVarint(streamVarint, v);
 	const lenVarint = streamVarint.bit_pos;
 
-	const streamVarbit = new Bitstream(new Uint8Array(10));
+	const streamVarbit = new BitstreamWriter(10);
 	writeVarbit(streamVarbit, v);
 	const lenVarbit = streamVarbit.bit_pos;
 
@@ -245,8 +245,8 @@ export function parseCustomFormat(
 	return newParsed;
 }
 
-export function base85_to_deserialized(serial: string): string {
-	const parsed = parseSerial(serial);
+export async function base85_to_deserialized(serial: string): Promise<string> {
+	const parsed = await parseSerial(serial);
 	return toCustomFormat(parsed, true);
 }
 export function deserialized_to_base85(
