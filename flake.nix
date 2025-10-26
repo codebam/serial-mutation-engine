@@ -19,6 +19,7 @@
           pkgs.typescript-language-server
           pkgs.prettier
           pkgs.vscode-langservers-extracted
+          pkgs.svelte-language-server
         ];
       };
     };
