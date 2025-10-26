@@ -1,22 +1,17 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-import { base85_to_deserialized, deserialized_to_base85 } from '$lib/custom_parser.js';
-import { encodeSerial } from '$lib/encoder.js';
-import { parseSerial } from '$lib/parser.js';
-import type { Serial } from '$lib/types.js';
+import * as api from '$lib/api.js';
 
 /**
  * @typedef {object} Operation
- * @property {string | object} content - The content to process.
- * @property {'decode' | 'encode'} action - The action to perform.
- * @property {'JSON'} [format] - The format of the content.
+ * @property {string} functionName - The name of the function to call from the API.
+ * @property {any[]} args - An array of arguments to pass to the function.
  * @property {boolean} [debug] - Enable debug mode to get execution time.
  * @property {boolean} [cache] - Enable caching for decode operations.
  */
 interface Operation {
-	content: string | object;
-	action: 'decode' | 'encode';
-	format?: 'JSON';
+	functionName: string;
+	args: any[];
 	debug?: boolean;
 	cache?: boolean;
 }
@@ -26,39 +21,30 @@ async function processOperation(
 	cache: KVNamespace | undefined,
 	sha256: ((message: string) => Promise<string>) | undefined
 ): Promise<unknown> {
-	if (!op.action || op.content === undefined) {
-		throw new Error('Each operation must include "action" and "content" fields.');
+	const { functionName, args } = op;
+
+	if (!functionName || !Array.isArray(args)) {
+		throw new Error('Each operation must include "functionName" and "args" fields.');
 	}
 
-	if (op.format === 'JSON') {
-		switch (op.action) {
-			case 'decode':
-				return await parseSerial(op.content as string);
-			case 'encode':
-				return await encodeSerial(op.content as Serial);
-			default:
-				throw new Error(`Invalid action for format JSON: ${op.action}`);
-		}
-	} else {
-		switch (op.action) {
-			case 'decode':
-				if (op.cache && cache && sha256) {
-					const hash = await sha256(op.content as string);
-					const cached = await cache.get(hash);
-					if (cached) {
-						return JSON.parse(cached);
-					}
-					const result = await base85_to_deserialized(op.content as string);
-					await cache.put(hash, JSON.stringify(result));
-					return result;
-				}
-				return await base85_to_deserialized(op.content as string);
-			case 'encode':
-				return await deserialized_to_base85(op.content as string);
-			default:
-				throw new Error(`Invalid action: ${op.action}`);
-		}
+	const apiFunction = (api as any)[functionName];
+
+	if (typeof apiFunction !== 'function') {
+		throw new Error(`Invalid functionName: ${functionName}`);
 	}
+
+	if (functionName === 'base85_to_deserialized' && op.cache && cache && sha256) {
+		const hash = await sha256(args[0] as string);
+		const cached = await cache.get(hash);
+		if (cached) {
+			return JSON.parse(cached);
+		}
+		const result = await apiFunction(...args);
+		await cache.put(hash, JSON.stringify(result));
+		return result;
+	}
+
+	return await apiFunction(...args);
 }
 
 /**
@@ -72,20 +58,20 @@ async function processOperation(
  * @example
  * // Single operation
  * {
- *   "action": "decode",
- *   "content": "some_encoded_string"
+ *   "functionName": "parseSerial",
+ *   "args": ["@UgbV{rFme!KI4sa#RG}W#sX3@xsFnx"]
  * }
  *
  * @example
  * // Batch of operations
  * [
  *   {
- *     "action": "decode",
- *     "content": "some_encoded_string"
+ *     "functionName": "parseSerial",
+ *     "args": ["@UgbV{rFme!KI4sa#RG}W#sX3@xsFnx"]
  *   },
  *   {
- *     "action": "encode",
- *     "content": { ... a valid serial object ... }
+ *     "functionName": "encodeSerial",
+ *     "args": [[{ "token": 4, "value": 1 }]]
  *   }
  * ]
  */
