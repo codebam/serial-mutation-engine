@@ -23,7 +23,7 @@ async function batchOperations() {
 		payload.push(operation);
 	}
 
-	const batch_payload = payload.slice(0, 4000);
+	const batch_payload = payload.slice(0, 11000);
 
 	console.log(`Sending ${batch_payload.length} serials...`);
 	// console.log("Payload to be sent:", batch_payload);
@@ -44,6 +44,7 @@ async function batchOperations() {
 		const data = await response.json();
 		console.log('Batch Results:', data);
 
+		console.log("Number of Serials: ", batch_payload.length);
 		if (executionTime) {
 			console.log('API Execution Time:', executionTime);
 		} else {
