@@ -127,6 +127,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 		}
 	} catch (error) {
 		const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
+		console.error('API Error:', error);
 		const status =
 			errorMessage.startsWith('Invalid') || errorMessage.startsWith('Each') ? 400 : 500;
 		response = json({ error: errorMessage }, { status });
