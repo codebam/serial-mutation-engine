@@ -311,6 +311,7 @@
 			<option value="Vex Class Mod">Vex Class Mod</option>
 			<option value="Rafa Class Mod">Rafa Class Mod</option>
 			<option value="Harlowe Class Mod">Harlowe Class Mod</option>
+			<option value="Amon Class Mod">Amon Class Mod</option>
 		</select>
 	</FormGroup>
 	<FormGroup label="Deserialized Output">
