@@ -140,7 +140,7 @@ function bestTypeForValue(v: number): number {
 	return TOK_VARINT;
 }
 
-export function parseCustomFormat(custom: string): Serial {
+export function parseCustomFormat(custom: string, passives?: Record<string, { id: number; name?: string }>): Serial {
 	const newParsed: Serial = [];
 	let i = 0;
 
@@ -222,10 +222,14 @@ export function parseCustomFormat(custom: string): Serial {
 				finalContent = content.substring(separatorIndex + 2);
 			}
 
-			const passive = passives[finalContent];
+			if (passives) {
+				const passive = passives[finalContent];
 
-			if (passive) {
-				newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: passive.id } });
+				if (passive) {
+					newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: passive.id } });
+				} else {
+					newParsed.push({ token: TOK_STRING, valueStr: content });
+				}
 			} else {
 				newParsed.push({ token: TOK_STRING, valueStr: content });
 			}
@@ -242,8 +246,11 @@ export function base85_to_deserialized(serial: string): string {
 	const parsed = parseSerial(serial);
 	return toCustomFormat(parsed, true);
 }
-export function deserialized_to_base85(custom: string): string {
-	const parsed = parseCustomFormat(custom);
+export function deserialized_to_base85(
+	custom: string,
+	passives?: Record<string, { id: number; name?: string }>
+): string {
+	const parsed = parseCustomFormat(custom, passives);
 	return encodeSerial(parsed);
 }
 
