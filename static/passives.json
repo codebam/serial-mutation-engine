@@ -1,562 +1,282 @@
 {
   "passive_blue_1_1_tier_1": {
-    "id": 194,
+    "id": "194",
     "name": "Wrath of Nature"
   },
-  "passive_blue_1_1_tier_2": {
-    "id": 162
-  },
-  "passive_blue_1_1_tier_3": {
-    "id": 130
-  },
-  "passive_blue_1_1_tier_4": {
-    "id": 98
-  },
-  "passive_blue_1_1_tier_5": {
-    "id": 66
-  },
+  "passive_blue_1_1_tier_2": "162",
+  "passive_blue_1_1_tier_3": "130",
+  "passive_blue_1_1_tier_4": "98",
+  "passive_blue_1_1_tier_5": "66",
   "passive_blue_1_2_tier_1": {
-    "id": 193,
+    "id": "193",
     "name": "Idle Hands"
   },
-  "passive_blue_1_2_tier_2": {
-    "id": 161
-  },
-  "passive_blue_1_2_tier_3": {
-    "id": 129
-  },
-  "passive_blue_1_2_tier_4": {
-    "id": 97
-  },
-  "passive_blue_1_2_tier_5": {
-    "id": 65
-  },
+  "passive_blue_1_2_tier_2": "161",
+  "passive_blue_1_2_tier_3": "129",
+  "passive_blue_1_2_tier_4": "97",
+  "passive_blue_1_2_tier_5": "65",
   "passive_blue_1_3_tier_1": {
-    "id": 192,
+    "id": "192",
     "name": "Scorched Kairos"
   },
-  "passive_blue_1_3_tier_2": {
-    "id": 160
-  },
-  "passive_blue_1_3_tier_3": {
-    "id": 128
-  },
-  "passive_blue_1_3_tier_4": {
-    "id": 96
-  },
-  "passive_blue_1_3_tier_5": {
-    "id": 64
-  },
+  "passive_blue_1_3_tier_2": "160",
+  "passive_blue_1_3_tier_3": "128",
+  "passive_blue_1_3_tier_4": "96",
+  "passive_blue_1_3_tier_5": "64",
   "passive_blue_1_4_tier_1": {
-    "id": 191,
+    "id": "191",
     "name": "The Thrill (Amon)"
   },
-  "passive_blue_1_4_tier_2": {
-    "id": 159
-  },
-  "passive_blue_1_4_tier_3": {
-    "id": 127
-  },
-  "passive_blue_1_4_tier_4": {
-    "id": 95
-  },
-  "passive_blue_1_4_tier_5": {
-    "id": 63
-  },
+  "passive_blue_1_4_tier_2": "159",
+  "passive_blue_1_4_tier_3": "127",
+  "passive_blue_1_4_tier_4": "95",
+  "passive_blue_1_4_tier_5": "63",
   "passive_blue_1_5_tier_1": {
-    "id": 190,
+    "id": "190",
     "name": "Battleborn"
   },
-  "passive_blue_1_5_tier_2": {
-    "id": 158
-  },
-  "passive_blue_1_5_tier_3": {
-    "id": 126
-  },
-  "passive_blue_1_5_tier_4": {
-    "id": 94
-  },
-  "passive_blue_1_5_tier_5": {
-    "id": 62
-  },
+  "passive_blue_1_5_tier_2": "158",
+  "passive_blue_1_5_tier_3": "126",
+  "passive_blue_1_5_tier_4": "94",
+  "passive_blue_1_5_tier_5": "62",
   "passive_blue_2_1_tier_1": {
-    "id": 189,
+    "id": "189",
     "name": "Eternal"
   },
-  "passive_blue_2_1_tier_2": {
-    "id": 157
-  },
-  "passive_blue_2_1_tier_3": {
-    "id": 125
-  },
-  "passive_blue_2_1_tier_4": {
-    "id": 93
-  },
-  "passive_blue_2_1_tier_5": {
-    "id": 61
-  },
+  "passive_blue_2_1_tier_2": "157",
+  "passive_blue_2_1_tier_3": "125",
+  "passive_blue_2_1_tier_4": "93",
+  "passive_blue_2_1_tier_5": "61",
   "passive_blue_2_3_tier_1": {
-    "id": 188,
+    "id": "188",
     "name": "Tail of the Comet"
   },
-  "passive_blue_2_3_tier_2": {
-    "id": 156
-  },
-  "passive_blue_2_3_tier_3": {
-    "id": 124
-  },
-  "passive_blue_2_3_tier_4": {
-    "id": 92
-  },
-  "passive_blue_2_3_tier_5": {
-    "id": 60
-  },
+  "passive_blue_2_3_tier_2": "156",
+  "passive_blue_2_3_tier_3": "124",
+  "passive_blue_2_3_tier_4": "92",
+  "passive_blue_2_3_tier_5": "60",
   "passive_blue_2_5_tier_1": {
-    "id": 187,
+    "id": "187",
     "name": "Scar Tissue"
   },
-  "passive_blue_2_5_tier_2": {
-    "id": 155
-  },
-  "passive_blue_2_5_tier_3": {
-    "id": 123
-  },
-  "passive_blue_2_5_tier_4": {
-    "id": 91
-  },
-  "passive_blue_2_5_tier_5": {
-    "id": 59
-  },
+  "passive_blue_2_5_tier_2": "155",
+  "passive_blue_2_5_tier_3": "123",
+  "passive_blue_2_5_tier_4": "91",
+  "passive_blue_2_5_tier_5": "59",
   "passive_blue_3_1_tier_1": {
-    "id": 186,
+    "id": "186",
     "name": "Bullet Hail"
   },
-  "passive_blue_3_1_tier_2": {
-    "id": 154
-  },
-  "passive_blue_3_1_tier_3": {
-    "id": 122
-  },
-  "passive_blue_3_1_tier_4": {
-    "id": 90
-  },
-  "passive_blue_3_1_tier_5": {
-    "id": 58
-  },
+  "passive_blue_3_1_tier_2": "154",
+  "passive_blue_3_1_tier_3": "122",
+  "passive_blue_3_1_tier_4": "90",
+  "passive_blue_3_1_tier_5": "58",
   "passive_blue_3_2_tier_1": {
-    "id": 185,
+    "id": "185",
     "name": "Machinist"
   },
-  "passive_blue_3_2_tier_2": {
-    "id": 153
-  },
-  "passive_blue_3_2_tier_3": {
-    "id": 121
-  },
-  "passive_blue_3_2_tier_4": {
-    "id": 89
-  },
-  "passive_blue_3_2_tier_5": {
-    "id": 57
-  },
+  "passive_blue_3_2_tier_2": "153",
+  "passive_blue_3_2_tier_3": "121",
+  "passive_blue_3_2_tier_4": "89",
+  "passive_blue_3_2_tier_5": "57",
   "passive_blue_3_3_tier_1": {
-    "id": 184,
+    "id": "184",
     "name": "Ancient Ways"
   },
-  "passive_blue_3_3_tier_2": {
-    "id": 152
-  },
-  "passive_blue_3_3_tier_3": {
-    "id": 120
-  },
-  "passive_blue_3_3_tier_4": {
-    "id": 88
-  },
-  "passive_blue_3_3_tier_5": {
-    "id": 56
-  },
+  "passive_blue_3_3_tier_2": "152",
+  "passive_blue_3_3_tier_3": "120",
+  "passive_blue_3_3_tier_4": "88",
+  "passive_blue_3_3_tier_5": "56",
   "passive_blue_3_4_tier_1": {
-    "id": 183,
+    "id": "183",
     "name": "Too Coolant For Schoolant"
   },
-  "passive_blue_3_4_tier_2": {
-    "id": 151
-  },
-  "passive_blue_3_4_tier_3": {
-    "id": 119
-  },
-  "passive_blue_3_4_tier_4": {
-    "id": 87
-  },
-  "passive_blue_3_4_tier_5": {
-    "id": 55
-  },
+  "passive_blue_3_4_tier_2": "151",
+  "passive_blue_3_4_tier_3": "119",
+  "passive_blue_3_4_tier_4": "87",
+  "passive_blue_3_4_tier_5": "55",
   "passive_blue_3_5_tier_1": {
-    "id": 182,
+    "id": "182",
     "name": "Warrior's Cup"
   },
-  "passive_blue_3_5_tier_2": {
-    "id": 150
-  },
-  "passive_blue_3_5_tier_3": {
-    "id": 118
-  },
-  "passive_blue_3_5_tier_4": {
-    "id": 86
-  },
-  "passive_blue_3_5_tier_5": {
-    "id": 54
-  },
+  "passive_blue_3_5_tier_2": "150",
+  "passive_blue_3_5_tier_3": "118",
+  "passive_blue_3_5_tier_4": "86",
+  "passive_blue_3_5_tier_5": "54",
   "passive_green_1_1_tier_1": {
-    "id": 205,
+    "id": "205",
     "name": "Cast Iron"
   },
-  "passive_green_1_1_tier_2": {
-    "id": 173
-  },
-  "passive_green_1_1_tier_3": {
-    "id": 141
-  },
-  "passive_green_1_1_tier_4": {
-    "id": 109
-  },
-  "passive_green_1_1_tier_5": {
-    "id": 77
-  },
+  "passive_green_1_1_tier_2": "173",
+  "passive_green_1_1_tier_3": "141",
+  "passive_green_1_1_tier_4": "109",
+  "passive_green_1_1_tier_5": "77",
   "passive_green_1_2_tier_1": {
-    "id": 204,
+    "id": "204",
     "name": "Gathering Storm"
   },
-  "passive_green_1_2_tier_2": {
-    "id": 172
-  },
-  "passive_green_1_2_tier_3": {
-    "id": 140
-  },
-  "passive_green_1_2_tier_4": {
-    "id": 108
-  },
-  "passive_green_1_2_tier_5": {
-    "id": 76
-  },
+  "passive_green_1_2_tier_2": "172",
+  "passive_green_1_2_tier_3": "140",
+  "passive_green_1_2_tier_4": "108",
+  "passive_green_1_2_tier_5": "76",
   "passive_green_1_3_tier_1": {
-    "id": 203,
+    "id": "203",
     "name": "Action at a Distance"
   },
-  "passive_green_1_3_tier_2": {
-    "id": 171
-  },
-  "passive_green_1_3_tier_3": {
-    "id": 139
-  },
-  "passive_green_1_3_tier_4": {
-    "id": 107
-  },
-  "passive_green_1_3_tier_5": {
-    "id": 75
-  },
+  "passive_green_1_3_tier_2": "171",
+  "passive_green_1_3_tier_3": "139",
+  "passive_green_1_3_tier_4": "107",
+  "passive_green_1_3_tier_5": "75",
   "passive_green_1_4_tier_1": {
-    "id": 202,
+    "id": "202",
     "name": "Executioner"
   },
-  "passive_green_1_4_tier_2": {
-    "id": 170
-  },
-  "passive_green_1_4_tier_3": {
-    "id": 138
-  },
-  "passive_green_1_4_tier_4": {
-    "id": 106
-  },
-  "passive_green_1_4_tier_5": {
-    "id": 74
-  },
+  "passive_green_1_4_tier_2": "170",
+  "passive_green_1_4_tier_3": "138",
+  "passive_green_1_4_tier_4": "106",
+  "passive_green_1_4_tier_5": "74",
   "passive_green_1_5_tier_1": {
-    "id": 201,
+    "id": "201",
     "name": "Get The Lead Out"
   },
-  "passive_green_1_5_tier_2": {
-    "id": 169
-  },
-  "passive_green_1_5_tier_3": {
-    "id": 137
-  },
-  "passive_green_1_5_tier_4": {
-    "id": 105
-  },
-  "passive_green_1_5_tier_5": {
-    "id": 73
-  },
+  "passive_green_1_5_tier_2": "169",
+  "passive_green_1_5_tier_3": "137",
+  "passive_green_1_5_tier_4": "105",
+  "passive_green_1_5_tier_5": "73",
   "passive_green_2_1_tier_1": {
-    "id": 200,
+    "id": "200",
     "name": "Destruction Engine"
   },
-  "passive_green_2_1_tier_2": {
-    "id": 168
-  },
-  "passive_green_2_1_tier_3": {
-    "id": 136
-  },
-  "passive_green_2_1_tier_4": {
-    "id": 104
-  },
-  "passive_green_2_1_tier_5": {
-    "id": 72
-  },
+  "passive_green_2_1_tier_2": "168",
+  "passive_green_2_1_tier_3": "136",
+  "passive_green_2_1_tier_4": "104",
+  "passive_green_2_1_tier_5": "72",
   "passive_green_2_3_tier_1": {
-    "id": 199,
+    "id": "199",
     "name": "Tempered Pyre"
   },
-  "passive_green_2_3_tier_2": {
-    "id": 167
-  },
-  "passive_green_2_3_tier_3": {
-    "id": 135
-  },
-  "passive_green_2_3_tier_4": {
-    "id": 103
-  },
-  "passive_green_2_3_tier_5": {
-    "id": 71
-  },
+  "passive_green_2_3_tier_2": "167",
+  "passive_green_2_3_tier_3": "135",
+  "passive_green_2_3_tier_4": "103",
+  "passive_green_2_3_tier_5": "71",
   "passive_green_2_5_tier_1": {
-    "id": 198,
+    "id": "198",
     "name": "Bolt Action"
   },
-  "passive_green_2_5_tier_2": {
-    "id": 166
-  },
-  "passive_green_2_5_tier_3": {
-    "id": 134
-  },
-  "passive_green_2_5_tier_4": {
-    "id": 102
-  },
-  "passive_green_2_5_tier_5": {
-    "id": 70
-  },
+  "passive_green_2_5_tier_2": "166",
+  "passive_green_2_5_tier_3": "134",
+  "passive_green_2_5_tier_4": "102",
+  "passive_green_2_5_tier_5": "70",
   "passive_green_3_1_tier_1": {
-    "id": 197,
+    "id": "197",
     "name": "Bellows"
   },
-  "passive_green_3_1_tier_2": {
-    "id": 165
-  },
-  "passive_green_3_1_tier_3": {
-    "id": 133
-  },
-  "passive_green_3_1_tier_4": {
-    "id": 101
-  },
-  "passive_green_3_1_tier_5": {
-    "id": 69
-  },
+  "passive_green_3_1_tier_2": "165",
+  "passive_green_3_1_tier_3": "133",
+  "passive_green_3_1_tier_4": "101",
+  "passive_green_3_1_tier_5": "69",
   "passive_green_3_2_tier_1": {
-    "id": 196,
+    "id": "196",
     "name": "To the Last"
   },
-  "passive_green_3_2_tier_2": {
-    "id": 164
-  },
-  "passive_green_3_2_tier_3": {
-    "id": 132
-  },
-  "passive_green_3_2_tier_4": {
-    "id": 100
-  },
-  "passive_green_3_2_tier_5": {
-    "id": 68
-  },
+  "passive_green_3_2_tier_2": "164",
+  "passive_green_3_2_tier_3": "132",
+  "passive_green_3_2_tier_4": "100",
+  "passive_green_3_2_tier_5": "68",
   "passive_green_3_3_tier_1": {
-    "id": 195,
+    "id": "195",
     "name": "Twin Tempers"
   },
-  "passive_green_3_3_tier_2": {
-    "id": 163
-  },
-  "passive_green_3_3_tier_3": {
-    "id": 131
-  },
-  "passive_green_3_3_tier_4": {
-    "id": 99
-  },
-  "passive_green_3_3_tier_5": {
-    "id": 67
-  },
+  "passive_green_3_3_tier_2": "163",
+  "passive_green_3_3_tier_3": "131",
+  "passive_green_3_3_tier_4": "99",
+  "passive_green_3_3_tier_5": "67",
   "passive_red_1_1_tier_1": {
-    "id": 216,
+    "id": "216",
     "name": "Impetus"
   },
-  "passive_red_1_1_tier_2": {
-    "id": 184
-  },
-  "passive_red_1_1_tier_3": {
-    "id": 152
-  },
-  "passive_red_1_1_tier_4": {
-    "id": 120
-  },
-  "passive_red_1_1_tier_5": {
-    "id": 88
-  },
+  "passive_red_1_1_tier_2": "184",
+  "passive_red_1_1_tier_3": "152",
+  "passive_red_1_1_tier_4": "120",
+  "passive_red_1_1_tier_5": "88",
   "passive_red_1_2_tier_1": {
-    "id": 215,
+    "id": "215",
     "name": "PPE"
   },
-  "passive_red_1_2_tier_2": {
-    "id": 183
-  },
-  "passive_red_1_2_tier_3": {
-    "id": 151
-  },
-  "passive_red_1_2_tier_4": {
-    "id": 119
-  },
-  "passive_red_1_2_tier_5": {
-    "id": 87
-  },
+  "passive_red_1_2_tier_2": "183",
+  "passive_red_1_2_tier_3": "151",
+  "passive_red_1_2_tier_4": "119",
+  "passive_red_1_2_tier_5": "87",
   "passive_red_1_3_tier_1": {
-    "id": 214,
+    "id": "214",
     "name": "What Burns Within"
   },
-  "passive_red_1_3_tier_2": {
-    "id": 182
-  },
-  "passive_red_1_3_tier_3": {
-    "id": 150
-  },
-  "passive_red_1_3_tier_4": {
-    "id": 118
-  },
-  "passive_red_1_3_tier_5": {
-    "id": 86
-  },
+  "passive_red_1_3_tier_2": "182",
+  "passive_red_1_3_tier_3": "150",
+  "passive_red_1_3_tier_4": "118",
+  "passive_red_1_3_tier_5": "86",
   "passive_red_1_4_tier_1": {
-    "id": 213,
+    "id": "213",
     "name": "Discombobulate"
   },
-  "passive_red_1_4_tier_2": {
-    "id": 181
-  },
-  "passive_red_1_4_tier_3": {
-    "id": 149
-  },
-  "passive_red_1_4_tier_4": {
-    "id": 117
-  },
-  "passive_red_1_4_tier_5": {
-    "id": 85
-  },
+  "passive_red_1_4_tier_2": "181",
+  "passive_red_1_4_tier_3": "149",
+  "passive_red_1_4_tier_4": "117",
+  "passive_red_1_4_tier_5": "85",
   "passive_red_1_5_tier_1": {
-    "id": 212,
+    "id": "212",
     "name": "Heavy Plate"
   },
-  "passive_red_1_5_tier_2": {
-    "id": 180
-  },
-  "passive_red_1_5_tier_3": {
-    "id": 148
-  },
-  "passive_red_1_5_tier_4": {
-    "id": 116
-  },
-  "passive_red_1_5_tier_5": {
-    "id": 84
-  },
+  "passive_red_1_5_tier_2": "180",
+  "passive_red_1_5_tier_3": "148",
+  "passive_red_1_5_tier_4": "116",
+  "passive_red_1_5_tier_5": "84",
   "passive_red_2_1_tier_1": {
-    "id": 211,
+    "id": "211",
     "name": "Wield the Storm"
   },
-  "passive_red_2_1_tier_2": {
-    "id": 179
-  },
-  "passive_red_2_1_tier_3": {
-    "id": 147
-  },
-  "passive_red_2_1_tier_4": {
-    "id": 115
-  },
-  "passive_red_2_1_tier_5": {
-    "id": 83
-  },
+  "passive_red_2_1_tier_2": "179",
+  "passive_red_2_1_tier_3": "147",
+  "passive_red_2_1_tier_4": "115",
+  "passive_red_2_1_tier_5": "83",
   "passive_red_2_3_tier_1": {
-    "id": 210,
+    "id": "210",
     "name": "Gut Punch"
   },
-  "passive_red_2_3_tier_2": {
-    "id": 178
-  },
-  "passive_red_2_3_tier_3": {
-    "id": 146
-  },
-  "passive_red_2_3_tier_4": {
-    "id": 114
-  },
-  "passive_red_2_3_tier_5": {
-    "id": 82
-  },
+  "passive_red_2_3_tier_2": "178",
+  "passive_red_2_3_tier_3": "146",
+  "passive_red_2_3_tier_4": "114",
+  "passive_red_2_3_tier_5": "82",
   "passive_red_2_5_tier_1": {
-    "id": 209,
+    "id": "209",
     "name": "Tritanium Knuckles"
   },
-  "passive_red_2_5_tier_2": {
-    "id": 177
-  },
-  "passive_red_2_5_tier_3": {
-    "id": 145
-  },
-  "passive_red_2_5_tier_4": {
-    "id": 113
-  },
-  "passive_red_2_5_tier_5": {
-    "id": 81
-  },
+  "passive_red_2_5_tier_2": "177",
+  "passive_red_2_5_tier_3": "145",
+  "passive_red_2_5_tier_4": "113",
+  "passive_red_2_5_tier_5": "81",
   "passive_red_3_1_tier_1": {
-    "id": 208,
+    "id": "208",
     "name": "Forged In Steel"
   },
-  "passive_red_3_1_tier_2": {
-    "id": 176
-  },
-  "passive_red_3_1_tier_3": {
-    "id": 144
-  },
-  "passive_red_3_1_tier_4": {
-    "id": 112
-  },
-  "passive_red_3_1_tier_5": {
-    "id": 80
-  },
+  "passive_red_3_1_tier_2": "176",
+  "passive_red_3_1_tier_3": "144",
+  "passive_red_3_1_tier_4": "112",
+  "passive_red_3_1_tier_5": "80",
   "passive_red_3_2_tier_1": {
-    "id": 207,
+    "id": "207",
     "name": "Bullet Storm"
   },
-  "passive_red_3_2_tier_2": {
-    "id": 175
-  },
-  "passive_red_3_2_tier_3": {
-    "id": 143
-  },
-  "passive_red_3_2_tier_4": {
-    "id": 111
-  },
-  "passive_red_3_2_tier_5": {
-    "id": 79
-  },
+  "passive_red_3_2_tier_2": "175",
+  "passive_red_3_2_tier_3": "143",
+  "passive_red_3_2_tier_4": "111",
+  "passive_red_3_2_tier_5": "79",
   "passive_red_3_3_tier_1": {
-    "id": 206,
+    "id": "206",
     "name": "Elephant's Foot"
   },
-  "passive_red_3_3_tier_2": {
-    "id": 174
-  },
-  "passive_red_3_3_tier_3": {
-    "id": 142
-  },
-  "passive_red_3_3_tier_4": {
-    "id": 110
-  },
-  "passive_red_3_3_tier_5": {
-    "id": 78
-  }
+  "passive_red_3_3_tier_2": "174",
+  "passive_red_3_3_tier_3": "142",
+  "passive_red_3_3_tier_4": "110",
+  "passive_red_3_3_tier_5": "78"
 }

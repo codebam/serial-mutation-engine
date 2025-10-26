@@ -1,15 +1,30 @@
 <script lang="ts">
-	import {
-		type Serial,
-		type Block,
-		TOK_VARINT,
-		TOK_VARBIT,
-		TOK_PART,
-		SUBTYPE_NONE,
-		type Part
-	} from '$lib/types.js';
-	import { toCustomFormat, parseCustomFormat, togglePassiveName } from '../custom_parser.js';
+	import { type Serial, type Block, TOK_VARINT, TOK_VARBIT, TOK_PART, SUBTYPE_NONE, type Part, classModIdToName } from '../types';
+	import { toCustomFormat, parseCustomFormat } from '../custom_parser.js';
 	import FormGroup from './FormGroup.svelte';
+
+	let passiveIdToName: { [key: number]: string } = {};
+	let passivesLoaded = $state(false);
+
+	$effect(() => {
+		async function loadPassives() {
+			if (itemType.includes('Class Mod') && !passivesLoaded) {
+				const response = await fetch('/passives.json');
+				const passives = await response.json();
+				for (const key in passives) {
+					const passive = passives[key as keyof typeof passives];
+					if (typeof passive === 'object') {
+						passiveIdToName[passive.id] = key;
+					} else {
+						passiveIdToName[passive] = key;
+					}
+				}
+				passivesLoaded = true;
+			}
+		}
+
+		loadPassives();
+	});
 
 	let showPassiveName = $state(false);
 
@@ -63,6 +78,11 @@
 	let error: string | null = $state(null);
 	let itemType = $state('UNKNOWN');
 	let customFormatOutput = $state('');
+	let useStringRepresentation = $state(false);
+
+	function handleUseStringRepresentationChange() {
+		customFormatOutput = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName);
+	}
 	let baseYaml = $state('');
 	let mergedYaml = $state('');
 	let fileInput: HTMLInputElement;
@@ -73,7 +93,7 @@
 	$effect(() => {
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
 		if (parsed) {
-			customFormatOutput = toCustomFormat(parsed);
+			customFormatOutput = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName);
 			if (onCustomFormatOutputUpdate) {
 				onCustomFormatOutputUpdate(JSON.stringify(parsed, null, 2));
 			}
@@ -171,7 +191,8 @@
 	});
 
 	$effect(() => {
-		const currentCustomFormat = toCustomFormat(parsed);
+		if (useStringRepresentation) return;
+		const currentCustomFormat = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName);
 		if (customFormatOutput !== currentCustomFormat) {
 			try {
 				const newParsed = parseCustomFormat(customFormatOutput);
@@ -304,8 +325,8 @@
     <FormGroup label="Deserialized Output">
         <div class="flex justify-end mb-2">
             <label class="flex items-center">
-                <input type="checkbox" bind:checked={showPassiveName} onchange={handleShowPassiveNameChange} />
-                <span class="ml-2 text-sm text-gray-500">Show Strings</span>
+                <input type="checkbox" bind:checked={useStringRepresentation} onchange={handleUseStringRepresentationChange} disabled={!passivesLoaded} />
+                <span class="ml-2 text-sm text-gray-500">Use String Representation</span>
             </label>
         </div>
         <textarea

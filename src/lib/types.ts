@@ -109,3 +109,10 @@ export interface State {
 	selectedAsset?: number;
 	baseYaml?: string;
 }
+
+export const classModIdToName: { [key: number]: string } = {
+	254: 'classmod_dark_siren', // Vex
+	255: 'classmod_paladin', // Amon
+	256: 'classmod_exo_soldier', // Rafa
+	259: 'classmod_gravitar' // Harlowe
+};

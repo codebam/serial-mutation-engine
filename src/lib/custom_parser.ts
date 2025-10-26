@@ -30,7 +30,14 @@ function idToPassiveName(id: number): string | undefined {
 	return reversePassives[id];
 }
 
-export function toCustomFormat(p: Serial, options?: { showPassiveName?: boolean; showIdentifierOnly?: boolean }): string {
+import { classModIdToName } from './types';
+
+export function toCustomFormat(
+	p: Serial,
+	useStringRepresentation: boolean,
+	passiveIdToName: { [key: number]: string },
+	classModIdToName: { [key: number]: string }
+): string {
 	if (!p) return '';
 	const parts: string[] = [];
 
@@ -38,53 +45,54 @@ export function toCustomFormat(p: Serial, options?: { showPassiveName?: boolean;
 		const block = p[i];
 		let blockStr = '';
 
-		switch (block.token) {
-			case TOK_SEP1:
-				blockStr = '|';
-				break;
-			case TOK_SEP2:
-				blockStr = ',';
-				break;
-			case TOK_VARINT:
-			case TOK_VARBIT:
-				blockStr = String(block.value);
-				break;
-			case TOK_PART:
-				if (block.part) {
-					if (block.part.subType === SUBTYPE_NONE) {
-						const passiveIdentifier = idToPassiveName(block.part.index || 0);
-						if (options?.showIdentifierOnly && passiveIdentifier) {
-							blockStr = `"${passiveIdentifier}"`;
-						} else if (options?.showPassiveName && passiveIdentifier && passives[passiveIdentifier] && passives[passiveIdentifier].name) {
-							const passiveName = passives[passiveIdentifier].name;
-							blockStr = `"${passiveName}::${passiveIdentifier}"`;
-						} else if (options?.showPassiveName && passiveIdentifier) {
-							blockStr = `"${passiveIdentifier}"`;
-						} else {
-							blockStr = `{${block.part.index}}`;
-						}
-					}
-					if (block.part.subType === SUBTYPE_INT) {
+		if (useStringRepresentation && i === 0 && block.token === TOK_VARINT && block.value !== undefined && classModIdToName[block.value]) {
+			blockStr = `"${classModIdToName[block.value]}"`;
+		} else {
+			switch (block.token) {
+				case TOK_SEP1:
+					blockStr = '|';
+					break;
+				case TOK_SEP2:
+					blockStr = ',';
+					break;
+				case TOK_VARINT:
+				case TOK_VARBIT:
+					blockStr = String(block.value);
+					break;
+				case TOK_PART:
+					if (block.part) {
+						if (useStringRepresentation && block.part.subType === SUBTYPE_NONE && passiveIdToName[block.part.index]) {
+							const classModName = classModIdToName[p[0].value!];
+							blockStr = `"${classModName}.${passiveIdToName[block.part.index]}"`;
+						} else if (block.part.subType === SUBTYPE_NONE) {
+							if (block.part.index !== undefined) {
+								blockStr = `{${block.part.index}}`;
+							} else {
+								blockStr = '{?}';
+							}
+						} else if (block.part.subType === SUBTYPE_INT) {
 							blockStr = `{${block.part.index}:${block.part.value}}`;
+						} else if (block.part.subType === SUBTYPE_LIST) {
+							const values = block.part.values?.map((v) => v.value).join(' ') || '';
+							blockStr = `{${block.part.index}:[${values}]}`;
+						} else {
+							blockStr = '{?}';
+						}
+					} else {
+						blockStr = '{?}';
 					}
-					if (block.part.subType === SUBTYPE_LIST) {
-						const values = block.part.values?.map((v) => v.value).join(' ') || '';
-						blockStr = `{${block.part.index}:[${values}]}`;
+					break;
+				case TOK_STRING:
+					if (block.valueStr !== undefined) {
+						blockStr = `"${block.valueStr.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+					} else {
+						blockStr = '""';
 					}
-				} else {
-					blockStr = '{?}';
-				}
-				break;
-            case TOK_STRING:
-				if (block.valueStr !== undefined) {
-					blockStr = `"${block.valueStr.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
-				} else {
-					blockStr = '""';
-				}
-				break;
-			default:
-				blockStr = '?';
-				break;
+					break;
+				default:
+					blockStr = '?';
+					break;
+			}
 		}
 		parts.push(blockStr);
 	}
