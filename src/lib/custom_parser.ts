@@ -34,9 +34,11 @@ import { classModIdToName } from './types';
 
 export function toCustomFormat(
 	p: Serial,
-	useStringRepresentation: boolean,
-	passiveIdToName: { [key: number]: string },
-	classModIdToName: { [key: number]: string }
+	useStringRepresentation?: boolean,
+	passiveIdToName?: { [key: number]: string },
+	classModIdToName?: { [key: number]: string },
+	weaponPartIdToName?: { [key: number]: string },
+	itemType?: string
 ): string {
 	if (!p) return '';
 	const parts: string[] = [];
@@ -45,7 +47,7 @@ export function toCustomFormat(
 		const block = p[i];
 		let blockStr = '';
 
-		if (useStringRepresentation && i === 0 && block.token === TOK_VARINT && block.value !== undefined && classModIdToName[block.value]) {
+		if (useStringRepresentation && i === 0 && block.token === TOK_VARINT && block.value !== undefined && classModIdToName?.[block.value]) {
 			blockStr = `"${classModIdToName[block.value]}"`;
 		} else {
 			switch (block.token) {
@@ -61,9 +63,11 @@ export function toCustomFormat(
 					break;
 				case TOK_PART:
 					if (block.part) {
-						if (useStringRepresentation && block.part.subType === SUBTYPE_NONE && passiveIdToName[block.part.index]) {
-							const classModName = classModIdToName[p[0].value!];
+						if (useStringRepresentation && itemType?.includes('Class Mod') && block.part.subType === SUBTYPE_NONE && passiveIdToName?.[block.part.index]) {
+							const classModName = classModIdToName?.[p[0].value!];
 							blockStr = `"${classModName}.${passiveIdToName[block.part.index]}"`;
+						} else if (useStringRepresentation && itemType?.includes('Weapon') && block.part.subType === SUBTYPE_NONE && weaponPartIdToName?.[block.part.index]) {
+							blockStr = `"${weaponPartIdToName[block.part.index]}"`;
 						} else if (block.part.subType === SUBTYPE_NONE) {
 							if (block.part.index !== undefined) {
 								blockStr = `{${block.part.index}}`;

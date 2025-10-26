@@ -6,24 +6,57 @@
 	let passiveIdToName: { [key: number]: string } = {};
 	let passivesLoaded = $state(false);
 
+	let weaponPartIdToName: { [key: number]: string } = {};
+	let weaponPartsLoaded = $state(false);
+
+	let isMounted = $state(false);
 	$effect(() => {
-		async function loadPassives() {
-			if (itemType.includes('Class Mod') && !passivesLoaded) {
-				const response = await fetch('/passives.json');
-				const passives = await response.json();
-				for (const key in passives) {
-					const passive = passives[key as keyof typeof passives];
-					if (typeof passive === 'object') {
-						passiveIdToName[passive.id] = key;
-					} else {
-						passiveIdToName[passive] = key;
+		isMounted = true;
+	});
+
+	$effect(() => {
+		async function loadData() {
+			await (async function loadPassives() {
+				if (itemType.includes('Class Mod') && !passivesLoaded) {
+					const response = await fetch('/passives.json');
+					const passives = await response.json();
+					for (const key in passives) {
+						const passive = passives[key as keyof typeof passives];
+						if (typeof passive === 'object') {
+							passiveIdToName[passive.id] = key;
+						} else {
+							passiveIdToName[passive] = key;
+						}
 					}
+					passivesLoaded = true;
 				}
-				passivesLoaded = true;
-			}
+			})();
+
+			await (async function loadWeaponParts() {
+				if (itemType.includes('Weapon') && !weaponPartsLoaded) {
+					const [womboComboResponse, universalResponse] = await Promise.all([
+						fetch('/wombo_combo_parts.json'),
+						fetch('/universal_weapon_parts.json')
+					]);
+					const womboComboParts = await womboComboResponse.json();
+					const universalParts = await universalResponse.json();
+
+					const combinedParts = { ...womboComboParts, ...universalParts };
+
+					for (const key in combinedParts) {
+						const part = combinedParts[key as keyof typeof combinedParts];
+						if (typeof part === 'object') {
+							weaponPartIdToName[part.id] = key;
+						} else {
+							weaponPartIdToName[part] = key;
+						}
+					}
+					weaponPartsLoaded = true;
+				}
+			})();
 		}
 
-		loadPassives();
+		loadData();
 	});
 
 	let showPassiveName = $state(false);
@@ -78,22 +111,20 @@
 	let error: string | null = $state(null);
 	let itemType = $state('UNKNOWN');
 	let customFormatOutput = $state('');
+	let detectedParts: { code: string; name: string }[] = $state([]);
+	let baseYaml = $state('');
+	let mergedYaml = $state('');
+	let fileInput: HTMLInputElement = $state() as HTMLInputElement;
 	let useStringRepresentation = $state(false);
 
 	function handleUseStringRepresentationChange() {
-		customFormatOutput = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName);
+		customFormatOutput = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName, weaponPartIdToName, itemType);
 	}
-	let baseYaml = $state('');
-	let mergedYaml = $state('');
-	let fileInput: HTMLInputElement;
-	let detectedParts: { code: string; name: string }[] = $state([]);
-
-	let debounceTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	$effect(() => {
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
 		if (parsed) {
-			customFormatOutput = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName);
+			customFormatOutput = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName, weaponPartIdToName, itemType);
 			if (onCustomFormatOutputUpdate) {
 				onCustomFormatOutputUpdate(JSON.stringify(parsed, null, 2));
 			}
@@ -290,7 +321,7 @@
 		></textarea>
 	</FormGroup>
 
-	{#if detectedParts.length > 0}
+	{#if isMounted && detectedParts.length > 0}
 		<FormGroup label="Detected Parts">
 			<ul class="list-inside list-disc text-sm text-gray-700 dark:text-gray-300">
 				{#each detectedParts as part (part.code)}
@@ -343,6 +374,7 @@
 		</div>
 	{/if}
 
+	{#if isMounted}
 	<div class="mt-4">
 		<input
 			type="file"
@@ -365,4 +397,5 @@
 			Merge
 		</button>
 	</div>
+	{/if}
 </div>
