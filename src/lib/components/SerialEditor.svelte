@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { type Serial, type Part, classModIdToName } from '../types';
 	import { browser } from '$app/environment';
-	import { toCustomFormat, parseCustomFormat } from '../custom_parser.js';
+	import { toCustomFormat, parseCustomFormat } from '../custom_parser.ts';
 	import FormGroup from './FormGroup.svelte';
 	import Worker from '$lib/worker/worker.js?worker';
-	import { PartService } from '$lib/partService.js';
+	import { PartService } from '$lib/partService.ts';
 	import { TOK_PART } from '../types';
 
 	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{

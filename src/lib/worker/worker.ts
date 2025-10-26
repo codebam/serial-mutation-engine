@@ -1,10 +1,10 @@
 console.log('Worker script evaluating...');
-import { parseSerial } from '../parser.js';
-import { encodeSerial } from '../encoder.js';
-import * as coreMutations from '../mutations.js';
-import { mergeSerials, type Mutation } from '../mutations.js';
-import { parseCustomFormat } from '../custom_parser.js';
-import type { RawPart, State, Serial } from '../types.js';
+import { parseSerial } from '../parser.ts';
+import { encodeSerial } from '../encoder.ts';
+import * as coreMutations from '../mutations.ts';
+import { mergeSerials, type Mutation } from '../mutations.ts';
+import { parseCustomFormat } from '../custom_parser.ts';
+import type { RawPart, State, Serial } from '../types.ts';
 
 interface PartItem {
 	name?: string;

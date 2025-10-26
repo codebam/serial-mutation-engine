@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { parseSerial } from './parser.js';
-import { toCustomFormat } from './custom_parser.js';
+import { parseSerial } from './parser.ts';
+import { toCustomFormat } from './custom_parser.ts';
 
 describe('Phosphene Skin Deserialization', () => {
 	const skinTests = [

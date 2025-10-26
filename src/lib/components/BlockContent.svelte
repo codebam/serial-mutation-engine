@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Block, Part } from '$lib/types.js';
-	import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, TOK_SEP2 } from '$lib/types.js';
+	import type { Block, Part } from '$lib/types.ts';
+	import { TOK_VARINT, TOK_VARBIT, TOK_PART, TOK_SEP1, TOK_SEP2 } from '$lib/types.ts';
 	import Asset from './Asset.svelte';
 	import PartComponent from './PartComponent.svelte';
-	import type { PartService } from '$lib/partService.js';
+	import type { PartService } from '$lib/partService.ts';
 
 	let { block, partService, onUpdateBlockValue, onUpdatePart, onUpdatePartList } = $props<{
 		block: Block;

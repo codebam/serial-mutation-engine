@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import * as api from '$lib/api.js';
+import type { RequestHandler } from './$types.ts';
+import * as api from '$lib/api.ts';
 
 /**
  * @typedef {object} Operation
