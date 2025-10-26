@@ -2019,19 +2019,19 @@ class MockBitstream extends BitstreamWriter {
 	public writtenBits: number[] = [];
 
 	constructor() {
-		super(10);
+		super();
 	}
 
-	writeBit(bit: number) {
+	async writeBit(bit: number) {
 		this.writtenBits.push(bit);
-		super.writeBit(bit);
+		await super.writeBit(bit);
 	}
 
-	write(value: number, n: number) {
+	async write(value: number, n: number) {
 		for (let i = 0; i < n; i++) {
 			this.writtenBits.push((value >> (n - 1 - i)) & 1);
 		}
-		super.write(value, n);
+		await super.write(value, n);
 	}
 }
 
@@ -2042,10 +2042,10 @@ describe('Varint and Varbit Encoding Comparison with Go', () => {
 	goData
 		.filter((d) => d.type === 'varint')
 		.forEach((data) => {
-			it(`should encode varint ${data.value} correctly`, () => {
+			it(`should encode varint ${data.value} correctly`, async () => {
 				const stream = new MockBitstream();
-				writeVarint(stream, data.value);
-				const encodedBytes = stream.getBytes();
+				await writeVarint(stream, data.value);
+				const encodedBytes = await stream.getBytes();
 				const encodedHex = Array.from(encodedBytes)
 					.map((b) => b.toString(16).padStart(2, '0'))
 					.join('');
@@ -2056,10 +2056,10 @@ describe('Varint and Varbit Encoding Comparison with Go', () => {
 	goData
 		.filter((d) => d.type === 'varbit')
 		.forEach((data) => {
-			it(`should encode varbit ${data.value} correctly`, () => {
+			it(`should encode varbit ${data.value} correctly`, async () => {
 				const stream = new MockBitstream();
-				writeVarbit(stream, data.value);
-				const encodedBytes = stream.getBytes();
+				await writeVarbit(stream, data.value);
+				const encodedBytes = await stream.getBytes();
 				const encodedHex = Array.from(encodedBytes)
 					.map((b) => b.toString(16).padStart(2, '0'))
 					.join('');
@@ -2071,9 +2071,9 @@ describe('Varint and Varbit Encoding Comparison with Go', () => {
 describe('BitstreamReader', () => {
 	it('should read bits correctly', async () => {
 		const writer = new BitstreamWriter();
-		writer.write(123, 8);
-		writer.write(45, 6);
-		const bytes = writer.getBytes();
+		await writer.write(123, 8);
+		await writer.write(45, 6);
+		const bytes = await writer.getBytes();
 
 		const reader = new BitstreamReader(bytes);
 		const val1 = await reader.read(8);

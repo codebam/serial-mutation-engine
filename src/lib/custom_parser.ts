@@ -125,14 +125,14 @@ export function toCustomFormat(
 import { writeVarint, writeVarbit } from './encoder';
 import { BitstreamWriter } from './bitstream';
 
-function bestTypeForValue(v: number): number {
-	const streamVarint = new BitstreamWriter(10);
-	writeVarint(streamVarint, v);
-	const lenVarint = streamVarint.bit_pos;
+async function bestTypeForValue(v: number): Promise<number> {
+	const streamVarint = new BitstreamWriter();
+	await writeVarint(streamVarint, v);
+	const lenVarint = streamVarint.written_bits;
 
-	const streamVarbit = new BitstreamWriter(10);
-	writeVarbit(streamVarbit, v);
-	const lenVarbit = streamVarbit.bit_pos;
+	const streamVarbit = new BitstreamWriter();
+	await writeVarbit(streamVarbit, v);
+	const lenVarbit = streamVarbit.written_bits;
 
 	if (lenVarint > lenVarbit) {
 		return TOK_VARBIT;
@@ -140,10 +140,10 @@ function bestTypeForValue(v: number): number {
 	return TOK_VARINT;
 }
 
-export function parseCustomFormat(
+export async function parseCustomFormat(
 	custom: string,
 	passives?: Record<string, { id: number; name?: string }>
-): Serial {
+): Promise<Serial> {
 	const newParsed: Serial = [];
 	let i = 0;
 
@@ -173,7 +173,7 @@ export function parseCustomFormat(
 				throw new Error(`Unmatched '{' at position ${i}`);
 			}
 			const partStr = custom.substring(i, end + 1);
-			const partBlock = parsePartString(partStr); // Reusing existing helper
+			const partBlock = await parsePartString(partStr); // Reusing existing helper
 			if (partBlock) {
 				newParsed.push(partBlock);
 			} else {
@@ -190,7 +190,7 @@ export function parseCustomFormat(
 				i++;
 			}
 			const value = parseInt(numStr, 10);
-			newParsed.push({ token: bestTypeForValue(value), value });
+			newParsed.push({ token: await bestTypeForValue(value), value });
 			continue;
 		}
 
@@ -249,12 +249,12 @@ export async function base85_to_deserialized(serial: string): Promise<string> {
 	const parsed = await parseSerial(serial);
 	return toCustomFormat(parsed, true);
 }
-export function deserialized_to_base85(
+export async function deserialized_to_base85(
 	custom: string,
 	passives?: Record<string, { id: number; name?: string }>
-): string {
-	const parsed = parseCustomFormat(custom, passives);
-	return encodeSerial(parsed);
+): Promise<string> {
+	const parsed = await parseCustomFormat(custom, passives);
+	return await encodeSerial(parsed);
 }
 
 export function parseHeavyOrdnancePartString(partStr: string): Block | null {
@@ -273,7 +273,7 @@ export function parseHeavyOrdnancePartString(partStr: string): Block | null {
 	return null;
 }
 
-export function parsePartString(partStr: string): Block | null {
+export async function parsePartString(partStr: string): Promise<Block | null> {
 	if (partStr.startsWith('{') && partStr.endsWith('}')) {
 		const content = partStr.slice(1, -1);
 		const parts = content.split(':');
@@ -290,12 +290,13 @@ export function parsePartString(partStr: string): Block | null {
 			if (valueStr.startsWith('[') && valueStr.endsWith(']')) {
 				// SUBTYPE_LIST: {index:[values]}
 				const valuesStr = valueStr.slice(1, -1);
-				const values =
+				const values = await Promise.all(
 					valuesStr !== ''
 						? valuesStr
 								.split(' ')
-								.map((v) => ({ type: bestTypeForValue(parseInt(v, 10)), value: parseInt(v, 10) }))
-						: [];
+								.map(async (v) => ({ type: await bestTypeForValue(parseInt(v, 10)), value: parseInt(v, 10) }))
+						: []
+				);
 				return { token: TOK_PART, part: { subType: SUBTYPE_LIST, index, values } };
 			} else {
 				// SUBTYPE_INT: {index:value}

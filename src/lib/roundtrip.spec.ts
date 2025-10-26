@@ -17,15 +17,22 @@ describe('roundtrip', () => {
 		for (const serial of serials) {
 			try {
 				const deserialized = await base85_to_deserialized(serial);
-				const new_serial = deserialized_to_base85(deserialized);
+				const new_serial = await deserialized_to_base85(deserialized);
 
 				const parsed_serial_object = await parseSerial(serial);
-				const encoded_from_parsed = encodeSerial(parsed_serial_object);
+				const encoded_from_parsed = await encodeSerial(parsed_serial_object);
 
 				if (serial !== new_serial) {
 					failed_count++;
+                    if (failed_count < 10) {
+                        console.log({
+                            title: 'custom format roundtrip',
+                            serial,
+                            new_serial,
+                        });
+                    }
 					const original_parsed = await parseSerial(serial);
-					const new_parsed = parseCustomFormat(deserialized);
+					const new_parsed = await parseCustomFormat(deserialized);
 					if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {
 						failed_serials.push(
 							`Mismatch for ${serial} (custom format roundtrip):\nOriginal parsed: ${JSON.stringify(original_parsed)}\nNew parsed: ${JSON.stringify(new_parsed)}`
@@ -37,6 +44,13 @@ describe('roundtrip', () => {
 
 				if (serial !== encoded_from_parsed) {
 					failed_count++;
+                    if (failed_count < 10) {
+                        console.log({
+                            title: 'direct encodeSerial',
+                            serial,
+                            encoded_from_parsed,
+                        });
+                    }
 					const original_parsed = await parseSerial(serial);
 					const new_parsed = await parseSerial(encoded_from_parsed);
 					if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {

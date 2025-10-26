@@ -38,9 +38,9 @@ async function run() {
 			}
 		});
 	} else if (encodeFlag) {
-		getInput((input) => {
+		getInput(async (input) => {
 			try {
-				const serial = deserialized_to_base85(input);
+				const serial = await deserialized_to_base85(input);
 				console.log(serial);
 			} catch (error) {
 				console.error('Error encoding:', (error as Error).message);
@@ -57,7 +57,7 @@ async function run() {
 			} catch (error) {
 				// if decoding fails, try encoding
 				try {
-					const serial = deserialized_to_base85(input);
+					const serial = await deserialized_to_base85(input);
 					console.log(serial);
 					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				} catch (error2) {

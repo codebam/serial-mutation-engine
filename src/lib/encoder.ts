@@ -89,7 +89,7 @@ function IntBitsSize(v: number, minSize: number, maxSize: number): number {
 	return nBits;
 }
 
-export function writeVarint(stream: BitstreamWriter, value: number) {
+export async function writeVarint(stream: BitstreamWriter, value: number): Promise<void> {
 	const VARINT_BITS_PER_BLOCK = 4;
 	const VARINT_MAX_USABLE_BITS = 16;
 
@@ -101,10 +101,10 @@ export function writeVarint(stream: BitstreamWriter, value: number) {
 	// Write complete blocks
 	while (nBits > VARINT_BITS_PER_BLOCK) {
 		for (let i = 0; i < VARINT_BITS_PER_BLOCK; i++) {
-			stream.writeBit(value & 1);
+			await stream.writeBit(value & 1);
 			value >>= 1;
 		}
-		stream.writeBit(1); // Continuation bit
+		await stream.writeBit(1); // Continuation bit
 		nBits -= VARINT_BITS_PER_BLOCK;
 	}
 
@@ -112,69 +112,69 @@ export function writeVarint(stream: BitstreamWriter, value: number) {
 	if (nBits > 0) {
 		for (let i = 0; i < VARINT_BITS_PER_BLOCK; i++) {
 			if (nBits > 0) {
-				stream.writeBit(value & 1);
+				await stream.writeBit(value & 1);
 				value >>= 1;
 				nBits--;
 			} else {
-				stream.writeBit(0); // Padding
+				await stream.writeBit(0); // Padding
 			}
 		}
-		stream.writeBit(0); // No continuation
+		await stream.writeBit(0); // No continuation
 	}
 }
 
-export function writeVarbit(stream: BitstreamWriter, value: number) {
+export async function writeVarbit(stream: BitstreamWriter, value: number): Promise<void> {
 	const VARBIT_LENGTH_BLOCK_SIZE = 5;
 	const nBits = IntBitsSize(value, 0, (1 << VARBIT_LENGTH_BLOCK_SIZE) - 1);
 
 	// Write length
 	let lengthBits = nBits;
 	for (let i = 0; i < VARBIT_LENGTH_BLOCK_SIZE; i++) {
-		stream.writeBit(lengthBits & 1);
+		await stream.writeBit(lengthBits & 1);
 		lengthBits >>= 1;
 	}
 
 	// Write value bits
 	let valueBits = value;
 	for (let i = 0; i < nBits; i++) {
-		stream.writeBit(valueBits & 1);
+		await stream.writeBit(valueBits & 1);
 		valueBits >>= 1;
 	}
 }
 
-function writeString(stream: BitstreamWriter, value: string) {
-	writeVarint(stream, value.length);
+async function writeString(stream: BitstreamWriter, value: string): Promise<void> {
+	await writeVarint(stream, value.length);
 	for (let i = 0; i < value.length; i++) {
 		const charCode = value.charCodeAt(i);
-		stream.write(UINT7_MIRROR[charCode], 7);
+		await stream.write(UINT7_MIRROR[charCode], 7);
 	}
 }
 
-function writePart(stream: BitstreamWriter, part: Part) {
-	writeVarint(stream, part.index);
+async function writePart(stream: BitstreamWriter, part: Part): Promise<void> {
+	await writeVarint(stream, part.index);
 
 	switch (part.subType) {
 		case SUBTYPE_NONE:
-			stream.writeBits([0, 1, 0]);
+			await stream.writeBits([0, 1, 0]);
 			break;
 		case SUBTYPE_INT:
-			stream.writeBit(1);
-			writeVarint(stream, part.value!);
-			stream.writeBits([0, 0, 0]);
+			await stream.writeBit(1);
+			await writeVarint(stream, part.value!);
+			await stream.writeBits([0, 0, 0]);
 			break;
 		case SUBTYPE_LIST:
-			stream.writeBits([0, 0, 1]);
-			stream.writeBits([0, 1]); // TOK_SEP2
+			await stream.writeBits([0, 0, 1]);
+			await stream.writeBits([0, 1]); // TOK_SEP2
 			for (const v of part.values!) {
 				if (v.type === TOK_VARINT) {
-					stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARINT]);
-					writeVarint(stream, v.value);
+					await stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARINT]);
+					await writeVarint(stream, v.value);
 				} else {
-					stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARBIT]);
-					writeVarbit(stream, v.value);
+					await stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARBIT]);
+					await writeVarbit(stream, v.value);
 				}
 			}
-			stream.writeBits([0, 0]); // TOK_SEP1
+			await stream.writeBits([0, 0]); // TOK_SEP1
 			break;
 	}
 }
@@ -188,46 +188,46 @@ const TOKEN_BIT_PATTERNS = {
 	[TOK_STRING]: [1, 1, 1]
 };
 
-export function encodeSerial(serial: Serial): string {
-	const stream = new BitstreamWriter(250);
+export async function encodeSerial(serial: Serial): Promise<string> {
+	const stream = new BitstreamWriter();
 
 	// Magic header
-	stream.write(0b0010000, 7);
+	await stream.write(0b0010000, 7);
 
 	for (const block of serial) {
 		switch (block.token) {
 			case TOK_SEP1:
-				stream.writeBits(TOKEN_BIT_PATTERNS[TOK_SEP1]);
+				await stream.writeBits(TOKEN_BIT_PATTERNS[TOK_SEP1]);
 				break;
 			case TOK_SEP2:
-				stream.writeBits(TOKEN_BIT_PATTERNS[TOK_SEP2]);
+				await stream.writeBits(TOKEN_BIT_PATTERNS[TOK_SEP2]);
 				break;
 			case TOK_VARINT:
-				stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARINT]);
-				writeVarint(stream, block.value!);
+				await stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARINT]);
+				await writeVarint(stream, block.value!);
 				break;
 			case TOK_VARBIT:
-				stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARBIT]);
-				writeVarbit(stream, block.value!);
+				await stream.writeBits(TOKEN_BIT_PATTERNS[TOK_VARBIT]);
+				await writeVarbit(stream, block.value!);
 				break;
 			case TOK_PART:
 				if (!block.part) {
 					throw new Error('TOK_PART block is missing a part property');
 				}
-				stream.writeBits(TOKEN_BIT_PATTERNS[TOK_PART]);
-				writePart(stream, block.part!);
+				await stream.writeBits(TOKEN_BIT_PATTERNS[TOK_PART]);
+				await writePart(stream, block.part!);
 				break;
 			case TOK_STRING:
 				if (block.valueStr === undefined) {
 					throw new Error('TOK_STRING block is missing a valueStr property');
 				}
-				stream.writeBits(TOKEN_BIT_PATTERNS[TOK_STRING]);
-				writeString(stream, block.valueStr);
+				await stream.writeBits(TOKEN_BIT_PATTERNS[TOK_STRING]);
+				await writeString(stream, block.valueStr);
 				break;
 		}
 	}
 
-	const bytes = stream.getBytes();
+	const bytes = await stream.getBytes();
 	const mirrored = mirrorBytes(bytes);
 	return encodeBase85(mirrored);
 }
