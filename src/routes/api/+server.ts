@@ -27,7 +27,9 @@ async function processOperation(
 		throw new Error('Each operation must include "functionName" and "args" fields.');
 	}
 
-	const apiFunction = (api as Record<string, (...args: unknown[]) => unknown>)[functionName];
+	const apiFunction = (api as unknown as Record<string, (...args: unknown[]) => unknown>)[
+		functionName
+	];
 
 	if (typeof apiFunction !== 'function') {
 		throw new Error(`Invalid functionName: ${functionName}`);
