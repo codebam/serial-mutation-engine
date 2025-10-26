@@ -1,5 +1,5 @@
-import { BitstreamReader, UINT4_MIRROR, UINT5_MIRROR } from './bitstream.js';
-import type { Serial, Block, Part } from './types.js';
+import { BitstreamReader, UINT4_MIRROR, UINT5_MIRROR } from './bitstream.ts';
+import type { Serial, Block, Part } from './types.ts';
 import {
 	SUBTYPE_INT,
 	SUBTYPE_LIST,
@@ -10,7 +10,7 @@ import {
 	TOK_VARBIT,
 	TOK_PART,
 	TOK_STRING
-} from './types.js';
+} from './types.ts';
 
 const BASE85_ALPHABET =
 	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';

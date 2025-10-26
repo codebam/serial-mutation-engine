@@ -1,6 +1,7 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
+		"allowImportingTsExtensions": true,
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": true,
@@ -10,8 +11,17 @@
 		"sourceMap": true,
 		"strict": true,
 		"moduleResolution": "bundler",
-		"types": ["@cloudflare/workers-types", "@webgpu/types"],
-		"lib": ["esnext", "DOM", "DOM.Iterable", "WebWorker", "ES2021"]
+		"types": [
+			"@cloudflare/workers-types",
+			"@webgpu/types"
+		],
+		"lib": [
+			"esnext",
+			"DOM",
+			"DOM.Iterable",
+			"WebWorker",
+			"ES2021"
+		]
 	}
 	// Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
 	// except $lib which is handled by https://svelte.dev/docs/kit/configuration#files

@@ -1,6 +1,6 @@
-import { parseSerial } from './parser.js';
-import { encodeSerial } from './encoder.js';
-import type { Serial, Block } from './types.js';
+import { parseSerial } from './parser.ts';
+import { encodeSerial } from './encoder.ts';
+import type { Serial, Block } from './types.ts';
 import {
 	TOK_SEP1,
 	TOK_SEP2,
@@ -11,7 +11,7 @@ import {
 	SUBTYPE_INT,
 	SUBTYPE_LIST,
 	SUBTYPE_NONE
-} from './types';
+} from './types.ts';
 
 export function toCustomFormat(
 	p: Serial,
@@ -122,8 +122,8 @@ export function toCustomFormat(
 	return result.trim();
 }
 
-import { writeVarint, writeVarbit } from './encoder';
-import { BitstreamWriter } from './bitstream';
+import { writeVarint, writeVarbit } from './encoder.ts';
+import { BitstreamWriter } from './bitstream.ts';
 
 async function bestTypeForValue(v: number): Promise<number> {
 	const streamVarint = new BitstreamWriter();

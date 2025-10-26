@@ -6,8 +6,16 @@
 		"module": "esnext",
 		"declaration": true,
 		"outDir": "dist",
-		"lib": ["esnext", "dom", "dom.iterable"],
-		"allowJs": true
+		"lib": [
+			"esnext",
+			"dom",
+			"dom.iterable"
+		],
+		"allowJs": true,
+		"resolveJsonModule": true,
+		"allowImportingTsExtensions": true
 	},
-	"include": ["src/lib/**/*.ts"]
+	"include": [
+		"src/lib/**/*.ts"
+	]
 }

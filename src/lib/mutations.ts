@@ -1,5 +1,5 @@
-import { TOK_VARINT, TOK_VARBIT, type Serial, type Block, type State } from './types.js';
-import { parseSerial } from './parser.js';
+import { TOK_VARINT, TOK_VARBIT, type Serial, type Block, type State } from './types.ts';
+import { parseSerial } from './parser.ts';
 
 export function getInitialState(): State {
 	return {
