@@ -1,6 +1,6 @@
 {
 	"name": "@codebam/u-serial",
-	"version": "0.0.22",
+	"version": "0.0.23",
 	"bin": {
 		"u-serial": "dist/cli.js"
 	},
