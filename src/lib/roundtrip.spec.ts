@@ -24,13 +24,13 @@ describe('roundtrip', () => {
 
 				if (serial !== new_serial) {
 					failed_count++;
-                    if (failed_count < 10) {
-                        console.log({
-                            title: 'custom format roundtrip',
-                            serial,
-                            new_serial,
-                        });
-                    }
+					if (failed_count < 10) {
+						console.log({
+							title: 'custom format roundtrip',
+							serial,
+							new_serial
+						});
+					}
 					const original_parsed = await parseSerial(serial);
 					const new_parsed = await parseCustomFormat(deserialized);
 					if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {
@@ -44,13 +44,13 @@ describe('roundtrip', () => {
 
 				if (serial !== encoded_from_parsed) {
 					failed_count++;
-                    if (failed_count < 10) {
-                        console.log({
-                            title: 'direct encodeSerial',
-                            serial,
-                            encoded_from_parsed,
-                        });
-                    }
+					if (failed_count < 10) {
+						console.log({
+							title: 'direct encodeSerial',
+							serial,
+							encoded_from_parsed
+						});
+					}
 					const original_parsed = await parseSerial(serial);
 					const new_parsed = await parseSerial(encoded_from_parsed);
 					if (JSON.stringify(original_parsed) !== JSON.stringify(new_parsed)) {

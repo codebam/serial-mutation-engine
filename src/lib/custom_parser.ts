@@ -292,9 +292,10 @@ export async function parsePartString(partStr: string): Promise<Block | null> {
 				const valuesStr = valueStr.slice(1, -1);
 				const values = await Promise.all(
 					valuesStr !== ''
-						? valuesStr
-								.split(' ')
-								.map(async (v) => ({ type: await bestTypeForValue(parseInt(v, 10)), value: parseInt(v, 10) }))
+						? valuesStr.split(' ').map(async (v) => ({
+								type: await bestTypeForValue(parseInt(v, 10)),
+								value: parseInt(v, 10)
+							}))
 						: []
 				);
 				return { token: TOK_PART, part: { subType: SUBTYPE_LIST, index, values } };

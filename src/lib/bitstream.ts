@@ -10,67 +10,67 @@ for (let i = 0; i < 32; i++) {
 }
 
 export class BitstreamWriter {
-    private stream: WritableStream<Uint8Array>;
-    private writer: WritableStreamDefaultWriter<Uint8Array>;
-    private chunks: Uint8Array[] = [];
-    private bit_buffer = 0;
-    private bit_length = 0;
-    public written_bits = 0;
+	private stream: WritableStream<Uint8Array>;
+	private writer: WritableStreamDefaultWriter<Uint8Array>;
+	private chunks: Uint8Array[] = [];
+	private bit_buffer = 0;
+	private bit_length = 0;
+	public written_bits = 0;
 
-    constructor() {
-        const sink = {
-            write: (chunk: Uint8Array) => {
-                this.chunks.push(chunk);
-            }
-        };
-        this.stream = new WritableStream(sink);
-        this.writer = this.stream.getWriter();
-    }
+	constructor() {
+		const sink = {
+			write: (chunk: Uint8Array) => {
+				this.chunks.push(chunk);
+			}
+		};
+		this.stream = new WritableStream(sink);
+		this.writer = this.stream.getWriter();
+	}
 
-    private async flush(force = false) {
-        while (this.bit_length >= 8) {
-            const byte = (this.bit_buffer >> (this.bit_length - 8)) & 0xff;
-            await this.writer.write(new Uint8Array([byte]));
-            this.bit_length -= 8;
-        }
-        if (force && this.bit_length > 0) {
-            const byte = (this.bit_buffer << (8 - this.bit_length)) & 0xff;
-            await this.writer.write(new Uint8Array([byte]));
-            this.bit_length = 0;
-            this.bit_buffer = 0;
-        }
-    }
+	private async flush(force = false) {
+		while (this.bit_length >= 8) {
+			const byte = (this.bit_buffer >> (this.bit_length - 8)) & 0xff;
+			await this.writer.write(new Uint8Array([byte]));
+			this.bit_length -= 8;
+		}
+		if (force && this.bit_length > 0) {
+			const byte = (this.bit_buffer << (8 - this.bit_length)) & 0xff;
+			await this.writer.write(new Uint8Array([byte]));
+			this.bit_length = 0;
+			this.bit_buffer = 0;
+		}
+	}
 
-    public async write(value: number, n: number) {
-        this.written_bits += n;
-        value &= (1 << n) - 1;
-        this.bit_buffer = (this.bit_buffer << n) | value;
-        this.bit_length += n;
-        await this.flush();
-    }
+	public async write(value: number, n: number) {
+		this.written_bits += n;
+		value &= (1 << n) - 1;
+		this.bit_buffer = (this.bit_buffer << n) | value;
+		this.bit_length += n;
+		await this.flush();
+	}
 
-    public async writeBit(bit: number) {
-        await this.write(bit, 1);
-    }
+	public async writeBit(bit: number) {
+		await this.write(bit, 1);
+	}
 
-    public async writeBits(bits: number[]) {
-        for (const bit of bits) {
-            await this.writeBit(bit);
-        }
-    }
+	public async writeBits(bits: number[]) {
+		for (const bit of bits) {
+			await this.writeBit(bit);
+		}
+	}
 
-    public async getBytes(): Promise<Uint8Array> {
-        await this.flush(true);
-        await this.writer.close();
-        
-        const result = new Uint8Array(this.chunks.reduce((acc, chunk) => acc + chunk.length, 0));
-        let offset = 0;
-        for (const chunk of this.chunks) {
-            result.set(chunk, offset);
-            offset += chunk.length;
-        }
-        return result;
-    }
+	public async getBytes(): Promise<Uint8Array> {
+		await this.flush(true);
+		await this.writer.close();
+
+		const result = new Uint8Array(this.chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+		let offset = 0;
+		for (const chunk of this.chunks) {
+			result.set(chunk, offset);
+			offset += chunk.length;
+		}
+		return result;
+	}
 }
 export class BitstreamReader {
 	private reader: ReadableStreamDefaultReader<Uint8Array>;
