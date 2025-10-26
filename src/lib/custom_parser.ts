@@ -19,7 +19,9 @@ let showPassiveName = false;
 
 export function loadPassives(passivesData: Record<string, { id: number; name?: string }>) {
 	passives = passivesData;
-	reversePassives = Object.fromEntries(Object.entries(passives).map(([key, value]) => [value.id, key]));
+	reversePassives = Object.fromEntries(
+		Object.entries(passives).map(([key, value]) => [value.id, key])
+	);
 }
 
 export function togglePassiveName(show: boolean) {
@@ -47,7 +49,13 @@ export function toCustomFormat(
 		const block = p[i];
 		let blockStr = '';
 
-		if (useStringRepresentation && i === 0 && block.token === TOK_VARINT && block.value !== undefined && classModIdToName?.[block.value]) {
+		if (
+			useStringRepresentation &&
+			i === 0 &&
+			block.token === TOK_VARINT &&
+			block.value !== undefined &&
+			classModIdToName?.[block.value]
+		) {
 			blockStr = `"${classModIdToName[block.value]}"`;
 		} else {
 			switch (block.token) {
@@ -63,10 +71,20 @@ export function toCustomFormat(
 					break;
 				case TOK_PART:
 					if (block.part) {
-						if (useStringRepresentation && itemType?.includes('Class Mod') && block.part.subType === SUBTYPE_NONE && passiveIdToName?.[block.part.index]) {
+						if (
+							useStringRepresentation &&
+							itemType?.includes('Class Mod') &&
+							block.part.subType === SUBTYPE_NONE &&
+							passiveIdToName?.[block.part.index]
+						) {
 							const classModName = classModIdToName?.[p[0].value!];
 							blockStr = `"${classModName}.${passiveIdToName[block.part.index]}"`;
-						} else if (useStringRepresentation && itemType?.includes('Weapon') && block.part.subType === SUBTYPE_NONE && weaponPartIdToName?.[block.part.index]) {
+						} else if (
+							useStringRepresentation &&
+							itemType?.includes('Weapon') &&
+							block.part.subType === SUBTYPE_NONE &&
+							weaponPartIdToName?.[block.part.index]
+						) {
 							blockStr = `"${weaponPartIdToName[block.part.index]}"`;
 						} else if (block.part.subType === SUBTYPE_NONE) {
 							if (block.part.index !== undefined) {
@@ -194,54 +212,47 @@ export function parseCustomFormat(custom: string): Serial {
 			continue;
 		}
 
-					if (char === '"') {
-						let end = i + 1;
-						let content = '';
-						while (end < custom.length) {
-							const current_char = custom[end];
-							if (current_char === '"') {
-								break; // end of string
-							}
-							if (current_char === '\\') {
-								if (end + 1 < custom.length) {
-									content += custom[end + 1];
-									end += 2;
-									continue;
-								}
-							}
-							content += current_char;
-							end++;
-						}
-		
-						if (end >= custom.length || custom[end] !== '"') {
-							throw new Error(`Unmatched '"' at position ${i}`);
-						}
-		
-						let finalContent = content;
-		
-										const separatorIndex = content.indexOf('::');
-		
-										if (separatorIndex !== -1) {
-		
-											finalContent = content.substring(separatorIndex + 2);
-		
-										}
-		
-						
-		
-										const passive = passives[finalContent];
-		
-										if (passive) {
-		
-											newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: passive.id } });
-		
-										} else {
-		
-											newParsed.push({ token: TOK_STRING, valueStr: content });
-		
-										}						i = end + 1;
+		if (char === '"') {
+			let end = i + 1;
+			let content = '';
+			while (end < custom.length) {
+				const current_char = custom[end];
+				if (current_char === '"') {
+					break; // end of string
+				}
+				if (current_char === '\\') {
+					if (end + 1 < custom.length) {
+						content += custom[end + 1];
+						end += 2;
 						continue;
 					}
+				}
+				content += current_char;
+				end++;
+			}
+
+			if (end >= custom.length || custom[end] !== '"') {
+				throw new Error(`Unmatched '"' at position ${i}`);
+			}
+
+			let finalContent = content;
+
+			const separatorIndex = content.indexOf('::');
+
+			if (separatorIndex !== -1) {
+				finalContent = content.substring(separatorIndex + 2);
+			}
+
+			const passive = passives[finalContent];
+
+			if (passive) {
+				newParsed.push({ token: TOK_PART, part: { subType: SUBTYPE_NONE, index: passive.id } });
+			} else {
+				newParsed.push({ token: TOK_STRING, valueStr: content });
+			}
+			i = end + 1;
+			continue;
+		}
 		throw new Error(`Invalid character: '${char}' at position ${i}`);
 	}
 
@@ -250,9 +261,8 @@ export function parseCustomFormat(custom: string): Serial {
 
 export function base85_to_deserialized(serial: string): string {
 	const parsed = parseSerial(serial);
-	return toCustomFormat(parsed, { showIdentifierOnly: true });
+	return toCustomFormat(parsed, true);
 }
-
 export function deserialized_to_base85(custom: string): string {
 	const parsed = parseCustomFormat(custom);
 	return encodeSerial(parsed);

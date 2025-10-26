@@ -1,5 +1,14 @@
 <script lang="ts">
-	import { type Serial, type Block, TOK_VARINT, TOK_VARBIT, TOK_PART, SUBTYPE_NONE, type Part, classModIdToName } from '../types';
+	import {
+		type Serial,
+		type Block,
+		TOK_VARINT,
+		TOK_VARBIT,
+		TOK_PART,
+		SUBTYPE_NONE,
+		type Part,
+		classModIdToName
+	} from '../types';
 	import { toCustomFormat, parseCustomFormat } from '../custom_parser.js';
 	import FormGroup from './FormGroup.svelte';
 
@@ -19,13 +28,13 @@
 			await (async function loadPassives() {
 				if (itemType.includes('Class Mod') && !passivesLoaded) {
 					const response = await fetch('/passives.json');
-					const passives = await response.json();
+					const passives: Record<string, { id: string } | string> = await response.json();
 					for (const key in passives) {
-						const passive = passives[key as keyof typeof passives];
+						const passive = passives[key];
 						if (typeof passive === 'object') {
-							passiveIdToName[passive.id] = key;
+							passiveIdToName[parseInt(passive.id)] = key;
 						} else {
-							passiveIdToName[passive] = key;
+							passiveIdToName[parseInt(passive)] = key;
 						}
 					}
 					passivesLoaded = true;
@@ -38,17 +47,17 @@
 						fetch('/wombo_combo_parts.json'),
 						fetch('/universal_weapon_parts.json')
 					]);
-					const womboComboParts = await womboComboResponse.json();
-					const universalParts = await universalResponse.json();
+					const womboComboParts: Record<string, { id: string } | string> = await womboComboResponse.json();
+					const universalParts: Record<string, { id: string } | string> = await universalResponse.json();
 
 					const combinedParts = { ...womboComboParts, ...universalParts };
 
 					for (const key in combinedParts) {
-						const part = combinedParts[key as keyof typeof combinedParts];
+						const part = combinedParts[key];
 						if (typeof part === 'object') {
-							weaponPartIdToName[part.id] = key;
+							weaponPartIdToName[parseInt(part.id)] = key;
 						} else {
-							weaponPartIdToName[part] = key;
+							weaponPartIdToName[parseInt(part)] = key;
 						}
 					}
 					weaponPartsLoaded = true;
@@ -61,9 +70,15 @@
 
 	let showPassiveName = $state(false);
 
-	function handleShowPassiveNameChange() {
-		togglePassiveName(showPassiveName);
-		customFormatOutput = toCustomFormat(parsed);
+	function handleUseStringRepresentationChange() {
+		customFormatOutput = toCustomFormat(
+			parsed,
+			useStringRepresentation,
+			passiveIdToName,
+			classModIdToName,
+			weaponPartIdToName,
+			itemType
+		);
 	}
 
 	import { browser } from '$app/environment';
@@ -103,9 +118,10 @@
 		}
 	}
 
-	let { serial, onCustomFormatOutputUpdate } = $props<{
+	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
 		serial: string;
 		onCustomFormatOutputUpdate?: (newJson: string) => void;
+		onSerialUpdate?: (newSerial: string) => void;
 	}>();
 	let parsed: Serial = $state([]);
 	let error: string | null = $state(null);
@@ -117,14 +133,17 @@
 	let fileInput: HTMLInputElement = $state() as HTMLInputElement;
 	let useStringRepresentation = $state(false);
 
-	function handleUseStringRepresentationChange() {
-		customFormatOutput = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName, weaponPartIdToName, itemType);
-	}
-
 	$effect(() => {
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
 		if (parsed) {
-			customFormatOutput = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName, weaponPartIdToName, itemType);
+			customFormatOutput = toCustomFormat(
+				parsed,
+				useStringRepresentation,
+				passiveIdToName,
+				classModIdToName,
+				weaponPartIdToName,
+				itemType
+			);
 			if (onCustomFormatOutputUpdate) {
 				onCustomFormatOutputUpdate(JSON.stringify(parsed, null, 2));
 			}
@@ -223,7 +242,12 @@
 
 	$effect(() => {
 		if (useStringRepresentation) return;
-		const currentCustomFormat = toCustomFormat(parsed, useStringRepresentation, passiveIdToName, classModIdToName);
+		const currentCustomFormat = toCustomFormat(
+			parsed,
+			useStringRepresentation,
+			passiveIdToName,
+			classModIdToName
+		);
 		if (customFormatOutput !== currentCustomFormat) {
 			try {
 				const newParsed = parseCustomFormat(customFormatOutput);
@@ -265,6 +289,9 @@
 			const plainParsed = JSON.parse(JSON.stringify(parsed));
 			console.log('Posting encode_serial message to worker with payload:', plainParsed);
 			worker.postMessage({ type: 'encode_serial', payload: plainParsed });
+		}
+		if (onSerialUpdate) {
+			onSerialUpdate(serial);
 		}
 	}
 
@@ -353,20 +380,25 @@
 			<option value="Harlowe Class Mod">Harlowe Class Mod</option>
 		</select>
 	</FormGroup>
-    <FormGroup label="Deserialized Output">
-        <div class="flex justify-end mb-2">
-            <label class="flex items-center">
-                <input type="checkbox" bind:checked={useStringRepresentation} onchange={handleUseStringRepresentationChange} disabled={!passivesLoaded} />
-                <span class="ml-2 text-sm text-gray-500">Use String Representation</span>
-            </label>
-        </div>
-        <textarea
-            class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-            bind:value={customFormatOutput}
-            placeholder="Paste deserialized here..."
-        ></textarea>
-    </FormGroup>
-  {#if error}
+	<FormGroup label="Deserialized Output">
+		<div class="mb-2 flex justify-end">
+			<label class="flex items-center">
+				<input
+					type="checkbox"
+					bind:checked={useStringRepresentation}
+					onchange={handleUseStringRepresentationChange}
+					disabled={!passivesLoaded}
+				/>
+				<span class="ml-2 text-sm text-gray-500">Use String Representation</span>
+			</label>
+		</div>
+		<textarea
+			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+			bind:value={customFormatOutput}
+			placeholder="Paste deserialized here..."
+		></textarea>
+	</FormGroup>
+	{#if error}
 		<div
 			class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200"
 		>
@@ -375,27 +407,27 @@
 	{/if}
 
 	{#if isMounted}
-	<div class="mt-4">
-		<input
-			type="file"
-			onchange={handleFileSelect}
-			accept=".yaml,.yml"
-			class="hidden"
-			bind:this={fileInput}
-		/>
-		<button
-			onclick={() => fileInput.click()}
-			class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-		>
-			Select YAML to Merge
-		</button>
-		<button
-			onclick={mergeAndDownloadYaml}
-			disabled={!baseYaml}
-			class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 disabled:text-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-		>
-			Merge
-		</button>
-	</div>
+		<div class="mt-4">
+			<input
+				type="file"
+				onchange={handleFileSelect}
+				accept=".yaml,.yml"
+				class="hidden"
+				bind:this={fileInput}
+			/>
+			<button
+				onclick={() => fileInput.click()}
+				class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+			>
+				Select YAML to Merge
+			</button>
+			<button
+				onclick={mergeAndDownloadYaml}
+				disabled={!baseYaml}
+				class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 disabled:text-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+			>
+				Merge
+			</button>
+		</div>
 	{/if}
 </div>

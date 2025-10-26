@@ -1,12 +1,8 @@
 <script lang="ts">
 	import SerialEditor from '$lib/components/SerialEditor.svelte';
 	import Toast from '$lib/components/Toast.svelte';
-	import { loadPassives } from '$lib/custom_parser.ts';
 
 	const { data } = $props();
-
-	// Initialize passives data
-	loadPassives(data.passives);
 
 	let serialEditors = $state([
 		{
@@ -20,13 +16,6 @@
 	let showToast = $state(false);
 	let toastMessage = $state('');
 
-	function updateEditorCustomFormatOutput(editorId: number, newJson: string) {
-		const editor = serialEditors.find((e) => e.id === editorId);
-		if (editor) {
-			editor.jsonOutput = newJson;
-		}
-	}
-
 	function copyJson() {
 		const json = serialEditors[0].jsonOutput; // Assuming only one editor for now
 		navigator.clipboard.writeText(json);
@@ -37,14 +26,29 @@
 			showToast = false;
 		}, 5000);
 	}
+
+	function updateEditorCustomFormatOutput(editorId: number, newJson: string) {
+		const editor = serialEditors.find((e) => e.id === editorId);
+		if (editor) {
+			editor.jsonOutput = newJson;
+		}
+	}
+
+	function updateEditorSerial(editorId: number, newSerial: string) {
+		const editor = serialEditors.find((e) => e.id === editorId);
+		if (editor) {
+			editor.serial = newSerial;
+		}
+	}
 </script>
 
 <main class="mx-auto my-8 flex h-full w-full max-w-4xl flex-col gap-4">
 	{#each serialEditors as editor (editor.id)}
 		<div>
 			<SerialEditor
-				bind:serial={editor.serial}
+				serial={editor.serial}
 				onCustomFormatOutputUpdate={(newJson) => updateEditorCustomFormatOutput(editor.id, newJson)}
+				onSerialUpdate={(newSerial) => updateEditorSerial(editor.id, newSerial)}
 			/>
 		</div>
 	{/each}

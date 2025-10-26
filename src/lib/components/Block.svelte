@@ -40,14 +40,7 @@
 		<button class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
 			>☰</button
 		>
-		<BlockContent
-			{block}
-			{partService}
-			{itemType}
-			{onUpdateBlockValue}
-			{onUpdatePart}
-			{onUpdatePartList}
-		/>
+		<BlockContent {block} {partService} {onUpdateBlockValue} {onUpdatePart} {onUpdatePartList} />
 		<div class="ml-auto flex gap-1">
 			<button
 				class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"

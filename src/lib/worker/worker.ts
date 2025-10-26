@@ -227,7 +227,7 @@ self.onmessage = async function (e: MessageEvent) {
 						break;
 					}
 
-					const mutatedSerial = mutationFunc(parentSerial.serial, config);
+					const mutatedSerial = mutationFunc(parentSerial, config);
 					serial = encodeSerial(mutatedSerial);
 
 					innerAttempts++;

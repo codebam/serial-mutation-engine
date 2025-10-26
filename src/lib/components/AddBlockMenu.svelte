@@ -15,7 +15,7 @@
 		const select = event.currentTarget as HTMLSelectElement;
 		const selectedValue = select.value;
 		const selectedPart = parts.find(
-			(p) =>
+			(p: Part) =>
 				`${p.subType}:${p.index}${p.value !== undefined ? ':' + p.value : ''}` === selectedValue
 		);
 
