@@ -35,7 +35,7 @@ async function processOperation(
 			case 'decode':
 				return await parseSerial(op.content as string);
 			case 'encode':
-				return encodeSerial(op.content as Serial);
+				return await encodeSerial(op.content as Serial);
 			default:
 				throw new Error(`Invalid action for format JSON: ${op.action}`);
 		}
@@ -54,7 +54,7 @@ async function processOperation(
 				}
 				return await base85_to_deserialized(op.content as string);
 			case 'encode':
-				return deserialized_to_base85(op.content as string);
+				return await deserialized_to_base85(op.content as string);
 			default:
 				throw new Error(`Invalid action: ${op.action}`);
 		}
