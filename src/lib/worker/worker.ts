@@ -122,7 +122,7 @@ self.onmessage = async function (e: MessageEvent) {
 		}
 	} else if (type === 'encode_serial') {
 		try {
-			const serial = encodeSerial(payload as Serial);
+			const serial = await encodeSerial(payload as Serial);
 			self.postMessage({ type: 'encoded_serial', payload: { serial } });
 		} catch (_e) {
 			self.postMessage({ type: 'encoded_serial', payload: { error: (_e as Error).message } });
