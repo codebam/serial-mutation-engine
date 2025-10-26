@@ -23,14 +23,14 @@ function getInput(callback: (data: string) => void) {
 	}
 }
 
-function run() {
+async function run() {
 	const decodeFlag = args.includes('-d');
 	const encodeFlag = args.includes('-e');
 
 	if (decodeFlag) {
-		getInput((input) => {
+		getInput(async (input) => {
 			try {
-				const deserialized = base85_to_deserialized(input);
+				const deserialized = await base85_to_deserialized(input);
 				console.log(deserialized);
 			} catch (error) {
 				console.error('Error decoding:', (error as Error).message);
@@ -49,9 +49,9 @@ function run() {
 		});
 	} else {
 		// Default to decode if no flag is provided
-		getInput((input) => {
+		getInput(async (input) => {
 			try {
-				const deserialized = base85_to_deserialized(input);
+				const deserialized = await base85_to_deserialized(input);
 				console.log(deserialized);
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (error) {

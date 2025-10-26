@@ -12,6 +12,8 @@ npm install @codebam/u-serial
 
 ## Usage
 
+**Note:** As of version 0.0.24, `parseSerial` and `base85_to_deserialized` are now asynchronous and return a `Promise`. You will need to use `await` or `.then()` to get the result.
+
 ### `parseSerial`
 
 Parses a Base85 encoded serial string into a serial object.
@@ -20,7 +22,7 @@ Parses a Base85 encoded serial string into a serial object.
 import { parseSerial } from '@codebam/u-serial';
 
 const serialString = '@U4V5A0l*j.E6c';
-const serialObject = parseSerial(serialString);
+const serialObject = await parseSerial(serialString);
 console.log(serialObject);
 ```
 
@@ -52,7 +54,7 @@ Converts a Base85 encoded serial string to a human-readable custom format.
 import { base85_to_deserialized } from '@codebam/u-serial';
 
 const serialString = '@U4V5A0l*j.E6c';
-const deserialized = base85_to_deserialized(serialString);
+const deserialized = await base85_to_deserialized(serialString);
 console.log(deserialized); // 1 100 2 | {1} {8} |
 ```
 
@@ -106,6 +108,13 @@ You can directly use the library in a standalone HTML page via a CDN like `jsdel
 		base85_to_deserialized,
 		deserialized_to_base85
 	} from 'https://cdn.jsdelivr.net/npm/@codebam/u-serial@latest/dist/api.js';
-	// your code goes here
+
+    async function run() {
+        const serialString = '@U4V5A0l*j.E6c';
+        const deserialized = await base85_to_deserialized(serialString);
+        console.log(deserialized);
+    }
+
+    run();
 </script>
 ```
