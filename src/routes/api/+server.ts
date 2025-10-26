@@ -11,7 +11,7 @@ import * as api from '$lib/api.js';
  */
 interface Operation {
 	functionName: string;
-	args: any[];
+	args: unknown[];
 	debug?: boolean;
 	cache?: boolean;
 }
@@ -27,7 +27,7 @@ async function processOperation(
 		throw new Error('Each operation must include "functionName" and "args" fields.');
 	}
 
-	const apiFunction = (api as any)[functionName];
+	const apiFunction = (api as Record<string, (...args: unknown[]) => unknown>)[functionName];
 
 	if (typeof apiFunction !== 'function') {
 		throw new Error(`Invalid functionName: ${functionName}`);

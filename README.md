@@ -109,16 +109,16 @@ You can directly use the library in a standalone HTML page via a CDN like `jsdel
 		deserialized_to_base85
 	} from 'https://cdn.jsdelivr.net/npm/@codebam/u-serial@latest/dist/api.js';
 
-    async function run() {
-        const serialString = '@U4V5A0l*j.E6c';
-        const deserialized = await base85_to_deserialized(serialString);
-        console.log(deserialized);
+	async function run() {
+		const serialString = '@U4V5A0l*j.E6c';
+		const deserialized = await base85_to_deserialized(serialString);
+		console.log(deserialized);
 
-        const customFormat = '1 100 2 | {1} {8} |';
-        const encoded = await deserialized_to_base85(customFormat);
-        console.log(encoded);
-    }
+		const customFormat = '1 100 2 | {1} {8} |';
+		const encoded = await deserialized_to_base85(customFormat);
+		console.log(encoded);
+	}
 
-    run();
+	run();
 </script>
 ```

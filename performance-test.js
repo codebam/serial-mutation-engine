@@ -44,7 +44,7 @@ async function batchOperations() {
 		const data = await response.json();
 		console.log('Batch Results:', data);
 
-		console.log("Number of Serials: ", batch_payload.length);
+		console.log('Number of Serials: ', batch_payload.length);
 		if (executionTime) {
 			console.log('API Execution Time:', executionTime);
 		} else {

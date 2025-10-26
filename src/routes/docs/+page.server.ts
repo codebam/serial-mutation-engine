@@ -1,7 +1,16 @@
 import { parse } from 'comment-parser';
 
 export async function load() {
-	const modules = import.meta.glob(['../api/+server.ts', '../../lib/parser.ts', '../../lib/encoder.ts', '../../lib/custom_parser.ts', '../../lib/types.ts'], { query: '?raw', import: 'default' });
+	const modules = import.meta.glob(
+		[
+			'../api/+server.ts',
+			'../../lib/parser.ts',
+			'../../lib/encoder.ts',
+			'../../lib/custom_parser.ts',
+			'../../lib/types.ts'
+		],
+		{ query: '?raw', import: 'default' }
+	);
 
 	const allComments = [];
 
