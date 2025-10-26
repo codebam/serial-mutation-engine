@@ -140,7 +140,10 @@ function bestTypeForValue(v: number): number {
 	return TOK_VARINT;
 }
 
-export function parseCustomFormat(custom: string, passives?: Record<string, { id: number; name?: string }>): Serial {
+export function parseCustomFormat(
+	custom: string,
+	passives?: Record<string, { id: number; name?: string }>
+): Serial {
 	const newParsed: Serial = [];
 	let i = 0;
 
