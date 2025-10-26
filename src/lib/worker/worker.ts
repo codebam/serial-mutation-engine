@@ -146,7 +146,7 @@ self.onmessage = async function (e: MessageEvent) {
 
 		// 2. Try Custom Format
 		try {
-			const newParsed = parseCustomFormat(content);
+			const newParsed = await parseCustomFormat(content);
 			if (newParsed && newParsed.length > 0) {
 				self.postMessage({ type: 'pasted_content_parsed', payload: { parsed: newParsed } });
 				return;
@@ -228,7 +228,7 @@ self.onmessage = async function (e: MessageEvent) {
 					}
 
 					const mutatedSerial = await mutationFunc(parentSerial, config);
-					serial = encodeSerial(mutatedSerial);
+					serial = await encodeSerial(mutatedSerial);
 
 					innerAttempts++;
 				} while (seenSerials.has(serial) && innerAttempts < 20);

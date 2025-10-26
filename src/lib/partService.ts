@@ -15,7 +15,7 @@ export class PartService {
 
 	loadPartData() {
 		return new Promise<void>((resolve) => {
-			this.worker.addEventListener('message', (e) => {
+			this.worker.addEventListener('message', async (e) => {
 				const { type, payload } = e.data;
 				if (type === 'part_data_loaded') {
 					this.allParts = [];
@@ -27,7 +27,7 @@ export class PartService {
 						if (rawPart.fileName === 'heavy_ordnance_firmware') {
 							partBlock = parseHeavyOrdnancePartString(rawPart.universalPart);
 						} else {
-							partBlock = parsePartString(rawPart.universalPart);
+							partBlock = await parsePartString(rawPart.universalPart);
 						}
 						if (partBlock && partBlock.part) {
 							const key = JSON.stringify(partBlock.part);

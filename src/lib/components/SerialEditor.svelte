@@ -194,29 +194,31 @@
 			classModIdToName
 		);
 		if (customFormatOutput !== currentCustomFormat) {
-			try {
-				const newParsed = parseCustomFormat(customFormatOutput);
-				if (newParsed) {
-					parsed = newParsed;
-					updateSerial();
-					error = null;
-				} else {
-					if (customFormatOutput.trim() !== '') {
-						error = 'Invalid Custom Format';
-					} else {
-						error = null;
-						parsed = [];
+			(async () => {
+				try {
+					const newParsed = await parseCustomFormat(customFormatOutput);
+					if (newParsed) {
+						parsed = newParsed;
 						updateSerial();
+						error = null;
+					} else {
+						if (customFormatOutput.trim() !== '') {
+							error = 'Invalid Custom Format';
+						} else {
+							error = null;
+							parsed = [];
+							updateSerial();
+						}
+					}
+				} catch (err) {
+					console.error('Error parsing custom format:', err);
+					if (err instanceof Error) {
+						error = err.message;
+					} else {
+						error = 'An unknown error occurred while parsing the custom format.';
 					}
 				}
-			} catch (err) {
-				console.error('Error parsing custom format:', err);
-				if (err instanceof Error) {
-					error = err.message;
-				} else {
-					error = 'An unknown error occurred while parsing the custom format.';
-				}
-			}
+			})();
 		}
 	});
 
