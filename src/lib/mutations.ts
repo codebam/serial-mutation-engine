@@ -48,7 +48,7 @@ export function getInitialState(): State {
 }
 
 export interface Mutation {
-	(serial: Serial, state: State): Serial;
+	(serial: Serial, state: State): Serial | Promise<Serial>;
 }
 
 function randomInt(min: number, max: number): number {
@@ -132,7 +132,7 @@ export const injectRepeatingPart: Mutation = (serial, state) => {
 	return valuesToBlocks(newAssets);
 };
 
-export const scrambleAndAppendFromRepo: Mutation = (serial, state) => {
+export const scrambleAndAppendFromRepo: Mutation = async (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
 	const { minChunk, maxChunk, targetOffset } = state!.rules;
@@ -151,7 +151,7 @@ export const scrambleAndAppendFromRepo: Mutation = (serial, state) => {
 	const repository = state!.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
 	if (repository.length > 0) {
 		const otherSerialStr = randomChoice(repository) as string;
-		const otherSerialAssets = blocksToValues(parseSerial(otherSerialStr));
+		const otherSerialAssets = blocksToValues(await parseSerial(otherSerialStr));
 		const quarterLength = Math.floor(otherSerialAssets.length * 0.25);
 		const lastQuarter = otherSerialAssets.slice(otherSerialAssets.length - quarterLength);
 
@@ -222,15 +222,15 @@ export const reverseRandomSegments: Mutation = (serial, state) => {
 
 	return valuesToBlocks(newAssets);
 };
-function extractHighValueParts(
+async function extractHighValueParts(
 	repoSerials: string[],
 	minPartSize: number,
 	maxPartSize: number
-): number[][] {
+): Promise<number[][]> {
 	const frequencyMap = new Map<string, number>();
 
 	for (const serial of repoSerials) {
-		const values = blocksToValues(parseSerial(serial));
+		const values = blocksToValues(await parseSerial(serial));
 		const tail = values.map((v) => String.fromCharCode(v + 48)).join('');
 
 		for (let size = minPartSize; size <= maxPartSize; size++) {
@@ -275,7 +275,7 @@ function extractHighValueParts(
 		.map((motif) => motif.split('').map((c) => c.charCodeAt(0) - 48));
 }
 
-export const injectHighValuePart: Mutation = (serial, state) => {
+export const injectHighValuePart: Mutation = async (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
 
@@ -286,7 +286,7 @@ export const injectHighValuePart: Mutation = (serial, state) => {
 	const repository = state!.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
 
 	if (Math.random() < legendaryChance / 100 && repository.length > 0) {
-		const highValueParts = extractHighValueParts(repository, minPart, maxPart);
+		const highValueParts = await extractHighValueParts(repository, minPart, maxPart);
 
 		if (highValueParts.length > 0) {
 			for (let i = 0; i < numberOfInjections; i++) {
@@ -300,14 +300,14 @@ export const injectHighValuePart: Mutation = (serial, state) => {
 	return valuesToBlocks(newAssets);
 };
 
-export const crossoverWithRepository: Mutation = (serial, state) => {
+export const crossoverWithRepository: Mutation = async (serial, state) => {
 	const repository = state!.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
 	const difficulty = state!.difficulties.crossoverWithRepository || 1;
 	const sliceSize = 5 + Math.floor(difficulty / 100);
 
 	if (repository.length > 0) {
 		const otherSerialStr = randomChoice(repository);
-		const otherSerial = parseSerial(otherSerialStr);
+		const otherSerial = await parseSerial(otherSerialStr);
 
 		const selfValues = blocksToValues(serial);
 		const otherValues = blocksToValues(otherSerial);

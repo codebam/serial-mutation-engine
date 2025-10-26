@@ -115,7 +115,7 @@ self.onmessage = async function (e: MessageEvent) {
 	} else if (type === 'parse_serial') {
 		try {
 			console.log('Parsing serial with payload:', typeof payload, payload);
-			const parsed = parseSerial(payload as string);
+			const parsed = await parseSerial(payload as string);
 			self.postMessage({ type: 'parsed_serial', payload: { parsed } });
 		} catch (_e) {
 			self.postMessage({ type: 'parsed_serial', payload: { error: (_e as Error).message } });
@@ -219,7 +219,7 @@ self.onmessage = async function (e: MessageEvent) {
 
 					const parentSerialStr =
 						selectedRepoSerials[Math.floor(Math.random() * selectedRepoSerials.length)];
-					const parentSerial = parseSerial(parentSerialStr);
+					const parentSerial = await parseSerial(parentSerialStr);
 
 					const mutationFunc: Mutation = mutationFunctions[item.tg];
 					if (!mutationFunc) {

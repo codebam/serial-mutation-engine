@@ -33,7 +33,7 @@ async function processOperation(
 	if (op.format === 'JSON') {
 		switch (op.action) {
 			case 'decode':
-				return parseSerial(op.content as string);
+				return await parseSerial(op.content as string);
 			case 'encode':
 				return encodeSerial(op.content as Serial);
 			default:
@@ -48,11 +48,11 @@ async function processOperation(
 					if (cached) {
 						return JSON.parse(cached);
 					}
-					const result = base85_to_deserialized(op.content as string);
+					const result = await base85_to_deserialized(op.content as string);
 					await cache.put(hash, JSON.stringify(result));
 					return result;
 				}
-				return base85_to_deserialized(op.content as string);
+				return await base85_to_deserialized(op.content as string);
 			case 'encode':
 				return deserialized_to_base85(op.content as string);
 			default:
