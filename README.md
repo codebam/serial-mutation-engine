@@ -78,7 +78,7 @@ const serialObject = [
 	{ token: 0 }
 ];
 const serialString = await encodeSerial(serialObject);
-console.log(serialString); // @U4V5A0l*j.E6c
+console.log(serialString);
 ```
 
 ### `base85_to_deserialized`
