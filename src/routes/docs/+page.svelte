@@ -5,8 +5,12 @@
 	const comments = data.comments;
 	const apiComments = comments.filter((c) => c.tags.some((t) => t.tag === 'route'));
 	const typeComments = comments.filter(
-		(c) => c.tags.some((t) => t.tag === 'typedef') && !c.tags.some((t) => t.tag === 'route')
+		(c) => c.tags.some((t) => t.tag === 'typedef')
 	);
+	const functionComments = comments.filter(
+		(c) => c.tags.some((t) => t.tag === 'name')
+	);
+	console.log({comments});
 
 	const sidebarOpen = writable(false);
 
@@ -28,9 +32,24 @@
 				{#if routeTag}
 					<li>
 						<a
-							href="#{routeTag.name}"
+							href="#{routeTag.description.split(' ')[1]}"
 							class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
-							>{routeTag.name}</a
+							>{routeTag.description.split(' ')[1]}</a
+						>
+					</li>
+				{/if}
+			{/each}
+		</ul>
+		<h2 class="mt-6 mb-4 text-xl font-bold">Functions</h2>
+		<ul>
+			{#each functionComments as commentBlock (JSON.stringify(commentBlock))}
+				{@const nameTag = commentBlock.tags.find((t) => t.tag === 'name')}
+				{#if nameTag}
+					<li>
+						<a
+							href="#{nameTag.name}"
+							class="text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+							>{nameTag.name}</a
 						>
 					</li>
 				{/if}
@@ -112,7 +131,7 @@
 									</p>
 								</div>
 							{/each}
-						</div>
+							</div>
 
 						<h3 class="mt-6 mb-4 text-xl font-semibold">Body</h3>
 						<div class="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
@@ -129,7 +148,7 @@
 									</p>
 								</div>
 							{/each}
-						</div>
+							</div>
 
 						<h3 class="mt-6 mb-4 text-xl font-semibold">Responses</h3>
 						<div class="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
@@ -143,7 +162,7 @@
 									</p>
 								</div>
 							{/each}
-						</div>
+							</div>
 
 						<h3 class="mt-6 mb-4 text-xl font-semibold">Throws</h3>
 						<div class="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
@@ -157,7 +176,7 @@
 									</p>
 								</div>
 							{/each}
-						</div>
+							</div>
 
 						<h3 class="mt-6 mb-4 text-xl font-semibold">Examples</h3>
 						<div class="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
@@ -168,7 +187,53 @@
 									</p>
 								</div>
 							{/each}
-						</div>
+							</div>
+					</div>
+				{/if}
+			{/each}
+
+			{#each functionComments as commentBlock (JSON.stringify(commentBlock))}
+				{@const nameTag = commentBlock.tags.find((t) => t.tag === 'name')}
+				{#if nameTag}
+					<div id={nameTag.name} class="mb-12">
+						<h2 class="mb-4 text-3xl font-bold">
+							<span class="text-gray-600 dark:text-gray-400">{nameTag.name}</span>
+						</h2>
+
+						<p class="mb-6 text-gray-700 dark:text-gray-400">
+							{commentBlock.description.replace(/\n/g, '<br>')}
+						</p>
+
+						<h3 class="mb-4 text-xl font-semibold">Parameters</h3>
+						<div class="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
+							{#each commentBlock.tags.filter((t) => t.tag === 'param') as tag (JSON.stringify(tag))}
+								<div class="mb-4">
+									<p>
+										<span class="font-bold text-purple-600 dark:text-purple-300">{tag.name}</span>
+										<span class="text-yellow-600 dark:text-yellow-300">
+											{'{' + tag.type + '}'}</span
+										>
+									</p>
+									<p class="ml-4 text-gray-700 dark:text-gray-400">
+										{tag.description.replace(/\n/g, '<br>')}
+									</p>
+								</div>
+							{/each}
+							</div>
+
+						<h3 class="mt-6 mb-4 text-xl font-semibold">Returns</h3>
+						<div class="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
+							{#each commentBlock.tags.filter((t) => t.tag === 'returns') as tag (JSON.stringify(tag))}
+								<div class="mb-4">
+									<p>
+										<span class="font-bold text-blue-600 dark:text-blue-400">{tag.type}</span>
+									</p>
+									<p class="ml-4 text-gray-700 dark:text-gray-400">
+										{tag.description.replace(/\n/g, '<br>')}
+									</p>
+								</div>
+							{/each}
+							</div>
 					</div>
 				{/if}
 			{/each}
@@ -200,7 +265,7 @@
 									</p>
 								</div>
 							{/each}
-						</div>
+							</div>
 					</div>
 				{/if}
 			{/each}

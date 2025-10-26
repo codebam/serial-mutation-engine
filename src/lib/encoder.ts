@@ -188,6 +188,12 @@ const TOKEN_BIT_PATTERNS = {
 	[TOK_STRING]: [1, 1, 1]
 };
 
+/**
+ * @name encodeSerial
+ * @description Encodes a serial object into a Base85 encoded serial string.
+ * @param {Serial} serial - The serial object.
+ * @returns {Promise<string>} A promise that resolves to the Base85 encoded serial string.
+ */
 export async function encodeSerial(serial: Serial): Promise<string> {
 	const stream = new BitstreamWriter();
 

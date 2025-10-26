@@ -245,10 +245,23 @@ export async function parseCustomFormat(
 	return newParsed;
 }
 
+/**
+ * @name base85_to_deserialized
+ * @description Converts a Base85 encoded serial string to a human-readable custom format.
+ * @param {string} serial - The Base85 encoded serial string.
+ * @returns {Promise<string>} A promise that resolves to the deserialized custom format string.
+ */
 export async function base85_to_deserialized(serial: string): Promise<string> {
 	const parsed = await parseSerial(serial);
 	return toCustomFormat(parsed, true);
 }
+/**
+ * @name deserialized_to_base85
+ * @description Converts a human-readable custom format string to a Base85 encoded serial string.
+ * @param {string} custom - The custom format string.
+ * @param {Record<string, { id: number; name?: string }>} [passives] - Optional map of passive names to their IDs.
+ * @returns {Promise<string>} A promise that resolves to the Base85 encoded serial string.
+ */
 export async function deserialized_to_base85(
 	custom: string,
 	passives?: Record<string, { id: number; name?: string }>

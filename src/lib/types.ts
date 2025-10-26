@@ -11,6 +11,14 @@ export const SUBTYPE_LIST = 2;
 
 export type SubType = number;
 
+/**
+ * @typedef {object} Part
+ * @property {SubType} subType
+ * @property {number} index
+ * @property {number} [value]
+ * @property {{ type: number; value: number }[]} [values]
+ * @property {string} [code]
+ */
 export interface Part {
 	subType: SubType;
 	index: number;
@@ -19,6 +27,16 @@ export interface Part {
 	code?: string;
 }
 
+/**
+ * @typedef {object} PartInfo
+ * @property {string} name
+ * @property {string} fileName
+ * @property {string} code
+ * @property {SubType} subType
+ * @property {number} index
+ * @property {number} [value]
+ * @property {{ type: number; value: number }[]} [values]
+ */
 export interface PartInfo extends Part {
 	name: string;
 	fileName: string;
@@ -26,6 +44,13 @@ export interface PartInfo extends Part {
 	subType: SubType;
 }
 
+/**
+ * @typedef {object} Block
+ * @property {number} token
+ * @property {number} [value]
+ * @property {string} [valueStr]
+ * @property {Part} [part]
+ */
 export interface Block {
 	token: number;
 	value?: number;
@@ -33,14 +58,50 @@ export interface Block {
 	part?: Part;
 }
 
+/**
+ * @typedef {Block[]} Serial
+ */
 export type Serial = Block[];
 
+/**
+ * @typedef {object} RawPart
+ * @property {string} name
+ * @property {string} universalPart
+ * @property {string} fileName
+ */
 export interface RawPart {
 	name: string;
 	universalPart: string;
 	fileName: string;
 }
 
+/**
+ * @typedef {object} Counts
+ * @property {number} appendRandomAsset
+ * @property {number} injectRepeatingPart
+ * @property {number} injectRepeatingPartFull
+ * @property {number} scrambleAndAppendFromRepo
+ * @property {number} injectRandomAsset
+ * @property {number} reverseRandomSegments
+ * @property {number} injectHighValuePart
+ * @property {number} crossoverWithRepository
+ * @property {number} shuffleAssets
+ * @property {number} randomizeAssets
+ * @property {number} repeatHighValuePart
+ * @property {number} appendHighValuePart
+ * @property {number} [appendMutation]
+ * @property {number} [stackedPartMutationV1]
+ * @property {number} [stackedPartMutationV2]
+ * @property {number} [evolvingMutation]
+ * @property {number} [characterFlipMutation]
+ * @property {number} [segmentReversalMutation]
+ * @property {number} [partManipulationMutation]
+ * @property {number} [repositoryCrossoverMutation]
+ * @property {number} [shuffleAssetsMutation]
+ * @property {number} [randomizeAssetsMutation]
+ * @property {number} [repeatHighValuePartMutation]
+ * @property {number} [appendHighValuePartMutation]
+ */
 export interface Counts {
 	appendRandomAsset: number;
 	injectRepeatingPart: number;
@@ -69,6 +130,19 @@ export interface Counts {
 	appendHighValuePartMutation?: number;
 }
 
+/**
+ * @typedef {object} Rules
+ * @property {number} targetOffset
+ * @property {number} minChunk
+ * @property {number} maxChunk
+ * @property {number} minPart
+ * @property {number} maxPart
+ * @property {number} legendaryChance
+ * @property {number} difficultyIncrement
+ * @property {number} [mutableStart]
+ * @property {number} [mutableEnd]
+ * @property {number} [targetChunk]
+ */
 export interface Rules {
 	targetOffset: number;
 	minChunk: number;
@@ -83,6 +157,21 @@ export interface Rules {
 	targetChunk?: number;
 }
 
+/**
+ * @typedef {object} Difficulties
+ * @property {number} appendRandomAsset
+ * @property {number} injectRepeatingPart
+ * @property {number} injectRepeatingPartFull
+ * @property {number} scrambleAndAppendFromRepo
+ * @property {number} injectRandomAsset
+ * @property {number} reverseRandomSegments
+ * @property {number} injectHighValuePart
+ * @property {number} crossoverWithRepository
+ * @property {number} shuffleAssets
+ * @property {number} randomizeAssets
+ * @property {number} repeatHighValuePart
+ * @property {number} appendHighValuePart
+ */
 export interface Difficulties {
 	appendRandomAsset: number;
 	injectRepeatingPart: number;
@@ -98,6 +187,18 @@ export interface Difficulties {
 	appendHighValuePart: number;
 }
 
+/**
+ * @typedef {object} State
+ * @property {string} repository
+ * @property {string} seed
+ * @property {Counts} counts
+ * @property {Rules} rules
+ * @property {Difficulties} difficulties
+ * @property {boolean} generateStats
+ * @property {boolean} debugMode
+ * @property {number} [selectedAsset]
+ * @property {string} [baseYaml]
+ */
 export interface State {
 	repository: string;
 	seed: string;

@@ -15,6 +15,13 @@ import {
 const BASE85_ALPHABET =
 	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
 
+/**
+ * Decode Base85 Function
+ * @name decodeBase85
+ * @description Decodes a Base85 encoded string into a Uint8Array.
+ * @param {string} encoded - The Base85 encoded string.
+ * @returns {Uint8Array} The decoded byte array.
+ */
 export function decodeBase85(encoded: string): Uint8Array {
 	if (encoded.startsWith('@U')) {
 		encoded = encoded.substring(2);
@@ -261,6 +268,12 @@ export async function parseBytes(bytes: Uint8Array, no_header?: boolean): Promis
 	return blocks;
 }
 
+/**
+ * @name parseSerial
+ * @description Parses a Base85 encoded serial string into a serial object.
+ * @param {string} serial - The Base85 encoded serial string.
+ * @returns {Promise<Serial>} A promise that resolves to the serial object.
+ */
 export async function parseSerial(serial: string): Promise<Serial> {
 	const decoded = decodeBase85(serial);
 	const mirrored = mirrorBytes(decoded);
