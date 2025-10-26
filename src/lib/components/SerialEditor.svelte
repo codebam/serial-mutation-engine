@@ -23,10 +23,7 @@
 	let fileInput: HTMLInputElement = $state() as HTMLInputElement;
 	let useStringRepresentation = $state(false);
 
-	let isMounted = $state(false);
-	$effect(() => {
-		isMounted = true;
-	});
+	const isMounted = $derived(browser);
 
 	let passiveIdToName: Record<number, string> = $state({});
 	let weaponPartIdToName: Record<number, string> = $state({});
