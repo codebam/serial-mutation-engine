@@ -32,7 +32,9 @@ if (args.includes('--version')) {
 
 function getInput(callback: (data: string) => void) {
 	if (process.stdin.isTTY) {
-		const flagIndex = args.findIndex((arg) => arg === '-d' || arg === '-e' || arg === '--decode' || arg === '--encode');
+		const flagIndex = args.findIndex(
+			(arg) => arg === '-d' || arg === '-e' || arg === '--decode' || arg === '--encode'
+		);
 		if (flagIndex !== -1 && args[flagIndex + 1]) {
 			callback(args[flagIndex + 1]);
 		} else {
