@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { base85_to_deserialized, deserialized_to_base85 } from './custom_parser.ts';
+import { serialToCustomFormat, customFormatToSerial } from './custom_parser.ts';
 import { parseSerial } from './parser.ts';
 import { encodeSerial } from './encoder.ts';
 import packageJson from '../../package.json' with { type: 'json' };
@@ -64,7 +64,7 @@ async function run() {
 					const deserialized = await parseSerial(input);
 					console.log(JSON.stringify(deserialized, null, 2));
 				} else {
-					const deserialized = await base85_to_deserialized(input);
+const deserialized = await serialToCustomFormat(input);
 					console.log(deserialized);
 				}
 			} catch (error) {
@@ -78,8 +78,7 @@ async function run() {
 				if (jsonFlag) {
 					const serial = await encodeSerial(JSON.parse(input));
 					console.log(serial);
-				} else {
-					const serial = await deserialized_to_base85(input);
+const serial = await customFormatToSerial(input);
 					console.log(serial);
 				}
 			} catch (error) {
@@ -91,7 +90,7 @@ async function run() {
 		// Default to decode if no flag is provided
 		getInput(async (input) => {
 			try {
-				const deserialized = await base85_to_deserialized(input);
+				const deserialized = await serialToCustomFormat(input);
 				if (jsonFlag) {
 					console.log(JSON.stringify(deserialized, null, 2));
 				} else {
@@ -101,7 +100,7 @@ async function run() {
 			} catch (error) {
 				// if decoding fails, try encoding
 				try {
-					const serial = await deserialized_to_base85(input);
+					const serial = await customFormatToSerial(input);
 					console.log(serial);
 					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				} catch (error2) {

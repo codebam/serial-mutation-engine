@@ -1,4 +1,4 @@
-import { BitstreamReader, UINT4_MIRROR, UINT5_MIRROR } from './bitstream.ts';
+import { BitstreamReader, UINT4_MIRROR, UINT5_MIRROR, UINT7_MIRROR } from './bitstream.ts';
 import type { Serial, Block, Part } from './types.ts';
 import {
 	SUBTYPE_INT,
@@ -11,84 +11,8 @@ import {
 	TOK_PART,
 	TOK_STRING
 } from './types.ts';
+import { decodeBase85, mirrorBytes } from './encoding.ts';
 
-const BASE85_ALPHABET =
-	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
-
-/**
- * Decode Base85 Function
- * @name decodeBase85
- * @description Decodes a Base85 encoded string into a Uint8Array.
- * @param {string} encoded - The Base85 encoded string.
- * @returns {Uint8Array} The decoded byte array.
- */
-export function decodeBase85(encoded: string): Uint8Array {
-	if (encoded.startsWith('@U')) {
-		encoded = encoded.substring(2);
-	}
-
-	const decoded: number[] = [];
-	let buffer = 0;
-	let bufferSize = 0;
-
-	for (let i = 0; i < encoded.length; i++) {
-		const char = encoded.charAt(i);
-		const index = BASE85_ALPHABET.indexOf(char);
-		if (index === -1) {
-			throw new Error(`Invalid character in Base85 string: ${char}`);
-		}
-
-		buffer = buffer * 85 + index;
-		bufferSize++;
-
-		if (bufferSize === 5) {
-			decoded.push((buffer >> 24) & 0xff);
-			decoded.push((buffer >> 16) & 0xff);
-			decoded.push((buffer >> 8) & 0xff);
-			decoded.push(buffer & 0xff);
-			buffer = 0;
-			bufferSize = 0;
-		}
-	}
-
-	if (bufferSize > 0) {
-		if (bufferSize === 1) {
-			throw new Error('Invalid Base85 string length');
-		}
-		const bytesToPush = bufferSize - 1;
-		const padding = 5 - bufferSize;
-		for (let i = 0; i < padding; i++) {
-			buffer = buffer * 85 + 84;
-		}
-		for (let i = 0; i < bytesToPush; i++) {
-			decoded.push((buffer >> (24 - i * 8)) & 0xff);
-		}
-	}
-
-	return new Uint8Array(decoded);
-}
-
-export function mirrorBytes(bytes: Uint8Array): Uint8Array {
-	const mirrored = new Uint8Array(bytes.length);
-	for (let i = 0; i < bytes.length; i++) {
-		const byte = bytes[i];
-		let mirroredByte = 0;
-		for (let j = 0; j < 8; j++) {
-			mirroredByte |= ((byte >> j) & 1) << (7 - j);
-		}
-		mirrored[i] = mirroredByte;
-	}
-	return mirrored;
-}
-
-const UINT7_MIRROR = new Uint8Array(128);
-for (let i = 0; i < 128; i++) {
-	let mirrored = 0;
-	for (let j = 0; j < 7; j++) {
-		mirrored |= ((i >> j) & 1) << (6 - j);
-	}
-	UINT7_MIRROR[i] = mirrored;
-}
 
 class Tokenizer {
 	stream: BitstreamReader;

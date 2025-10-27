@@ -1,4 +1,4 @@
-import { parsePartString, parseHeavyOrdnancePartString } from './custom_parser.ts';
+import { parsePartString, parseHeavyOrdnancePartString } from './custom_format_parser.ts';
 import { TOK_PART, TOK_VARINT, type Serial, type PartInfo, type Part } from './types.ts';
 import { GetKindEnums, kindToString } from './item-type-lookup.ts';
 

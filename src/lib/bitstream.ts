@@ -9,6 +9,15 @@ for (let i = 0; i < 32; i++) {
 		((i & 0x01) << 4) | ((i & 0x02) << 2) | (i & 0x04) | ((i & 0x08) >> 2) | ((i & 0x10) >> 4);
 }
 
+export const UINT7_MIRROR = new Uint8Array(128);
+for (let i = 0; i < 128; i++) {
+	let mirrored = 0;
+	for (let j = 0; j < 7; j++) {
+		mirrored |= ((i >> j) & 1) << (6 - j);
+	}
+	UINT7_MIRROR[i] = mirrored;
+}
+
 export class BitstreamWriter {
 	private stream: WritableStream<Uint8Array>;
 	private writer: WritableStreamDefaultWriter<Uint8Array>;

@@ -1,13 +1,28 @@
 <script lang="ts">
-	import { type Serial, type Part, classModIdToName } from '../types';
+	import { type Serial, type Part, classModIdToName } from '../types.ts';
 	import { browser } from '$app/environment';
-	import { toCustomFormat, parseCustomFormat } from '../custom_parser.ts';
+	import { toCustomFormat } from '../formatter.ts';
+	import { parseCustomFormat, customFormatLanguage } from '../custom_format_parser.ts';
 	import FormGroup from './FormGroup.svelte';
 	import Worker from '$lib/worker/worker.js?worker';
 	import { PartService } from '$lib/partService.ts';
-	import { TOK_PART } from '../types';
-
-	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
+	import { TOK_PART } from '../types.ts';
+	import { EditorView, keymap } from '@codemirror/view';
+	import { EditorState } from '@codemirror/state';
+	import { javascript } from '@codemirror/lang-javascript';
+	import { defaultKeymap } from '@codemirror/commands';
+	import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+	import { tags } from '@lezer/highlight';
+	
+	const myHighlightStyle = HighlightStyle.define([
+	
+		{ tag: tags.number, color: 'var(--tw-prose-body)' },
+	
+		{ tag: tags.operator, color: '#60a5fa' }, // Tailwind blue-400
+	
+		{ tag: tags.bracket, color: '#9ca3af' } // Tailwind gray-400
+	
+	]);	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
 		serial: string;
 		onCustomFormatOutputUpdate?: (newJson: string) => void;
 		onSerialUpdate?: (newSerial: string) => void;
@@ -25,21 +40,59 @@
 
 	const isMounted = $derived(browser);
 
-	let passiveIdToName: Record<number, string> = $state({});
-	let weaponPartIdToName: Record<number, string> = $state({});
+	let passiveIdToName: Map<number, string> = $state(new Map());
+	let weaponPartIdToName: Map<number, string> = $state(new Map());
+
+
+
+	function codemirror(el: HTMLElement, content: string) {
+		const state = EditorState.create({
+			doc: content,
+							extensions: [
+							customFormatLanguage,
+							syntaxHighlighting(myHighlightStyle),
+							keymap.of(defaultKeymap),
+				EditorView.lineWrapping,				EditorView.updateListener.of((update) => {
+					if (update.docChanged) {
+						onCustomFormatUpdate(update.state.doc.toString());
+					}
+				})
+			]
+		});
+
+		const view = new EditorView({
+			state,
+			parent: el
+		});
+
+		return {
+			update(newContent: string) {
+				if (newContent !== view.state.doc.toString()) {
+					view.dispatch({
+						changes: { from: 0, to: view.state.doc.length, insert: newContent }
+					});
+				}
+			},
+			destroy() {
+				view.destroy();
+			}
+		};
+	}
 
 	const dataLoaded = $derived.by(async () => {
 		if (itemType.includes('Class Mod')) {
 			const response = await fetch('/passives.json');
 			const passives: Record<string, { id: string } | string> = await response.json();
+			const newPassives = new Map<number, string>();
 			for (const key in passives) {
 				const passive = passives[key];
 				if (typeof passive === 'object') {
-					passiveIdToName[parseInt(passive.id)] = key;
+					newPassives.set(parseInt(passive.id), key);
 				} else {
-					passiveIdToName[parseInt(passive)] = key;
+					newPassives.set(parseInt(passive), key);
 				}
 			}
+			passiveIdToName = newPassives;
 			return { passivesLoaded: true, weaponPartsLoaded: false };
 		} else if (itemType.includes('Weapon')) {
 			const [womboComboResponse, universalResponse] = await Promise.all([
@@ -53,39 +106,53 @@
 
 			const combinedParts = { ...womboComboParts, ...universalParts };
 
+			const newWeaponParts = new Map<number, string>();
 			for (const key in combinedParts) {
 				const part = combinedParts[key];
 				if (typeof part === 'object') {
-					weaponPartIdToName[parseInt(part.id)] = key;
+					newWeaponParts.set(parseInt(part.id), key);
 				} else {
-					weaponPartIdToName[parseInt(part)] = key;
+					newWeaponParts.set(parseInt(part), key);
 				}
 			}
+			weaponPartIdToName = newWeaponParts;
 			return { passivesLoaded: false, weaponPartsLoaded: true };
 		}
 		return { passivesLoaded: false, weaponPartsLoaded: false };
 	});
 
+	function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
+		let timeout: number;
+
+		return function(this: ThisParameterType<T>, ...args: Parameters<T>) {
+			const context = this;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => func.apply(context, args), wait);
+		};
+	}
+
 	function handleUseStringRepresentationChange() {
 		customFormatOutput = toCustomFormat(
 			parsed,
 			useStringRepresentation,
-			passiveIdToName,
+			Object.fromEntries(passiveIdToName),
 			classModIdToName,
-			weaponPartIdToName,
+			Object.fromEntries(weaponPartIdToName),
 			itemType
 		);
 	}
 
+
 	$effect(() => {
+		// When the parsed serial changes, update the custom format output and the detected parts.
 		console.log('Effect: parsed changed', $state.snapshot(parsed));
 		if (parsed) {
 			customFormatOutput = toCustomFormat(
 				parsed,
 				useStringRepresentation,
-				passiveIdToName,
+				Object.fromEntries(passiveIdToName),
 				classModIdToName,
-				weaponPartIdToName,
+				Object.fromEntries(weaponPartIdToName),
 				itemType
 			);
 			if (onCustomFormatOutputUpdate) {
@@ -106,6 +173,15 @@
 				}
 			}
 			detectedParts = newDetectedParts;
+		}
+	});
+
+	$effect(() => {
+		// When the custom format output changes, update the CodeMirror editor.
+		if (view && customFormatOutput !== view.state.doc.toString()) {
+			view.dispatch({
+				changes: { from: 0, to: view.state.doc.length, insert: customFormatOutput }
+			});
 		}
 	});
 
@@ -150,6 +226,16 @@
 				}
 				itemType = partService.determineItemType(payload.parsed);
 				error = payload.error;
+
+				// Update the custom format output
+				customFormatOutput = toCustomFormat(
+					parsed,
+					useStringRepresentation,
+					Object.fromEntries(passiveIdToName),
+					classModIdToName,
+					Object.fromEntries(weaponPartIdToName),
+					itemType
+				);
 			} else if (type === 'encoded_serial') {
 				console.log('Main thread: Received encoded_serial from worker. Payload:', payload);
 				if (payload.serial !== serial) {
@@ -185,42 +271,40 @@
 		analyzeSerial(serial);
 	});
 
-	$effect(() => {
-		if (useStringRepresentation) return;
-		const currentCustomFormat = toCustomFormat(
-			parsed,
-			useStringRepresentation,
-			passiveIdToName,
-			classModIdToName
-		);
-		if (customFormatOutput !== currentCustomFormat) {
-			(async () => {
-				try {
-					const newParsed = await parseCustomFormat(customFormatOutput);
-					if (newParsed) {
-						parsed = newParsed;
-						updateSerial();
+	const debouncedValidate = debounce(validate, 500);
+
+	function onCustomFormatUpdate(newValue: string) {
+		customFormatOutput = newValue;
+		debouncedValidate();
+	}
+
+	function validate() {
+		(async () => {
+			try {
+				const newParsed = await parseCustomFormat(customFormatOutput, Object.fromEntries(passiveIdToName));
+				if (newParsed) {
+					parsed = newParsed;
+					updateSerial();
+					error = null;
+				} else {
+					if (customFormatOutput.trim() !== '') {
+						error = 'Invalid Custom Format';
+					} else {
 						error = null;
-					} else {
-						if (customFormatOutput.trim() !== '') {
-							error = 'Invalid Custom Format';
-						} else {
-							error = null;
-							parsed = [];
-							updateSerial();
-						}
-					}
-				} catch (err) {
-					console.error('Error parsing custom format:', err);
-					if (err instanceof Error) {
-						error = err.message;
-					} else {
-						error = 'An unknown error occurred while parsing the custom format.';
+						parsed = [];
+						updateSerial();
 					}
 				}
-			})();
-		}
-	});
+			} catch (err) {
+				console.error('Error parsing custom format:', err);
+				if (err instanceof Error) {
+					error = err.message;
+				} else {
+					error = 'An unknown error occurred while parsing the custom format.';
+				}
+			}
+		})();
+	}
 
 	$effect(() => {
 		console.log('Effect: parsed changed for itemType detection', $state.snapshot(parsed));
@@ -328,11 +412,7 @@
 				<span class="ml-2 text-sm text-gray-500">Use String Representation</span>
 			</label>
 		</div>
-		<textarea
-			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-			bind:value={customFormatOutput}
-			placeholder="Paste deserialized here..."
-		></textarea>
+		<div use:codemirror={customFormatOutput} class="border border-gray-300 dark:border-gray-700 rounded-md min-h-[80px]"></div>
 	</FormGroup>
 	{#if error}
 		<div

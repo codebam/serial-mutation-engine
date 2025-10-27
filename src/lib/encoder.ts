@@ -1,4 +1,5 @@
-import { BitstreamWriter } from './bitstream.ts';
+import { BitstreamWriter, UINT7_MIRROR } from './bitstream.ts';
+import { encodeBase85, mirrorBytes } from './encoding.ts';
 import type { Serial, Part } from './types.ts';
 import {
 	SUBTYPE_INT,
@@ -11,65 +12,6 @@ import {
 	TOK_PART,
 	TOK_STRING
 } from './types.ts';
-
-const BASE85_ALPHABET =
-	'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
-
-function encodeBase85(bytes: Uint8Array): string {
-	let encoded = '';
-	let i = 0;
-
-	for (i = 0; i + 3 < bytes.length; i += 4) {
-		let value =
-			((bytes[i] << 24) | (bytes[i + 1] << 16) | (bytes[i + 2] << 8) | bytes[i + 3]) >>> 0;
-		let block = '';
-		for (let j = 0; j < 5; j++) {
-			block = BASE85_ALPHABET[value % 85] + block;
-			value = Math.floor(value / 85);
-		}
-		encoded += block;
-	}
-
-	const remaining = bytes.length - i;
-	if (remaining > 0) {
-		const temp = new Uint8Array(4);
-		for (let j = 0; j < remaining; j++) {
-			temp[j] = bytes[i + j];
-		}
-
-		let value = ((temp[0] << 24) | (temp[1] << 16) | (temp[2] << 8) | temp[3]) >>> 0;
-		let block = '';
-		for (let j = 0; j < 5; j++) {
-			block = BASE85_ALPHABET[value % 85] + block;
-			value = Math.floor(value / 85);
-		}
-		encoded += block.substring(0, remaining + 1);
-	}
-
-	return '@U' + encoded;
-}
-
-function mirrorBytes(bytes: Uint8Array): Uint8Array {
-	const mirrored = new Uint8Array(bytes.length);
-	for (let i = 0; i < bytes.length; i++) {
-		const byte = bytes[i];
-		let mirroredByte = 0;
-		for (let j = 0; j < 8; j++) {
-			mirroredByte |= ((byte >> j) & 1) << (7 - j);
-		}
-		mirrored[i] = mirroredByte;
-	}
-	return mirrored;
-}
-
-const UINT7_MIRROR = new Uint8Array(128);
-for (let i = 0; i < 128; i++) {
-	let mirrored = 0;
-	for (let j = 0; j < 7; j++) {
-		mirrored |= ((i >> j) & 1) << (6 - j);
-	}
-	UINT7_MIRROR[i] = mirrored;
-}
 
 function IntBitsSize(v: number, minSize: number, maxSize: number): number {
 	let nBits = 0;

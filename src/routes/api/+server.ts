@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.ts';
 import * as api from '$lib/api.ts';
+import { operationSchema, batchOperationSchema } from '$lib/schemas.ts';
 
 /**
  * @typedef {object} Operation
@@ -23,17 +24,9 @@ async function processOperation(
 ): Promise<unknown> {
 	const { functionName, args } = op;
 
-	if (!functionName || !Array.isArray(args)) {
-		throw new Error('Each operation must include "functionName" and "args" fields.');
-	}
-
 	const apiFunction = (api as unknown as Record<string, (...args: unknown[]) => unknown>)[
 		functionName
 	];
-
-	if (typeof apiFunction !== 'function') {
-		throw new Error(`Invalid functionName: ${functionName}`);
-	}
 
 	if (functionName === 'base85_to_deserialized' && op.cache && cache && sha256) {
 		const hash = await sha256(args[0] as string);
@@ -89,6 +82,10 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 
 		if (Array.isArray(body)) {
 			// Batch processing
+			const validationResult = batchOperationSchema.safeParse(body);
+			if (!validationResult.success) {
+				return json({ error: validationResult.error.flatten() }, { status: 400 });
+			}
 			if (body.some((op) => op.debug === true)) {
 				debug = true;
 			}
@@ -101,6 +98,10 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 			response = json(results);
 		} else if (typeof body === 'object' && body !== null) {
 			// Single operation
+			const validationResult = operationSchema.safeParse(body);
+			if (!validationResult.success) {
+				return json({ error: validationResult.error.flatten() }, { status: 400 });
+			}
 			if ((body as Operation).debug === true) {
 				debug = true;
 			}
