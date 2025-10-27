@@ -3,7 +3,7 @@ import { parseSerial } from '../parser.ts';
 import { encodeSerial } from '../encoder.ts';
 import * as coreMutations from '../mutations.ts';
 import { mergeSerials, type Mutation } from '../mutations.ts';
-import { parseCustomFormat } from '../custom_format_parser.ts';
+import { parseCustomFormat, serialToCustomFormat, customFormatToSerial } from '../custom_format_parser.ts';
 import type { RawPart, State, Serial } from '../types.ts';
 
 interface PartItem {
@@ -33,7 +33,7 @@ for (const key in coreMutations) {
 	const mutation = (coreMutations as Record<string, CoreMutationFunctions>)[key];
 	if (
 		typeof mutation === 'function' &&
-		key !== 'getInitialState' &&
+		key !== 'getInitialState' &&	
 		key !== 'mergeSerial' &&
 		key !== 'mergeSerials'
 	) {
@@ -41,7 +41,12 @@ for (const key in coreMutations) {
 	}
 }
 
-type WorkerPayload = string | Serial | State | { baseYaml: string; serials: string[] };
+type WorkerPayload =
+	| string
+	| Serial
+	| State
+	| { baseYaml: string; serials: string[] }
+	| string[];
 
 self.onmessage = async function (e: MessageEvent) {
 	if (typeof e.data !== 'object' || e.data === null || !('type' in e.data)) {
@@ -119,6 +124,28 @@ self.onmessage = async function (e: MessageEvent) {
 			self.postMessage({ type: 'parsed_serial', payload: { parsed } });
 		} catch (_e) {
 			self.postMessage({ type: 'parsed_serial', payload: { error: (_e as Error).message } });
+		}
+	} else if (type === 'parse_serials_to_custom_format') {
+		try {
+			const serials = payload as string[];
+			const customFormats = await Promise.all(serials.map(serialToCustomFormat));
+			self.postMessage({ type: 'parsed_serials_to_custom_format', payload: { customFormats } });
+		} catch (_e) {
+			self.postMessage({
+				type: 'parsed_serials_to_custom_format',
+				payload: { error: (_e as Error).message }
+			});
+		}
+	} else if (type === 'parse_custom_formats_to_serials') {
+		try {
+			const customFormats = payload as string[];
+			const serials = await Promise.all(customFormats.map(customFormatToSerial));
+			self.postMessage({ type: 'parsed_custom_formats_to_serials', payload: { serials } });
+		} catch (_e) {
+			self.postMessage({
+				type: 'parsed_custom_formats_to_serials',
+				payload: { error: (_e as Error).message }
+			});
 		}
 	} else if (type === 'encode_serial') {
 		try {
