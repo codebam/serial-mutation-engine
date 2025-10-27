@@ -49,6 +49,25 @@ console.log(serialObject);
 // ]
 ```
 
+To parse (or encode) many serials you can process them asyncronously.
+In this example I write them to a JSON file.
+
+This script requires Node.JS and will not work in a browser.
+
+```javascript
+import { parseSerial } from '@codebam/u-serial';
+import * as fs from fs; // nodejs
+import * as path from 'path'; // nodejs
+
+const serials_path = path.join(__dirname, './serials.txt');
+const serials_text = fs.readFileSync(serials_path, 'utf-8');
+const serials = serials_text.split('\n').filter((s) => s.length > 0);
+const deserialized = Promise.all(serials.map(parseSerial));
+const deserialized_path = path.join(__dirname, './deserialized.json');
+
+fs.writeFileSync(deserialized_path, JSON.stringify(await deserialized, null, 2));
+```
+
 ### `encodeSerial`
 
 Encodes a serial object into a Base85 encoded serial string.
