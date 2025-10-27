@@ -11,9 +11,9 @@
 	onMount(() => {
 		worker = new Worker(new URL('$lib/worker/worker.ts', import.meta.url), { type: 'module' });
 
-		worker.onmessage = (e) => {
-			if (e.data.type === 'parsed_serials_to_custom_format') {
-				const customFormats = e.data.payload.customFormats;
+		worker.onmessage = (_e) => {
+			if (_e.data.type === 'parsed_serials_to_custom_format') {
+				const customFormats = _e.data.payload.customFormats;
 				const json = JSON.stringify(customFormats, null, 2);
 				const blob = new Blob([json], { type: 'application/json' });
 				const url = URL.createObjectURL(blob);
@@ -23,8 +23,8 @@
 				a.click();
 				URL.revokeObjectURL(url);
 				processingSerials = false;
-			} else if (e.data.type === 'parsed_custom_formats_to_serials') {
-				const serials = e.data.payload.serials;
+			} else if (_e.data.type === 'parsed_custom_formats_to_serials') {
+				const serials = _e.data.payload.serials;
 				const text = serials.join('\n');
 				const blob = new Blob([text], { type: 'text/plain' });
 				const url = URL.createObjectURL(blob);
@@ -77,8 +77,8 @@
 					processingCustomFormats = false;
 					return;
 				}
-			} catch (e) {
-				alert('Error parsing JSON file.');
+			} catch (_e) {
+				alert(`Error parsing JSON file: ${(_e as Error).message}`);
 				processingCustomFormats = false;
 				return;
 			}
