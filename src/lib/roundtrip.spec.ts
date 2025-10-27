@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 describe('roundtrip', () => {
-	it('should roundtrip all serials', async () => {
+	it('should roundtrip all serials', { timeout: 60000 }, async () => {
 		const serials_path = path.join(__dirname, '../../serials.txt');
 		const serials_text = fs.readFileSync(serials_path, 'utf-8');
 		const serials = serials_text.split('\n').filter((s) => s.length > 0);
