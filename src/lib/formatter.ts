@@ -38,14 +38,14 @@ export function toCustomFormat(
 			switch (block.token) {
 				case TOK_SEP1:
 					blockStr = '|';
-						break;
+					break;
 				case TOK_SEP2:
 					blockStr = ',';
-						break;
+					break;
 				case TOK_VARINT:
 				case TOK_VARBIT:
 					blockStr = String(block.value);
-						break;
+					break;
 				case TOK_PART:
 					if (block.part) {
 						if (
@@ -73,7 +73,7 @@ export function toCustomFormat(
 							blockStr = `{${block.part.index}:${block.part.value}}`;
 						} else if (block.part.subType === SUBTYPE_LIST) {
 							const values = block.part.values?.map((v) => v.value).join(' ') || '';
-							blockStr = `{${block.part.index}:[${values}]}`; 
+							blockStr = `{${block.part.index}:[${values}]}`;
 						} else {
 							blockStr = '{?}';
 						}
@@ -83,7 +83,7 @@ export function toCustomFormat(
 					break;
 				case TOK_STRING:
 					if (block.valueStr !== undefined) {
-						blockStr = `"${block.valueStr.replace(/\\/g, '\\').replace(/"/g, '\"')}"`;
+						blockStr = `"${block.valueStr.replace(/\\/g, '\\').replace(/"/g, '"')}"`;
 					} else {
 						blockStr = '""';
 					}

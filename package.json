@@ -100,5 +100,11 @@
 		"@esbuild/win32-arm64": "0.25.4",
 		"@esbuild/win32-ia32": "0.25.4",
 		"@esbuild/win32-x64": "0.25.4"
+	},
+	"dependencies": {
+		"@codemirror/lang-javascript": "^6.2.4",
+		"@codemirror/view": "^6.38.6",
+		"codemirror": "^6.0.2",
+		"zod": "^4.1.12"
 	}
 }

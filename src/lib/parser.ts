@@ -13,7 +13,6 @@ import {
 } from './types.ts';
 import { decodeBase85, mirrorBytes } from './encoding.ts';
 
-
 class Tokenizer {
 	stream: BitstreamReader;
 

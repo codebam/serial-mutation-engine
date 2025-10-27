@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parseSerial } from './parser.ts';
-import { toCustomFormat } from './custom_parser.ts';
+import { toCustomFormat } from './formatter.ts';
 
 describe('Phosphene Skin Deserialization', () => {
 	const skinTests = [
@@ -98,9 +98,9 @@ describe('Phosphene Skin Deserialization', () => {
 	}
 
 	it('should handle strings with special characters', async () => {
-		const customFormat = '"my name is \\"The Boss\\" and I use \\\\ in paths"|';
 		const parsedSerial = await parseSerial('@Uglo~xgWTbE8I+!bL{xMcBz({3B2d^(1/>oDc^Sk7rQINSn2w$U');
+		const expectedOutput = '"my name is "The Boss" and I use \\ in paths"|';
 		const reserialized = toCustomFormat(parsedSerial);
-		expect(reserialized).toEqual(customFormat);
+		expect(reserialized).toEqual(expectedOutput);
 	});
 });

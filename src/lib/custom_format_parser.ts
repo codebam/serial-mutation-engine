@@ -38,7 +38,7 @@ export const customFormatLanguage = StreamLanguage.define({
 			return 'operator';
 		}
 
-		if (stream.match(/[\[\]]/)) {
+		if (stream.match(/[[\]]/)) {
 			return 'bracket';
 		}
 
@@ -203,9 +203,9 @@ export async function parsePartString(partStr: string): Promise<Block | null> {
 				const values = await Promise.all(
 					valuesStr !== ''
 						? valuesStr.split(' ').map(async (v) => ({
-							type: await bestTypeForValue(parseInt(v, 10)),
-							value: parseInt(v, 10)
-						}))
+								type: await bestTypeForValue(parseInt(v, 10)),
+								value: parseInt(v, 10)
+							}))
 						: []
 				);
 				return { token: TOK_PART, part: { subType: SUBTYPE_LIST, index, values } };

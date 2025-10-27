@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { base85_to_deserialized, deserialized_to_base85, parseCustomFormat } from './custom_parser';
+import { serialToCustomFormat, customFormatToSerial } from './custom_parser';
+import { parseCustomFormat } from './custom_format_parser';
 import { parseSerial } from './parser';
 import { encodeSerial } from './encoder';
 import * as fs from 'fs';
@@ -16,8 +17,8 @@ describe('roundtrip', () => {
 
 		for (const serial of serials) {
 			try {
-				const deserialized = await base85_to_deserialized(serial);
-				const new_serial = await deserialized_to_base85(deserialized);
+				const deserialized = await serialToCustomFormat(serial);
+				const new_serial = await customFormatToSerial(deserialized);
 
 				const parsed_serial_object = await parseSerial(serial);
 				const encoded_from_parsed = await encodeSerial(parsed_serial_object);

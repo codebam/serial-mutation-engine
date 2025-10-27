@@ -64,7 +64,7 @@ async function run() {
 					const deserialized = await parseSerial(input);
 					console.log(JSON.stringify(deserialized, null, 2));
 				} else {
-const deserialized = await serialToCustomFormat(input);
+					const deserialized = await serialToCustomFormat(input);
 					console.log(deserialized);
 				}
 			} catch (error) {
@@ -78,7 +78,8 @@ const deserialized = await serialToCustomFormat(input);
 				if (jsonFlag) {
 					const serial = await encodeSerial(JSON.parse(input));
 					console.log(serial);
-const serial = await customFormatToSerial(input);
+				} else {
+					const serial = await customFormatToSerial(input);
 					console.log(serial);
 				}
 			} catch (error) {

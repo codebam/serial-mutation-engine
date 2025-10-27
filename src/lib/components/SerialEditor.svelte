@@ -9,20 +9,18 @@
 	import { TOK_PART } from '../types.ts';
 	import { EditorView, keymap } from '@codemirror/view';
 	import { EditorState } from '@codemirror/state';
-	import { javascript } from '@codemirror/lang-javascript';
 	import { defaultKeymap } from '@codemirror/commands';
 	import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 	import { tags } from '@lezer/highlight';
-	
+	import { SvelteMap } from 'svelte/reactivity';
 	const myHighlightStyle = HighlightStyle.define([
-	
 		{ tag: tags.number, color: 'var(--tw-prose-body)' },
-	
+
 		{ tag: tags.operator, color: '#60a5fa' }, // Tailwind blue-400
-	
+
 		{ tag: tags.bracket, color: '#9ca3af' } // Tailwind gray-400
-	
-	]);	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
+	]);
+	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
 		serial: string;
 		onCustomFormatOutputUpdate?: (newJson: string) => void;
 		onSerialUpdate?: (newSerial: string) => void;
@@ -40,19 +38,18 @@
 
 	const isMounted = $derived(browser);
 
-	let passiveIdToName: Map<number, string> = $state(new Map());
-	let weaponPartIdToName: Map<number, string> = $state(new Map());
-
-
+	let passiveIdToName: SvelteMap<number, string> = new SvelteMap();
+	let weaponPartIdToName: SvelteMap<number, string> = new SvelteMap();
 
 	function codemirror(el: HTMLElement, content: string) {
 		const state = EditorState.create({
 			doc: content,
-							extensions: [
-							customFormatLanguage,
-							syntaxHighlighting(myHighlightStyle),
-							keymap.of(defaultKeymap),
-				EditorView.lineWrapping,				EditorView.updateListener.of((update) => {
+			extensions: [
+				customFormatLanguage,
+				syntaxHighlighting(myHighlightStyle),
+				keymap.of(defaultKeymap),
+				EditorView.lineWrapping,
+				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
 						onCustomFormatUpdate(update.state.doc.toString());
 					}
@@ -83,7 +80,7 @@
 		if (itemType.includes('Class Mod')) {
 			const response = await fetch('/passives.json');
 			const passives: Record<string, { id: string } | string> = await response.json();
-			const newPassives = new Map<number, string>();
+			const newPassives = new SvelteMap<number, string>();
 			for (const key in passives) {
 				const passive = passives[key];
 				if (typeof passive === 'object') {
@@ -106,7 +103,7 @@
 
 			const combinedParts = { ...womboComboParts, ...universalParts };
 
-			const newWeaponParts = new Map<number, string>();
+			const newWeaponParts = new SvelteMap<number, string>();
 			for (const key in combinedParts) {
 				const part = combinedParts[key];
 				if (typeof part === 'object') {
@@ -121,14 +118,14 @@
 		return { passivesLoaded: false, weaponPartsLoaded: false };
 	});
 
-	function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
-		let timeout: number;
+	function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number): T {
+		let timeout: ReturnType<typeof setTimeout>;
 
-		return function(this: ThisParameterType<T>, ...args: Parameters<T>) {
-			const context = this;
+		return ((...args: unknown[]) => {
 			clearTimeout(timeout);
-			timeout = setTimeout(() => func.apply(context, args), wait);
-		};
+
+			timeout = setTimeout(() => func(...args), wait);
+		}) as T;
 	}
 
 	function handleUseStringRepresentationChange() {
@@ -141,7 +138,6 @@
 			itemType
 		);
 	}
-
 
 	$effect(() => {
 		// When the parsed serial changes, update the custom format output and the detected parts.
@@ -173,15 +169,6 @@
 				}
 			}
 			detectedParts = newDetectedParts;
-		}
-	});
-
-	$effect(() => {
-		// When the custom format output changes, update the CodeMirror editor.
-		if (view && customFormatOutput !== view.state.doc.toString()) {
-			view.dispatch({
-				changes: { from: 0, to: view.state.doc.length, insert: customFormatOutput }
-			});
 		}
 	});
 
@@ -281,7 +268,10 @@
 	function validate() {
 		(async () => {
 			try {
-				const newParsed = await parseCustomFormat(customFormatOutput, Object.fromEntries(passiveIdToName));
+				const passives = Object.fromEntries(
+					Array.from(passiveIdToName.entries()).map(([id, name]) => [name, { id }])
+				);
+				const newParsed = await parseCustomFormat(customFormatOutput, passives);
 				if (newParsed) {
 					parsed = newParsed;
 					updateSerial();
@@ -412,7 +402,10 @@
 				<span class="ml-2 text-sm text-gray-500">Use String Representation</span>
 			</label>
 		</div>
-		<div use:codemirror={customFormatOutput} class="border border-gray-300 dark:border-gray-700 rounded-md min-h-[80px]"></div>
+		<div
+			use:codemirror={customFormatOutput}
+			class="min-h-[80px] rounded-md border border-gray-300 dark:border-gray-700"
+		></div>
 	</FormGroup>
 	{#if error}
 		<div
