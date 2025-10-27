@@ -10,12 +10,15 @@ declare global {
 			env: {
 				SERIAL_CACHE: KVNamespace;
 			};
+			version: string;
 		}
 	}
 
 	interface WorkerGlobalScope {
 		debugMode: boolean;
 	}
+
+	const __APP_VERSION__: string;
 }
 
 export {};

@@ -2,6 +2,7 @@
 	import '../app.css';
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/stores';
 
 	onMount(() => {
 		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -37,3 +38,6 @@
 <main class="bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-50">
 	<slot />
 </main>
+<footer class="text-center text-sm text-gray-500 dark:text-gray-400 py-4">
+	Version: {$page.data.version}
+</footer>
