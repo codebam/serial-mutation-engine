@@ -7,10 +7,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 	];
 	const origin = event.request.headers.get('origin');
 
-	if (event.platform) {
-		event.platform.version = __APP_VERSION__;
-	}
-
 	if (origin && allowedOrigins.includes(origin)) {
 		if (event.request.method === 'OPTIONS') {
 			return new Response(null, {
