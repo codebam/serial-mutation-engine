@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SerialEditor from '$lib/components/SerialEditor.svelte';
-	import Toast from '$lib/components/Toast.svelte';
-	import { Button } from 'carbon-components-svelte';
+
+	import { Button, ToastNotification } from 'carbon-components-svelte';
 	import { Copy } from 'carbon-icons-svelte';
 
 	let serialEditors = $state([
@@ -22,9 +22,6 @@
 		toastMessage =
 			'did you know we have an <a href="/docs" class="underline">API documentation</a>?';
 		showToast = true;
-		setTimeout(() => {
-			showToast = false;
-		}, 5000);
 	}
 
 	function updateEditorCustomFormatOutput(editorId: number, newJson: string) {
@@ -58,10 +55,15 @@
 	<Button on:click={copyJson} icon={Copy} iconDescription="Copy JSON" hideTooltip={true} />
 </div>
 
-<Toast
-	kind="info"
-	title="Copied to clipboard"
-	subtitle={toastMessage}
-	caption={new Date().toLocaleTimeString()}
-	show={showToast}
-/>
+<div style="position: fixed; top: 1rem; right: 1rem; z-index: 9999;">
+	{#if showToast}
+		<ToastNotification
+			kind="info"
+			title="Copied to clipboard"
+			caption={new Date().toLocaleTimeString()}
+			timeout={5000}
+		>
+			<div slot="subtitle">{toastMessage}</div>
+		</ToastNotification>
+	{/if}
+</div>
