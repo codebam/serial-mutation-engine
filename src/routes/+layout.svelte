@@ -18,6 +18,7 @@
 	<HeaderNav>
 		<HeaderNavItem href={resolve('/')} text="Home" />
 		<HeaderNavItem href={resolve('/bulk')} text="Bulk Processing" />
+		<HeaderNavItem href={resolve('/docs')} text="API Docs" />
 	</HeaderNav>
 	<HeaderUtilities>
 		<HeaderGlobalAction
