@@ -14,13 +14,7 @@
 	import { tags } from '@lezer/highlight';
 	import { SvelteMap } from 'svelte/reactivity';
 	import { theme } from '$lib/stores/themeStore'; // Import the theme store
-	import {
-		TextArea,
-		Select,
-		SelectItem,
-		Button,
-		Checkbox
-	} from 'carbon-components-svelte';
+	import { TextArea, Select, SelectItem, Button, Checkbox } from 'carbon-components-svelte';
 
 	const lightHighlightStyle = HighlightStyle.define([
 		{ tag: tags.number, color: 'var(--color-light-foreground)' },
@@ -379,17 +373,12 @@
 
 <div class="mx-2 my-2 md:mx-0 md:my-0">
 	<FormGroup legendText="Serial Input">
-		<TextArea
-			bind:value={serial}
-			placeholder="Paste serial here..."
-			rows={4}
-			class="w-full"
-		/>
+		<TextArea bind:value={serial} placeholder="Paste serial here..." rows={4} class="w-full" />
 	</FormGroup>
 
 	{#if isMounted && detectedParts.length > 0}
 		<FormGroup legendText="Detected Parts">
-			<ul class="list-inside list-disc text-sm text-light-foreground dark:text-dark-foreground">
+			<ul class="text-light-foreground dark:text-dark-foreground list-inside list-disc text-sm">
 				{#each detectedParts as part (part.code)}
 					<li>{part.code} - {part.name}</li>
 				{/each}
@@ -399,11 +388,14 @@
 
 	<FormGroup legendText="Detected Item Type">
 		<p>
-			<span class="font-semibold text-light-green dark:text-dark-green">
+			<span class="text-light-green dark:text-dark-green font-semibold">
 				{itemType}
 			</span>
 		</p>
-		<Select on:change={(e) => (itemType = (e.currentTarget as HTMLSelectElement).value)} value={itemType}>
+		<Select
+			on:change={(e) => (itemType = (e.currentTarget as HTMLSelectElement).value)}
+			value={itemType}
+		>
 			<SelectItem value="Unknown" text="Select Item Type" />
 			<SelectItem value="Weapon" text="Weapon" />
 			<SelectItem value="Shield" text="Shield" />
@@ -427,12 +419,12 @@
 		</div>
 		<div
 			use:codemirror={customFormatOutput}
-			class="min-h-[80px] rounded-md border border-light-surface bg-transparent dark:border-dark-surface"
+			class="border-light-surface dark:border-dark-surface min-h-[80px] rounded-md border bg-transparent"
 		></div>
 	</FormGroup>
 	{#if error}
 		<div
-			class="mt-4 rounded-md border border-light-red bg-light-red/20 p-4 text-light-red dark:border-dark-red dark:bg-dark-red/20 dark:text-dark-red"
+			class="border-light-red bg-light-red/20 text-light-red dark:border-dark-red dark:bg-dark-red/20 dark:text-dark-red mt-4 rounded-md border p-4"
 		>
 			<p>{error}</p>
 		</div>

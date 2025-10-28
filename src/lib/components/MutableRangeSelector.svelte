@@ -3,14 +3,7 @@
 	import FormGroup from './FormGroup.svelte';
 	import { NumberInput } from 'carbon-components-svelte';
 
-	let {
-		seed = $bindable(),
-		start = $bindable(),
-		end = $bindable(),
-		inputClasses,
-		isMerging
-	} = $props();
-
+	let { seed = $bindable(), start = $bindable(), end = $bindable(), isMerging } = $props();
 	let lastSeed = $state(seed);
 	$effect(() => {
 		if (seed !== lastSeed) {

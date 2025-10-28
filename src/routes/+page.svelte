@@ -55,7 +55,7 @@
 </main>
 
 <div class="fixed right-4 bottom-4 flex flex-col gap-2">
-	<Button on:click={copyJson} icon={Copy} iconDescription="Copy JSON" />
+	<Button on:click={copyJson} icon={Copy} iconDescription="Copy JSON" hideTooltip={true} />
 </div>
 
 <Toast

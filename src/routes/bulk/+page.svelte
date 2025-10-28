@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import FormGroup from '../../lib/components/FormGroup.svelte';
-	import { Button, FileUploader } from 'carbon-components-svelte';
+	import { FileUploader } from 'carbon-components-svelte';
 
 	let worker: Worker;
 	let processingSerials = false;
@@ -49,7 +49,7 @@
 
 		processingSerials = true;
 		const text = await file.text();
-const serials = text.split('\n').filter((s: string) => s.length > 0);
+		const serials = text.split('\n').filter((s: string) => s.length > 0);
 
 		worker.postMessage({ type: 'parse_serials_to_custom_format', payload: serials });
 	}
@@ -80,7 +80,7 @@ const serials = text.split('\n').filter((s: string) => s.length > 0);
 				return;
 			}
 		} else {
-customFormats = text.split('\n').filter((s: string) => s.length > 0);
+			customFormats = text.split('\n').filter((s: string) => s.length > 0);
 		}
 
 		worker.postMessage({ type: 'parse_custom_formats_to_serials', payload: customFormats });
@@ -100,7 +100,6 @@ customFormats = text.split('\n').filter((s: string) => s.length > 0);
 	<FormGroup legendText="Bulk Deserialized Processor">
 		<FileUploader
 			buttonLabel="Select deserialized.json or .txt to Process"
-
 			accept={['.json', '.txt']}
 			on:change={processCustomFormatsFile}
 			disabled={processingCustomFormats}

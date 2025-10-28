@@ -20,13 +20,12 @@
 		<HeaderNavItem href={resolve('/bulk')} text="Bulk Processing" />
 	</HeaderNav>
 	<HeaderUtilities>
-		<HeaderGlobalAction on:click={toggleTheme}>
-			{#if $theme === 'g100'}
-				<Sun />
-			{:else}
-				<Moon />
-			{/if}
-		</HeaderGlobalAction>
+		<HeaderGlobalAction
+			iconDescription="Toggle theme"
+			on:click={toggleTheme}
+			hideTooltip={true}
+			icon={$theme === 'g100' ? Sun : Moon}
+		/>
 	</HeaderUtilities>
 </Header>
 
@@ -34,6 +33,6 @@
 	<slot />
 </Content>
 
-<footer class="py-4 text-center text-sm text-light-primary dark:text-dark-primary">
+<footer class="text-light-primary dark:text-dark-primary py-4 text-center text-sm">
 	Version: {page.data.version}
 </footer>
