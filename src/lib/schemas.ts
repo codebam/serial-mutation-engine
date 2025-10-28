@@ -27,7 +27,14 @@ export const writeVarbitSchema = z.object({
 
 export const toCustomFormatSchema = z.object({
 	functionName: z.literal('toCustomFormat'),
-	args: z.tuple([z.array(z.any()), z.boolean().optional(), z.record(z.string()).optional(), z.record(z.string()).optional(), z.record(z.string()).optional(), z.string().optional()])
+	args: z.tuple([
+		z.array(z.any()),
+		z.boolean().optional(),
+		z.record(z.string(), z.string()).optional(),
+		z.record(z.string(), z.string()).optional(),
+		z.record(z.string(), z.string()).optional(),
+		z.string().optional()
+	])
 });
 
 export const customFormatToSerialSchema = z.object({
