@@ -20,21 +20,9 @@ export const customFormatToSerialSchema = z.object({
 	args: z.tuple([z.any()])
 });
 
-export const base85ToDeserializedSchema = z.object({
-	functionName: z.literal('base85_to_deserialized'),
-	args: z.tuple([z.string()])
-});
-
-export const deserializedToBase85Schema = z.object({
-	functionName: z.literal('deserialized_to_base85'),
-	args: z.tuple([z.string()])
-});
-
 export const operationSchema = z.union([
 	parseSerialSchema,
 	encodeSerialSchema,
-	base85ToDeserializedSchema,
-	deserializedToBase85Schema,
 	serialToCustomFormatSchema,
 	customFormatToSerialSchema
 ]);
