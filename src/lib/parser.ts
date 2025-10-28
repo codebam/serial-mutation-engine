@@ -138,6 +138,13 @@ async function readPart(tokenizer: Tokenizer): Promise<Part> {
 	throw new Error(`Unknown part flagType2: ${flagType2}`);
 }
 
+/**
+ * @name parseBytes
+ * @description Parses a byte array into a serial object.
+ * @param {Uint8Array} bytes - The byte array to parse.
+ * @param {boolean} [no_header] - Whether to skip the header check.
+ * @returns {Promise<Serial>} A promise that resolves to the serial object.
+ */
 export async function parseBytes(bytes: Uint8Array, no_header?: boolean): Promise<Serial> {
 	const mirrored = mirrorBytes(bytes);
 	const stream = new BitstreamReader(mirrored);

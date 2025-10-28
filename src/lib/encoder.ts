@@ -31,6 +31,13 @@ function IntBitsSize(v: number, minSize: number, maxSize: number): number {
 	return nBits;
 }
 
+/**
+ * @name writeVarint
+ * @description Writes a variable-length integer to the bitstream.
+ * @param {BitstreamWriter} stream - The bitstream writer.
+ * @param {number} value - The integer value to write.
+ * @returns {Promise<void>}
+ */
 export async function writeVarint(stream: BitstreamWriter, value: number): Promise<void> {
 	const VARINT_BITS_PER_BLOCK = 4;
 	const VARINT_MAX_USABLE_BITS = 16;
@@ -65,6 +72,13 @@ export async function writeVarint(stream: BitstreamWriter, value: number): Promi
 	}
 }
 
+/**
+ * @name writeVarbit
+ * @description Writes a variable-length bitfield to the bitstream.
+ * @param {BitstreamWriter} stream - The bitstream writer.
+ * @param {number} value - The integer value to write.
+ * @returns {Promise<void>}
+ */
 export async function writeVarbit(stream: BitstreamWriter, value: number): Promise<void> {
 	const VARBIT_LENGTH_BLOCK_SIZE = 5;
 	const nBits = IntBitsSize(value, 0, (1 << VARBIT_LENGTH_BLOCK_SIZE) - 1);

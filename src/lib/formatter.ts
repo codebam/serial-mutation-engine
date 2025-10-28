@@ -11,6 +11,17 @@ import {
 	SUBTYPE_NONE
 } from './types.ts';
 
+/**
+ * @name toCustomFormat
+ * @description Formats a serial object into a custom string representation.
+ * @param {Serial} p - The serial object to format.
+ * @param {boolean} [useStringRepresentation] - Whether to use string representations for certain values.
+ * @param {object} [passiveIdToName] - A map of passive IDs to names.
+ * @param {object} [classModIdToName] - A map of class mod IDs to names.
+ * @param {object} [weaponPartIdToName] - A map of weapon part IDs to names.
+ * @param {string} [itemType] - The item type.
+ * @returns {string} The formatted string.
+ */
 export function toCustomFormat(
 	p: Serial,
 	useStringRepresentation?: boolean,

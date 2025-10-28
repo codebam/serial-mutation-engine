@@ -1,6 +1,11 @@
 import { TOK_VARINT, TOK_VARBIT, type Serial, type Block, type State } from './types.ts';
 import { parseSerial } from './parser.ts';
 
+/**
+ * @name getInitialState
+ * @description Returns the initial state for the serial generator.
+ * @returns {State} The initial state.
+ */
 export function getInitialState(): State {
 	return {
 		repository: '',
@@ -80,6 +85,13 @@ function valuesToBlocks(values: number[]): Block[] {
 	}));
 }
 
+/**
+ * @name appendRandomAsset
+ * @description Appends a random asset to the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const appendRandomAsset: Mutation = (serial, state) => {
 	const difficulty = state!.difficulties.appendRandomAsset || 1;
 	const numberOfAppends = Math.floor(difficulty);
@@ -115,6 +127,13 @@ function createRandomRepeatingPart(
 	return repeatedPart.slice(0, totalLength);
 }
 
+/**
+ * @name injectRepeatingPart
+ * @description Injects a repeating part into the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const injectRepeatingPart: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -132,6 +151,13 @@ export const injectRepeatingPart: Mutation = (serial, state) => {
 	return valuesToBlocks(newAssets);
 };
 
+/**
+ * @name scrambleAndAppendFromRepo
+ * @description Scrambles a segment of the serial and appends assets from the repository.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Promise<Serial>} A promise that resolves to the mutated serial.
+ */
 export const scrambleAndAppendFromRepo: Mutation = async (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -173,6 +199,13 @@ export const scrambleAndAppendFromRepo: Mutation = async (serial, state) => {
 	return valuesToBlocks(newAssets);
 };
 
+/**
+ * @name injectRepeatingPartFull
+ * @description Injects a repeating part into the serial, using the full asset range.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const injectRepeatingPartFull: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -190,6 +223,14 @@ export const injectRepeatingPartFull: Mutation = (serial, state) => {
 
 	return valuesToBlocks(newAssets);
 };
+
+/**
+ * @name injectRandomAsset
+ * @description Injects a random asset into the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const injectRandomAsset: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -203,6 +244,14 @@ export const injectRandomAsset: Mutation = (serial, state) => {
 
 	return valuesToBlocks(newAssets);
 };
+
+/**
+ * @name reverseRandomSegments
+ * @description Reverses random segments of the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const reverseRandomSegments: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -275,6 +324,13 @@ async function extractHighValueParts(
 		.map((motif) => motif.split('').map((c) => c.charCodeAt(0) - 48));
 }
 
+/**
+ * @name injectHighValuePart
+ * @description Injects a high-value part from the repository into the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Promise<Serial>} A promise that resolves to the mutated serial.
+ */
 export const injectHighValuePart: Mutation = async (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -300,6 +356,13 @@ export const injectHighValuePart: Mutation = async (serial, state) => {
 	return valuesToBlocks(newAssets);
 };
 
+/**
+ * @name crossoverWithRepository
+ * @description Performs a crossover operation with a serial from the repository.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Promise<Serial>} A promise that resolves to the mutated serial.
+ */
 export const crossoverWithRepository: Mutation = async (serial, state) => {
 	const repository = state!.repository.split(/\s+/).filter((s: string) => s.startsWith('@U'));
 	const difficulty = state!.difficulties.crossoverWithRepository || 1;
@@ -324,6 +387,13 @@ export const crossoverWithRepository: Mutation = async (serial, state) => {
 	return serial;
 };
 
+/**
+ * @name shuffleAssets
+ * @description Shuffles a percentage of the assets in the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const shuffleAssets: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -338,6 +408,14 @@ export const shuffleAssets: Mutation = (serial, state) => {
 	}
 	return valuesToBlocks(newAssets);
 };
+
+/**
+ * @name randomizeAssets
+ * @description Randomizes a percentage of the assets in the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const randomizeAssets: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -351,6 +429,14 @@ export const randomizeAssets: Mutation = (serial, state) => {
 	}
 	return valuesToBlocks(newAssets);
 };
+
+/**
+ * @name repeatHighValuePart
+ * @description Repeats a high-value part in the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const repeatHighValuePart: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -431,6 +517,14 @@ export const repeatHighValuePart: Mutation = (serial, state) => {
 
 	return valuesToBlocks(newAssets);
 };
+
+/**
+ * @name appendHighValuePart
+ * @description Appends a high-value part to the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const appendHighValuePart: Mutation = (serial, state) => {
 	const assetList = blocksToValues(serial);
 	const newAssets = [...assetList];
@@ -479,6 +573,14 @@ export const appendHighValuePart: Mutation = (serial, state) => {
 
 	return valuesToBlocks(newAssets);
 };
+
+/**
+ * @name appendSelectedAssetMutation
+ * @description Appends the selected asset to the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const appendSelectedAssetMutation: Mutation = (serial, state) => {
 	if (!state!.selectedAsset) {
 		return serial;
@@ -489,6 +591,14 @@ export const appendSelectedAssetMutation: Mutation = (serial, state) => {
 
 	return valuesToBlocks(newAssets);
 };
+
+/**
+ * @name repeatSelectedAssetMutation
+ * @description Repeats the selected asset in the serial.
+ * @param {Serial} serial - The serial to mutate.
+ * @param {State} state - The current state.
+ * @returns {Serial} The mutated serial.
+ */
 export const repeatSelectedAssetMutation: Mutation = (serial, state) => {
 	if (!state!.selectedAsset) {
 		return serial;
@@ -515,6 +625,13 @@ export const repeatSelectedAssetMutation: Mutation = (serial, state) => {
 	return valuesToBlocks(newAssets);
 };
 
+/**
+ * @name mergeSerial
+ * @description Merges a serial into a YAML string.
+ * @param {string} yaml - The YAML string to merge into.
+ * @param {string} serialToInsert - The serial to insert.
+ * @returns {{newYaml: string, message: string}} An object containing the new YAML string and a message.
+ */
 export function mergeSerial(
 	yaml: string,
 	serialToInsert: string
@@ -523,6 +640,13 @@ export function mergeSerial(
 	return { newYaml, message: message.replace('1 serials', 'serial') };
 }
 
+/**
+ * @name mergeSerials
+ * @description Merges multiple serials into a YAML string.
+ * @param {string} yaml - The YAML string to merge into.
+ * @param {string[]} serialsToInsert - The serials to insert.
+ * @returns {{newYaml: string, message: string}} An object containing the new YAML string and a message.
+ */
 export function mergeSerials(
 	yaml: string,
 	serialsToInsert: string[]
