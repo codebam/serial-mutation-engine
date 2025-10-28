@@ -13,13 +13,20 @@
 	import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 	import { tags } from '@lezer/highlight';
 	import { SvelteMap } from 'svelte/reactivity';
-	const myHighlightStyle = HighlightStyle.define([
-		{ tag: tags.number, color: 'var(--tw-prose-body)' },
+	import { theme } from '$lib/stores/themeStore'; // Import the theme store
 
-		{ tag: tags.operator, color: '#60a5fa' }, // Tailwind blue-400
-
-		{ tag: tags.bracket, color: '#9ca3af' } // Tailwind gray-400
+	const lightHighlightStyle = HighlightStyle.define([
+		{ tag: tags.number, color: 'var(--color-light-foreground)' },
+		{ tag: tags.operator, color: 'var(--color-light-blue)' },
+		{ tag: tags.bracket, color: 'var(--color-light-primary)' }
 	]);
+
+	const darkHighlightStyle = HighlightStyle.define([
+		{ tag: tags.number, color: 'var(--color-dark-foreground)' },
+		{ tag: tags.operator, color: 'var(--color-dark-blue)' },
+		{ tag: tags.bracket, color: 'var(--color-dark-primary)' }
+	]);
+
 	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
 		serial: string;
 		onCustomFormatOutputUpdate?: (newJson: string) => void;
@@ -41,37 +48,52 @@
 	let passiveIdToName: SvelteMap<number, string> = new SvelteMap();
 	let weaponPartIdToName: SvelteMap<number, string> = new SvelteMap();
 
-	function codemirror(el: HTMLElement, content: string) {
-		const state = EditorState.create({
-			doc: content,
-			extensions: [
-				customFormatLanguage,
-				syntaxHighlighting(myHighlightStyle),
-				keymap.of(defaultKeymap),
-				EditorView.lineWrapping,
-				EditorView.updateListener.of((update) => {
-					if (update.docChanged) {
-						onCustomFormatUpdate(update.state.doc.toString());
-					}
-				})
-			]
-		});
+	let editorView: EditorView | null = null; // To store the CodeMirror view instance
 
-		const view = new EditorView({
-			state,
-			parent: el
+	function codemirror(el: HTMLElement, content: string) {
+		function createEditor(currentTheme: 'light' | 'dark') {
+			const highlightStyle = currentTheme === 'dark' ? darkHighlightStyle : lightHighlightStyle;
+			return new EditorView({
+				state: EditorState.create({
+					doc: content,
+					extensions: [
+						customFormatLanguage,
+						syntaxHighlighting(highlightStyle),
+						keymap.of(defaultKeymap),
+						EditorView.lineWrapping,
+						EditorView.updateListener.of((update) => {
+							if (update.docChanged) {
+								onCustomFormatUpdate(update.state.doc.toString());
+							}
+						})
+					]
+				}),
+				parent: el
+			});
+		}
+
+		// Initialize editor on mount
+		editorView = createEditor($theme);
+
+		// Reactive effect to update editor when theme changes
+		$effect(() => {
+			if (editorView) {
+				editorView.destroy(); // Destroy old view
+			}
+			editorView = createEditor($theme); // Create new view with updated theme
 		});
 
 		return {
 			update(newContent: string) {
-				if (newContent !== view.state.doc.toString()) {
-					view.dispatch({
-						changes: { from: 0, to: view.state.doc.length, insert: newContent }
+				if (editorView && newContent !== editorView.state.doc.toString()) {
+					editorView.dispatch({
+						changes: { from: 0, to: editorView.state.doc.length, insert: newContent }
 					});
 				}
 			},
 			destroy() {
-				view.destroy();
+				editorView?.destroy();
+				editorView = null;
 			}
 		};
 	}
@@ -351,7 +373,7 @@
 <div class="mx-2 my-2 md:mx-0 md:my-0">
 	<FormGroup label="Serial Input">
 		<textarea
-			class="min-h-[80px] w-full rounded-md border border-gray-300 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+			class="min-h-[80px] w-full rounded-md border border-light-surface p-3 font-mono text-sm text-light-foreground outline-none focus:border-light-blue focus:ring-2 focus:ring-light-blue dark:border-dark-surface dark:text-dark-foreground dark:focus:border-dark-blue dark:focus:ring-dark-blue"
 			bind:value={serial}
 			placeholder="Paste serial here..."
 		></textarea>
@@ -359,7 +381,7 @@
 
 	{#if isMounted && detectedParts.length > 0}
 		<FormGroup label="Detected Parts">
-			<ul class="list-inside list-disc text-sm text-gray-700 dark:text-gray-300">
+			<ul class="list-inside list-disc text-sm text-light-foreground dark:text-dark-foreground">
 				{#each detectedParts as part (part.code)}
 					<li>{part.code} - {part.name}</li>
 				{/each}
@@ -369,13 +391,13 @@
 
 	<FormGroup label="Detected Item Type">
 		<p>
-			<span class="font-semibold text-green-600 dark:text-green-400">
+			<span class="font-semibold text-light-green dark:text-dark-green">
 				{itemType}
 			</span>
 		</p>
 		<select
 			onchange={(e) => (itemType = e.currentTarget.value)}
-			class="mt-2 rounded-md bg-gray-200 p-2 text-gray-900 dark:bg-gray-700 dark:text-white"
+			class="mt-2 rounded-md bg-light-background p-2 text-light-foreground dark:bg-dark-surface dark:text-dark-foreground"
 			value={itemType}
 		>
 			<option value="Unknown">Select Item Type</option>
@@ -399,17 +421,17 @@
 					onchange={handleUseStringRepresentationChange}
 					disabled={!dataLoaded}
 				/>
-				<span class="ml-2 text-sm text-gray-500">Use String Representation</span>
+				<span class="ml-2 text-sm text-light-primary">Use String Representation</span>
 			</label>
 		</div>
 		<div
 			use:codemirror={customFormatOutput}
-			class="min-h-[80px] rounded-md border border-gray-300 bg-transparent dark:border-gray-700"
+			class="min-h-[80px] rounded-md border border-light-surface bg-transparent dark:border-dark-surface"
 		></div>
 	</FormGroup>
 	{#if error}
 		<div
-			class="mt-4 rounded-md border border-red-300 bg-red-100 p-4 text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-200"
+			class="mt-4 rounded-md border border-light-red bg-light-red/20 p-4 text-light-red dark:border-dark-red dark:bg-dark-red/20 dark:text-dark-red"
 		>
 			<p>{error}</p>
 		</div>
@@ -426,14 +448,14 @@
 			/>
 			<button
 				onclick={() => fileInput.click()}
-				class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+				class="rounded-md bg-light-background px-4 py-2 text-center text-sm font-medium text-light-foreground transition-all hover:bg-light-surface dark:bg-dark-surface dark:text-dark-foreground dark:hover:bg-dark-dark-blue"
 			>
 				Select YAML to Merge
 			</button>
 			<button
 				onclick={mergeAndDownloadYaml}
 				disabled={!baseYaml}
-				class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 disabled:text-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+				class="rounded-md bg-light-background px-4 py-2 text-center text-sm font-medium text-light-foreground transition-all hover:bg-light-surface disabled:text-light-primary dark:bg-dark-surface dark:text-dark-foreground dark:hover:bg-dark-dark-blue"
 			>
 				Merge
 			</button>
