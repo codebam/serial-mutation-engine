@@ -13,19 +13,12 @@
 	import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 	import { tags } from '@lezer/highlight';
 	import { SvelteMap } from 'svelte/reactivity';
-	import { theme } from '$lib/stores/themeStore'; // Import the theme store
 	import { TextArea, Select, SelectItem, Button, Checkbox } from 'carbon-components-svelte';
 
-	const lightHighlightStyle = HighlightStyle.define([
-		{ tag: tags.number, color: 'var(--color-light-foreground)' },
-		{ tag: tags.operator, color: 'var(--color-light-blue)' },
-		{ tag: tags.bracket, color: 'var(--color-light-primary)' }
-	]);
-
-	const darkHighlightStyle = HighlightStyle.define([
-		{ tag: tags.number, color: 'var(--color-dark-foreground)' },
-		{ tag: tags.operator, color: 'var(--color-dark-blue)' },
-		{ tag: tags.bracket, color: 'var(--color-dark-primary)' }
+	const highlightStyle = HighlightStyle.define([
+		{ tag: tags.number, color: 'var(--cds-text-primary)' },
+		{ tag: tags.operator, color: 'var(--cds-interactive-01)' },
+		{ tag: tags.bracket, color: 'var(--cds-border-subtle-01)' }
 	]);
 
 	let { serial, onCustomFormatOutputUpdate, onSerialUpdate } = $props<{
@@ -52,8 +45,7 @@
 	let editorView: EditorView | null = null; // To store the CodeMirror view instance
 
 	function codemirror(el: HTMLElement, content: string) {
-		function createEditor(currentTheme: 'g100' | 'white') {
-			const highlightStyle = currentTheme === 'g100' ? darkHighlightStyle : lightHighlightStyle;
+		function createEditor() {
 			return new EditorView({
 				state: EditorState.create({
 					doc: content,
@@ -74,14 +66,14 @@
 		}
 
 		// Initialize editor on mount
-		editorView = createEditor($theme);
+		editorView = createEditor();
 
 		// Reactive effect to update editor when theme changes
 		$effect(() => {
 			if (editorView) {
 				editorView.destroy(); // Destroy old view
 			}
-			editorView = createEditor($theme); // Create new view with updated theme
+			editorView = createEditor(); // Create new view with updated theme
 		});
 
 		return {
