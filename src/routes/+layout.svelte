@@ -21,7 +21,7 @@
 	</HeaderNav>
 	<HeaderUtilities>
 		<HeaderGlobalAction on:click={toggleTheme}>
-			{#if $theme === 'dark'}
+			{#if $theme === 'g100'}
 				<Sun />
 			{:else}
 				<Moon />

@@ -58,8 +58,8 @@
 	let editorView: EditorView | null = null; // To store the CodeMirror view instance
 
 	function codemirror(el: HTMLElement, content: string) {
-		function createEditor(currentTheme: 'light' | 'dark') {
-			const highlightStyle = currentTheme === 'dark' ? darkHighlightStyle : lightHighlightStyle;
+		function createEditor(currentTheme: 'g100' | 'white') {
+			const highlightStyle = currentTheme === 'g100' ? darkHighlightStyle : lightHighlightStyle;
 			return new EditorView({
 				state: EditorState.create({
 					doc: content,
@@ -403,7 +403,7 @@
 				{itemType}
 			</span>
 		</p>
-		<Select on:change={(e) => (itemType = e.currentTarget.value)} value={itemType}>
+		<Select on:change={(e) => (itemType = (e.currentTarget as HTMLSelectElement).value)} value={itemType}>
 			<SelectItem value="Unknown" text="Select Item Type" />
 			<SelectItem value="Weapon" text="Weapon" />
 			<SelectItem value="Shield" text="Shield" />

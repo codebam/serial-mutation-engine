@@ -1,6 +1,9 @@
 import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
+	const theme = event.cookies.get('theme') || 'g100';
+	event.locals.theme = theme;
+
 	const allowedOrigins = [
 		'https://borderlands4-deserializer.nicnl.com',
 		'https://serial-mutation-engine.pages.dev'
@@ -18,10 +21,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 			});
 		}
 
-		const response = await resolve(event);
+		const response = await resolve(event, {
+			transformPageChunk: ({ html }) => html.replace('%theme%', theme)
+		});
 		response.headers.set('Access-Control-Allow-Origin', origin);
 		return response;
 	}
 
-	return await resolve(event);
+	return await resolve(event, {
+		transformPageChunk: ({ html }) => html.replace('%theme%', theme)
+	});
 };

@@ -49,7 +49,7 @@
 
 		processingSerials = true;
 		const text = await file.text();
-		const serials = text.split('\n').filter((s) => s.length > 0);
+const serials = text.split('\n').filter((s: string) => s.length > 0);
 
 		worker.postMessage({ type: 'parse_serials_to_custom_format', payload: serials });
 	}
@@ -80,7 +80,7 @@
 				return;
 			}
 		} else {
-			customFormats = text.split('\n').filter((s) => s.length > 0);
+customFormats = text.split('\n').filter((s: string) => s.length > 0);
 		}
 
 		worker.postMessage({ type: 'parse_custom_formats_to_serials', payload: customFormats });
