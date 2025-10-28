@@ -7,6 +7,7 @@ export async function load() {
 			'../../lib/parser.ts',
 			'../../lib/encoder.ts',
 			'../../lib/custom_parser.ts',
+			'../../lib/mutations.ts',
 			'../../lib/types.ts'
 		],
 		{ query: '?raw', import: 'default' }
