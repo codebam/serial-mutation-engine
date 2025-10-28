@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Serial, type Part, classModIdToName } from '../types.ts';
+	import { type Serial, type Part, type PartInfo, classModIdToName } from '../types.ts';
 	import { browser } from '$app/environment';
 	import { toCustomFormat } from '../formatter.ts';
 	import { parseCustomFormat, customFormatLanguage } from '../custom_format_parser.ts';
@@ -36,6 +36,35 @@
 	let mergedYaml = $state('');
 	let fileInput: HTMLInputElement = $state() as HTMLInputElement;
 	let useStringRepresentation = $state(false);
+	let selectedFile = $state('');
+	let parts = $state<PartInfo[]>([]);
+	const fileList = [
+		'heavy_ordnance_firmware.json',
+		'weapon_elemental.json',
+		'harlowe_class_mods.json',
+		'rafa_class_mods.json',
+		'vex_class_mods.json',
+		'regular_grenades.json',
+		'legendary_grenades.json',
+		'legendary_repkits.json',
+		'repkits.json',
+		'legendary_shields.json',
+		'armor_shields.json',
+		'energy_shields.json',
+		'general_shields.json',
+		'elemental_effects.json',
+		'color_spray.json',
+		'legendary_barrels.json'
+	];
+
+	function loadParts(file: string) {
+		selectedFile = file;
+		if (partService) {
+			parts = partService
+				.getParts('')
+				.filter((p) => p.fileName === selectedFile.replace('.json', ''));
+		}
+	}
 
 	const isMounted = $derived(browser);
 
@@ -415,7 +444,26 @@
 	</FormGroup>
 
 	<FormGroup legendText="Editing Area">
-		<textarea placeholder="..." rows={4} class="w-full monospace-textarea"></textarea>
+		<textarea placeholder="..." rows={4} class="monospace-textarea w-full"></textarea>
+	</FormGroup>
+
+	<FormGroup legendText="Parts List">
+		<Select
+			on:change={(e) => loadParts((e.currentTarget as HTMLSelectElement).value)}
+			bind:value={selectedFile}
+		>
+			<SelectItem value="" text="Select a file" />
+			{#each fileList as file (file)}
+				<SelectItem value={file} text={file} />
+			{/each}
+		</Select>
+		<div class="mt-2 h-48 overflow-y-auto border p-2">
+			<ul>
+				{#each parts as part (part.code)}
+					<li style="margin-top: 1rem;">{part.name} - Code: {part.code}</li>
+				{/each}
+			</ul>
+		</div>
 	</FormGroup>
 	{#if error}
 		<div
