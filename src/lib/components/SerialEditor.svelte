@@ -351,7 +351,7 @@
 <div class="mx-2 my-2 md:mx-0 md:my-0">
 	<FormGroup label="Serial Input">
 		<textarea
-			class="min-h-[80px] w-full rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+			class="min-h-[80px] w-full rounded-md border border-gray-300 p-3 font-mono text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 			bind:value={serial}
 			placeholder="Paste serial here..."
 		></textarea>
@@ -404,7 +404,7 @@
 		</div>
 		<div
 			use:codemirror={customFormatOutput}
-			class="min-h-[80px] rounded-md border border-gray-300 dark:border-gray-700"
+			class="min-h-[80px] rounded-md border border-gray-300 bg-transparent dark:border-gray-700"
 		></div>
 	</FormGroup>
 	{#if error}
