@@ -1,5 +1,5 @@
-const api_url = 'https://serial-mutation-engine.pages.dev/api';
-// const api_url = "http://localhost:5173/api";
+// const api_url = 'https://serial-mutation-engine.pages.dev/api';
+const api_url = 'http://localhost:5173/api';
 import * as fs from 'fs';
 import * as readline from 'readline';
 
@@ -15,7 +15,7 @@ async function batchOperations() {
 
 	let first = true;
 	for await (const line of rl) {
-		const operation = { functionName: 'base85_to_deserialized', args: [line] };
+		const operation = { functionName: 'serialToCustomFormat', args: [line] };
 		if (first) {
 			operation.debug = true;
 			first = false;
