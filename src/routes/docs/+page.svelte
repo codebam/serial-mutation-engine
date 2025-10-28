@@ -18,15 +18,15 @@
 	} from 'carbon-components-svelte';
 	import { Moon, Sun } from 'carbon-icons-svelte';
 	import { theme, toggleTheme } from '$lib/stores/themeStore';
-	let isSideNavOpen = false;
-	export let data;
+	import { isSideNavOpen } from '$lib/stores/sideNavStore';
+	let { data } = $props();
 	const comments = data.comments;
 	const apiComments = comments.filter((c) => c.tags.some((t) => t.tag === 'route'));
 	const typeComments = comments.filter((c) => c.tags.some((t) => t.tag === 'typedef'));
 	const functionComments = comments.filter((c) => c.tags.some((t) => t.tag === 'name'));
 </script>
 
-<Header platformName="API Docs" bind:isSideNavOpen>
+<Header platformName="API Docs" bind:isSideNavOpen={$isSideNavOpen}>
 	<svelte:fragment slot="skip-to-content">
 		<SkipToContent />
 	</svelte:fragment>
@@ -40,7 +40,7 @@
 	</HeaderUtilities>
 </Header>
 
-<SideNav bind:isOpen={isSideNavOpen}>
+<SideNav bind:isOpen={$isSideNavOpen}>
 	<SideNavItems>
 		<SideNavMenu text="API" expanded>
 			{#each apiComments as commentBlock (JSON.stringify(commentBlock))}
@@ -71,7 +71,7 @@
 	</SideNavItems>
 </SideNav>
 
-<Content id="main-content" style="margin-left: {isSideNavOpen ? '16rem' : '3rem'}">
+<Content id="main-content" style="margin-left: {$isSideNavOpen ? '16rem' : '3rem'}">
 	{#if comments.length === 0}
 		<p>No documentation found.</p>
 	{:else}
