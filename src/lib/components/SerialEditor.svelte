@@ -370,7 +370,7 @@
 
 	{#if isMounted && detectedParts.length > 0}
 		<FormGroup legendText="Detected Parts">
-			<ul class="text-light-foreground dark:text-dark-foreground list-inside list-disc text-sm">
+			<ul class="text-foreground list-inside list-disc text-sm">
 				{#each detectedParts as part (part.code)}
 					<li>{part.code} - {part.name}</li>
 				{/each}
@@ -380,7 +380,7 @@
 
 	<FormGroup legendText="Detected Item Type">
 		<p>
-			<span class="text-light-green dark:text-dark-green font-semibold">
+			<span class="text-light-green font-semibold">
 				{itemType}
 			</span>
 		</p>
