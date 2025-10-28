@@ -1,2 +1,18 @@
 @import 'tailwindcss';
 @import 'carbon-components-svelte/css/all.css';
+
+.custom-editor .cm-editor {
+	background-color: var(--cds-field-01);
+	border: 1px solid var(--cds-border-strong-01);
+	border-radius: var(--cds-border-radius);
+	padding: var(--cds-spacing-03);
+	color: var(--cds-text-primary);
+	outline: 2px solid transparent;
+	outline-offset: -2px;
+	width: 100%;
+}
+
+.custom-editor .cm-editor.cm-focused {
+	outline: 2px solid var(--cds-focus);
+	outline-offset: -2px;
+}

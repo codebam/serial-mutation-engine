@@ -409,10 +409,9 @@
 				disabled={!dataLoaded}
 			/>
 		</div>
-		<div
-			use:codemirror={customFormatOutput}
-			class="border-light-surface dark:border-dark-surface min-h-[80px] rounded-md border bg-transparent"
-		></div>
+		<div class="cds--text-area__wrapper">
+			<div use:codemirror={customFormatOutput} class="custom-editor min-h-[80px] w-full"></div>
+		</div>
 	</FormGroup>
 	{#if error}
 		<div
