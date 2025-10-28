@@ -17,9 +17,7 @@ interface Operation {
 	cache?: boolean;
 }
 
-async function processOperation(
-	op: Operation,
-): Promise<unknown> {
+async function processOperation(op: Operation): Promise<unknown> {
 	const { functionName, args } = op;
 	const apiFunction = (api as unknown as Record<string, (...args: unknown[]) => unknown>)[
 		functionName
@@ -63,7 +61,6 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 	let response: Response;
 	let debug = false;
 	const cache = platform?.env?.SERIAL_CACHE;
-	let sha256: ((message: string) => Promise<string>) | undefined;
 
 	try {
 		const body = await request.json();
