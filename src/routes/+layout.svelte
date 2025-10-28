@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 </script>
@@ -28,6 +28,6 @@
 		<slot />
 	</main>
 	<footer class="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-		Version: {$page.data.version}
+		Version: {page.data.version}
 	</footer>
 </div>
