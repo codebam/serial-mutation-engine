@@ -8,13 +8,11 @@ import { operationSchema, batchOperationSchema } from '$lib/schemas.ts';
  * @property {string} functionName - The name of the function to call from the API.
  * @property {any[]} args - An array of arguments to pass to the function.
  * @property {boolean} [debug] - Enable debug mode to get execution time.
- * @property {boolean} [cache] - Enable caching for decode operations.
  */
 interface Operation {
 	functionName: string;
 	args: unknown[];
 	debug?: boolean;
-	cache?: boolean;
 }
 
 async function processOperation(op: Operation): Promise<unknown> {
@@ -56,11 +54,10 @@ async function processOperation(op: Operation): Promise<unknown> {
  *   }
  * ]
  */
-export const POST: RequestHandler = async ({ request, platform }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	const start = performance.now(); // Use high-resolution timer
 	let response: Response;
 	let debug = false;
-	const cache = platform?.env?.SERIAL_CACHE;
 
 	try {
 		const body = await request.json();
@@ -74,10 +71,6 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 			if (body.some((op) => op.debug === true)) {
 				debug = true;
 			}
-			if (cache && body.some((op) => op.cache === true)) {
-				const { sha256: sha256Func } = await import('$lib/crypto');
-				sha256 = sha256Func;
-			}
 			const promises = body.map((op) => processOperation(op));
 			const results = await Promise.all(promises);
 			response = json(results);
@@ -89,10 +82,6 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 			}
 			if ((body as Operation).debug === true) {
 				debug = true;
-			}
-			if (cache && (body as Operation).cache === true) {
-				const { sha256: sha256Func } = await import('$lib/crypto');
-				sha256 = sha256Func;
 			}
 			const result = await processOperation(body as Operation);
 			response = json(result);
