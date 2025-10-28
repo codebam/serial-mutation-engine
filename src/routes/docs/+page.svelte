@@ -71,223 +71,209 @@
 	</SideNavItems>
 </SideNav>
 
-			<Content id="main-content" style="margin-left: {isSideNavOpen ? '16rem' : '3rem'}">
-				{#if comments.length === 0}
-					<p>No documentation found.</p>
-				{:else}
-					{#each apiComments as commentBlock (JSON.stringify(commentBlock))}
-						{@const routeTag = commentBlock.tags.find((t) => t.tag === 'route')}
-						{#if routeTag}
-							<div id="{routeTag.description}" class="mb-12">
-								<h1>
-									<Tag type="green">{routeTag.description.split(' ')[0]}</Tag>
-									<span>
-										{routeTag.description.split(' ')[1]}
-									</span>
-								</h1>
-								<p>
-									{commentBlock.description.replace(/\n/g, '<br>')}
-								</p>
+<Content id="main-content" style="margin-left: {isSideNavOpen ? '16rem' : '3rem'}">
+	{#if comments.length === 0}
+		<p>No documentation found.</p>
+	{:else}
+		{#each apiComments as commentBlock (JSON.stringify(commentBlock))}
+			{@const routeTag = commentBlock.tags.find((t) => t.tag === 'route')}
+			{#if routeTag}
+				<div id={routeTag.description} class="mb-12">
+					<h1>
+						<Tag type="green">{routeTag.description.split(' ')[0]}</Tag>
+						<span>
+							{routeTag.description.split(' ')[1]}
+						</span>
+					</h1>
+					<p>
+						{commentBlock.description.replace(/\n/g, '<br>')}
+					</p>
 
-								<h3>Parameters</h3>
-								<StructuredList>
-									<StructuredListHead>
-										<StructuredListRow head>
-											<StructuredListCell head>Name</StructuredListCell>
-											<StructuredListCell head>Type</StructuredListCell>
-											<StructuredListCell head>Description</StructuredListCell>
-										</StructuredListRow>
-									</StructuredListHead>
-									<StructuredListBody>
-										{#each commentBlock.tags.filter((t) => t.tag === 'param') as tag (JSON.stringify(tag))}
-											<StructuredListRow>
-												<StructuredListCell>{tag.name}</StructuredListCell>
-												<StructuredListCell>
-													<Tag type="blue">{tag.type}</Tag>
-												</StructuredListCell>
-												<StructuredListCell
-													>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell
-												>
-											</StructuredListRow>
-										{/each}
-									</StructuredListBody>
-								</StructuredList>
+					<h3>Parameters</h3>
+					<StructuredList>
+						<StructuredListHead>
+							<StructuredListRow head>
+								<StructuredListCell head>Name</StructuredListCell>
+								<StructuredListCell head>Type</StructuredListCell>
+								<StructuredListCell head>Description</StructuredListCell>
+							</StructuredListRow>
+						</StructuredListHead>
+						<StructuredListBody>
+							{#each commentBlock.tags.filter((t) => t.tag === 'param') as tag (JSON.stringify(tag))}
+								<StructuredListRow>
+									<StructuredListCell>{tag.name}</StructuredListCell>
+									<StructuredListCell>
+										<Tag type="blue">{tag.type}</Tag>
+									</StructuredListCell>
+									<StructuredListCell>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell>
+								</StructuredListRow>
+							{/each}
+						</StructuredListBody>
+					</StructuredList>
 
-								<h3>Body</h3>
-								<StructuredList>
-									<StructuredListHead>
-										<StructuredListRow head>
-											<StructuredListCell head>Name</StructuredListCell>
-											<StructuredListCell head>Type</StructuredListCell>
-											<StructuredListCell head>Description</StructuredListCell>
-										</StructuredListRow>
-									</StructuredListHead>
-									<StructuredListBody>
-										{#each commentBlock.tags.filter((t) => t.tag === 'body') as tag (JSON.stringify(tag))}
-											<StructuredListRow>
-												<StructuredListCell>{tag.name}</StructuredListCell>
-												<StructuredListCell>
-													<Tag type="blue">{tag.type}</Tag>
-												</StructuredListCell>
-												<StructuredListCell
-													>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell
-												>
-											</StructuredListRow>
-										{/each}
-									</StructuredListBody>
-								</StructuredList>
+					<h3>Body</h3>
+					<StructuredList>
+						<StructuredListHead>
+							<StructuredListRow head>
+								<StructuredListCell head>Name</StructuredListCell>
+								<StructuredListCell head>Type</StructuredListCell>
+								<StructuredListCell head>Description</StructuredListCell>
+							</StructuredListRow>
+						</StructuredListHead>
+						<StructuredListBody>
+							{#each commentBlock.tags.filter((t) => t.tag === 'body') as tag (JSON.stringify(tag))}
+								<StructuredListRow>
+									<StructuredListCell>{tag.name}</StructuredListCell>
+									<StructuredListCell>
+										<Tag type="blue">{tag.type}</Tag>
+									</StructuredListCell>
+									<StructuredListCell>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell>
+								</StructuredListRow>
+							{/each}
+						</StructuredListBody>
+					</StructuredList>
 
-								<h3>Responses</h3>
-								<StructuredList>
-									<StructuredListHead>
-										<StructuredListRow head>
-											<StructuredListCell head>Type</StructuredListCell>
-											<StructuredListCell head>Description</StructuredListCell>
-										</StructuredListRow>
-									</StructuredListHead>
-									<StructuredListBody>
-										{#each commentBlock.tags.filter((t) => t.tag === 'returns') as tag (JSON.stringify(tag))}
-											<StructuredListRow>
-												<StructuredListCell>
-													<Tag type="blue">{tag.type}</Tag>
-												</StructuredListCell>
-												<StructuredListCell
-													>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell
-												>
-											</StructuredListRow>
-										{/each}
-									</StructuredListBody>
-								</StructuredList>
+					<h3>Responses</h3>
+					<StructuredList>
+						<StructuredListHead>
+							<StructuredListRow head>
+								<StructuredListCell head>Type</StructuredListCell>
+								<StructuredListCell head>Description</StructuredListCell>
+							</StructuredListRow>
+						</StructuredListHead>
+						<StructuredListBody>
+							{#each commentBlock.tags.filter((t) => t.tag === 'returns') as tag (JSON.stringify(tag))}
+								<StructuredListRow>
+									<StructuredListCell>
+										<Tag type="blue">{tag.type}</Tag>
+									</StructuredListCell>
+									<StructuredListCell>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell>
+								</StructuredListRow>
+							{/each}
+						</StructuredListBody>
+					</StructuredList>
 
-								<h3>Throws</h3>
-								<StructuredList>
-									<StructuredListHead>
-										<StructuredListRow head>
-											<StructuredListCell head>Type</StructuredListCell>
-											<StructuredListCell head>Description</StructuredListCell>
-										</StructuredListRow>
-									</StructuredListHead>
-									<StructuredListBody>
-										{#each commentBlock.tags.filter((t) => t.tag === 'throws') as tag (JSON.stringify(tag))}
-											<StructuredListRow>
-												<StructuredListCell>
-													<Tag type="red">{tag.type}</Tag>
-												</StructuredListCell>
-												<StructuredListCell
-													>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell
-												>
-											</StructuredListRow>
-										{/each}
-									</StructuredListBody>
-								</StructuredList>
+					<h3>Throws</h3>
+					<StructuredList>
+						<StructuredListHead>
+							<StructuredListRow head>
+								<StructuredListCell head>Type</StructuredListCell>
+								<StructuredListCell head>Description</StructuredListCell>
+							</StructuredListRow>
+						</StructuredListHead>
+						<StructuredListBody>
+							{#each commentBlock.tags.filter((t) => t.tag === 'throws') as tag (JSON.stringify(tag))}
+								<StructuredListRow>
+									<StructuredListCell>
+										<Tag type="red">{tag.type}</Tag>
+									</StructuredListCell>
+									<StructuredListCell>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell>
+								</StructuredListRow>
+							{/each}
+						</StructuredListBody>
+					</StructuredList>
 
-								<h3>Examples</h3>
-								{#each commentBlock.tags.filter((t) => t.tag === 'example') as tag (JSON.stringify(tag))}
-									<p>
-										{tag.description.replace(/\n/g, '<br>')}
-									</p>
-								{/each}
-							</div>
-						{/if}
+					<h3>Examples</h3>
+					{#each commentBlock.tags.filter((t) => t.tag === 'example') as tag (JSON.stringify(tag))}
+						<p>
+							{tag.description.replace(/\n/g, '<br>')}
+						</p>
 					{/each}
+				</div>
+			{/if}
+		{/each}
 
-					{#each functionComments as commentBlock (JSON.stringify(commentBlock))}
-						{@const nameTag = commentBlock.tags.find((t) => t.tag === 'name')}
-						{#if nameTag}
-							<div id={nameTag.name} class="mb-12">
-																<h1>
-																	<span>{nameTag.name}</span>
-																                                </h1>
-																
-																                                <p>
-																                                    {commentBlock.description.replace(/\n/g, '<br>')}
-																<h3>Parameters</h3>
-								<StructuredList>
-									<StructuredListHead>
-										<StructuredListRow head>
-											<StructuredListCell head>Name</StructuredListCell>
-											<StructuredListCell head>Type</StructuredListCell>
-											<StructuredListCell head>Description</StructuredListCell>
-										</StructuredListRow>
-									</StructuredListHead>
-									<StructuredListBody>
-										{#each commentBlock.tags.filter((t) => t.tag === 'param') as tag (JSON.stringify(tag))}
-											<StructuredListRow>
-												<StructuredListCell>{tag.name}</StructuredListCell>
-												<StructuredListCell>
-													<Tag type="blue">{tag.type}</Tag>
-												</StructuredListCell>
-												<StructuredListCell
-													>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell
-												>
-											</StructuredListRow>
-										{/each}
-									</StructuredListBody>
-								</StructuredList>
+		{#each functionComments as commentBlock (JSON.stringify(commentBlock))}
+			{@const nameTag = commentBlock.tags.find((t) => t.tag === 'name')}
+			{#if nameTag}
+				<div id={nameTag.name} class="mb-12">
+					<h1>
+						<span>{nameTag.name}</span>
+					</h1>
 
-								<h3>Returns</h3>
-								<StructuredList>
-									<StructuredListHead>
-										<StructuredListRow head>
-											<StructuredListCell head>Type</StructuredListCell>
-											<StructuredListCell head>Description</StructuredListCell>
-										</StructuredListRow>
-									</StructuredListHead>
-									<StructuredListBody>
-										{#each commentBlock.tags.filter((t) => t.tag === 'returns') as tag (JSON.stringify(tag))}
-											<StructuredListRow>
-												<StructuredListCell>
-													<Tag type="blue">{tag.type}</Tag>
-												</StructuredListCell>
-												<StructuredListCell
-													>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell
-												>
-											</StructuredListRow>
-										{/each}
-									</StructuredListBody>
-								</StructuredList>
-							</div>
-						{/if}
-					{/each}
+					<p>
+						{commentBlock.description.replace(/\n/g, '<br>')}
+					</p>
+					<h3>Parameters</h3>
+					<StructuredList>
+						<StructuredListHead>
+							<StructuredListRow head>
+								<StructuredListCell head>Name</StructuredListCell>
+								<StructuredListCell head>Type</StructuredListCell>
+								<StructuredListCell head>Description</StructuredListCell>
+							</StructuredListRow>
+						</StructuredListHead>
+						<StructuredListBody>
+							{#each commentBlock.tags.filter((t) => t.tag === 'param') as tag (JSON.stringify(tag))}
+								<StructuredListRow>
+									<StructuredListCell>{tag.name}</StructuredListCell>
+									<StructuredListCell>
+										<Tag type="blue">{tag.type}</Tag>
+									</StructuredListCell>
+									<StructuredListCell>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell>
+								</StructuredListRow>
+							{/each}
+						</StructuredListBody>
+					</StructuredList>
 
-					{#each typeComments as commentBlock (JSON.stringify(commentBlock))}
-						{@const typeTag = commentBlock.tags.find((t) => t.tag === 'typedef')}
-						{#if typeTag}
-							<div id={typeTag.name} class="mb-12">
-								<h1>
-									<span>{typeTag.name}</span>
-								</h1>
+					<h3>Returns</h3>
+					<StructuredList>
+						<StructuredListHead>
+							<StructuredListRow head>
+								<StructuredListCell head>Type</StructuredListCell>
+								<StructuredListCell head>Description</StructuredListCell>
+							</StructuredListRow>
+						</StructuredListHead>
+						<StructuredListBody>
+							{#each commentBlock.tags.filter((t) => t.tag === 'returns') as tag (JSON.stringify(tag))}
+								<StructuredListRow>
+									<StructuredListCell>
+										<Tag type="blue">{tag.type}</Tag>
+									</StructuredListCell>
+									<StructuredListCell>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell>
+								</StructuredListRow>
+							{/each}
+						</StructuredListBody>
+					</StructuredList>
+				</div>
+			{/if}
+		{/each}
 
-								<p>
-									{commentBlock.description.replace(/\n/g, '<br>')}
-								</p>
+		{#each typeComments as commentBlock (JSON.stringify(commentBlock))}
+			{@const typeTag = commentBlock.tags.find((t) => t.tag === 'typedef')}
+			{#if typeTag}
+				<div id={typeTag.name} class="mb-12">
+					<h1>
+						<span>{typeTag.name}</span>
+					</h1>
 
-								<h3>Properties</h3>
-								<StructuredList>
-									<StructuredListHead>
-										<StructuredListRow head>
-											<StructuredListCell head>Name</StructuredListCell>
-											<StructuredListCell head>Type</StructuredListCell>
-											<StructuredListCell head>Description</StructuredListCell>
-										</StructuredListRow>
-									</StructuredListHead>
-									<StructuredListBody>
-										{#each commentBlock.tags.filter((t) => t.tag === 'property') as tag (JSON.stringify(tag))}
-											<StructuredListRow>
-												<StructuredListCell>{tag.name}</StructuredListCell>
-												<StructuredListCell>
-													<Tag type="blue">{tag.type}</Tag>
-												</StructuredListCell>
-												<StructuredListCell
-													>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell
-												>
-											</StructuredListRow>
-										{/each}
-									</StructuredListBody>
-								</StructuredList>
-							</div>
-						{/if}
-					{/each}
-				{/if}
-			</Content>
+					<p>
+						{commentBlock.description.replace(/\n/g, '<br>')}
+					</p>
 
+					<h3>Properties</h3>
+					<StructuredList>
+						<StructuredListHead>
+							<StructuredListRow head>
+								<StructuredListCell head>Name</StructuredListCell>
+								<StructuredListCell head>Type</StructuredListCell>
+								<StructuredListCell head>Description</StructuredListCell>
+							</StructuredListRow>
+						</StructuredListHead>
+						<StructuredListBody>
+							{#each commentBlock.tags.filter((t) => t.tag === 'property') as tag (JSON.stringify(tag))}
+								<StructuredListRow>
+									<StructuredListCell>{tag.name}</StructuredListCell>
+									<StructuredListCell>
+										<Tag type="blue">{tag.type}</Tag>
+									</StructuredListCell>
+									<StructuredListCell>{tag.description.replace(/\n/g, '<br>')}</StructuredListCell>
+								</StructuredListRow>
+							{/each}
+						</StructuredListBody>
+					</StructuredList>
+				</div>
+			{/if}
+		{/each}
+	{/if}
+</Content>
