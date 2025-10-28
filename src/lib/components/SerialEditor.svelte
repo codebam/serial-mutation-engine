@@ -413,6 +413,10 @@
 			<div use:codemirror={customFormatOutput} class="custom-editor min-h-[80px] w-full"></div>
 		</div>
 	</FormGroup>
+
+	<FormGroup legendText="Editing Area">
+		<textarea placeholder="..." rows={4} class="w-full monospace-textarea"></textarea>
+	</FormGroup>
 	{#if error}
 		<div
 			class="border-light-red bg-light-red/20 text-light-red dark:border-dark-red dark:bg-dark-red/20 dark:text-dark-red mt-4 rounded-md border p-4"
