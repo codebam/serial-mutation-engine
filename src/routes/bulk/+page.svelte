@@ -91,7 +91,6 @@ customFormats = text.split('\n').filter((s: string) => s.length > 0);
 	<FormGroup legendText="Bulk Serial Processor">
 		<FileUploader
 			buttonLabel="Select serials.txt to Process"
-			buttonKind="primary"
 			accept={['.txt']}
 			on:change={processSerialsFile}
 			disabled={processingSerials}
@@ -101,7 +100,7 @@ customFormats = text.split('\n').filter((s: string) => s.length > 0);
 	<FormGroup legendText="Bulk Deserialized Processor">
 		<FileUploader
 			buttonLabel="Select deserialized.json or .txt to Process"
-			buttonKind="primary"
+
 			accept={['.json', '.txt']}
 			on:change={processCustomFormatsFile}
 			disabled={processingCustomFormats}
