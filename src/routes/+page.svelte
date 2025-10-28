@@ -1,6 +1,8 @@
 <script lang="ts">
 	import SerialEditor from '$lib/components/SerialEditor.svelte';
 	import Toast from '$lib/components/Toast.svelte';
+	import { Button } from 'carbon-components-svelte';
+	import { Copy } from 'carbon-icons-svelte';
 
 	let serialEditors = $state([
 		{
@@ -53,7 +55,13 @@
 </main>
 
 <div class="fixed right-4 bottom-4 flex flex-col gap-2">
-	<button onclick={copyJson} class="text-sm text-light-primary dark:text-dark-primary">JSON</button>
+	<Button on:click={copyJson} icon={Copy} iconDescription="Copy JSON" />
 </div>
 
-<Toast message={toastMessage} show={showToast} />
+<Toast
+	kind="info"
+	title="Copied to clipboard"
+	subtitle={toastMessage}
+	caption={new Date().toLocaleTimeString()}
+	show={showToast}
+/>

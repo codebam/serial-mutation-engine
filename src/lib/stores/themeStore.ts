@@ -11,9 +11,9 @@ theme.subscribe((value) => {
 	if (browser) {
 		localStorage.setItem('theme', value);
 		if (value === 'dark') {
-			document.documentElement.classList.add('dark');
+			document.body.classList.add('cds--g100');
 		} else {
-			document.documentElement.classList.remove('dark');
+			document.body.classList.remove('cds--g100');
 		}
 	}
 });

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import FormGroup from './FormGroup.svelte';
+	import { NumberInput } from 'carbon-components-svelte';
 
 	let {
 		seed = $bindable(),
@@ -48,7 +49,7 @@
 	const protectedSuffix = $derived(seed.substring(end));
 </script>
 
-<FormGroup label="Mutable Character Range">
+<FormGroup legendText="Mutable Character Range">
 	<div
 		class="rounded-md border border-gray-300 bg-gray-50 p-3 font-mono text-xs break-all dark:border-gray-700 dark:bg-gray-900"
 	>
@@ -60,26 +61,22 @@
 		>
 	</div>
 	<div class="mt-4 grid grid-cols-2 gap-4">
-		<FormGroup label="Start Index">
-			<input
-				type="number"
+		<FormGroup legendText="Start Index">
+			<NumberInput
 				name="start"
 				bind:value={start}
-				onchange={handleRangeChange}
-				class={inputClasses}
-				min="0"
+				on:change={handleRangeChange}
+				min={0}
 				max={seed.length}
 				disabled={isMerging}
 			/>
 		</FormGroup>
-		<FormGroup label="End Index">
-			<input
-				type="number"
+		<FormGroup legendText="End Index">
+			<NumberInput
 				name="end"
 				bind:value={end}
-				onchange={handleRangeChange}
-				class={inputClasses}
-				min="0"
+				on:change={handleRangeChange}
+				min={0}
 				max={seed.length}
 				disabled={isMerging}
 			/>

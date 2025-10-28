@@ -1,13 +1,14 @@
 <script lang="ts">
-	let { message, show } = $props<{
-		message: string;
-		show: boolean;
-	}>();
+  import { ToastNotification } from "carbon-components-svelte";
+  let { title, subtitle, caption, kind, show } = $props();
 </script>
 
 {#if show}
-	<div class="fixed right-4 bottom-4 rounded-md bg-gray-800 p-4 text-white">
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{@html message}
-	</div>
+  <ToastNotification
+    {title}
+    {subtitle}
+    {caption}
+    {kind}
+    on:close={() => (show = false)}
+  />
 {/if}

@@ -14,6 +14,13 @@
 	import { tags } from '@lezer/highlight';
 	import { SvelteMap } from 'svelte/reactivity';
 	import { theme } from '$lib/stores/themeStore'; // Import the theme store
+	import {
+		TextArea,
+		Select,
+		SelectItem,
+		Button,
+		Checkbox
+	} from 'carbon-components-svelte';
 
 	const lightHighlightStyle = HighlightStyle.define([
 		{ tag: tags.number, color: 'var(--color-light-foreground)' },
@@ -371,16 +378,17 @@
 </script>
 
 <div class="mx-2 my-2 md:mx-0 md:my-0">
-	<FormGroup label="Serial Input">
-		<textarea
-			class="min-h-[80px] w-full rounded-md border border-light-surface p-3 font-mono text-sm text-light-foreground outline-none focus:border-light-blue focus:ring-2 focus:ring-light-blue dark:border-dark-surface dark:text-dark-foreground dark:focus:border-dark-blue dark:focus:ring-dark-blue"
+	<FormGroup legendText="Serial Input">
+		<TextArea
 			bind:value={serial}
 			placeholder="Paste serial here..."
-		></textarea>
+			rows={4}
+			class="w-full"
+		/>
 	</FormGroup>
 
 	{#if isMounted && detectedParts.length > 0}
-		<FormGroup label="Detected Parts">
+		<FormGroup legendText="Detected Parts">
 			<ul class="list-inside list-disc text-sm text-light-foreground dark:text-dark-foreground">
 				{#each detectedParts as part (part.code)}
 					<li>{part.code} - {part.name}</li>
@@ -389,40 +397,33 @@
 		</FormGroup>
 	{/if}
 
-	<FormGroup label="Detected Item Type">
+	<FormGroup legendText="Detected Item Type">
 		<p>
 			<span class="font-semibold text-light-green dark:text-dark-green">
 				{itemType}
 			</span>
 		</p>
-		<select
-			onchange={(e) => (itemType = e.currentTarget.value)}
-			class="mt-2 rounded-md bg-light-background p-2 text-light-foreground dark:bg-dark-surface dark:text-dark-foreground"
-			value={itemType}
-		>
-			<option value="Unknown">Select Item Type</option>
-			<option value="Weapon">Weapon</option>
-			<option value="Shield">Shield</option>
-			<option value="Grenade">Grenade</option>
-			<option value="Repkit">Repkit</option>
-			<option value="Heavy Ordnance">Heavy Ordnance</option>
-			<option value="Vex Class Mod">Vex Class Mod</option>
-			<option value="Rafa Class Mod">Rafa Class Mod</option>
-			<option value="Harlowe Class Mod">Harlowe Class Mod</option>
-			<option value="Amon Class Mod">Amon Class Mod</option>
-		</select>
+		<Select on:change={(e) => (itemType = e.currentTarget.value)} value={itemType}>
+			<SelectItem value="Unknown" text="Select Item Type" />
+			<SelectItem value="Weapon" text="Weapon" />
+			<SelectItem value="Shield" text="Shield" />
+			<SelectItem value="Grenade" text="Grenade" />
+			<SelectItem value="Repkit" text="Repkit" />
+			<SelectItem value="Heavy Ordnance" text="Heavy Ordnance" />
+			<SelectItem value="Vex Class Mod" text="Vex Class Mod" />
+			<SelectItem value="Rafa Class Mod" text="Rafa Class Mod" />
+			<SelectItem value="Harlowe Class Mod" text="Harlowe Class Mod" />
+			<SelectItem value="Amon Class Mod" text="Amon Class Mod" />
+		</Select>
 	</FormGroup>
-	<FormGroup label="Deserialized Output">
+	<FormGroup legendText="Deserialized Output">
 		<div class="mb-2 flex justify-end">
-			<label class="flex items-center">
-				<input
-					type="checkbox"
-					bind:checked={useStringRepresentation}
-					onchange={handleUseStringRepresentationChange}
-					disabled={!dataLoaded}
-				/>
-				<span class="ml-2 text-sm text-light-primary">Use String Representation</span>
-			</label>
+			<Checkbox
+				labelText="Use String Representation"
+				bind:checked={useStringRepresentation}
+				on:change={handleUseStringRepresentationChange}
+				disabled={!dataLoaded}
+			/>
 		</div>
 		<div
 			use:codemirror={customFormatOutput}
@@ -446,19 +447,8 @@
 				class="hidden"
 				bind:this={fileInput}
 			/>
-			<button
-				onclick={() => fileInput.click()}
-				class="rounded-md bg-light-background px-4 py-2 text-center text-sm font-medium text-light-foreground transition-all hover:bg-light-surface dark:bg-dark-surface dark:text-dark-foreground dark:hover:bg-dark-dark-blue"
-			>
-				Select YAML to Merge
-			</button>
-			<button
-				onclick={mergeAndDownloadYaml}
-				disabled={!baseYaml}
-				class="rounded-md bg-light-background px-4 py-2 text-center text-sm font-medium text-light-foreground transition-all hover:bg-light-surface disabled:text-light-primary dark:bg-dark-surface dark:text-dark-foreground dark:hover:bg-dark-dark-blue"
-			>
-				Merge
-			</button>
+			<Button on:click={() => fileInput.click()}>Select YAML to Merge</Button>
+			<Button on:click={mergeAndDownloadYaml} disabled={!baseYaml}>Merge</Button>
 		</div>
 	{/if}
 </div>

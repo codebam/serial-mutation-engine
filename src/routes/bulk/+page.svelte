@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import FormGroup from '../../lib/components/FormGroup.svelte';
+	import { Button, FileUploader } from 'carbon-components-svelte';
 
 	let worker: Worker;
 	let processingSerials = false;
 	let processingCustomFormats = false;
-	let serialsFileInput: HTMLInputElement;
-	let customFormatsFileInput: HTMLInputElement;
 
 	onMount(() => {
 		worker = new Worker(new URL('$lib/worker/worker.ts', import.meta.url), { type: 'module' });
@@ -42,28 +41,26 @@
 		};
 	});
 
-	async function processSerialsFile(event: Event) {
-		const input = event.target as HTMLInputElement;
-		if (!input.files || input.files.length === 0) {
+	async function processSerialsFile(event: CustomEvent) {
+		const file = event.detail.acceptedFiles[0];
+		if (!file) {
 			return;
 		}
 
 		processingSerials = true;
-		const file = input.files[0];
 		const text = await file.text();
 		const serials = text.split('\n').filter((s) => s.length > 0);
 
 		worker.postMessage({ type: 'parse_serials_to_custom_format', payload: serials });
 	}
 
-	async function processCustomFormatsFile(event: Event) {
-		const input = event.target as HTMLInputElement;
-		if (!input.files || input.files.length === 0) {
+	async function processCustomFormatsFile(event: CustomEvent) {
+		const file = event.detail.acceptedFiles[0];
+		if (!file) {
 			return;
 		}
 
 		processingCustomFormats = true;
-		const file = input.files[0];
 		const text = await file.text();
 		let customFormats: string[] = [];
 
@@ -91,37 +88,23 @@
 </script>
 
 <main class="mx-auto my-8 flex h-full w-full max-w-4xl flex-col items-center gap-4">
-	<FormGroup label="Bulk Serial Processor">
-		<input
-			type="file"
-			onchange={processSerialsFile}
-			accept=".txt"
-			class="hidden"
-			bind:this={serialsFileInput}
-		/>
-		<button
-			onclick={() => serialsFileInput.click()}
-			class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+	<FormGroup legendText="Bulk Serial Processor">
+		<FileUploader
+			buttonLabel="Select serials.txt to Process"
+			buttonKind="primary"
+			accept={['.txt']}
+			on:change={processSerialsFile}
 			disabled={processingSerials}
-		>
-			{#if processingSerials}Processing...{:else}Select serials.txt to Process{/if}
-		</button>
+		/>
 	</FormGroup>
 
-	<FormGroup label="Bulk Deserialized Processor">
-		<input
-			type="file"
-			onchange={processCustomFormatsFile}
-			accept=".json,.txt"
-			class="hidden"
-			bind:this={customFormatsFileInput}
-		/>
-		<button
-			onclick={() => customFormatsFileInput.click()}
-			class="rounded-md bg-gray-200 px-4 py-2 text-center text-sm font-medium text-gray-900 transition-all hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+	<FormGroup legendText="Bulk Deserialized Processor">
+		<FileUploader
+			buttonLabel="Select deserialized.json or .txt to Process"
+			buttonKind="primary"
+			accept={['.json', '.txt']}
+			on:change={processCustomFormatsFile}
 			disabled={processingCustomFormats}
-		>
-			{#if processingCustomFormats}Processing...{:else}Select deserialized.json or .txt to Process{/if}
-		</button>
+		/>
 	</FormGroup>
 </main>
