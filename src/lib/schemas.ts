@@ -127,6 +127,11 @@ export const mergeSerialsSchema = z.object({
 	args: z.tuple([z.string(), z.array(z.string())])
 });
 
+export const serialToCustomFormatSchema = z.object({
+	functionName: z.literal('serialToCustomFormat'),
+	args: z.tuple([z.string()])
+});
+
 export const operationSchema = z.union([
 	parseSerialSchema,
 	parseBytesSchema,
@@ -134,6 +139,7 @@ export const operationSchema = z.union([
 	writeVarintSchema,
 	writeVarbitSchema,
 	toCustomFormatSchema,
+	serialToCustomFormatSchema,
 	customFormatToSerialSchema,
 	getInitialStateSchema,
 	appendRandomAssetSchema,
