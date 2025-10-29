@@ -87,6 +87,8 @@ export class PartService {
 					!p.fileName.includes('_repkits') &&
 					!p.fileName.includes('_grenades')
 			);
+		if (itemType === 'Amon Class Mod')
+			return this.allParts.filter((p) => p.fileName === 'amon_class_mods');
 		if (itemType === 'Vex Class Mod')
 			return this.allParts.filter((p) => p.fileName === 'vex_class_mods');
 		if (itemType === 'Rafa Class Mod')

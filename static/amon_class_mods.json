@@ -1,0 +1,3232 @@
+{
+  "amon_class_mods": [
+    {
+      "id": 1,
+      "perkType": "Brawler",
+      "description": "Name+Skin",
+      "universalPart": "{255:1}"
+    },
+    {
+      "id": 2,
+      "perkType": "Grenadier",
+      "description": "Name+Skin",
+      "universalPart": "{255:2}"
+    },
+    {
+      "id": 3,
+      "perkType": "Icebringer",
+      "description": "Name+Skin",
+      "universalPart": "{255:3}"
+    },
+    {
+      "id": 4,
+      "perkType": "Torchbearer",
+      "description": "Name+Skin",
+      "universalPart": "{255:4}"
+    },
+    {
+      "id": 5,
+      "perkType": "Stormcaller",
+      "description": "Name+Skin",
+      "universalPart": "{255:5}"
+    },
+    {
+      "id": 6,
+      "perkType": "Soldier",
+      "description": "Name+Skin",
+      "universalPart": "{255:6}"
+    },
+    {
+      "id": 7,
+      "perkType": "Commando",
+      "description": "Name+Skin",
+      "universalPart": "{255:7}"
+    },
+    {
+      "id": 8,
+      "perkType": "Cyborg",
+      "description": "Name+Skin",
+      "universalPart": "{255:8}"
+    },
+    {
+      "id": 9,
+      "perkType": "Outlaw",
+      "description": "Name+Skin",
+      "universalPart": "{255:9}"
+    },
+    {
+      "id": 10,
+      "perkType": "Furnace",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{255:10}"
+    },
+    {
+      "id": 11,
+      "perkType": "Elementalist",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{255:11}"
+    },
+    {
+      "id": 12,
+      "perkType": "Blacksmith",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{255:12}"
+    },
+    {
+      "id": 13,
+      "perkType": "Shatterwight",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{255:13}"
+    },
+    {
+      "id": 14,
+      "perkType": "Viking",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{255:14}"
+    },
+    {
+      "id": 15,
+      "perkType": "Forge Master",
+      "description": "Name+Skin+Leg Effect",
+      "universalPart": "{255:15}"
+    },
+    {
+      "id": 16,
+      "perkType": "Gut Punch",
+      "description": "Skill",
+      "universalPart": "{255:16}"
+    },
+    {
+      "id": 17,
+      "perkType": "Gut Punch",
+      "description": "Skill",
+      "universalPart": "{255:17}"
+    },
+    {
+      "id": 18,
+      "perkType": "Gut Punch",
+      "description": "Skill",
+      "universalPart": "{255:18}"
+    },
+    {
+      "id": 19,
+      "perkType": "Gut Punch",
+      "description": "Skill",
+      "universalPart": "{255:19}"
+    },
+    {
+      "id": 20,
+      "perkType": "Legendary Rarity",
+      "description": "item card",
+      "universalPart": "{255:20}"
+    },
+    {
+      "id": 21,
+      "perkType": "Legendary Rarity",
+      "description": "item card",
+      "universalPart": "{255:21}"
+    },
+    {
+      "id": 22,
+      "perkType": "Legendary Rarity",
+      "description": "item card",
+      "universalPart": "{255:22}"
+    },
+    {
+      "id": 23,
+      "perkType": "Legendary Rarity",
+      "description": "item card",
+      "universalPart": "{255:23}"
+    },
+    {
+      "id": 24,
+      "perkType": "Legendary Rarity",
+      "description": "item card",
+      "universalPart": "{255:24}"
+    },
+    {
+      "id": 25,
+      "perkType": "Legendary Rarity",
+      "description": "item card",
+      "universalPart": "{255:25}"
+    },
+    {
+      "id": 26,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:26}"
+    },
+    {
+      "id": 27,
+      "perkType": "Machinist",
+      "description": "Skill",
+      "universalPart": "{255:27}"
+    },
+    {
+      "id": 28,
+      "perkType": "Gut Punch",
+      "description": "Skill",
+      "universalPart": "{255:28}"
+    },
+    {
+      "id": 29,
+      "perkType": "Warrior's Cup",
+      "description": "Skill",
+      "universalPart": "{255:29}"
+    },
+    {
+      "id": 30,
+      "perkType": "Ancient Ways",
+      "description": "Skill",
+      "universalPart": "{255:30}"
+    },
+    {
+      "id": 31,
+      "perkType": "Bullet Hail",
+      "description": "Skill",
+      "universalPart": "{255:31}"
+    },
+    {
+      "id": 32,
+      "perkType": "Scar Tissue",
+      "description": "Skill",
+      "universalPart": "{255:32}"
+    },
+    {
+      "id": 33,
+      "perkType": "Tail of the Comet",
+      "description": "Skill",
+      "universalPart": "{255:33}"
+    },
+    {
+      "id": 34,
+      "perkType": "Eternal",
+      "description": "Skill",
+      "universalPart": "{255:34}"
+    },
+    {
+      "id": 35,
+      "perkType": "Battleborn",
+      "description": "Skill",
+      "universalPart": "{255:35}"
+    },
+    {
+      "id": 36,
+      "perkType": "The Thrill",
+      "description": "Skill",
+      "universalPart": "{255:36}"
+    },
+    {
+      "id": 37,
+      "perkType": "Scorched Kairos",
+      "description": "Skill",
+      "universalPart": "{255:37}"
+    },
+    {
+      "id": 38,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:38}"
+    },
+    {
+      "id": 39,
+      "perkType": "Wrath of Nature",
+      "description": "Skill",
+      "universalPart": "{255:39}"
+    },
+    {
+      "id": 40,
+      "perkType": "The Best Defense",
+      "description": "Skill",
+      "universalPart": "{255:40}"
+    },
+    {
+      "id": 41,
+      "perkType": "Metal Urge",
+      "description": "Skill",
+      "universalPart": "{255:41}"
+    },
+    {
+      "id": 42,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:42}"
+    },
+    {
+      "id": 43,
+      "perkType": "Bullet Storm",
+      "description": "Skill",
+      "universalPart": "{255:43}"
+    },
+    {
+      "id": 44,
+      "perkType": "Forged In Steel",
+      "description": "Skill",
+      "universalPart": "{255:44}"
+    },
+    {
+      "id": 45,
+      "perkType": "Tritanium Knuckles",
+      "description": "Skill",
+      "universalPart": "{255:45}"
+    },
+    {
+      "id": 46,
+      "perkType": "Wield the Storm",
+      "description": "Skill",
+      "universalPart": "{255:46}"
+    },
+    {
+      "id": 47,
+      "perkType": "Heavy Plate",
+      "description": "Skill",
+      "universalPart": "{255:47}"
+    },
+    {
+      "id": 48,
+      "perkType": "Discombobulate",
+      "description": "Skill",
+      "universalPart": "{255:48}"
+    },
+    {
+      "id": 49,
+      "perkType": "What Burns Within",
+      "description": "Skill",
+      "universalPart": "{255:49}"
+    },
+    {
+      "id": 50,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:50}"
+    },
+    {
+      "id": 51,
+      "perkType": "Impetus",
+      "description": "Skill",
+      "universalPart": "{255:51}"
+    },
+    {
+      "id": 52,
+      "perkType": "Bellows",
+      "description": "Skill",
+      "universalPart": "{255:52}"
+    },
+    {
+      "id": 53,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:53}"
+    },
+    {
+      "id": 54,
+      "perkType": "Twin Tempers",
+      "description": "Skill",
+      "universalPart": "{255:54}"
+    },
+    {
+      "id": 55,
+      "perkType": "Vital Organs",
+      "description": "Skill",
+      "universalPart": "{255:55}"
+    },
+    {
+      "id": 56,
+      "perkType": "Herald's Call",
+      "description": "Skill",
+      "universalPart": "{255:56}"
+    },
+    {
+      "id": 57,
+      "perkType": "Bolt Action",
+      "description": "Skill",
+      "universalPart": "{255:57}"
+    },
+    {
+      "id": 58,
+      "perkType": "Tempered Pyre",
+      "description": "Skill",
+      "universalPart": "{255:58}"
+    },
+    {
+      "id": 59,
+      "perkType": "Destruction Engine",
+      "description": "Skill",
+      "universalPart": "{255:59}"
+    },
+    {
+      "id": 60,
+      "perkType": "Get the Lead Out",
+      "description": "Skill",
+      "universalPart": "{255:60}"
+    },
+    {
+      "id": 61,
+      "perkType": "Executioner",
+      "description": "Skill",
+      "universalPart": "{255:61}"
+    },
+    {
+      "id": 62,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:62}"
+    },
+    {
+      "id": 63,
+      "perkType": "Gathering Storm",
+      "description": "Skill",
+      "universalPart": "{255:63}"
+    },
+    {
+      "id": 64,
+      "perkType": "Cast Iron",
+      "description": "Skill",
+      "universalPart": "{255:64}"
+    },
+    {
+      "id": 65,
+      "perkType": "Guardian",
+      "description": "Name+Skin",
+      "universalPart": "{255:65}"
+    },
+    {
+      "id": 66,
+      "perkType": "Unknown Item",
+      "description": "Bad lookup",
+      "universalPart": "{255:66}"
+    },
+    {
+      "id": 67,
+      "perkType": "Epic Rarity",
+      "description": "Rarity",
+      "universalPart": "{255:67}"
+    },
+    {
+      "id": 68,
+      "perkType": "Rare Rarity",
+      "description": "Rarity",
+      "universalPart": "{255:68}"
+    },
+    {
+      "id": 69,
+      "perkType": "Uncommon Rarity",
+      "description": "Rarity",
+      "universalPart": "{255:69}"
+    },
+    {
+      "id": 70,
+      "perkType": "Common Rarity",
+      "description": "Rarity",
+      "universalPart": "{255:70}"
+    },
+    {
+      "id": 71,
+      "perkType": "Bellows",
+      "description": "Skill",
+      "universalPart": "{255:71}"
+    },
+    {
+      "id": 72,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:72}"
+    },
+    {
+      "id": 73,
+      "perkType": "Twin Tempers",
+      "description": "Skill",
+      "universalPart": "{255:73}"
+    },
+    {
+      "id": 74,
+      "perkType": "Vital Organs",
+      "description": "Skill",
+      "universalPart": "{255:74}"
+    },
+    {
+      "id": 75,
+      "perkType": "Herald's Call",
+      "description": "Skill",
+      "universalPart": "{255:75}"
+    },
+    {
+      "id": 76,
+      "perkType": "Bolt Action",
+      "description": "Skill",
+      "universalPart": "{255:76}"
+    },
+    {
+      "id": 77,
+      "perkType": "Tempered Pyre",
+      "description": "Skill",
+      "universalPart": "{255:77}"
+    },
+    {
+      "id": 78,
+      "perkType": "Destruction Engine",
+      "description": "Skill",
+      "universalPart": "{255:78}"
+    },
+    {
+      "id": 79,
+      "perkType": "Get the Lead Out",
+      "description": "Skill",
+      "universalPart": "{255:79}"
+    },
+    {
+      "id": 80,
+      "perkType": "Executioner",
+      "description": "Skill",
+      "universalPart": "{255:80}"
+    },
+    {
+      "id": 81,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:81}"
+    },
+    {
+      "id": 82,
+      "perkType": "Gathering Storm",
+      "description": "Skill",
+      "universalPart": "{255:82}"
+    },
+    {
+      "id": 83,
+      "perkType": "Cast Iron",
+      "description": "Skill",
+      "universalPart": "{255:83}"
+    },
+    {
+      "id": 84,
+      "perkType": "The Best Defence",
+      "description": "Skill",
+      "universalPart": "{255:84}"
+    },
+    {
+      "id": 85,
+      "perkType": "Metal Urge",
+      "description": "Skill",
+      "universalPart": "{255:85}"
+    },
+    {
+      "id": 86,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:86}"
+    },
+    {
+      "id": 87,
+      "perkType": "Bullet Storm",
+      "description": "Skill",
+      "universalPart": "{255:87}"
+    },
+    {
+      "id": 88,
+      "perkType": "Forged In Steel",
+      "description": "Skill",
+      "universalPart": "{255:88}"
+    },
+    {
+      "id": 89,
+      "perkType": "Tritanium Knuckles",
+      "description": "Skill",
+      "universalPart": "{255:89}"
+    },
+    {
+      "id": 90,
+      "perkType": "Gut Punch",
+      "description": "Skill",
+      "universalPart": "{255:90}"
+    },
+    {
+      "id": 91,
+      "perkType": "Wield the Storm",
+      "description": "Skill",
+      "universalPart": "{255:91}"
+    },
+    {
+      "id": 92,
+      "perkType": "Heavy Plate",
+      "description": "Skill",
+      "universalPart": "{255:92}"
+    },
+    {
+      "id": 93,
+      "perkType": "Discombobulate",
+      "description": "Skill",
+      "universalPart": "{255:93}"
+    },
+    {
+      "id": 94,
+      "perkType": "What Burns Within",
+      "description": "Skill",
+      "universalPart": "{255:94}"
+    },
+    {
+      "id": 95,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:95}"
+    },
+    {
+      "id": 96,
+      "perkType": "Impetus",
+      "description": "Skill",
+      "universalPart": "{255:96}"
+    },
+    {
+      "id": 97,
+      "perkType": "Warrior's Cup",
+      "description": "Skill",
+      "universalPart": "{255:97}"
+    },
+    {
+      "id": 98,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:98}"
+    },
+    {
+      "id": 99,
+      "perkType": "Ancient Ways",
+      "description": "Skill",
+      "universalPart": "{255:99}"
+    },
+    {
+      "id": 100,
+      "perkType": "Machinist",
+      "description": "Skill",
+      "universalPart": "{255:100}"
+    },
+    {
+      "id": 101,
+      "perkType": "Bullet Hail",
+      "description": "Skill",
+      "universalPart": "{255:101}"
+    },
+    {
+      "id": 102,
+      "perkType": "Scar Tissue",
+      "description": "Skill",
+      "universalPart": "{255:102}"
+    },
+    {
+      "id": 103,
+      "perkType": "Tail of the Comet",
+      "description": "Skill",
+      "universalPart": "{255:103}"
+    },
+    {
+      "id": 104,
+      "perkType": "Eternal",
+      "description": "Skill",
+      "universalPart": "{255:104}"
+    },
+    {
+      "id": 105,
+      "perkType": "Battleborn",
+      "description": "Skill",
+      "universalPart": "{255:105}"
+    },
+    {
+      "id": 106,
+      "perkType": "The Thrill",
+      "description": "Skill",
+      "universalPart": "{255:106}"
+    },
+    {
+      "id": 107,
+      "perkType": "Scorched Kairos",
+      "description": "Skill",
+      "universalPart": "{255:107}"
+    },
+    {
+      "id": 108,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:108}"
+    },
+    {
+      "id": 109,
+      "perkType": "Wrath of Nature",
+      "description": "Skill",
+      "universalPart": "{255:109}"
+    },
+    {
+      "id": 110,
+      "perkType": "Bellows",
+      "description": "Skill",
+      "universalPart": "{255:110}"
+    },
+    {
+      "id": 111,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:111}"
+    },
+    {
+      "id": 112,
+      "perkType": "Twin Tempers",
+      "description": "Skill",
+      "universalPart": "{255:112}"
+    },
+    {
+      "id": 113,
+      "perkType": "Vital Organs",
+      "description": "Skill",
+      "universalPart": "{255:113}"
+    },
+    {
+      "id": 114,
+      "perkType": "Herald's Call",
+      "description": "Skill",
+      "universalPart": "{255:114}"
+    },
+    {
+      "id": 115,
+      "perkType": "Bolt Action",
+      "description": "Skill",
+      "universalPart": "{255:115}"
+    },
+    {
+      "id": 116,
+      "perkType": "Tempered Pyre",
+      "description": "Skill",
+      "universalPart": "{255:116}"
+    },
+    {
+      "id": 117,
+      "perkType": "Destruction Engine",
+      "description": "Skill",
+      "universalPart": "{255:117}"
+    },
+    {
+      "id": 118,
+      "perkType": "Get the Lead Out",
+      "description": "Skill",
+      "universalPart": "{255:118}"
+    },
+    {
+      "id": 119,
+      "perkType": "Executioner",
+      "description": "Skill",
+      "universalPart": "{255:119}"
+    },
+    {
+      "id": 120,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:120}"
+    },
+    {
+      "id": 121,
+      "perkType": "Gathering Storm",
+      "description": "Skill",
+      "universalPart": "{255:121}"
+    },
+    {
+      "id": 122,
+      "perkType": "Cast Iron",
+      "description": "Skill",
+      "universalPart": "{255:122}"
+    },
+    {
+      "id": 123,
+      "perkType": "The Best Defense",
+      "description": "Skill",
+      "universalPart": "{255:123}"
+    },
+    {
+      "id": 124,
+      "perkType": "Metal Urge",
+      "description": "Skill",
+      "universalPart": "{255:124}"
+    },
+    {
+      "id": 125,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:125}"
+    },
+    {
+      "id": 126,
+      "perkType": "Bullet Storm",
+      "description": "Skill",
+      "universalPart": "{255:126}"
+    },
+    {
+      "id": 127,
+      "perkType": "Forged In Steel",
+      "description": "Skill",
+      "universalPart": "{255:127}"
+    },
+    {
+      "id": 128,
+      "perkType": "Tritanium Knuckles",
+      "description": "Skill",
+      "universalPart": "{255:128}"
+    },
+    {
+      "id": 129,
+      "perkType": "Wield the Storm",
+      "description": "Skill",
+      "universalPart": "{255:129}"
+    },
+    {
+      "id": 130,
+      "perkType": "Heavy Plate",
+      "description": "Skill",
+      "universalPart": "{255:130}"
+    },
+    {
+      "id": 131,
+      "perkType": "Discombobulate",
+      "description": "Skill",
+      "universalPart": "{255:131}"
+    },
+    {
+      "id": 132,
+      "perkType": "What Burns Within",
+      "description": "Skill",
+      "universalPart": "{255:132}"
+    },
+    {
+      "id": 133,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:133}"
+    },
+    {
+      "id": 134,
+      "perkType": "Impetus",
+      "description": "Skill",
+      "universalPart": "{255:134}"
+    },
+    {
+      "id": 135,
+      "perkType": "Warrior's Cup",
+      "description": "Skill",
+      "universalPart": "{255:135}"
+    },
+    {
+      "id": 136,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:136}"
+    },
+    {
+      "id": 137,
+      "perkType": "Ancient Ways",
+      "description": "Skill",
+      "universalPart": "{255:137}"
+    },
+    {
+      "id": 138,
+      "perkType": "Machinist",
+      "description": "Skill",
+      "universalPart": "{255:138}"
+    },
+    {
+      "id": 139,
+      "perkType": "Bullet Hail",
+      "description": "Skill",
+      "universalPart": "{255:139}"
+    },
+    {
+      "id": 140,
+      "perkType": "Scar Tissue",
+      "description": "Skill",
+      "universalPart": "{255:140}"
+    },
+    {
+      "id": 141,
+      "perkType": "Tail of the Comet",
+      "description": "Skill",
+      "universalPart": "{255:141}"
+    },
+    {
+      "id": 142,
+      "perkType": "Eternal",
+      "description": "Skill",
+      "universalPart": "{255:142}"
+    },
+    {
+      "id": 143,
+      "perkType": "Battleborn",
+      "description": "Skill",
+      "universalPart": "{255:143}"
+    },
+    {
+      "id": 144,
+      "perkType": "The Thrill",
+      "description": "Skill",
+      "universalPart": "{255:144}"
+    },
+    {
+      "id": 145,
+      "perkType": "Scorched Kairos",
+      "description": "Skill",
+      "universalPart": "{255:145}"
+    },
+    {
+      "id": 146,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:146}"
+    },
+    {
+      "id": 147,
+      "perkType": "Wrath of Nature",
+      "description": "Skill",
+      "universalPart": "{255:147}"
+    },
+    {
+      "id": 148,
+      "perkType": "Bellows",
+      "description": "Skill",
+      "universalPart": "{255:148}"
+    },
+    {
+      "id": 149,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:149}"
+    },
+    {
+      "id": 150,
+      "perkType": "Twin Tempers",
+      "description": "Skill",
+      "universalPart": "{255:150}"
+    },
+    {
+      "id": 151,
+      "perkType": "Vital Organs",
+      "description": "Skill",
+      "universalPart": "{255:151}"
+    },
+    {
+      "id": 152,
+      "perkType": "Herald's Call",
+      "description": "Skill",
+      "universalPart": "{255:152}"
+    },
+    {
+      "id": 153,
+      "perkType": "Bolt Action",
+      "description": "Skill",
+      "universalPart": "{255:153}"
+    },
+    {
+      "id": 154,
+      "perkType": "Tempered Pyre",
+      "description": "Skill",
+      "universalPart": "{255:154}"
+    },
+    {
+      "id": 155,
+      "perkType": "Destruction Engine",
+      "description": "Skill",
+      "universalPart": "{255:155}"
+    },
+    {
+      "id": 156,
+      "perkType": "Get the Lead Out",
+      "description": "Skill",
+      "universalPart": "{255:156}"
+    },
+    {
+      "id": 157,
+      "perkType": "Executioner",
+      "description": "Skill",
+      "universalPart": "{255:157}"
+    },
+    {
+      "id": 158,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:158}"
+    },
+    {
+      "id": 159,
+      "perkType": "Gathering Storm",
+      "description": "Skill",
+      "universalPart": "{255:159}"
+    },
+    {
+      "id": 160,
+      "perkType": "Cast Iron",
+      "description": "Skill",
+      "universalPart": "{255:160}"
+    },
+    {
+      "id": 161,
+      "perkType": "The Best Defense",
+      "description": "Skill",
+      "universalPart": "{255:161}"
+    },
+    {
+      "id": 162,
+      "perkType": "Metal Urge",
+      "description": "Skill",
+      "universalPart": "{255:162}"
+    },
+    {
+      "id": 163,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:163}"
+    },
+    {
+      "id": 164,
+      "perkType": "Bullet Storm",
+      "description": "Skill",
+      "universalPart": "{255:164}"
+    },
+    {
+      "id": 165,
+      "perkType": "Forged In Steel",
+      "description": "Skill",
+      "universalPart": "{255:165}"
+    },
+    {
+      "id": 166,
+      "perkType": "Tritanium Knuckles",
+      "description": "Skill",
+      "universalPart": "{255:166}"
+    },
+    {
+      "id": 167,
+      "perkType": "Wield the Storm",
+      "description": "Skill",
+      "universalPart": "{255:167}"
+    },
+    {
+      "id": 168,
+      "perkType": "Heavy Plate",
+      "description": "Skill",
+      "universalPart": "{255:168}"
+    },
+    {
+      "id": 169,
+      "perkType": "Discombobulate",
+      "description": "Skill",
+      "universalPart": "{255:169}"
+    },
+    {
+      "id": 170,
+      "perkType": "What Burns Within",
+      "description": "Skill",
+      "universalPart": "{255:170}"
+    },
+    {
+      "id": 171,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:171}"
+    },
+    {
+      "id": 172,
+      "perkType": "Impetus",
+      "description": "Skill",
+      "universalPart": "{255:172}"
+    },
+    {
+      "id": 173,
+      "perkType": "Warrior's Cup",
+      "description": "Skill",
+      "universalPart": "{255:173}"
+    },
+    {
+      "id": 174,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:174}"
+    },
+    {
+      "id": 175,
+      "perkType": "Ancient Ways",
+      "description": "Skill",
+      "universalPart": "{255:175}"
+    },
+    {
+      "id": 176,
+      "perkType": "Machinist",
+      "description": "Skill",
+      "universalPart": "{255:176}"
+    },
+    {
+      "id": 177,
+      "perkType": "Bullet Hail",
+      "description": "Skill",
+      "universalPart": "{255:177}"
+    },
+    {
+      "id": 178,
+      "perkType": "Scar Tissue",
+      "description": "Skill",
+      "universalPart": "{255:178}"
+    },
+    {
+      "id": 179,
+      "perkType": "Tail of the Comet",
+      "description": "Skill",
+      "universalPart": "{255:179}"
+    },
+    {
+      "id": 180,
+      "perkType": "Eternal",
+      "description": "Skill",
+      "universalPart": "{255:180}"
+    },
+    {
+      "id": 181,
+      "perkType": "Battleborn",
+      "description": "Skill",
+      "universalPart": "{255:181}"
+    },
+    {
+      "id": 182,
+      "perkType": "The Thrill",
+      "description": "Skill",
+      "universalPart": "{255:182}"
+    },
+    {
+      "id": 183,
+      "perkType": "Scorched Kairos",
+      "description": "Skill",
+      "universalPart": "{255:183}"
+    },
+    {
+      "id": 184,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:184}"
+    },
+    {
+      "id": 185,
+      "perkType": "Wrath of Nature",
+      "description": "Skill",
+      "universalPart": "{255:185}"
+    },
+    {
+      "id": 186,
+      "perkType": "Bellows",
+      "description": "Skill",
+      "universalPart": "{255:186}"
+    },
+    {
+      "id": 187,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:187}"
+    },
+    {
+      "id": 188,
+      "perkType": "Twin Tempers",
+      "description": "Skill",
+      "universalPart": "{255:188}"
+    },
+    {
+      "id": 189,
+      "perkType": "Vital Organs",
+      "description": "Skill",
+      "universalPart": "{255:189}"
+    },
+    {
+      "id": 190,
+      "perkType": "Herald's Call",
+      "description": "Skill",
+      "universalPart": "{255:190}"
+    },
+    {
+      "id": 191,
+      "perkType": "Bolt Action",
+      "description": "Skill",
+      "universalPart": "{255:191}"
+    },
+    {
+      "id": 192,
+      "perkType": "Tempered Pyre",
+      "description": "Skill",
+      "universalPart": "{255:192}"
+    },
+    {
+      "id": 193,
+      "perkType": "Destruction Engine",
+      "description": "Skill",
+      "universalPart": "{255:193}"
+    },
+    {
+      "id": 194,
+      "perkType": "Get the Lead Out",
+      "description": "Skill",
+      "universalPart": "{255:194}"
+    },
+    {
+      "id": 195,
+      "perkType": "Executioner",
+      "description": "Skill",
+      "universalPart": "{255:195}"
+    },
+    {
+      "id": 196,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:196}"
+    },
+    {
+      "id": 197,
+      "perkType": "Gathering Storm",
+      "description": "Skill",
+      "universalPart": "{255:197}"
+    },
+    {
+      "id": 198,
+      "perkType": "Cast Iron",
+      "description": "Skill",
+      "universalPart": "{255:198}"
+    },
+    {
+      "id": 199,
+      "perkType": "The Best Defense",
+      "description": "Skill",
+      "universalPart": "{255:199}"
+    },
+    {
+      "id": 200,
+      "perkType": "Metal Urge",
+      "description": "Skill",
+      "universalPart": "{255:200}"
+    },
+    {
+      "id": 201,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:201}"
+    },
+    {
+      "id": 202,
+      "perkType": "Bullet Storm",
+      "description": "Skill",
+      "universalPart": "{255:202}"
+    },
+    {
+      "id": 203,
+      "perkType": "Forged In Steel",
+      "description": "Skill",
+      "universalPart": "{255:203}"
+    },
+    {
+      "id": 204,
+      "perkType": "Tritanium Knuckles",
+      "description": "Skill",
+      "universalPart": "{255:204}"
+    },
+    {
+      "id": 205,
+      "perkType": "Wield the Storm",
+      "description": "Skill",
+      "universalPart": "{255:205}"
+    },
+    {
+      "id": 206,
+      "perkType": "Heavy Plate",
+      "description": "Skill",
+      "universalPart": "{255:206}"
+    },
+    {
+      "id": 207,
+      "perkType": "Discombobulate",
+      "description": "Skill",
+      "universalPart": "{255:207}"
+    },
+    {
+      "id": 208,
+      "perkType": "What Burns Within",
+      "description": "Skill",
+      "universalPart": "{255:208}"
+    },
+    {
+      "id": 209,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:209}"
+    },
+    {
+      "id": 210,
+      "perkType": "Impetus",
+      "description": "Skill",
+      "universalPart": "{255:210}"
+    },
+    {
+      "id": 211,
+      "perkType": "Warrior's Cup",
+      "description": "Skill",
+      "universalPart": "{255:211}"
+    },
+    {
+      "id": 212,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:212}"
+    },
+    {
+      "id": 213,
+      "perkType": "Ancient Ways",
+      "description": "Skill",
+      "universalPart": "{255:213}"
+    },
+    {
+      "id": 214,
+      "perkType": "Machinist",
+      "description": "Skill",
+      "universalPart": "{255:214}"
+    },
+    {
+      "id": 215,
+      "perkType": "Bullet Hail",
+      "description": "Skill",
+      "universalPart": "{255:215}"
+    },
+    {
+      "id": 216,
+      "perkType": "Scar Tissue",
+      "description": "Skill",
+      "universalPart": "{255:216}"
+    },
+    {
+      "id": 217,
+      "perkType": "Tail of the Comet",
+      "description": "Skill",
+      "universalPart": "{255:217}"
+    },
+    {
+      "id": 218,
+      "perkType": "Eternal",
+      "description": "Skill",
+      "universalPart": "{255:218}"
+    },
+    {
+      "id": 219,
+      "perkType": "Battleborn",
+      "description": "Skill",
+      "universalPart": "{255:219}"
+    },
+    {
+      "id": 220,
+      "perkType": "The Thrill",
+      "description": "Skill",
+      "universalPart": "{255:220}"
+    },
+    {
+      "id": 221,
+      "perkType": "Scorched Kairos",
+      "description": "Skill",
+      "universalPart": "{255:221}"
+    },
+    {
+      "id": 222,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:222}"
+    },
+    {
+      "id": 223,
+      "perkType": "Wrath of Nature",
+      "description": "Skill",
+      "universalPart": "{255:223}"
+    },
+    {
+      "id": 224,
+      "perkType": "Tempered Ice",
+      "description": "Skill",
+      "universalPart": "{255:224}"
+    },
+    {
+      "id": 225,
+      "perkType": "Cacophony",
+      "description": "Skill",
+      "universalPart": "{255:225}"
+    },
+    {
+      "id": 226,
+      "perkType": "Masterwork",
+      "description": "Skill",
+      "universalPart": "{255:226}"
+    },
+    {
+      "id": 227,
+      "perkType": "Endless Bombardment",
+      "description": "Skill",
+      "universalPart": "{255:227}"
+    },
+    {
+      "id": 228,
+      "perkType": "Stoked",
+      "description": "Skill",
+      "universalPart": "{255:228}"
+    },
+    {
+      "id": 229,
+      "perkType": "Ordained Hammer",
+      "description": "Skill",
+      "universalPart": "{255:229}"
+    },
+    {
+      "id": 230,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:230}"
+    },
+    {
+      "id": 231,
+      "perkType": "Blast Furnace",
+      "description": "Skill",
+      "universalPart": "{255:231}"
+    },
+    {
+      "id": 232,
+      "perkType": "Tempered Lightning",
+      "description": "Skill",
+      "universalPart": "{255:232}"
+    },
+    {
+      "id": 233,
+      "perkType": "Armor of Contempt",
+      "description": "Skill",
+      "universalPart": "{255:233}"
+    },
+    {
+      "id": 234,
+      "perkType": "Lightning Rod",
+      "description": "Skill",
+      "universalPart": "{255:234}"
+    },
+    {
+      "id": 235,
+      "perkType": "Escalation",
+      "description": "Skill",
+      "universalPart": "{255:235}"
+    },
+    {
+      "id": 236,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:236}"
+    },
+    {
+      "id": 237,
+      "perkType": "Honed Point",
+      "description": "Skill",
+      "universalPart": "{255:237}"
+    },
+    {
+      "id": 238,
+      "perkType": "Permafrost",
+      "description": "Skill",
+      "universalPart": "{255:238}"
+    },
+    {
+      "id": 239,
+      "perkType": "Raging Inferno",
+      "description": "Skill",
+      "universalPart": "{255:239}"
+    },
+    {
+      "id": 240,
+      "perkType": "Wildheart",
+      "description": "Skill",
+      "universalPart": "{255:240}"
+    },
+    {
+      "id": 241,
+      "perkType": "Freezer Burn",
+      "description": "Skill",
+      "universalPart": "{255:241}"
+    },
+    {
+      "id": 242,
+      "perkType": "Reactive Armor",
+      "description": "Skill",
+      "universalPart": "{255:242}"
+    },
+    {
+      "id": 243,
+      "perkType": "Reverse Explosion",
+      "description": "Skill",
+      "universalPart": "{255:243}"
+    },
+    {
+      "id": 244,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:244}"
+    },
+    {
+      "id": 245,
+      "perkType": "Wildfire",
+      "description": "Skill",
+      "universalPart": "{255:245}"
+    },
+    {
+      "id": 246,
+      "perkType": "Burning Rage",
+      "description": "Skill",
+      "universalPart": "{255:246}"
+    },
+    {
+      "id": 247,
+      "perkType": "Ballistic Bulwark",
+      "description": "Skill",
+      "universalPart": "{255:247}"
+    },
+    {
+      "id": 248,
+      "perkType": "Disco Infernus",
+      "description": "Skill",
+      "universalPart": "{255:248}"
+    },
+    {
+      "id": 249,
+      "perkType": "Worldbreaker",
+      "description": "Skill",
+      "universalPart": "{255:249}"
+    },
+    {
+      "id": 250,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:250}"
+    },
+    {
+      "id": 251,
+      "perkType": "Cooling Mantle",
+      "description": "Skill",
+      "universalPart": "{255:251}"
+    },
+    {
+      "id": 252,
+      "perkType": "Icy Rage",
+      "description": "Skill",
+      "universalPart": "{255:252}"
+    },
+    {
+      "id": 253,
+      "perkType": "Northern Wind",
+      "description": "Skill",
+      "universalPart": "{255:253}"
+    },
+    {
+      "id": 254,
+      "perkType": "Winter's Kiss",
+      "description": "Skill",
+      "universalPart": "{255:254}"
+    },
+    {
+      "id": 255,
+      "perkType": "Primal Surge",
+      "description": "Skill",
+      "universalPart": "{255:255}"
+    },
+    {
+      "id": 256,
+      "perkType": "Age of Ice",
+      "description": "Skill",
+      "universalPart": "{255:256}"
+    },
+    {
+      "id": 257,
+      "perkType": "Caroming Shard",
+      "description": "Skill",
+      "universalPart": "{255:257}"
+    },
+    {
+      "id": 258,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:258}"
+    },
+    {
+      "id": 259,
+      "perkType": "Blackout",
+      "description": "Skill",
+      "universalPart": "{255:259}"
+    },
+    {
+      "id": 260,
+      "perkType": "Thunderous Rage",
+      "description": "Skill",
+      "universalPart": "{255:260}"
+    },
+    {
+      "id": 261,
+      "perkType": "Tactician",
+      "description": "Skill",
+      "universalPart": "{255:261}"
+    },
+    {
+      "id": 262,
+      "perkType": "Smelter",
+      "description": "Skill",
+      "universalPart": "{255:262}"
+    },
+    {
+      "id": 263,
+      "perkType": "Strike the Anvil",
+      "description": "Skill",
+      "universalPart": "{255:263}"
+    },
+    {
+      "id": 264,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:264}"
+    },
+    {
+      "id": 265,
+      "perkType": "High Voltage",
+      "description": "Skill",
+      "universalPart": "{255:265}"
+    },
+    {
+      "id": 266,
+      "perkType": "Berserk",
+      "description": "Skill",
+      "universalPart": "{255:266}"
+    },
+    {
+      "id": 267,
+      "perkType": "Bloodlust",
+      "description": "Skill",
+      "universalPart": "{255:267}"
+    },
+    {
+      "id": 268,
+      "perkType": "There is Only Red",
+      "description": "Skill",
+      "universalPart": "{255:268}"
+    },
+    {
+      "id": 269,
+      "perkType": "Rimebreak",
+      "description": "Skill",
+      "universalPart": "{255:269}"
+    },
+    {
+      "id": 270,
+      "perkType": "Brimming Vigor",
+      "description": "Skill",
+      "universalPart": "{255:270}"
+    },
+    {
+      "id": 271,
+      "perkType": "My Touch Is Death",
+      "description": "Skill",
+      "universalPart": "{255:271}"
+    },
+    {
+      "id": 272,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:272}"
+    },
+    {
+      "id": 273,
+      "perkType": "Into The Fray",
+      "description": "Skill",
+      "universalPart": "{255:273}"
+    },
+    {
+      "id": 274,
+      "perkType": "Burning Ramparts",
+      "description": "Skill",
+      "universalPart": "{255:274}"
+    },
+    {
+      "id": 275,
+      "perkType": "Harbinger",
+      "description": "Skill",
+      "universalPart": "{255:275}"
+    },
+    {
+      "id": 276,
+      "perkType": "Rearm",
+      "description": "Skill",
+      "universalPart": "{255:276}"
+    },
+    {
+      "id": 277,
+      "perkType": "Maiming Strike",
+      "description": "Skill",
+      "universalPart": "{255:277}"
+    },
+    {
+      "id": 278,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{255:278}"
+    },
+    {
+      "id": 279,
+      "perkType": "Mortal Flare",
+      "description": "Skill",
+      "universalPart": "{255:279}"
+    },
+    {
+      "id": 280,
+      "perkType": "Catastrophe",
+      "description": "Skill",
+      "universalPart": "{255:280}"
+    },
+    {
+      "id": 281,
+      "perkType": "Dragon's Breath",
+      "description": "Skill",
+      "universalPart": "{255:281}"
+    },
+    {
+      "id": 282,
+      "perkType": "Judgment",
+      "description": "Skill",
+      "universalPart": "{255:282}"
+    },
+    {
+      "id": 283,
+      "perkType": "Fists of Stone",
+      "description": "Skill",
+      "universalPart": "{255:283}"
+    },
+    {
+      "id": 284,
+      "perkType": "Crackling Aegis",
+      "description": "Skill",
+      "universalPart": "{255:284}"
+    },
+    {
+      "id": 285,
+      "perkType": "Electrical Fire",
+      "description": "Skill",
+      "universalPart": "{255:285}"
+    },
+    {
+      "id": 286,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:286}"
+    },
+    {
+      "id": 287,
+      "perkType": "Tempered Ice",
+      "description": "Skill",
+      "universalPart": "{255:287}"
+    },
+    {
+      "id": 288,
+      "perkType": "Cacophony",
+      "description": "Skill",
+      "universalPart": "{255:288}"
+    },
+    {
+      "id": 289,
+      "perkType": "Masterwork",
+      "description": "Skill",
+      "universalPart": "{255:289}"
+    },
+    {
+      "id": 290,
+      "perkType": "Endless Bombardment",
+      "description": "Skill",
+      "universalPart": "{255:290}"
+    },
+    {
+      "id": 291,
+      "perkType": "Stoked",
+      "description": "Skill",
+      "universalPart": "{255:291}"
+    },
+    {
+      "id": 292,
+      "perkType": "Ordained Hammer",
+      "description": "Skill",
+      "universalPart": "{255:292}"
+    },
+    {
+      "id": 293,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:293}"
+    },
+    {
+      "id": 294,
+      "perkType": "Blast Furnace",
+      "description": "Skill",
+      "universalPart": "{255:294}"
+    },
+    {
+      "id": 295,
+      "perkType": "Tempered Lightning",
+      "description": "Skill",
+      "universalPart": "{255:295}"
+    },
+    {
+      "id": 296,
+      "perkType": "Armor of Contempt",
+      "description": "Skill",
+      "universalPart": "{255:296}"
+    },
+    {
+      "id": 297,
+      "perkType": "Lightning Rod",
+      "description": "Skill",
+      "universalPart": "{255:297}"
+    },
+    {
+      "id": 298,
+      "perkType": "Escalation",
+      "description": "Skill",
+      "universalPart": "{255:298}"
+    },
+    {
+      "id": 299,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:299}"
+    },
+    {
+      "id": 300,
+      "perkType": "Honed Point",
+      "description": "Skill",
+      "universalPart": "{255:300}"
+    },
+    {
+      "id": 301,
+      "perkType": "Permafrost",
+      "description": "Skill",
+      "universalPart": "{255:301}"
+    },
+    {
+      "id": 302,
+      "perkType": "Raging Inferno",
+      "description": "Skill",
+      "universalPart": "{255:302}"
+    },
+    {
+      "id": 303,
+      "perkType": "Wildheart",
+      "description": "Skill",
+      "universalPart": "{255:303}"
+    },
+    {
+      "id": 304,
+      "perkType": "Freezer Burn",
+      "description": "Skill",
+      "universalPart": "{255:304}"
+    },
+    {
+      "id": 305,
+      "perkType": "Reactive Armor",
+      "description": "Skill",
+      "universalPart": "{255:305}"
+    },
+    {
+      "id": 306,
+      "perkType": "Reverse Explosion",
+      "description": "Skill",
+      "universalPart": "{255:306}"
+    },
+    {
+      "id": 307,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:307}"
+    },
+    {
+      "id": 308,
+      "perkType": "Wildfire",
+      "description": "Skill",
+      "universalPart": "{255:308}"
+    },
+    {
+      "id": 309,
+      "perkType": "Burning Rage",
+      "description": "Skill",
+      "universalPart": "{255:309}"
+    },
+    {
+      "id": 310,
+      "perkType": "Ballistic Bulwark",
+      "description": "Skill",
+      "universalPart": "{255:310}"
+    },
+    {
+      "id": 311,
+      "perkType": "Disco Infernus",
+      "description": "Skill",
+      "universalPart": "{255:311}"
+    },
+    {
+      "id": 312,
+      "perkType": "Worldbreaker",
+      "description": "Skill",
+      "universalPart": "{255:312}"
+    },
+    {
+      "id": 313,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:313}"
+    },
+    {
+      "id": 314,
+      "perkType": "Cooling Mantle",
+      "description": "Skill",
+      "universalPart": "{255:314}"
+    },
+    {
+      "id": 315,
+      "perkType": "Icy Rage",
+      "description": "Skill",
+      "universalPart": "{255:315}"
+    },
+    {
+      "id": 316,
+      "perkType": "Northern Wind",
+      "description": "Skill",
+      "universalPart": "{255:316}"
+    },
+    {
+      "id": 317,
+      "perkType": "Winter's Kiss",
+      "description": "Skill",
+      "universalPart": "{255:317}"
+    },
+    {
+      "id": 318,
+      "perkType": "Primal Surge",
+      "description": "Skill",
+      "universalPart": "{255:318}"
+    },
+    {
+      "id": 319,
+      "perkType": "Age of Ice",
+      "description": "Skill",
+      "universalPart": "{255:319}"
+    },
+    {
+      "id": 320,
+      "perkType": "Caroming Shard",
+      "description": "Skill",
+      "universalPart": "{255:320}"
+    },
+    {
+      "id": 321,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:321}"
+    },
+    {
+      "id": 322,
+      "perkType": "Blackout",
+      "description": "Skill",
+      "universalPart": "{255:322}"
+    },
+    {
+      "id": 323,
+      "perkType": "Thunderous Rage",
+      "description": "Skill",
+      "universalPart": "{255:323}"
+    },
+    {
+      "id": 324,
+      "perkType": "Tactician",
+      "description": "Skill",
+      "universalPart": "{255:324}"
+    },
+    {
+      "id": 325,
+      "perkType": "Smelter",
+      "description": "Skill",
+      "universalPart": "{255:325}"
+    },
+    {
+      "id": 326,
+      "perkType": "Strike the Anvil",
+      "description": "Skill",
+      "universalPart": "{255:326}"
+    },
+    {
+      "id": 327,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:327}"
+    },
+    {
+      "id": 328,
+      "perkType": "High Voltage",
+      "description": "Skill",
+      "universalPart": "{255:328}"
+    },
+    {
+      "id": 329,
+      "perkType": "Berserk",
+      "description": "Skill",
+      "universalPart": "{255:329}"
+    },
+    {
+      "id": 330,
+      "perkType": "Bloodlust",
+      "description": "Skill",
+      "universalPart": "{255:330}"
+    },
+    {
+      "id": 331,
+      "perkType": "There is Only Red",
+      "description": "Skill",
+      "universalPart": "{255:331}"
+    },
+    {
+      "id": 332,
+      "perkType": "Rimebreak",
+      "description": "Skill",
+      "universalPart": "{255:332}"
+    },
+    {
+      "id": 333,
+      "perkType": "Brimming Vigor",
+      "description": "Skill",
+      "universalPart": "{255:333}"
+    },
+    {
+      "id": 334,
+      "perkType": "My Touch Is Death",
+      "description": "Skill",
+      "universalPart": "{255:334}"
+    },
+    {
+      "id": 335,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:335}"
+    },
+    {
+      "id": 336,
+      "perkType": "Into The Fray",
+      "description": "Skill",
+      "universalPart": "{255:336}"
+    },
+    {
+      "id": 337,
+      "perkType": "Burning Ramparts",
+      "description": "Skill",
+      "universalPart": "{255:337}"
+    },
+    {
+      "id": 338,
+      "perkType": "Harbringer",
+      "description": "Skill",
+      "universalPart": "{255:338}"
+    },
+    {
+      "id": 339,
+      "perkType": "Rearm",
+      "description": "Skill",
+      "universalPart": "{255:339}"
+    },
+    {
+      "id": 340,
+      "perkType": "Maiming Strike",
+      "description": "Skill",
+      "universalPart": "{255:340}"
+    },
+    {
+      "id": 341,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{255:341}"
+    },
+    {
+      "id": 342,
+      "perkType": "Mortal Flare",
+      "description": "Skill",
+      "universalPart": "{255:342}"
+    },
+    {
+      "id": 343,
+      "perkType": "Catastrophe",
+      "description": "Skill",
+      "universalPart": "{255:343}"
+    },
+    {
+      "id": 344,
+      "perkType": "Dragon's Breath",
+      "description": "Skill",
+      "universalPart": "{255:344}"
+    },
+    {
+      "id": 345,
+      "perkType": "Judgement",
+      "description": "Skill",
+      "universalPart": "{255:345}"
+    },
+    {
+      "id": 346,
+      "perkType": "Fists of Stone",
+      "description": "Skill",
+      "universalPart": "{255:346}"
+    },
+    {
+      "id": 347,
+      "perkType": "Crackling Aegis",
+      "description": "Skill",
+      "universalPart": "{255:347}"
+    },
+    {
+      "id": 348,
+      "perkType": "Electrical Fire",
+      "description": "Skill",
+      "universalPart": "{255:348}"
+    },
+    {
+      "id": 349,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:349}"
+    },
+    {
+      "id": 350,
+      "perkType": "Tempered Ice",
+      "description": "Skill",
+      "universalPart": "{255:350}"
+    },
+    {
+      "id": 351,
+      "perkType": "Cacophony",
+      "description": "Skill",
+      "universalPart": "{255:351}"
+    },
+    {
+      "id": 352,
+      "perkType": "Masterwork",
+      "description": "Skill",
+      "universalPart": "{255:352}"
+    },
+    {
+      "id": 353,
+      "perkType": "Endless Bombardment",
+      "description": "Skill",
+      "universalPart": "{255:353}"
+    },
+    {
+      "id": 354,
+      "perkType": "Stoked",
+      "description": "Skill",
+      "universalPart": "{255:354}"
+    },
+    {
+      "id": 355,
+      "perkType": "Ordained Hammer",
+      "description": "Skill",
+      "universalPart": "{255:355}"
+    },
+    {
+      "id": 356,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:356}"
+    },
+    {
+      "id": 357,
+      "perkType": "Blast Furnace",
+      "description": "Skill",
+      "universalPart": "{255:357}"
+    },
+    {
+      "id": 358,
+      "perkType": "Tempered Lightning",
+      "description": "Skill",
+      "universalPart": "{255:358}"
+    },
+    {
+      "id": 359,
+      "perkType": "Armor of Contempt",
+      "description": "Skill",
+      "universalPart": "{255:359}"
+    },
+    {
+      "id": 360,
+      "perkType": "Lightning Rod",
+      "description": "Skill",
+      "universalPart": "{255:360}"
+    },
+    {
+      "id": 361,
+      "perkType": "Escalation",
+      "description": "Skill",
+      "universalPart": "{255:361}"
+    },
+    {
+      "id": 362,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:362}"
+    },
+    {
+      "id": 363,
+      "perkType": "Honed Point",
+      "description": "Skill",
+      "universalPart": "{255:363}"
+    },
+    {
+      "id": 364,
+      "perkType": "Permafrost",
+      "description": "Skill",
+      "universalPart": "{255:364}"
+    },
+    {
+      "id": 365,
+      "perkType": "Raging Inferno",
+      "description": "Skill",
+      "universalPart": "{255:365}"
+    },
+    {
+      "id": 366,
+      "perkType": "Wildheart",
+      "description": "Skill",
+      "universalPart": "{255:366}"
+    },
+    {
+      "id": 367,
+      "perkType": "Freezer Burn",
+      "description": "Skill",
+      "universalPart": "{255:367}"
+    },
+    {
+      "id": 368,
+      "perkType": "Reactive Armor",
+      "description": "Skill",
+      "universalPart": "{255:368}"
+    },
+    {
+      "id": 369,
+      "perkType": "Reverse Explosion",
+      "description": "Skill",
+      "universalPart": "{255:369}"
+    },
+    {
+      "id": 370,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:370}"
+    },
+    {
+      "id": 371,
+      "perkType": "Wildfire",
+      "description": "Skill",
+      "universalPart": "{255:371}"
+    },
+    {
+      "id": 372,
+      "perkType": "Burning Rage",
+      "description": "Skill",
+      "universalPart": "{255:372}"
+    },
+    {
+      "id": 373,
+      "perkType": "Ballistic Bulwark",
+      "description": "Skill",
+      "universalPart": "{255:373}"
+    },
+    {
+      "id": 374,
+      "perkType": "Disco Infernus",
+      "description": "Skill",
+      "universalPart": "{255:374}"
+    },
+    {
+      "id": 375,
+      "perkType": "Worldbreaker",
+      "description": "Skill",
+      "universalPart": "{255:375}"
+    },
+    {
+      "id": 376,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:376}"
+    },
+    {
+      "id": 377,
+      "perkType": "Cooling Mantle",
+      "description": "Skill",
+      "universalPart": "{255:377}"
+    },
+    {
+      "id": 378,
+      "perkType": "Icy Rage",
+      "description": "Skill",
+      "universalPart": "{255:378}"
+    },
+    {
+      "id": 379,
+      "perkType": "Northern Wind",
+      "description": "Skill",
+      "universalPart": "{255:379}"
+    },
+    {
+      "id": 380,
+      "perkType": "Winter's Kiss",
+      "description": "Skill",
+      "universalPart": "{255:380}"
+    },
+    {
+      "id": 381,
+      "perkType": "Primal Surge",
+      "description": "Skill",
+      "universalPart": "{255:381}"
+    },
+    {
+      "id": 382,
+      "perkType": "Age of Ice",
+      "description": "Skill",
+      "universalPart": "{255:382}"
+    },
+    {
+      "id": 383,
+      "perkType": "Caroming Shard",
+      "description": "Skill",
+      "universalPart": "{255:383}"
+    },
+    {
+      "id": 384,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:384}"
+    },
+    {
+      "id": 385,
+      "perkType": "Blackout",
+      "description": "Skill",
+      "universalPart": "{255:385}"
+    },
+    {
+      "id": 386,
+      "perkType": "Thunderous Rage",
+      "description": "Skill",
+      "universalPart": "{255:386}"
+    },
+    {
+      "id": 387,
+      "perkType": "Tactician",
+      "description": "Skill",
+      "universalPart": "{255:387}"
+    },
+    {
+      "id": 388,
+      "perkType": "Smelter",
+      "description": "Skill",
+      "universalPart": "{255:388}"
+    },
+    {
+      "id": 389,
+      "perkType": "Strike the Anvil",
+      "description": "Skill",
+      "universalPart": "{255:389}"
+    },
+    {
+      "id": 390,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:390}"
+    },
+    {
+      "id": 391,
+      "perkType": "High Voltage",
+      "description": "Skill",
+      "universalPart": "{255:391}"
+    },
+    {
+      "id": 392,
+      "perkType": "Berserk",
+      "description": "Skill",
+      "universalPart": "{255:392}"
+    },
+    {
+      "id": 393,
+      "perkType": "Bloodlust",
+      "description": "Skill",
+      "universalPart": "{255:393}"
+    },
+    {
+      "id": 394,
+      "perkType": "There is Only Red",
+      "description": "Skill",
+      "universalPart": "{255:394}"
+    },
+    {
+      "id": 395,
+      "perkType": "Rimebreak",
+      "description": "Skill",
+      "universalPart": "{255:395}"
+    },
+    {
+      "id": 396,
+      "perkType": "Brimming Vigor",
+      "description": "Skill",
+      "universalPart": "{255:396}"
+    },
+    {
+      "id": 397,
+      "perkType": "My Touch Is Death",
+      "description": "Skill",
+      "universalPart": "{255:397}"
+    },
+    {
+      "id": 398,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:398}"
+    },
+    {
+      "id": 399,
+      "perkType": "Into The Fray",
+      "description": "Skill",
+      "universalPart": "{255:399}"
+    },
+    {
+      "id": 400,
+      "perkType": "Burning Ramparts",
+      "description": "Skill",
+      "universalPart": "{255:400}"
+    },
+    {
+      "id": 401,
+      "perkType": "Harbinger",
+      "description": "Skill",
+      "universalPart": "{255:401}"
+    },
+    {
+      "id": 402,
+      "perkType": "Rearm",
+      "description": "Skill",
+      "universalPart": "{255:402}"
+    },
+    {
+      "id": 403,
+      "perkType": "Maiming Strike",
+      "description": "Skill",
+      "universalPart": "{255:403}"
+    },
+    {
+      "id": 404,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{255:404}"
+    },
+    {
+      "id": 405,
+      "perkType": "Mortal Flare",
+      "description": "Skill",
+      "universalPart": "{255:405}"
+    },
+    {
+      "id": 406,
+      "perkType": "Catastrophe",
+      "description": "Skill",
+      "universalPart": "{255:406}"
+    },
+    {
+      "id": 407,
+      "perkType": "Dragon's Breath",
+      "description": "Skill",
+      "universalPart": "{255:407}"
+    },
+    {
+      "id": 408,
+      "perkType": "Judgment",
+      "description": "Skill",
+      "universalPart": "{255:408}"
+    },
+    {
+      "id": 409,
+      "perkType": "Fists of Stone",
+      "description": "Skill",
+      "universalPart": "{255:409}"
+    },
+    {
+      "id": 410,
+      "perkType": "Crackling Aegis",
+      "description": "Skill",
+      "universalPart": "{255:410}"
+    },
+    {
+      "id": 411,
+      "perkType": "Electrical Fire",
+      "description": "Skill",
+      "universalPart": "{255:411}"
+    },
+    {
+      "id": 412,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:412}"
+    },
+    {
+      "id": 413,
+      "perkType": "Tempered Ice",
+      "description": "Skill",
+      "universalPart": "{255:413}"
+    },
+    {
+      "id": 414,
+      "perkType": "Cacophony",
+      "description": "Skill",
+      "universalPart": "{255:414}"
+    },
+    {
+      "id": 415,
+      "perkType": "Masterwork",
+      "description": "Skill",
+      "universalPart": "{255:415}"
+    },
+    {
+      "id": 416,
+      "perkType": "Endless Bombardment",
+      "description": "Skill",
+      "universalPart": "{255:416}"
+    },
+    {
+      "id": 417,
+      "perkType": "Stoked",
+      "description": "Skill",
+      "universalPart": "{255:417}"
+    },
+    {
+      "id": 418,
+      "perkType": "Ordained Hammer",
+      "description": "Skill",
+      "universalPart": "{255:418}"
+    },
+    {
+      "id": 419,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:419}"
+    },
+    {
+      "id": 420,
+      "perkType": "Blast Furnace",
+      "description": "Skill",
+      "universalPart": "{255:420}"
+    },
+    {
+      "id": 421,
+      "perkType": "Tempered Lightning",
+      "description": "Skill",
+      "universalPart": "{255:421}"
+    },
+    {
+      "id": 422,
+      "perkType": "Armor of Contempt",
+      "description": "Skill",
+      "universalPart": "{255:422}"
+    },
+    {
+      "id": 423,
+      "perkType": "Lightning Rod",
+      "description": "Skill",
+      "universalPart": "{255:423}"
+    },
+    {
+      "id": 424,
+      "perkType": "Escalation",
+      "description": "Skill",
+      "universalPart": "{255:424}"
+    },
+    {
+      "id": 425,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:425}"
+    },
+    {
+      "id": 426,
+      "perkType": "Honed Point",
+      "description": "Skill",
+      "universalPart": "{255:426}"
+    },
+    {
+      "id": 427,
+      "perkType": "Permafrost",
+      "description": "Skill",
+      "universalPart": "{255:427}"
+    },
+    {
+      "id": 428,
+      "perkType": "Raging Inferno",
+      "description": "Skill",
+      "universalPart": "{255:428}"
+    },
+    {
+      "id": 429,
+      "perkType": "Wildheart",
+      "description": "Skill",
+      "universalPart": "{255:429}"
+    },
+    {
+      "id": 430,
+      "perkType": "Freezer Burn",
+      "description": "Skill",
+      "universalPart": "{255:430}"
+    },
+    {
+      "id": 431,
+      "perkType": "Reactive Armor",
+      "description": "Skill",
+      "universalPart": "{255:431}"
+    },
+    {
+      "id": 432,
+      "perkType": "Reverse Explosion",
+      "description": "Skill",
+      "universalPart": "{255:432}"
+    },
+    {
+      "id": 433,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:433}"
+    },
+    {
+      "id": 434,
+      "perkType": "Wildfire",
+      "description": "Skill",
+      "universalPart": "{255:434}"
+    },
+    {
+      "id": 435,
+      "perkType": "Burning Rage",
+      "description": "Skill",
+      "universalPart": "{255:435}"
+    },
+    {
+      "id": 436,
+      "perkType": "Ballistic Bulwark",
+      "description": "Skill",
+      "universalPart": "{255:436}"
+    },
+    {
+      "id": 437,
+      "perkType": "Disco Infernus",
+      "description": "Skill",
+      "universalPart": "{255:437}"
+    },
+    {
+      "id": 438,
+      "perkType": "Worldbreaker",
+      "description": "Skill",
+      "universalPart": "{255:438}"
+    },
+    {
+      "id": 439,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:439}"
+    },
+    {
+      "id": 440,
+      "perkType": "Cooling Mantle",
+      "description": "Skill",
+      "universalPart": "{255:440}"
+    },
+    {
+      "id": 441,
+      "perkType": "Icy Rage",
+      "description": "Skill",
+      "universalPart": "{255:441}"
+    },
+    {
+      "id": 442,
+      "perkType": "Northern Wind",
+      "description": "Skill",
+      "universalPart": "{255:442}"
+    },
+    {
+      "id": 443,
+      "perkType": "Winter's Kiss",
+      "description": "Skill",
+      "universalPart": "{255:443}"
+    },
+    {
+      "id": 444,
+      "perkType": "Primal Surge",
+      "description": "Skill",
+      "universalPart": "{255:444}"
+    },
+    {
+      "id": 445,
+      "perkType": "Age of Ice",
+      "description": "Skill",
+      "universalPart": "{255:445}"
+    },
+    {
+      "id": 446,
+      "perkType": "Caroming Shard",
+      "description": "Skill",
+      "universalPart": "{255:446}"
+    },
+    {
+      "id": 447,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:447}"
+    },
+    {
+      "id": 448,
+      "perkType": "Blackout",
+      "description": "Skill",
+      "universalPart": "{255:448}"
+    },
+    {
+      "id": 449,
+      "perkType": "Thunderous Rage",
+      "description": "Skill",
+      "universalPart": "{255:449}"
+    },
+    {
+      "id": 450,
+      "perkType": "Tactician",
+      "description": "Skill",
+      "universalPart": "{255:450}"
+    },
+    {
+      "id": 451,
+      "perkType": "Smelter",
+      "description": "Skill",
+      "universalPart": "{255:451}"
+    },
+    {
+      "id": 452,
+      "perkType": "Strike the Anvil",
+      "description": "Skill",
+      "universalPart": "{255:452}"
+    },
+    {
+      "id": 453,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:453}"
+    },
+    {
+      "id": 454,
+      "perkType": "High Voltage",
+      "description": "Skill",
+      "universalPart": "{255:454}"
+    },
+    {
+      "id": 455,
+      "perkType": "Berserk",
+      "description": "Skill",
+      "universalPart": "{255:455}"
+    },
+    {
+      "id": 456,
+      "perkType": "Bloodlust",
+      "description": "Skill",
+      "universalPart": "{255:456}"
+    },
+    {
+      "id": 457,
+      "perkType": "There is Only Red",
+      "description": "Skill",
+      "universalPart": "{255:457}"
+    },
+    {
+      "id": 458,
+      "perkType": "Rimebreak",
+      "description": "Skill",
+      "universalPart": "{255:458}"
+    },
+    {
+      "id": 459,
+      "perkType": "Brimming Vigor",
+      "description": "Skill",
+      "universalPart": "{255:459}"
+    },
+    {
+      "id": 460,
+      "perkType": "My Touch Is Death",
+      "description": "Skill",
+      "universalPart": "{255:460}"
+    },
+    {
+      "id": 461,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:461}"
+    },
+    {
+      "id": 462,
+      "perkType": "Into The Fray",
+      "description": "Skill",
+      "universalPart": "{255:462}"
+    },
+    {
+      "id": 463,
+      "perkType": "Burning Ramparts",
+      "description": "Skill",
+      "universalPart": "{255:463}"
+    },
+    {
+      "id": 464,
+      "perkType": "Harbinger",
+      "description": "Skill",
+      "universalPart": "{255:464}"
+    },
+    {
+      "id": 465,
+      "perkType": "Rearm",
+      "description": "Skill",
+      "universalPart": "{255:465}"
+    },
+    {
+      "id": 466,
+      "perkType": "Maiming Strike",
+      "description": "Skill",
+      "universalPart": "{255:466}"
+    },
+    {
+      "id": 467,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{255:467}"
+    },
+    {
+      "id": 468,
+      "perkType": "Mortal Flare",
+      "description": "Skill",
+      "universalPart": "{255:468}"
+    },
+    {
+      "id": 469,
+      "perkType": "Catastrophe",
+      "description": "Skill",
+      "universalPart": "{255:469}"
+    },
+    {
+      "id": 470,
+      "perkType": "Dragon's Breath",
+      "description": "Skill",
+      "universalPart": "{255:470}"
+    },
+    {
+      "id": 471,
+      "perkType": "Judgment",
+      "description": "Skill",
+      "universalPart": "{255:471}"
+    },
+    {
+      "id": 472,
+      "perkType": "Fists of Stone",
+      "description": "Skill",
+      "universalPart": "{255:472}"
+    },
+    {
+      "id": 473,
+      "perkType": "Crackling Aegis",
+      "description": "Skill",
+      "universalPart": "{255:473}"
+    },
+    {
+      "id": 474,
+      "perkType": "Electrical Fire",
+      "description": "Skill",
+      "universalPart": "{255:474}"
+    },
+    {
+      "id": 475,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:475}"
+    },
+    {
+      "id": 476,
+      "perkType": "Tempered Ice",
+      "description": "Skill",
+      "universalPart": "{255:476}"
+    },
+    {
+      "id": 477,
+      "perkType": "Cacophony",
+      "description": "Skill",
+      "universalPart": "{255:477}"
+    },
+    {
+      "id": 478,
+      "perkType": "Masterwork",
+      "description": "Skill",
+      "universalPart": "{255:478}"
+    },
+    {
+      "id": 479,
+      "perkType": "Endless Bombardment",
+      "description": "Skill",
+      "universalPart": "{255:479}"
+    },
+    {
+      "id": 480,
+      "perkType": "Stoked",
+      "description": "Skill",
+      "universalPart": "{255:480}"
+    },
+    {
+      "id": 481,
+      "perkType": "Ordained Hammer",
+      "description": "Skill",
+      "universalPart": "{255:481}"
+    },
+    {
+      "id": 482,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:482}"
+    },
+    {
+      "id": 483,
+      "perkType": "Blast Furnace",
+      "description": "Skill",
+      "universalPart": "{255:483}"
+    },
+    {
+      "id": 484,
+      "perkType": "Tempered Lightning",
+      "description": "Skill",
+      "universalPart": "{255:484}"
+    },
+    {
+      "id": 485,
+      "perkType": "Armor of Contempt",
+      "description": "Skill",
+      "universalPart": "{255:485}"
+    },
+    {
+      "id": 486,
+      "perkType": "Lightning Rod",
+      "description": "Skill",
+      "universalPart": "{255:486}"
+    },
+    {
+      "id": 487,
+      "perkType": "Escalation",
+      "description": "Skill",
+      "universalPart": "{255:487}"
+    },
+    {
+      "id": 488,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:488}"
+    },
+    {
+      "id": 489,
+      "perkType": "Honed Point",
+      "description": "Skill",
+      "universalPart": "{255:489}"
+    },
+    {
+      "id": 490,
+      "perkType": "Permafrost",
+      "description": "Skill",
+      "universalPart": "{255:490}"
+    },
+    {
+      "id": 491,
+      "perkType": "Raging Inferno",
+      "description": "Skill",
+      "universalPart": "{255:491}"
+    },
+    {
+      "id": 492,
+      "perkType": "Wildheart",
+      "description": "Skill",
+      "universalPart": "{255:492}"
+    },
+    {
+      "id": 493,
+      "perkType": "Freezer Burn",
+      "description": "Skill",
+      "universalPart": "{255:493}"
+    },
+    {
+      "id": 494,
+      "perkType": "Reactive Armor",
+      "description": "Skill",
+      "universalPart": "{255:494}"
+    },
+    {
+      "id": 495,
+      "perkType": "Reverse Explosion",
+      "description": "Skill",
+      "universalPart": "{255:495}"
+    },
+    {
+      "id": 496,
+      "perkType": "Broken Green",
+      "description": "Skill",
+      "universalPart": "{255:496}"
+    },
+    {
+      "id": 497,
+      "perkType": "Wildfire",
+      "description": "Skill",
+      "universalPart": "{255:497}"
+    },
+    {
+      "id": 498,
+      "perkType": "Burning Rage",
+      "description": "Skill",
+      "universalPart": "{255:498}"
+    },
+    {
+      "id": 499,
+      "perkType": "Ballistic Bulwark",
+      "description": "Skill",
+      "universalPart": "{255:499}"
+    },
+    {
+      "id": 500,
+      "perkType": "Disco Infernus",
+      "description": "Skill",
+      "universalPart": "{255:500}"
+    },
+    {
+      "id": 501,
+      "perkType": "Worldbreaker",
+      "description": "Skill",
+      "universalPart": "{255:501}"
+    },
+    {
+      "id": 502,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:502}"
+    },
+    {
+      "id": 503,
+      "perkType": "Cooling Mantle",
+      "description": "Skill",
+      "universalPart": "{255:503}"
+    },
+    {
+      "id": 504,
+      "perkType": "Icy Rage",
+      "description": "Skill",
+      "universalPart": "{255:504}"
+    },
+    {
+      "id": 505,
+      "perkType": "Northern Wind",
+      "description": "Skill",
+      "universalPart": "{255:505}"
+    },
+    {
+      "id": 506,
+      "perkType": "Winter's Kiss",
+      "description": "Skill",
+      "universalPart": "{255:506}"
+    },
+    {
+      "id": 507,
+      "perkType": "Primal Surge",
+      "description": "Skill",
+      "universalPart": "{255:507}"
+    },
+    {
+      "id": 508,
+      "perkType": "Age of Ice",
+      "description": "Skill",
+      "universalPart": "{255:508}"
+    },
+    {
+      "id": 509,
+      "perkType": "Caroming Shard",
+      "description": "Skill",
+      "universalPart": "{255:509}"
+    },
+    {
+      "id": 510,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:510}"
+    },
+    {
+      "id": 511,
+      "perkType": "Blackout",
+      "description": "Skill",
+      "universalPart": "{255:511}"
+    },
+    {
+      "id": 512,
+      "perkType": "Thunderous Rage",
+      "description": "Skill",
+      "universalPart": "{255:512}"
+    },
+    {
+      "id": 513,
+      "perkType": "Tactician",
+      "description": "Skill",
+      "universalPart": "{255:513}"
+    },
+    {
+      "id": 514,
+      "perkType": "Smelter",
+      "description": "Skill",
+      "universalPart": "{255:514}"
+    },
+    {
+      "id": 515,
+      "perkType": "Strike the Anvil",
+      "description": "Skill",
+      "universalPart": "{255:515}"
+    },
+    {
+      "id": 516,
+      "perkType": "Broken Blue",
+      "description": "Skill",
+      "universalPart": "{255:516}"
+    },
+    {
+      "id": 517,
+      "perkType": "High Voltage",
+      "description": "Skill",
+      "universalPart": "{255:517}"
+    },
+    {
+      "id": 518,
+      "perkType": "Berserk",
+      "description": "Skill",
+      "universalPart": "{255:518}"
+    },
+    {
+      "id": 519,
+      "perkType": "Bloodlust",
+      "description": "Skill",
+      "universalPart": "{255:519}"
+    },
+    {
+      "id": 520,
+      "perkType": "There is Only Red",
+      "description": "Skill",
+      "universalPart": "{255:520}"
+    },
+    {
+      "id": 521,
+      "perkType": "Rimebreak",
+      "description": "Skill",
+      "universalPart": "{255:521}"
+    },
+    {
+      "id": 522,
+      "perkType": "Brimming Vigor",
+      "description": "Skill",
+      "universalPart": "{255:522}"
+    },
+    {
+      "id": 523,
+      "perkType": "My Touch Is Death",
+      "description": "Skill",
+      "universalPart": "{255:523}"
+    },
+    {
+      "id": 524,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:524}"
+    },
+    {
+      "id": 525,
+      "perkType": "Into The Fray",
+      "description": "Skill",
+      "universalPart": "{255:525}"
+    },
+    {
+      "id": 526,
+      "perkType": "Burning Ramparts",
+      "description": "Skill",
+      "universalPart": "{255:526}"
+    },
+    {
+      "id": 527,
+      "perkType": "Harbinger",
+      "description": "Skill",
+      "universalPart": "{255:527}"
+    },
+    {
+      "id": 528,
+      "perkType": "Rearm",
+      "description": "Skill",
+      "universalPart": "{255:528}"
+    },
+    {
+      "id": 529,
+      "perkType": "Maiming Strike",
+      "description": "Skill",
+      "universalPart": "{255:529}"
+    },
+    {
+      "id": 530,
+      "perkType": "Broken White",
+      "description": "Skill",
+      "universalPart": "{255:530}"
+    },
+    {
+      "id": 531,
+      "perkType": "Mortal Flare",
+      "description": "Skill",
+      "universalPart": "{255:531}"
+    },
+    {
+      "id": 532,
+      "perkType": "Catastrophe",
+      "description": "Skill",
+      "universalPart": "{255:532}"
+    },
+    {
+      "id": 533,
+      "perkType": "Dragon's Breath",
+      "description": "Skill",
+      "universalPart": "{255:533}"
+    },
+    {
+      "id": 534,
+      "perkType": "Judgment",
+      "description": "Skill",
+      "universalPart": "{255:534}"
+    },
+    {
+      "id": 535,
+      "perkType": "Fists of Stone",
+      "description": "Skill",
+      "universalPart": "{255:535}"
+    },
+    {
+      "id": 536,
+      "perkType": "Crackling Aegis",
+      "description": "Skill",
+      "universalPart": "{255:536}"
+    },
+    {
+      "id": 537,
+      "perkType": "Electrical Fire",
+      "description": "Skill",
+      "universalPart": "{255:537}"
+    },
+    {
+      "id": 538,
+      "perkType": "Broken Red",
+      "description": "Skill",
+      "universalPart": "{255:538}"
+    }
+  ]
+}

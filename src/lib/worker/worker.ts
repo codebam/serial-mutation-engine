@@ -56,6 +56,7 @@ self.onmessage = async function (e: MessageEvent) {
 		const files = [
 			'heavy_ordnance_firmware.json',
 			'weapon_elemental.json',
+			'amon_class_mods.json',
 			'harlowe_class_mods.json',
 			'rafa_class_mods.json',
 			'vex_class_mods.json',
