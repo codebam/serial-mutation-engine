@@ -1,5 +1,5 @@
-// const api_url = 'https://serial-mutation-engine.pages.dev/api';
-const api_url = 'http://localhost:5173/api';
+const api_url = 'https://serial-mutation-engine.pages.dev/api';
+// const api_url = 'http://localhost:5173/api';
 import * as fs from 'fs';
 import * as readline from 'readline';
 
@@ -23,7 +23,7 @@ async function batchOperations() {
 		payload.push(operation);
 	}
 
-	const batch_payload = payload.slice(0, 11000);
+	const batch_payload = payload.slice(0, 11500);
 
 	console.log(`Sending ${batch_payload.length} serials...`);
 	// console.log("Payload to be sent:", batch_payload);
