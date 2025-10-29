@@ -4,7 +4,9 @@ import { operationSchema } from './schemas';
 
 describe('API and Schema Correspondence', () => {
 	it('should have a schema for every exported API function', () => {
-		const apiFunctions = Object.keys(api).filter((key) => typeof api[key as keyof typeof api] === 'function');
+		const apiFunctions = Object.keys(api).filter(
+			(key) => typeof api[key as keyof typeof api] === 'function'
+		);
 
 		const schemaFunctions = operationSchema.options.map(
 			(schema: any) => schema.shape.functionName.value
