@@ -33,6 +33,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Borderlands 4 Serial Mutation Engine</title>
+</svelte:head>
+
 <main class="mx-auto my-8 flex h-full w-full max-w-4xl flex-col gap-4">
 	{#each serialEditors as editor (editor.id)}
 		<div>
